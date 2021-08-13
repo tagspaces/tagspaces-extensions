@@ -1,0 +1,46 @@
+@import '../legacy/common.css';
+
+html,
+body {
+  height: 100%;
+  font-size: 13px;
+  padding: 0 !important;
+}
+
+.note-editor {
+  border-width: 0 !important;
+  height: 90%;
+}
+
+.note-codable {
+  overflow: auto;
+}
+
+.note-editable {
+  overflow: auto;
+}
+
+.note-editing-area h1 {
+  font-size: 22px;
+}
+
+.note-editing-area h2 {
+  font-size: 20px;
+}
+
+.note-editing-area h3 {
+  font-size: 18px;
+}
+
+.note-editing-area h4 {
+  font-size: 16px;
+}
+
+.note-editing-area h5 {
+  font-size: 14px;
+}
+
+.note-editing-area h6 {
+  font-size: 12px;
+  font-weight: bold;
+}

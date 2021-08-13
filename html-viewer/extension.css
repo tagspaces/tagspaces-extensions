@@ -1,0 +1,73 @@
+@import '../legacy/common.css';
+
+#htmlContent {
+  overflow: auto;
+  height: 100%;
+  font-size: 13px;
+}
+
+.zoomSmallest {
+  zoom: 70%;
+}
+
+.zoomSmaller {
+  zoom: 80%;
+}
+
+.zoomSmall {
+  zoom: 90%;
+}
+
+.zoomDefault {
+  zoom: 100%;
+}
+
+.zoomLarge {
+  zoom: 110%;
+}
+
+.zoomLarger {
+  zoom: 120%;
+}
+
+.zoomLargest {
+  zoom: 130%;
+}
+
+/* Readability */
+#htmlViewer {
+  height: 100%;
+  font-size: 14px;
+}
+
+#readabilityFont {
+  margin-left: 19px;
+  margin-top: 11px;
+}
+
+#sanSerifLabel {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+#serifLabel {
+  font-family: Georgia, Times New Roman, serif;
+}
+
+#readabilityFontSize {
+  margin-left: 19px;
+  margin-top: 11px;
+}
+
+.btn-black {
+  background-color: #282a36;
+  color: #ffffff;
+}
+
+.btn-sepia {
+  background-color: #f4ecd8;
+  color: #5b4636;
+}
+
+#html-data-screenshot {
+  max-width: 100%;
+}
