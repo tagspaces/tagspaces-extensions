@@ -1,0 +1,14 @@
+{
+    "findInDocument": "Find i dokument ",
+    "startSearch": "Start søgning ",
+    "cancelSearch": "Annuller søgning",
+    "zoomOut": "Zoom ud ",
+    "zoomIn": "Zoom ind ",
+    "zoomReset": "Nulstil zoom ",
+    "changeTheme": "Ændre tema ",
+    "resetTheme": "Nulstil tema ",
+    "print": "Udskriv ",
+    "about": "Om ",
+    "aboutTitle": "Om Markdown Viewer",
+    "-": "- "
+}

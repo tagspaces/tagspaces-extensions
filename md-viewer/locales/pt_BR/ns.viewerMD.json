@@ -1,0 +1,14 @@
+{
+    "findInDocument": "Find in document",
+    "startSearch": "Start Search",
+    "cancelSearch": "Cancel Search",
+    "zoomOut": "Afastar",
+    "zoomIn": "Mais Zoom",
+    "zoomReset": "Resetar Zoom",
+    "changeTheme": "Alterar Aparência",
+    "resetTheme": "Repor Aparência",
+    "print": "Imprimir",
+    "about": "Sobre",
+    "aboutTitle": "About Markdown Viewer",
+    "-": "-"
+}

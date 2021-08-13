@@ -1,0 +1,14 @@
+{
+    "findInDocument": "Keresés a dokumentumban",
+    "startSearch": "Keresés indítása",
+    "cancelSearch": "Keresés visszavonása",
+    "zoomOut": "Kicsinyítés",
+    "zoomIn": "Nagyítás",
+    "zoomReset": "Nézet nagyításának visszaállítása",
+    "changeTheme": "Téma váltás",
+    "resetTheme": "Kinézet visszaállítása",
+    "print": "Nyomtatás",
+    "about": "A programról",
+    "aboutTitle": "A markdown nézegetőről",
+    "-": "-"
+}

@@ -1,0 +1,14 @@
+{
+    "findInDocument": "Find in document",
+    "startSearch": "Start Search",
+    "cancelSearch": "Zrušit hledání",
+    "zoomOut": "Odálit",
+    "zoomIn": "Přiblížit",
+    "zoomReset": "Resetovat Přiblížení/odálení",
+    "changeTheme": "Změnit téma",
+    "resetTheme": "Resetovat téma",
+    "print": "Tisknout",
+    "about": "O ViewerMD",
+    "aboutTitle": "About Markdown Viewer",
+    "-": "-"
+}

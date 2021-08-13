@@ -1,0 +1,14 @@
+{
+    "findInDocument": "在文件中搜尋",
+    "startSearch": "開始搜尋",
+    "cancelSearch": "取消搜尋",
+    "zoomOut": "縮小",
+    "zoomIn": "放大",
+    "zoomReset": "取消縮放",
+    "changeTheme": "變更佈景",
+    "resetTheme": "重設佈景",
+    "print": "列印",
+    "about": "關於",
+    "aboutTitle": "關於 Markdown 檢視器",
+    "-": "-"
+}
