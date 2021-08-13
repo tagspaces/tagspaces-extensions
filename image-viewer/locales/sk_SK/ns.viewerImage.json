@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Vzdialiť",
+    "zoomIn": "Priblížiť",
+    "zoomReset": "Obnoviť priblíženie",
+    "rotateRight": "Otočiť vpravo",
+    "rotateLeft": "Otočiť vľavo",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical",
+    "flipBoth": "Flip Both",
+    "print": "Tlač",
+    "about": "About",
+    "aboutTitle": "About ViewerImage",
+    "exif": "Show Exif & IPTC",
+    "exifTitle": "Exif And IPTC Image Data",
+    "changeBackgroundColor": "Change Background Color",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

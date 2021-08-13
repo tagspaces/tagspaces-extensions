@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Խոշորացնել",
+    "zoomIn": "Փոքրացնել",
+    "zoomReset": "Սկզբնադիր խոշորացում",
+    "rotateRight": "Պտտել աջ",
+    "rotateLeft": "Պտտել ձախ",
+    "flipHorizontal": "Հորիզոնական շրջում",
+    "flipVertical": "Ուղղահայաց շրջում",
+    "flipBoth": "Երկկողմանի շրջում",
+    "print": "Տպել",
+    "about": "Տեղեկություն",
+    "aboutTitle": "ViewerImage-ի մասին",
+    "exif": "Ցույց տալ Exif-ն ու IPTC-ն",
+    "exifTitle": "Նկարի Exif և IPTC տվյալները",
+    "changeBackgroundColor": "Փոխել խորքի գույնը",
+    "fitToScreen": "Հարմարեցնել էկրանին",
+    "toggleBlackAndWhiteColor": "Սև ու սպիտակ",
+    "-": "-"
+}

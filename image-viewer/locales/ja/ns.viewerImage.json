@@ -1,0 +1,19 @@
+{
+    "zoomOut": "ズームアウト",
+    "zoomIn": "ズームイン",
+    "zoomReset": "ズーム解除",
+    "rotateRight": "右回転",
+    "rotateLeft": "左回転",
+    "flipHorizontal": "水平位置の反転",
+    "flipVertical": "垂直位置の反転",
+    "flipBoth": "両方の反転",
+    "print": "プリント",
+    "about": "詳細",
+    "aboutTitle": "ViewerImageについて",
+    "exif": "ExifとIPTCを表示",
+    "exifTitle": "ExifとIPTCの画像データ",
+    "changeBackgroundColor": "背景色の変更",
+    "fitToScreen": "スクリーンに合わせる",
+    "toggleBlackAndWhiteColor": "黒と白の切り替え",
+    "-": "-"
+}

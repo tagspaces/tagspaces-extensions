@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Perkecil",
+    "zoomIn": "Perbesar",
+    "zoomReset": "Reset Pembesaran",
+    "rotateRight": "Rotasi Kanan",
+    "rotateLeft": "Rotasi Kiri",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical",
+    "flipBoth": "Flip Both",
+    "print": "Cetak",
+    "about": "Tentang",
+    "aboutTitle": "Tentang ViewerImage",
+    "exif": "Show Exif & IPTC",
+    "exifTitle": "Exif And IPTC Image Data",
+    "changeBackgroundColor": "Ganti Latar Belakang Warna",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

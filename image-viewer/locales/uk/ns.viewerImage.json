@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Зменшити",
+    "zoomIn": "Збільшити",
+    "zoomReset": "Повернути масштаб",
+    "rotateRight": "Повернути праворуч",
+    "rotateLeft": "Повернути ліворуч",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical",
+    "flipBoth": "Flip Both",
+    "print": "Друк",
+    "about": "Про TagSpaces",
+    "aboutTitle": "Про ViewerImage",
+    "exif": "Показати Exif & IPTC",
+    "exifTitle": "Данні зображення",
+    "changeBackgroundColor": "Change Background Color",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

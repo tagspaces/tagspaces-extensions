@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Uzaklaştır",
+    "zoomIn": "Yakınlaştır",
+    "zoomReset": "Yakınlaştırmayı Sıfırla",
+    "rotateRight": "Sağa Döndür",
+    "rotateLeft": "Sola Döndür",
+    "flipHorizontal": "Yatay Çevir",
+    "flipVertical": "Dikey Çevir",
+    "flipBoth": "Her İki Yönde Çevir",
+    "print": "Yazdır",
+    "about": "Hakkında",
+    "aboutTitle": "ViewerImage Hakkında",
+    "exif": "Exif & IPTC verisini göster",
+    "exifTitle": "Exif & IPTC Görüntü Verisi",
+    "changeBackgroundColor": "Arka Plan Rengini Değiştir",
+    "fitToScreen": "Ekrana Sığdır",
+    "toggleBlackAndWhiteColor": "Siyah&Beyaz'ı Aç/Kapa",
+    "-": "-"
+}

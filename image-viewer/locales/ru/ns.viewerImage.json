@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Уменьшить масштаб",
+    "zoomIn": "Увеличить масштаб",
+    "zoomReset": "Сбросить масштаб",
+    "rotateRight": "Повернуть вправо",
+    "rotateLeft": "Повернуть влево",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical",
+    "flipBoth": "Flip Both",
+    "print": "Печать",
+    "about": "О расширении",
+    "aboutTitle": "О расширении ViewerImage",
+    "exif": "Показать метаданные Exif и IPTC",
+    "exifTitle": "Exif и IPTC метаданные изображения",
+    "changeBackgroundColor": "Изменить цвет фона",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

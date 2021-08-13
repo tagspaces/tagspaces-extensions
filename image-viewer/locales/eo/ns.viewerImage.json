@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Malpligrandigi",
+    "zoomIn": "Pligrandigi",
+    "zoomReset": "Mezgrandigi",
+    "rotateRight": "Turni dekstre",
+    "rotateLeft": "Turni maldeskstre",
+    "flipHorizontal": "Horizontaligi",
+    "flipVertical": "Vertikaligi",
+    "flipBoth": "Flip Both",
+    "print": "Presi",
+    "about": "Pri",
+    "aboutTitle": "Pri ViewerImage",
+    "exif": "Vidigi Exif k IPTC",
+    "exifTitle": "Exif Kaj IPTC Bildodatumo",
+    "changeBackgroundColor": "Ŝanĝi Fonan Koloron",
+    "fitToScreen": "Adapti Al Ekrano",
+    "toggleBlackAndWhiteColor": "Baskuli Grizoskalon",
+    "-": "-"
+}

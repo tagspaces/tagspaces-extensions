@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom in",
+    "zoomIn": "Zoom In",
+    "zoomReset": "Zoom Resetten",
+    "rotateRight": "Draai Rechts",
+    "rotateLeft": "Draai links",
+    "flipHorizontal": "Horizontaal Omdraaien",
+    "flipVertical": "Verticaal Omdraaien",
+    "flipBoth": "Bijden Omdraaien",
+    "print": "Afdrukken",
+    "about": "Over",
+    "aboutTitle": "About ViewerImage",
+    "exif": "Show Exif & IPTC",
+    "exifTitle": "Exif And IPTC Image Data",
+    "changeBackgroundColor": "Verander Achtergrond Kleur",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

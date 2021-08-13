@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Afastar",
+    "zoomIn": "Aproximar",
+    "zoomReset": "Repor Vista",
+    "rotateRight": "Rodar para a dreita",
+    "rotateLeft": "Rodar para a esquerda",
+    "flipHorizontal": "Inverter Horizontalmente",
+    "flipVertical": "Inverter Verticalmente",
+    "flipBoth": "Inverter Ambos",
+    "print": "Imprimir",
+    "about": "Acerca de",
+    "aboutTitle": "Acerca do ViewerImage",
+    "exif": "Mostrar Exif & IPTC",
+    "exifTitle": "Dados da imagem Exif & IPTC",
+    "changeBackgroundColor": "Mudar cor de fundo",
+    "fitToScreen": "Ajustar ao tamanho do ecrã",
+    "toggleBlackAndWhiteColor": "Alternar Branco & Preto",
+    "-": "-"
+}

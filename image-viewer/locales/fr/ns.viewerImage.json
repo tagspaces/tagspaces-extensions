@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom arrière",
+    "zoomIn": "Zoom avant",
+    "zoomReset": "Taille normale",
+    "rotateRight": "Pivoter à droite",
+    "rotateLeft": "Pivoter à gauche",
+    "flipHorizontal": "Miroir horizontal",
+    "flipVertical": "Miroir vertical",
+    "flipBoth": "Miroir complet",
+    "print": "Imprimer",
+    "about": "A propos",
+    "aboutTitle": "A propos de la visionneuse d'images",
+    "exif": "Voir les données Exif et IPTC",
+    "exifTitle": "Données Exif et IPTC des images",
+    "changeBackgroundColor": "Changer la couleur de fond",
+    "fitToScreen": "S'adapter à l'écran",
+    "toggleBlackAndWhiteColor": "Basculer en Noir & Blanc",
+    "-": "-"
+}

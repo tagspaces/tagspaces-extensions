@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom ud",
+    "zoomIn": "Zoom ind",
+    "zoomReset": "Nulstil zoom",
+    "rotateRight": "Roter mod højre",
+    "rotateLeft": "Roter mod venstre",
+    "flipHorizontal": "Flip horisontalt",
+    "flipVertical": "Flip vertikalt",
+    "flipBoth": "Flip begge",
+    "print": "Udskriv ",
+    "about": "Om ",
+    "aboutTitle": "Om ViewerImage",
+    "exif": "Vis Exif & IPTC",
+    "exifTitle": "Exig og IPTC Image data",
+    "changeBackgroundColor": "Skift baggrundsfarve",
+    "fitToScreen": "Tilpas til skærm",
+    "toggleBlackAndWhiteColor": "Marker sort og hvid",
+    "-": "-"
+}

@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom indietro",
+    "zoomIn": "Zoom avanti",
+    "zoomReset": "Ripristina lo zoom",
+    "rotateRight": "Ruota a destra",
+    "rotateLeft": "Ruota a sinistra",
+    "flipHorizontal": "Capovolgi orizzontalmente",
+    "flipVertical": "Capovolgi verticalmente",
+    "flipBoth": "Capovolgi entrambi",
+    "print": "Stampa",
+    "about": "Informazioni",
+    "aboutTitle": "Informazioni visualizzatore immagini",
+    "exif": "Mostra Exif e IPTC",
+    "exifTitle": "Dati immagine Exif e IPTC",
+    "changeBackgroundColor": "Cambia colore di sfondo",
+    "fitToScreen": "Adatta allo schermo",
+    "toggleBlackAndWhiteColor": "Attiva / Disattiva bianco e nero",
+    "-": "-"
+}

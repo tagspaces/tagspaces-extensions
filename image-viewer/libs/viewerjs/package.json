@@ -1,0 +1,126 @@
+{
+  "name": "viewerjs",
+  "description": "JavaScript image viewer.",
+  "version": "1.3.2",
+  "main": "dist/viewer.common.js",
+  "module": "dist/viewer.esm.js",
+  "unpkg": "dist/viewer.js",
+  "style": "dist/viewer.css",
+  "types": "types/index.d.ts",
+  "repository": "fengyuanchen/viewerjs",
+  "homepage": "https://fengyuanchen.github.io/viewerjs",
+  "license": "MIT",
+  "author": {
+    "name": "Chen Fengyuan",
+    "url": "https://chenfengyuan.com"
+  },
+  "files": [
+    "src",
+    "dist",
+    "types"
+  ],
+  "keywords": [
+    "image",
+    "viewer",
+    "viewerjs",
+    "viewer.js",
+    "html",
+    "css",
+    "javascript",
+    "front-end",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "postcss src/index.css -o dist/viewer.css --no-map",
+    "build:js": "rollup -c",
+    "clear": "del-cli dist",
+    "codecov": "cat coverage/lcov.info | codecov",
+    "compress": "npm run compress:css && npm run compress:js",
+    "compress:css": "postcss dist/viewer.css -u cssnano -o dist/viewer.min.css --no-map",
+    "compress:js": "uglifyjs dist/viewer.js -o dist/viewer.min.js -c -m --comments /^!/",
+    "copy": "cpy dist/viewer.css docs/css",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:css": "stylelint {src,docs}/**/*.{css,scss,html} --fix",
+    "lint:js": "eslint src test *.js --fix",
+    "release": "npm run clear && npm run lint && npm run build && npm run compress && npm run copy && npm test",
+    "start": "npm-run-all --parallel watch:*",
+    "test": "cross-env NODE_ENV=test karma start test/karma.conf.js",
+    "watch:css": "postcss src/index.css -o docs/css/viewer.css -m -w",
+    "watch:js": "rollup -c -m -w"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@commitlint/cli": "^7.3.2",
+    "@commitlint/config-conventional": "^7.3.1",
+    "babel-plugin-istanbul": "^5.1.0",
+    "chai": "^4.2.0",
+    "change-case": "^3.1.0",
+    "codecov": "^3.1.0",
+    "cpy-cli": "^2.0.0",
+    "create-banner": "^1.0.0",
+    "cross-env": "^5.2.0",
+    "cssnano": "^4.1.8",
+    "del-cli": "^1.1.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0",
+    "husky": "^1.3.1",
+    "karma": "^4.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage-istanbul-reporter": "^2.0.4",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-rollup-preprocessor": "^6.1.2",
+    "lint-staged": "^8.1.0",
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^6.1.1",
+    "postcss-header": "^1.0.0",
+    "postcss-import": "^12.0.1",
+    "postcss-preset-env": "^6.5.0",
+    "postcss-url": "^8.0.0",
+    "puppeteer": "^1.11.0",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-watch": "^4.3.1",
+    "stylelint": "^9.10.1",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-order": "^2.0.0",
+    "uglify-js": "^3.4.9"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not ie <= 8"
+  ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "eslint --fix",
+        "git add"
+      ],
+      "*.{css,scss,html}": [
+        "stylelint --fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "{dist,docs}/**/*.js",
+      "*.min.*"
+    ]
+  }
+}

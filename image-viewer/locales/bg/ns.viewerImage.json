@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Отдалечаване",
+    "zoomIn": "Приближаване",
+    "zoomReset": "Възстановяване на приближаването",
+    "rotateRight": "Завърти надясно",
+    "rotateLeft": "Завърти наляво",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical",
+    "flipBoth": "Flip Both",
+    "print": "Принтирай",
+    "about": "Относно",
+    "aboutTitle": "За ViewerImage",
+    "exif": "Покажи Exif & IPTC данните",
+    "exifTitle": "Exif и IPTC данните за снимката",
+    "changeBackgroundColor": "Change Background Color",
+    "fitToScreen": "Fit To Screen",
+    "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "-": "-"
+}

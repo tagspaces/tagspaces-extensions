@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom ut",
+    "zoomIn": "Zoom inn",
+    "zoomReset": "Zoom reset",
+    "rotateRight": "Roter høyre",
+    "rotateLeft": "Roter venstre",
+    "flipHorizontal": "Flipp horisontalt",
+    "flipVertical": "Flipp veritkalt",
+    "flipBoth": "Flipp begge",
+    "print": "Print",
+    "about": "Om",
+    "aboutTitle": "Om ViewerImage",
+    "exif": "Vis Exif & IPTC",
+    "exifTitle": "Exif & IPTC bildeinformasjon",
+    "changeBackgroundColor": "Endre bakgrunnsfarge ",
+    "fitToScreen": "Tilpass til skjerm",
+    "toggleBlackAndWhiteColor": "Veksle sort & hvit",
+    "-": "-"
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <script src="../libs/jquery/dist/jquery.min.js"></script>
+  <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../libs/i18next/i18next.min.js"></script>
+  <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
+  <script src="../libs/marked/marked.min.js"></script>
+  <script src="../legacy/common.js"></script>
+  <script src="libs/viewerjs/dist/viewer.min.js"></script>
+  <script src="libs/nanobar/nanobar.min.js"></script>
+  <script src="libs/exif-js/exif.js"></script>
+  <script src="main.js"></script>
+  <link  href="libs/viewerjs/dist/viewer.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="extension.css"/>
+</head>
+<body>
+<div class="btn-group dropup extMainMenu">
+  <button type="button" id="viewerMainMenuButton" class="btn dropdown-toggle roundButton viewerMainMenuButton" data-toggle="dropdown">
+     <i class="fa fa-ellipsis-v fa-2x"></i>
+  </button>
+  <ul class="dropdown-menu pull-right">
+    <li class="dropdown-header">
+      <button class="close">&times;</button>&nbsp;
+    </li>
+    <li class="divider"></li>
+    <li>
+      <div id="zoomInOutButtons">
+        <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="zoomOutButton"><label class="btn btn-secondary" data-i18n="[title]zoomOut"><i class="fa fa-search-minus fa-lg fa-fw"></i></label></a>
+          <a id="zoomInButton"><label class="btn btn-secondary" data-i18n="[title]zoomIn"><i class="fa fa-search-plus fa-lg fa-fw"></i></label></a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div id="resetButtons">
+        <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="zoomResetButton"><label class="btn btn-secondary" data-i18n="[title]zoomReset"><i class="fa fa-arrows-alt fa-lg fa-fw"></i></label></a>
+          <a id="fitToScreen"><label class="btn btn-secondary" data-i18n="[title]fitToScreen"><i class="fa fa-mail-reply fa-lg fa-fw"></i></label></a>
+        </div>
+      </div>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <div id="rotateButtons">
+        <i class="fa fa-refresh fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="rotateRightButton"><label class="btn btn-secondary" data-i18n="[title]rotateRight"><i class="fa fa-rotate-right fa-lg fa-fw"></i></label></a>
+          <a id="rotateLeftButton"><label class="btn btn-secondary" data-i18n="[title]rotateLeft"><i class="fa fa-rotate-left fa-lg fa-fw"></i></label></a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div id="flipButtons">
+        <i class="fa fa-arrows fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="flipHorizontal"><label class="btn btn-secondary" data-i18n="[title]flipHorizontal"><i class="fa fa-arrows-h fa-lg fa-fw"></i></label></a>
+          <a id="flipVertical"><label class="btn btn-secondary" data-i18n="[title]flipVertical"><i class="fa fa-arrows-v fa-lg fa-fw"></i></label></a>
+          <!--<a id="flipBoth"><label class="btn btn-sepia" data-i18n="[title]flipBoth"><i class="fa fa-arrows fa-lg fa-fw"></i></label></a>-->
+        </div>
+      </div>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <div id="themeStyle">
+        <i class="fa fa-paint-brush fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="whiteBackgroundColor"><label class="btn btn-secondary" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
+          <a id="blackBackgroundColor"><label class="btn btn-black" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
+          <a id="sepiaBackgroundColor"><label class="btn btn-sepia" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
+        </div>
+      </div>
+    </li>
+    <li><a id="flipBlackAndWhiteColor">
+      <i class="fa fa-adjust fa-lg fa-fw"></i>&nbsp;<span data-i18n="toggleBlackAndWhiteColor"></span>
+    </a></li>
+    <li class="divider"></li>
+    <li style="display: none;"><a id="exifButton" data-toggle="modal" data-target="#exifExtensionModal">
+      <i class="fa fa-info-circle fa-lg fa-fw"></i>&nbsp;<span data-i18n="exif"></span>
+    </a></li>
+    <li><a id="printButton">
+        <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span data-i18n="print"></span>
+    </a></li>
+    <li><a id="aboutButton">
+      <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span data-i18n="about"></span>
+    </a></li>
+  </ul>
+</div>
+<div id="imageContainer">
+  <div id="nanoBar" class="progress-nanobar">
+  </div>
+  <img id="imageContent">
+</div>
+<div class="modal fullScreenMobile" id="aboutExtensionModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" id="closeAboutDialogButton" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
+        <h4 class="modal-title" data-i18n="aboutTitle"></h4>
+      </div>
+      <div class="modal-body">
+        <br>Please visit the <a href="https://github.com/tagspaces/viewerImage">project page</a> on GitHub for details about this extension.<br><br>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><i class="fa fa-check fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="exifExtensionModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a type="button" id="closeExIf" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
+        <h4 class="modal-title" id="myModalLabel2" data-i18n="exifTitle"></h4>
+      </div>
+      <div class="modal-body">
+      <table class="table table-striped table-condensed">
+          <thead>
+          <!--tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr-->
+          </thead>
+          <tbody id="exifTableBody">
+            <tr id="exifRow"><th></th><td></td></tr>
+          </tbody>
+        </table>
+      </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><i class="fa fa-check fa-lg"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Reducir",
+    "zoomIn": "Aumentar",
+    "zoomReset": "Restablecer aumento",
+    "rotateRight": "Girar a la derecha",
+    "rotateLeft": "Girar a la izquierda",
+    "flipHorizontal": "Voltear horizontalmente",
+    "flipVertical": "Voltear verticalmente",
+    "flipBoth": "Voltear horizontal y verticalmente",
+    "print": "Imprimir",
+    "about": "Acerca de",
+    "aboutTitle": "Acerca de ViewerImage",
+    "exif": "Mostrar Exif e IPTC",
+    "exifTitle": "Datos Exif e IPTC de la imagen ",
+    "changeBackgroundColor": "Cambiar el color de fondo",
+    "fitToScreen": "Ajustar a la pantalla",
+    "toggleBlackAndWhiteColor": "Blanco y negro",
+    "-": "-"
+}

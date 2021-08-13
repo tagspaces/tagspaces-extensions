@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Pomniejsz",
+    "zoomIn": "Powiększ",
+    "zoomReset": "Rozmiar oryginalny",
+    "rotateRight": "Obróć w prawo",
+    "rotateLeft": "Obróć w lewo",
+    "flipHorizontal": "Odbij poziomo",
+    "flipVertical": "Odbij pionowo",
+    "flipBoth": "Odbij pionowo i poziomo",
+    "print": "Drukuj",
+    "about": "Informacje o rozszerzeniu",
+    "aboutTitle": "O rozszerzeniu ViewerImage",
+    "exif": "Pokaż dane Exif i IPTC",
+    "exifTitle": "Dane Exif i IPTC",
+    "changeBackgroundColor": "Zmień kolor tła",
+    "fitToScreen": "Dopasuj do ekranu",
+    "toggleBlackAndWhiteColor": "Przełącz tryb Cz-B/Kolor",
+    "-": "-"
+}

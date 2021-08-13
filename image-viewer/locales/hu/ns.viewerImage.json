@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Kicsinyítés",
+    "zoomIn": "Nagyítás",
+    "zoomReset": "Nézet nagyításának visszaállítása",
+    "rotateRight": "Forgatás jobbra",
+    "rotateLeft": "Forgatás balra",
+    "flipHorizontal": "Vízszintes tükrözés",
+    "flipVertical": "Függőleges tükrözés",
+    "flipBoth": "Tükrözés mindenkét irányban",
+    "print": "Nyomtatás",
+    "about": "A programról",
+    "aboutTitle": "A ViewerImageről",
+    "exif": "Exif és IPTC megjelenítése",
+    "exifTitle": "Exif és IPTC kép infó",
+    "changeBackgroundColor": "Háttérszín megváltoztatása",
+    "fitToScreen": "Teljes-képernyőre nagyítás ",
+    "toggleBlackAndWhiteColor": "Fekete és fehér kapcsoló",
+    "-": "-"
+}

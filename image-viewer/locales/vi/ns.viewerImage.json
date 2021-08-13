@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Thu Nhỏ",
+    "zoomIn": "Phóng To",
+    "zoomReset": "Đặt Lại Độ Thu Phóng",
+    "rotateRight": "Xoay Về Phải",
+    "rotateLeft": "Xoay Về Trái",
+    "flipHorizontal": "Lật Ngang",
+    "flipVertical": "Lật Dọc",
+    "flipBoth": "Lật Ngang Và Dọc",
+    "print": "In",
+    "about": "Thông Tin Về",
+    "aboutTitle": "Thông Tin Về ViewerImage",
+    "exif": "Hiển thị Exif & IPTC",
+    "exifTitle": "Dữ Liệu Hình Ảnh Exif Và IPTC",
+    "changeBackgroundColor": "Đổi Màu Nề",
+    "fitToScreen": "Vừa Màn Hình",
+    "toggleBlackAndWhiteColor": "Bật Tắt Chế Độ Trắng&Đen",
+    "-": "-"
+}
