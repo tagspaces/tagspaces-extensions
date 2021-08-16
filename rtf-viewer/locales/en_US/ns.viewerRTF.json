@@ -1,0 +1,19 @@
+{
+    "findInDocument": "Find in document",
+    "startSearch": "Start Search",
+    "cancelSearch": "Cancel Search",
+    "zoomOut": "Zoom Out",
+    "zoomIn": "Zoom In",
+    "zoomReset": "Zoom Reset",
+    "readabilityOn": "Open reader mode",
+    "readabilityOff": "Close reader mode",
+    "toSansSerifFont": "Apply sans serif font",
+    "toSerifFont": "Apply serif font",
+    "increasingFontSize": "Increase Font Size",
+    "decreasingFontSize": "Decrease Font Size",
+    "changeBackgroundColor": "Change Background Color",
+    "print": "Print",
+    "about": "About",
+    "aboutTitle": "About RTF Viewer",
+    "-": "-"
+}
