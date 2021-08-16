@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Найти в файле",
+  "startSearch": "Поиск",
+  "cancelSearch": "Отменить поиск",
+  "zoomOut": "Уменьшить масштаб",
+  "zoomIn": "Увеличить масштаб",
+  "zoomReset": "Сбросить масштаб",
+  "changeTheme": "Сменить оформление",
+  "resetTheme": "Сбросить оформление",
+  "openSourceURL": "Открыть исходный URL",
+  "openInNewWindow": "Открыть в новом окне",
+  "print": "Печать",
+  "about": "О расширении",
+  "aboutTitle": "О расширении ViewerMHTML",
+  "readabilityOn": "Режим чтения",
+  "readabilityOff": "Выйти из режима чтения",
+  "toSansSerifFont": "Использовать шрифт без засечек",
+  "toSerifFont": "Использовать шрифт с засечками",
+  "increasingFontSize": "Увеличить шрифт",
+  "decreasingFontSize": "Уменьшить шрифт",
+  "changeBackgroundColor": "Изменить цвет фона",
+  "-": "-"
+}

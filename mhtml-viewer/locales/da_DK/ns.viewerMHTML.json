@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Find i dokument ",
+  "startSearch": "Start søgning ",
+  "cancelSearch": "Annuller søgning",
+  "zoomOut": "Zoom ud ",
+  "zoomIn": "Zoom ind ",
+  "zoomReset": "Nulstil zoom ",
+  "changeTheme": "Ændre tema ",
+  "resetTheme": "Nulstil tema ",
+  "openSourceURL": "Open source URL",
+  "openInNewWindow": "Åben i nyt vindue",
+  "print": "Udskriv ",
+  "about": "Om ",
+  "aboutTitle": "Om VieverHTML udvidelsen",
+  "readabilityOn": "Åben i læsetilstand",
+  "readabilityOff": "Luk læse tilstand",
+  "toSansSerifFont": "Vælg skrifttypen font serif",
+  "toSerifFont": "Vælg skrifttypen serif",
+  "increasingFontSize": "Øg skriftstørrelse",
+  "decreasingFontSize": "Formindsk skriftstørrelse",
+  "changeBackgroundColor": "Skift baggrundsfarve",
+  "-": "-"
+}

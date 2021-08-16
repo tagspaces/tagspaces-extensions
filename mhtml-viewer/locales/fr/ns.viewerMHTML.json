@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Trouver dans le document",
+  "startSearch": "Démarrer une recherche",
+  "cancelSearch": "Annuler la recherche",
+  "zoomOut": "Zoom arrière",
+  "zoomIn": "Zoom avant",
+  "zoomReset": "Taille normale",
+  "changeTheme": "Changer le thème",
+  "resetTheme": "Réinitialiser le thème",
+  "openSourceURL": "URL Open source ",
+  "openInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+  "print": "Imprimer",
+  "about": "A propos",
+  "aboutTitle": "À propos de l'extension ViewerMHTML",
+  "readabilityOn": "Ouvrir le mode lecteur",
+  "readabilityOff": "Fermer le mode lecteur",
+  "toSansSerifFont": "Appliquer la police Sans Serif",
+  "toSerifFont": "Appliquer la police Serif",
+  "increasingFontSize": "Augmenter la taille de la police",
+  "decreasingFontSize": "Diminuer la taille de la police",
+  "changeBackgroundColor": "Changer la couleur de fond",
+  "-": "-"
+}

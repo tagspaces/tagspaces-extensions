@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Find in document",
+  "startSearch": "Start Search",
+  "cancelSearch": "Cancel Search",
+  "zoomOut": "Zoom Out",
+  "zoomIn": "Zoom In",
+  "zoomReset": "Zoom Reset",
+  "changeTheme": "Change Theme",
+  "resetTheme": "Reset Theme",
+  "openSourceURL": "Open source URL",
+  "openInNewWindow": "Open in new window",
+  "print": "Print",
+  "about": "About",
+  "aboutTitle": "About ViewerMHTML extension",
+  "readabilityOn": "Open reader mode",
+  "readabilityOff": "Close reader mode",
+  "toSansSerifFont": "Apply sans serif font",
+  "toSerifFont": "Apply serif font",
+  "increasingFontSize": "Increase Font Size",
+  "decreasingFontSize": "Decrease Font Size",
+  "changeBackgroundColor": "Change Background Color",
+  "-": "-"
+}

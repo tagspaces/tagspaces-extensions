@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Finn i dokument",
+  "startSearch": "Start søk",
+  "cancelSearch": "Avbryt søk",
+  "zoomOut": "Zoom ut",
+  "zoomIn": "Zoom inn",
+  "zoomReset": "Zoom reset",
+  "changeTheme": "Endre tema",
+  "resetTheme": "Reset tema",
+  "openSourceURL": "Åpne kildenettadresse ",
+  "openInNewWindow": "Åpne i nytt vindu",
+  "print": "Print",
+  "about": "Om",
+  "aboutTitle": "Om utvidelsen ViewerMHTML",
+  "readabilityOn": "Åpne lesermodus",
+  "readabilityOff": "Lukk lesemodus",
+  "toSansSerifFont": "Anvende sans serif font",
+  "toSerifFont": "Anvende serif font",
+  "increasingFontSize": "Øk fontstørrelse",
+  "decreasingFontSize": "Minsk fontstørrelse",
+  "changeBackgroundColor": "Endre bakgrunnsfarge ",
+  "-": "-"
+}

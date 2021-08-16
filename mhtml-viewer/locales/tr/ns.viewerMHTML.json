@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Belgede ara",
+  "startSearch": "Aramayı Başlat",
+  "cancelSearch": "Aramayı İptal Et",
+  "zoomOut": "Uzaklaştır",
+  "zoomIn": "Yakınlaştır",
+  "zoomReset": "Yakınlaştırmayı Sıfırla",
+  "changeTheme": "Temayı Değiştir",
+  "resetTheme": "Temayı Sıfırla",
+  "openSourceURL": "Kaynak URL'yi Aç",
+  "openInNewWindow": "Yeni Pencerede Aç",
+  "print": "Yazdır",
+  "about": "Hakkında",
+  "aboutTitle": "ViewerMHTML eklentisi hakkında",
+  "readabilityOn": "Okuma modunu aç",
+  "readabilityOff": "Okuma modunu kapat",
+  "toSansSerifFont": "Çentiksiz yazı tipi uygula",
+  "toSerifFont": "Çentikli yazı tipi uygula",
+  "increasingFontSize": "Yazı Tipi Boyutunu Büyüt",
+  "decreasingFontSize": "Yazı Tipi Boyutunu Küçült",
+  "changeBackgroundColor": "Arka Plan Rengini Değiştir",
+  "-": "-"
+}

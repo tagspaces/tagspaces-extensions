@@ -1,0 +1,23 @@
+{
+  "findInDocument": "Գտնել փաստաթղթում",
+  "startSearch": "Սկսել որոնումը",
+  "cancelSearch": "Չեղարկել որոնումը",
+  "zoomOut": "Խոշորացնել",
+  "zoomIn": "Փոքրացնել",
+  "zoomReset": "Սկզբնադիր խոշորացում",
+  "changeTheme": "Փոխել թեման",
+  "resetTheme": "Վերականգնել թեման",
+  "openSourceURL": "Open source URL",
+  "openInNewWindow": "Բացել նոր պատուհանում",
+  "print": "Տպել",
+  "about": "Տեղեկություն",
+  "aboutTitle": "ViewerMHTML ընդլայնման մասին",
+  "readabilityOn": "Բացել միայն ընթերցման համար",
+  "readabilityOff": "Փակել միայն ընթերցման ցուցադրաձևը",
+  "toSansSerifFont": "Գործածել sans serif տառատեսակ",
+  "toSerifFont": "Գործածելլ serif տառատեսակ",
+  "increasingFontSize": "Մեծացնել տառաչափը",
+  "decreasingFontSize": "Փոքրացնել տառաչափը",
+  "changeBackgroundColor": "Փոխել խորքի գույնը",
+  "-": "-"
+}

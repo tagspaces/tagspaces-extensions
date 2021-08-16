@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <script src="libs/mailparser/mailparser.min.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/jquery/dist/jquery.min.js"></script>
+    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
+    <script src="../libs/marked/marked.min.js"></script>
+    <script src="../libs/mousetrap/mousetrap.min.js"></script>
+    <script src="../libs/readability/Readability.js"></script>
+    <script src="../libs/readability/JSDOMParser.js"></script>
+    <script src="../libs/jquery.highlight.js"></script>
+    <script src="../legacy/common.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="extension.css" />
+    <link rel="stylesheet" href="css/markdown.css" />
+    <link rel="stylesheet" href="css/github.css" />
+    <link rel="stylesheet" href="css/metro-vibes.css" />
+    <link rel="stylesheet" href="css/solarized-dark.css" />
+    <link rel="stylesheet" href="css/clearness.css" />
+    <link rel="stylesheet" href="css/clearness-dark.css" />
+  </head>
+  <body>
+    <div id="searchToolbar" style="display: none;">
+      <div class="flexLayout">
+        <button
+          class="btn btn-link"
+          id="clearSearchExtButton"
+          data-i18n="[title]cancelSearch"
+        >
+          <i class="fa fa-lg fa-eraser"></i>
+        </button>
+        <input
+          class="flexMaxWidth"
+          id="searchBox"
+          type="text"
+          data-i18n="[placeholder]findInDocument"
+        />
+        <button
+          class="btn btn-link"
+          id="searchExtButton"
+          data-i18n="[title]startSearch"
+        >
+          <i class="fa fa-lg fa-binoculars"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flexLayoutVertical" style="width: 100%;">
+      <p style="margin: 5px; font-size: 12px;">
+        Preview of the document <span id="fileMeta"></span>
+      </p>
+    </div>
+    <div id="mhtmlViewer">
+      <div
+        style="position: absolute; top:0; left: 0; right: 0; bottom: 0; background-color: white;"
+      >
+        <div
+          style="width:60px; height:60px; position:absolute;left:50%;top:50%;margin:-30px 0 0 -30px;"
+        >
+          <div class="sk-spinner sk-rotating-plane"></div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group dropup extMainMenu">
+      <button
+        type="button"
+        id="viewerMainMenuButton"
+        class="btn roundButton dropdown-toggle viewerMainMenuButton"
+        data-toggle="dropdown"
+      >
+        <i class="fa fa-ellipsis-v fa-2x"></i>
+      </button>
+      <ul class="dropdown-menu pull-right">
+        <li class="dropdown-header">
+          <button class="close">&times;</button>&nbsp;
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a id="readabilityOn">
+            <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="readabilityOn"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <a id="readabilityOff">
+            <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="readabilityOff"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <div id="readabilityFont">
+            <i class="fa fa-font fa-lg fa-fw"></i>&nbsp;
+            <div class="btn-group" data-toggle="buttons">
+              <a id="toSansSerifFont"
+                ><label
+                  id="sanSerifLabel"
+                  class="btn btn-secondary"
+                  data-i18n="[title]toSansSerifFont"
+                  >ABC</label
+                ></a
+              >
+              <a id="toSerifFont"
+                ><label
+                  id="serifLabel"
+                  class="btn btn-secondary"
+                  data-i18n="[title]toSerifFont"
+                  >ABC</label
+                ></a
+              >
+            </div>
+          </div>
+        </li>
+        <li>
+          <div id="readabilityFontSize">
+            <i class="fa fa-text-height fa-lg fa-fw"></i>&nbsp;
+            <div class="btn-group" data-toggle="buttons">
+              <a id="decreasingFontSize"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="[title]decreasingFontSize"
+                  >-</label
+                ></a
+              >
+              <a id="increasingFontSize"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="[title]increasingFontSize"
+                  >+</label
+                ></a
+              >
+            </div>
+          </div>
+        </li>
+        <li>
+          <div id="themeStyle" style="margin-left: 19px; margin-top: 10px;">
+            <i class="fa fa-paint-brush fa-lg fa-fw"></i>&nbsp;
+            <div class="btn-group" data-toggle="buttons">
+              <a id="whiteBackgroundColor"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="[title]changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+              <a id="blackBackgroundColor"
+                ><label
+                  class="btn btn-black"
+                  data-i18n="[title]changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+              <a id="sepiaBackgroundColor"
+                ><label
+                  class="btn btn-sepia"
+                  data-i18n="[title]changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+            </div>
+          </div>
+        </li>
+        <li>
+          <a id="zoomOutButton">
+            <i class="fa fa-search-minus fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="zoomOut"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <a id="zoomInButton">
+            <i class="fa fa-search-plus fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="zoomIn"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <a id="zoomResetButton">
+            <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="zoomReset"
+            ></span>
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a id="findInFile">
+            <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="findInDocument"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <a id="printButton">
+            <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="print"
+            ></span>
+          </a>
+        </li>
+        <!--li><a id="openInNewWindowButton">
+      <i class="fa fa-external-link fa-lg fa-fw"></i>&nbsp;<span data-i18n="openInNewWindow"></span>
+    </a></li-->
+        <li>
+          <a id="openURLButton">
+            <i class="fa fa-external-link-square fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="openSourceURL"
+            ></span>
+          </a>
+        </li>
+        <li>
+          <a id="aboutButton">
+            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="about"
+            ></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div
+      class="modal"
+      id="aboutExtensionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              id="closeAboutDialogButton"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="fa fa-times"></i>
+            </button>
+            <h4 class="modal-title" data-i18n="aboutTitle"></h4>
+          </div>
+          <div class="modal-body markdown-content">
+            <br />Please visit the
+            <a href="https://github.com/tagspaces/viewerMHTML">project page</a>
+            on GitHub for details about this extension.<br /><br />
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-primary"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="fa fa-check fa-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
