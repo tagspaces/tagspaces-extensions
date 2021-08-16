@@ -1,0 +1,25 @@
+{
+  "name": "@tagspaces/media-player",
+  "version": "1.0.0",
+  "description": "A TagSpaces extension allowing playing of audio and video files.",
+  "homepage": "https://www.tagspaces.org",
+  "main": "main.js",
+  "author": {
+    "name": "TagSpaces UG",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "tagspaces": {
+    "extensionType": "viewer",
+    "supportedFileTypes": [
+      "ogv",
+      "mp4",
+      "m4a",
+      "mp3"
+    ]
+  },
+  "dependencies": {
+    "plyr": "~3.6.7"
+  }
+}

@@ -1,0 +1,29 @@
+@import '../legacy/common.css';
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+#main {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Remove to make the player's toolbar aligned to the bottom */
+.plyr__controls {
+  top: 0 !important;
+  bottom: unset !important;
+  padding-top: 25px !important;
+}
+
+:root {
+  --plyr-color-main: #1dd19f;
+  --plyr-audio-controls-background: black;
+  --plyr-audio-control-color: white;
+}
