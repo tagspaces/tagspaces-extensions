@@ -1,0 +1,47 @@
+@import '../legacy/common.css';
+
+.CodeMirror {
+  font-size: 140%;
+}
+
+body {
+  overflow: auto;
+}
+
+pre {
+  display: block;
+  padding: 0px;
+  margin: 0 0 11.5px;
+  font-size: 100% !important;
+  line-height: 1.846;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #212121;
+  background-color: white !important;
+  border: none !important;
+}
+/*
+.viewerMainMenuButton {
+    background-color: #42BEDB;
+}
+*/
+
+.modal-backdrop{
+  display:none;
+}
+
+/* Help users use markselection to safely style text background */
+span.CodeMirror-selectedtext {
+  background: #ffe6cc; !important;
+}
+
+#markdownPreviewModal .modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+#markdownPreviewModal img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

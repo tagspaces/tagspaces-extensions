@@ -1,0 +1,12 @@
+{
+  "changeTheme": "Сменить оформление",
+  "save": "Сохранить",
+  "print": "Печать",
+  "about": "О расширении",
+  "aboutTitle": "О расширении editorText",
+  "markdownPreview": "Предпросмотр разметки",
+  "markdownTitle": "Предварительный просмотр разметки",
+  "markdownHelpButton": "Справка по MarkDown",
+  "markdownHelpDialogTitle": "Справочник по синтаксису MarkDown",
+  "-": "-"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@tagspaces/text-editor",
+  "version": "1.0.0",
+  "description": "A TagSpaces extension allowing editing of text based documents.",
+  "homepage": "https://www.tagspaces.org",
+  "main": "main.js",
+  "author": {
+    "name": "TagSpaces UG",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "codemirror": "5.62.2",
+    "shelljs": "^0.8.4"
+  },
+  "scripts": {
+    "postinstall": "node scripts/update-libs.js"
+  }
+}

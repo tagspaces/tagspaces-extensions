@@ -1,0 +1,12 @@
+{
+  "changeTheme": "테마 변경",
+  "save": "저장",
+  "print": "인쇄",
+  "about": "확장 기능 정보",
+  "aboutTitle": "editorText 확장 기능 정보",
+  "markdownPreview": "마크다운 미리보기",
+  "markdownTitle": "마크다운 미리보기 화면",
+  "markdownHelpButton": "마크다운 도움말",
+  "markdownHelpDialogTitle": "마크다운 문법 매뉴얼",
+  "-": "-"
+}

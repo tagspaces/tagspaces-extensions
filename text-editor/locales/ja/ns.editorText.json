@@ -1,0 +1,12 @@
+{
+  "changeTheme": "テーマ変更",
+  "save": "保存",
+  "print": "プリント",
+  "about": "詳細",
+  "aboutTitle": "editorText拡張について",
+  "markdownPreview": "Markdownプレビュー",
+  "markdownTitle": "Markdownをプレビューする",
+  "markdownHelpButton": "Markdownヘルプ",
+  "markdownHelpDialogTitle": "Markdownシンタックスリファレンス",
+  "-": "-"
+}
