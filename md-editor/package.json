@@ -1,0 +1,33 @@
+{
+  "name": "@tagspaces/md-editor",
+  "version": "1.0.0",
+  "description": "TagSpaces extension for editing notes in markdown format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --out-dir build --no-content-hash"
+  },
+  "keywords": [
+    "md",
+    "markdown",
+    "editor",
+    "tagspaces"
+  ],
+  "author": {
+    "name": "TagSpaces UG",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@milkdown/core": "*",
+    "@milkdown/preset-commonmark": "^4.9.4",
+    "@milkdown/react": "^4.9.3",
+    "@milkdown/theme-nord": "^4.9.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "typescript": "^4.3.5"
+  }
+}
