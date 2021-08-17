@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <script src="libs/sheetjs/xlsx.full.min.js"></script>
+    <script src="../libs/jquery/dist/jquery.min.js"></script>
+    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../legacy/common.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="extension.css" />
+  </head>
+  <body>
+    <div id="htmlout"></div>
+    <div class="btn-group dropup extMainMenu">
+      <button
+        type="button"
+        id="viewerMainMenuButton"
+        class="btn roundButton dropdown-toggle viewerMainMenuButton"
+        data-toggle="dropdown"
+      >
+        <i class="fa fa-ellipsis-v fa-2x"></i>
+      </button>
+      <ul class="dropdown-menu pull-right">
+        <li class="dropdown-header">
+          <button class="close">&times;</button>&nbsp;
+        </li>
+        <li class="divider"></li>
+        <!-- <li>
+          <a id="findInFile">
+            <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="findInDocument"
+            ></span>
+          </a>
+        </li> -->
+        <li class="divider"></li>
+        <li>
+          <a id="printButton">
+            <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span data-i18n="print"
+              >Print</span
+            >
+          </a>
+        </li>
+        <li>
+          <a id="aboutButton">
+            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
+              data-i18n="about"
+              >About</span
+            >
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div
+      class="modal"
+      id="aboutExtensionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              id="closeAboutDialogButton"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="fa fa-times"></i>
+            </button>
+            <h4 class="modal-title" data-i18n="aboutTitle">About</h4>
+          </div>
+          <div class="modal-body markdown-content">
+            <h3>Purpose</h3>
+            <p>
+              This is an extension for previewing the content of spreadsheet
+              files.
+            </p>
+            <h3>Supported file formats</h3>
+            <ul>
+              <li>CSV</li>
+              <li>ODS</li>
+              <li>XLS</li>
+              <li>XLSX</li>
+            </ul>
+            <h3>Source code</h3>
+            <p>
+              Licensed under MIT license and available on
+              <a href="https://github.com/tagspaces/viewerSpreadSheet"
+                >GitHub</a
+              >
+            </p>
+            <h3>Used open source libraries</h3>
+            <ul>
+              <li>
+                <a href="https://docs.sheetjs.com/">sheetjs</a> - licensed under
+                Apache 2.0
+              </li>
+              <li>
+                <a href="https://jquery.org/">jquery</a> - licensed under MIT
+              </li>
+              <li>
+                <a href="https://getbootstrap.com/">bootstrap</a> - licensed
+                under MIT
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-primary"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="fa fa-check fa-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

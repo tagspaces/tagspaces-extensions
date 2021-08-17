@@ -1,0 +1,20 @@
+@import '../legacy/common.css';
+
+#htmlout {
+  height: 100%;
+  overflow: auto;
+}
+
+#htmlout table {
+}
+
+#htmlout table th {
+  font-weight: bold;
+}
+
+#htmlout table,
+#htmlout table th,
+#htmlout table td {
+  border: 1px solid gray;
+  padding: 3px;
+}
