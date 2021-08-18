@@ -4,6 +4,5 @@
 }
 
 body {
-  /* background: rgba(var(--background), 1); */
-  background: transparent;
+  background: rgba(var(--background), 1);
 }

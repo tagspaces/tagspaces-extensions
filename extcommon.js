@@ -93,3 +93,12 @@ export function getBase64Image(imgURL) {
 export function sendMessageToHost(message) {
   window.parent.postMessage(JSON.stringify(message), '*');
 }
+
+export function hasURLProtocol(url) {
+  return (
+    url.indexOf('http://') === 0 ||
+    url.indexOf('https://') === 0 ||
+    url.indexOf('file://') === 0 ||
+    url.indexOf('data:') === 0
+  );
+}

@@ -14,7 +14,7 @@ import { slash } from '@milkdown/plugin-slash';
 import { emoji } from '@milkdown/plugin-emoji';
 import { table } from '@milkdown/plugin-table';
 import { math } from '@milkdown/plugin-math';
-import { sendMessageToHost } from '../../extcommon';
+import { sendMessageToHost, hasURLProtocol, isWeb } from '../../extcommon';
 
 import '@milkdown/theme-nord/lib/theme.css';
 import '@milkdown/preset-commonmark/lib/style.css';
@@ -84,12 +84,57 @@ async function createEditor() {
 }
 
 window.addEventListener('contentLoaded', () => {
-  createEditor();
-});
+  createEditor()
+    .then(() => {
+      const elems = document.getElementsByClassName('milkdown');
+      if (elems.length > 0) {
+        // console.log(elems[0].textContent);
 
-// setTimeout(() => {
-//   // readonly = true;
-//   createEditor();
-//   // alert(getMarkdown());
-//   // alert(window.mdContent)
-// }, 3000);
+        if (!window.editMode) {
+          const links = elems[0].getElementsByTagName('a');
+          [...links].forEach(link => {
+            let currentSrc = link.getAttribute('href');
+            let path;
+
+            if (currentSrc.indexOf('#') === 0) {
+              // Leave the default link behavior by internal links
+            } else {
+              if (!hasURLProtocol(currentSrc)) {
+                path =
+                  (isWeb ? '' : 'file://') +
+                  window.fileDirectory +
+                  '/' +
+                  encodeURIComponent(currentSrc);
+                link.setAttribute('href', path);
+              }
+              link.addEventListener('click', evt => {
+                evt.preventDefault();
+                sendMessageToHost({
+                  command: 'openLinkExternally',
+                  link: path || currentSrc
+                });
+              });
+            }
+          });
+        }
+
+        const images = elems[0].getElementsByTagName('img');
+        [...images].forEach(image => {
+          console.log(image.getAttribute('src'));
+          const currentSrc = image.getAttribute('src');
+          if (!hasURLProtocol(currentSrc)) {
+            const path =
+              (isWeb ? '' : 'file://') +
+              window.fileDirectory +
+              '/' +
+              currentSrc;
+            image.setAttribute('src', path);
+          }
+        });
+      }
+      return true;
+    })
+    .catch(e => {
+      console.warn('Error creating md-editor: ' + e);
+    });
+});
