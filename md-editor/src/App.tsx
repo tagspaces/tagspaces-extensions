@@ -8,7 +8,6 @@ import '@milkdown/preset-commonmark/lib/style.css';
 
 const MilkdownEditor: React.FC = () => {
   let mdContnent = window.mdContent;
-  alert(mdContnent);
 
   const editor = useEditor(root =>
     new Editor()
