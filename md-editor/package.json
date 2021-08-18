@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html --out-dir build --no-content-hash"
+    "build": "parcel build --no-minify --no-source-maps --no-autoinstall --no-cache --out-dir build --no-content-hash --public-url ./ src/index.html"
   },
   "keywords": [
     "md",
@@ -27,7 +27,14 @@
     "@milkdown/theme-nord": "^4.9.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
     "parcel-bundler": "^1.12.5",
     "typescript": "^4.3.5"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
+    ]
   }
 }
