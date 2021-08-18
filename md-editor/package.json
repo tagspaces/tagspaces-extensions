@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel src/index.html",
-    "build": "parcel build --no-minify --no-source-maps --no-autoinstall --no-cache --out-dir build --no-content-hash --public-url ./ src/index.html"
+    "start": "vite",
+    "build": "vite build"
   },
   "keywords": [
     "md",
@@ -21,20 +21,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@milkdown/core": "*",
-    "@milkdown/preset-commonmark": "^4.9.4",
-    "@milkdown/react": "^4.9.3",
-    "@milkdown/theme-nord": "^4.9.4"
+    "@milkdown/core": "4.9.6",
+    "@milkdown/plugin-emoji": "4.9.6",
+    "@milkdown/preset-commonmark": "4.9.6",
+    "@milkdown/theme-nord": "4.9.6",
+    "vite": "^2.4.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-react": "^7.14.5",
-    "parcel-bundler": "^1.12.5",
-    "typescript": "^4.3.5"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-react"
-    ]
+    "typescript": "4.2.3"
   }
 }

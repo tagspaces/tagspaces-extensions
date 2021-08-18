@@ -3,3 +3,7 @@
   height: 100%;
   padding: 30px;
 }
+
+body {
+  background: rgba(var(--background), 1);
+}
