@@ -14,7 +14,12 @@ import { slash } from '@milkdown/plugin-slash';
 import { emoji } from '@milkdown/plugin-emoji';
 import { table } from '@milkdown/plugin-table';
 import { math } from '@milkdown/plugin-math';
-import { sendMessageToHost, hasURLProtocol, isWeb } from '../../extcommon';
+import {
+  sendMessageToHost,
+  hasURLProtocol,
+  isWeb,
+  getParameterByName
+} from '../../extcommon';
 
 import '@milkdown/theme-nord/lib/theme.css';
 import '@milkdown/preset-commonmark/lib/style.css';
@@ -83,6 +88,22 @@ async function createEditor() {
   }
 }
 
+window.addEventListener('keyup', event => {
+  if (
+    window.editMode &&
+    (event.ctrlKey || event.metaKey) &&
+    event.key.toLowerCase() === 's'
+  ) {
+    sendMessageToHost({ command: 'saveDocument' });
+  }
+});
+
+window.addEventListener('dblclick', e => {
+  if (!window.editMode) {
+    sendMessageToHost({ command: 'editDocument' });
+  }
+});
+
 window.addEventListener('contentLoaded', () => {
   createEditor()
     .then(() => {
@@ -138,3 +159,8 @@ window.addEventListener('contentLoaded', () => {
       console.warn('Error creating md-editor: ' + e);
     });
 });
+
+const theme = getParameterByName('theme');
+if (theme === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+}
