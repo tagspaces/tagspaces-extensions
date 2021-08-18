@@ -1,9 +1,22 @@
 <html>
   <head>
-    <title>Parcel Sandbox</title>
+    <title>TagSpaces Markdown Editor</title>
     <meta charset="UTF-8" />
   </head>
+  <script>
+    function setContent(content, fileDirectory, editMode) {
+      window.mdContent = content;
+      window.editMode = !editMode;
+      window.fileDirectory = fileDirectory;
+      window.dispatchEvent(new Event('contentLoaded'));
+      console.log('Content updated, event triggered');
+    }
+
+    function getContent() {
+      return window.mdContent;
+    }
+  </script>
   <body>
-    <script src="/src/index.ts" type="module"></script>
+    <script src="/src/plain.ts" type="module"></script>
   </body>
 </html>

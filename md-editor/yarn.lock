@@ -93,6 +93,22 @@
     twemoji "^13.1.0"
     unist-util-visit "^4.0.0"
 
+"@milkdown/plugin-history@^4.10.0":
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/@milkdown/plugin-history/-/plugin-history-4.10.0.tgz#06dd6276c72bd4839c04588beada9803784cfaa3"
+  integrity sha512-LpdHV8lmhDSEmAIuYVZmqH8/4p56k/Ym4mSfAKgsk2xj2vqJWTikIl0nTho+b7NmAQSmN84G+tP/LmMuDUqdrg==
+  dependencies:
+    "@types/prosemirror-history" "^1.0.2"
+    prosemirror-history "^1.1.3"
+    tslib "^2.2.0"
+
+"@milkdown/plugin-listener@^4.10.0":
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/@milkdown/plugin-listener/-/plugin-listener-4.10.0.tgz#9ce3f9fdcedfc3725b7d7eaf706064ad1a27cbc9"
+  integrity sha512-0dy1YI96QmgiV6sD6Pi4ubuC3as2mQ1gVn5fqhWjm4unv9LjawzcWBzNjUaqx6sy3fYz7a6O6x6hgX0LUQPOHg==
+  dependencies:
+    tslib "^2.2.0"
+
 "@milkdown/preset-commonmark@4.9.6":
   version "4.9.6"
   resolved "https://registry.yarnpkg.com/@milkdown/preset-commonmark/-/preset-commonmark-4.9.6.tgz#3fb0b94ec317998c9b1082b0d43f868d284f229a"
@@ -104,6 +120,14 @@
     remark-inline-links "^5.0.0"
     tslib "^2.2.0"
 
+"@milkdown/react@^4.9.6":
+  version "4.9.6"
+  resolved "https://registry.yarnpkg.com/@milkdown/react/-/react-4.9.6.tgz#7ffe6dcadd3b909d3f4b3ef65a2e8a620bd3dbd6"
+  integrity sha512-nRbBUvcMxdenkCkb+f1Fq8qr1h/MFaSwFa9/UptSEY/oSrGIGdCp+a9o4yPcAby56VxLlnVBrRotq0TT9PvdMg==
+  dependencies:
+    "@milkdown/utils" "4.9.6"
+    tslib "^2.2.0"
+
 "@milkdown/theme-nord@4.9.6":
   version "4.9.6"
   resolved "https://registry.yarnpkg.com/@milkdown/theme-nord/-/theme-nord-4.9.6.tgz#b0a937548ddd803f0f5a503d989b845f44c83a25"
@@ -113,6 +137,16 @@
   version "4.9.3"
   resolved "https://registry.yarnpkg.com/@milkdown/utils/-/utils-4.9.3.tgz#2921e53a47a340639a21bfe50a3d98e586354cfc"
   integrity sha512-hiURJmaqcsFkVsHpl7uNmdwRv7Rtpe8sHNJWy/SugP8x9jLSfON961q5uBglKHiuhUzmdYsqX/QVO6e0EfGWRg==
+  dependencies:
+    "@milkdown/exception" " *"
+    "@types/lodash-es" "^4.17.4"
+    lodash-es "^4.17.21"
+    tslib "^2.2.0"
+
+"@milkdown/utils@4.9.6":
+  version "4.9.6"
+  resolved "https://registry.yarnpkg.com/@milkdown/utils/-/utils-4.9.6.tgz#2475179bce035a01634bae286044dae3e7391ba0"
+  integrity sha512-591Ou+YnGasJiiriuC79J/E5+oUfDNHV8rpwIOc4WPNCP/FxLnXP4CvdAj5yecj5bOYjNU9w03PVN8jm+8SE8w==
   dependencies:
     "@milkdown/exception" " *"
     "@types/lodash-es" "^4.17.4"
@@ -161,6 +195,14 @@
     "@types/prosemirror-model" "*"
     "@types/prosemirror-state" "*"
     "@types/prosemirror-view" "*"
+
+"@types/prosemirror-history@^1.0.2":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/prosemirror-history/-/prosemirror-history-1.0.3.tgz#f1110efbe758129b5475e466ff077f0a8d9b964f"
+  integrity sha512-5TloMDRavgLjOAKXp1Li8u0xcsspzbT1Cm9F2pwHOkgvQOz1jWQb2VIXO7RVNsFjLBZdIXlyfSLivro3DuMWXg==
+  dependencies:
+    "@types/prosemirror-model" "*"
+    "@types/prosemirror-state" "*"
 
 "@types/prosemirror-inputrules@^1.0.4":
   version "1.0.4"
@@ -498,6 +540,15 @@ prosemirror-commands@^1.1.7:
     prosemirror-state "^1.0.0"
     prosemirror-transform "^1.0.0"
 
+prosemirror-history@^1.1.3:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-history/-/prosemirror-history-1.2.0.tgz#04cc4df8d2f7b2a46651a2780de191ada6d465ea"
+  integrity sha512-B9v9xtf4fYbKxQwIr+3wtTDNLDZcmMMmGiI3TAPShnUzvo+Rmv1GiUrsQChY1meetHl7rhML2cppF3FTs7f7UQ==
+  dependencies:
+    prosemirror-state "^1.2.2"
+    prosemirror-transform "^1.0.0"
+    rope-sequence "^1.3.0"
+
 prosemirror-inputrules@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/prosemirror-inputrules/-/prosemirror-inputrules-1.1.3.tgz#93f9199ca02473259c30d7e352e4c14022d54638"
@@ -529,7 +580,7 @@ prosemirror-schema-list@^1.1.4:
     prosemirror-model "^1.0.0"
     prosemirror-transform "^1.0.0"
 
-prosemirror-state@^1.0.0, prosemirror-state@^1.3.4:
+prosemirror-state@^1.0.0, prosemirror-state@^1.2.2, prosemirror-state@^1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/prosemirror-state/-/prosemirror-state-1.3.4.tgz#4c6b52628216e753fc901c6d2bfd84ce109e8952"
   integrity sha512-Xkkrpd1y/TQ6HKzN3agsQIGRcLckUMA9u3j207L04mt8ToRgpGeyhbVv0HI7omDORIBHjR29b7AwlATFFf2GLA==
@@ -612,6 +663,11 @@ rollup@^2.38.5:
   integrity sha512-s8H00ZsRi29M2/lGdm1u8DJpJ9ML8SUOpVVBd33XNeEeL3NVaTiUcSBHzBdF3eAyR0l7VSpsuoVUGrRHq7aPwQ==
   optionalDependencies:
     fsevents "~2.3.2"
+
+rope-sequence@^1.3.0:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/rope-sequence/-/rope-sequence-1.3.2.tgz#a19e02d72991ca71feb6b5f8a91154e48e3c098b"
+  integrity sha512-ku6MFrwEVSVmXLvy3dYph3LAMNS0890K7fabn+0YIRQ2T96T9F4gkFf0vf0WW0JUraNWwGRtInEpH7yO4tbQZg==
 
 source-map-js@^0.6.2:
   version "0.6.2"
