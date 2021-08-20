@@ -95,6 +95,11 @@ window.addEventListener('keyup', event => {
     event.key.toLowerCase() === 's'
   ) {
     sendMessageToHost({ command: 'saveDocument' });
+  } else if (
+    (event.ctrlKey || event.metaKey) &&
+    event.key.toLowerCase() === 'p'
+  ) {
+    window.print();
   }
 });
 
