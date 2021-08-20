@@ -1,21 +1,22 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>TagSpaces Markdown Editor</title>
     <meta charset="UTF-8" />
-  </head>
-  <script>
-    function setContent(content, fileDirectory, editMode) {
-      window.mdContent = content;
-      window.editMode = !editMode;
-      window.fileDirectory = fileDirectory;
-      window.dispatchEvent(new Event('contentLoaded'));
-      console.log('Content updated, event triggered');
-    }
+    <script>
+      function setContent(content, fileDirectory, editMode) {
+        window.mdContent = content;
+        window.editMode = !editMode;
+        window.fileDirectory = fileDirectory;
+        window.dispatchEvent(new Event('contentLoaded'));
+        console.log('Content updated, event triggered');
+      }
 
-    function getContent() {
-      return window.mdContent;
-    }
-  </script>
+      function getContent() {
+        return window.mdContent;
+      }
+    </script>
+  </head>
   <body>
     <script src="/src/plain.ts" type="module"></script>
   </body>
