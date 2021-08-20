@@ -68,11 +68,11 @@ async function createEditor() {
       .use(emoji)
       .use(table)
       .use(math)
-      .use(history) // not needed in edit mode
-      .use(listener) // not needed in edit mode
-      .use(clipboard) // not needed in edit mode
-      .use(slash) // not needed in edit mode
-      .use(tooltip) // not needed in edit mode
+      .use(history)
+      .use(listener)
+      .use(clipboard)
+      .use(slash)
+      .use(tooltip)
       .create();
   } else {
     editor = await new Editor()
