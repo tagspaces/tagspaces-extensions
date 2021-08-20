@@ -1,9 +1,19 @@
+@import '../fonts/index.css';
+
 .milkdown {
   width: 100%;
   padding: 10px;
 }
 
-/* :root {
+@media print {
+  .milkdown {
+    width: 100%;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+:root {
   --font: Roboto, HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue,
     Helvetica, Arial, Lucida Grande, sans-serif;
   --font-code: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
@@ -15,17 +25,17 @@
   --neutral: 46, 52, 64;
   --solid: 76, 86, 106;
   --line: 216, 222, 233;
-  --background: 236, 239, 244;
-  --surface: 255, 255, 255;
+  --background: #ffffff;
+  --surface: #fafafa;
 }
 
 [data-theme='dark'] {
   --neutral: 236, 239, 244;
   --solid: 216, 222, 233;
   --line: 67, 76, 94;
-  --background: 37, 41, 50;
-  --surface: 46, 52, 64;
-} */
+  --background: rgb(19, 19, 19);
+  --surface: rgb(48, 48, 48);
+}
 
 body {
   background: rgba(var(--background), 1);
