@@ -7,6 +7,11 @@ var JSZip, JSZipUtils;
 let maxPreviewSize = 1024 * 3 || {}; //3kb limit for preview
 
 $(document).ready(() => {
+  // const theme = getParameterByName('theme');
+  // if (theme === 'dark') {
+  //   document.documentElement.setAttribute('data-theme', 'dark');
+  // }
+
   const locale = getParameterByName('locale');
   const filePath = getParameterByName('file');
   initI18N(locale, 'ns.viewerZIP.json');
@@ -72,7 +77,6 @@ function loadZipFile(zipFile, filePath) {
   $zipContent.append('<div/>').css({
     overflow: 'auto',
     padding: '5px',
-    'background-color': 'white',
     fontSize: 12,
     width: '100%',
     height: '100%'
