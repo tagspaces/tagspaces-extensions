@@ -1,24 +1,25 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>TagSpaces Markdown Editor</title>
     <meta charset="UTF-8" />
-    <script type="module" crossorigin src="./assets/index.123fa99d.js"></script>
-    <link rel="modulepreload" href="./assets/vendor.104f3f71.js">
-    <link rel="stylesheet" href="./assets/index.948a2469.css">
-  </head>
-  <script>
-    function setContent(content, fileDirectory, editMode) {
-      window.mdContent = content;
-      window.editMode = !editMode;
-      window.fileDirectory = fileDirectory;
-      window.dispatchEvent(new Event('contentLoaded'));
-      console.log('Content updated, event triggered');
-    }
+    <script>
+      function setContent(content, fileDirectory, editMode) {
+        window.mdContent = content;
+        window.editMode = !editMode;
+        window.fileDirectory = fileDirectory;
+        window.dispatchEvent(new Event('contentLoaded'));
+        console.log('Content updated, event triggered');
+      }
 
-    function getContent() {
-      return window.mdContent;
-    }
-  </script>
+      function getContent() {
+        return window.mdContent;
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index.dc599a92.js"></script>
+    <link rel="modulepreload" href="./assets/vendor.104f3f71.js">
+    <link rel="stylesheet" href="./assets/index.6df62bfa.css">
+  </head>
   <body>
     
   </body>

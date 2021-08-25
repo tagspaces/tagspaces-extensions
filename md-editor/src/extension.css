@@ -25,18 +25,18 @@
   --neutral: 46, 52, 64;
   --solid: 76, 86, 106;
   --line: 216, 222, 233;
-  --background: #ffffff;
-  --surface: #fafafa;
+  --background: 255, 255, 255;
+  --surface: 250, 250, 250;
 }
 
 [data-theme='dark'] {
   --neutral: 236, 239, 244;
   --solid: 216, 222, 233;
   --line: 67, 76, 94;
-  --background: rgb(19, 19, 19);
-  --surface: rgb(48, 48, 48);
+  --background: 19, 19, 19;
+  --surface: 48, 48, 48;
 }
 
-body {
+/* body {
   background: rgba(var(--background), 1);
-}
+} */
