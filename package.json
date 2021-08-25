@@ -8,7 +8,7 @@
     "email": "info@tagspaces.org",
     "url": "https://www.tagspaces.org"
   },
-  "dependencies": {
+  "devDependencies": {
     "bootstrap": "~3.4.1",
     "bootswatch": "~3.4.1",
     "font-awesome": "^4.7.0",
