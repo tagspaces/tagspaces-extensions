@@ -146,7 +146,7 @@ window.addEventListener('contentLoaded', () => {
 
         const images = elems[0].getElementsByTagName('img');
         [...images].forEach(image => {
-          console.log(image.getAttribute('src'));
+          // console.log(image.getAttribute('src'));
           const currentSrc = image.getAttribute('src');
           if (!hasURLProtocol(currentSrc)) {
             const path =

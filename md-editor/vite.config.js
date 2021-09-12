@@ -1,6 +1,7 @@
 export default {
   base: './',
   build: {
+    minify: false,
     outDir: 'build',
     rollupOptions: {
       output: {
