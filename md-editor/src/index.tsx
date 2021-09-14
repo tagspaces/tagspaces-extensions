@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import useEventListener from "./useEventListener";
 // import { sendMessageToHost } from '../../extcommon';
 
 // var setContent = (content: any, fileDirectory: string) => {

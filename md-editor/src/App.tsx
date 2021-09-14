@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  commandsCtx,
+  Ctx,
   defaultValueCtx,
   Editor,
+  editorViewCtx,
   editorViewOptionsCtx,
+  parserCtx,
   rootCtx,
 } from "@milkdown/core";
-import { ReactEditor, useEditor } from "@milkdown/react";
+import {
+  EditorComponent,
+  EditorRef,
+  ReactEditor,
+  useEditor,
+} from "@milkdown/react";
 import { commonmark } from "@milkdown/preset-commonmark";
 
 import "@milkdown/theme-nord/lib/theme.css";
@@ -19,11 +28,83 @@ import { slash } from "@milkdown/plugin-slash";
 import { tooltip } from "@milkdown/plugin-tooltip";
 import { history } from "@milkdown/plugin-history";
 import useEventListener from "./useEventListener";
+import { Slice } from "prosemirror-model";
 
 const MilkdownEditor: React.FC = () => {
+  const editorRef = useRef<EditorRef | null>(null);
   const [isContentLoaded, setContentLoaded] = useState<boolean>(false);
 
-  useEffect(() => {
+  // @ts-ignore
+  /*const editable = () => window.editMode;
+  const getEditor = async () => {
+    if (editable()) {
+      const listenerConf = {
+        markdown: [
+          // @ts-ignore
+          (getMarkdown) => {
+            if (editable()) {
+              window.parent.postMessage(
+                  JSON.stringify({
+                    command: "contentChangedInEditor",
+                    // filepath: filePath
+                  }),
+                  "*"
+              );
+            }
+            // @ts-ignore
+            window.mdContent = getMarkdown();
+          },
+        ],
+      };
+      return await new Editor()
+          .config((ctx) => {
+            // ctx.set(rootCtx, root);
+            // @ts-ignore
+            if (window.mdContent) {
+              // @ts-ignore
+              ctx.set(defaultValueCtx, window.mdContent);
+            }
+            ctx.set(listenerCtx, listenerConf);
+            ctx.set(editorViewOptionsCtx, {editable: editable()});
+          })
+          .use(commonmark)
+          .use(listener)
+          .create();
+      /!*.use(emoji)
+                        .use(table)
+                        .use(math)
+                        .use(history)
+                        .use(clipboard)
+                        .use(slash)
+                        .use(tooltip)*!/
+    } else {
+      return await new Editor()
+          .config((ctx) => {
+            // ctx.set(rootCtx, root);
+            // @ts-ignore
+            if (window.mdContent) {
+              // @ts-ignore
+              ctx.set(defaultValueCtx, window.mdContent);
+            }
+            // ctx.set(editorViewOptionsCtx, { editable: editable() });
+          })
+          .use(commonmark)
+          .create();
+      /!*.use(emoji)
+                        .use(table)
+                        .use(math)*!/
+    }
+  };
+  const editor = getEditor();//useEditor(getEditor);*/
+  /*editor.action((ctx) => {
+    // get command manager
+    const commandManager = ctx.get(commandsCtx);
+
+    // call command
+    commandManager.call(ToggleItalic);
+  });*/
+
+  /*useEffect(() => {
 
     const pathToFile = getParameterByName("file");
     const isWeb =
@@ -85,10 +166,10 @@ const MilkdownEditor: React.FC = () => {
         });
       }
     }
-  }, [isContentLoaded]);
+  }, [isContentLoaded]);*/
 
   // @ts-ignore
-  useEventListener("keyup", (event) => {
+  /*useEventListener("keyup", (event) => {
     if (
       editable() &&
       (event.ctrlKey || event.metaKey) &&
@@ -114,13 +195,38 @@ const MilkdownEditor: React.FC = () => {
         "*"
       );
     }
-  });
+  });*/
 
   useEventListener("contentLoaded", () => {
-    setContentLoaded(true);
+    // setContentLoaded(true);
+    if (editorRef.current) {
+      const editor = editorRef.current.get();
+      if (editor) {
+        editor.action((ctx: Ctx) => {
+          const view = ctx.get(editorViewCtx);
+          const parser = ctx.get(parserCtx);
+          // @ts-ignore
+          const doc = parser(window.mdContent);
+          if (!doc) return;
+          const state = view.state;
+          view.dispatch(
+            state.tr.replace(
+              0,
+              state.doc.content.size,
+              new Slice(doc.content, 0, 0)
+            )
+          );
+        });
+
+        /*editor.action((ctx) => {
+// @ts-ignore
+                  ctx.set(defaultValueCtx, window.mdContent);
+              })*/
+      }
+    }
   });
 
-  function getParameterByName(paramName: string) {
+  /*function getParameterByName(paramName: string) {
     const name = paramName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
     const results = regex.exec(location.search);
@@ -141,77 +247,42 @@ const MilkdownEditor: React.FC = () => {
         url.indexOf("file://") === 0 ||
         url.indexOf("data:") === 0
     );
-  }
-
-  // @ts-ignore
-  const editable = () => window.editMode;
-  const createEditor = () => {
-    if (!isContentLoaded) {
-      return null;
-    }
-    let editor;
-
-    if (editable()) {
-      const listenerConf = {
-        markdown: [
-          // @ts-ignore
-          (getMarkdown) => {
-            if (editable()) {
-              window.parent.postMessage(
-                  JSON.stringify({
-                    command: "contentChangedInEditor",
-                    // filepath: filePath
-                  }),
-                  "*"
-              );
-            }
-            // @ts-ignore
-            window.mdContent = getMarkdown();
-          },
+  }*/
+  /*let jsonOutput;
+    const listen = {
+        docs: [
+            (node:any) => {
+                jsonOutput = node.toJSON();
+            },
         ],
-      };
-      editor = useEditor(
-        (root) =>
-          new Editor()
-            .config((ctx) => {
-              ctx.set(rootCtx, root);
-              // @ts-ignore
-              if (window.mdContent) {
-                // @ts-ignore
-                ctx.set(defaultValueCtx, window.mdContent);
-              }
-              ctx.set(listenerCtx, listenerConf);
-              ctx.set(editorViewOptionsCtx, { editable: editable() });
-            })
-            .use(commonmark)
-            .use(listener)
-        /*.use(emoji)
-                    .use(table)
-                    .use(math)
-                    .use(history)
-                    .use(clipboard)
-                    .use(slash)
-                    .use(tooltip)*/
-      );
-    } else {
-      editor = useEditor(
-        (root) =>
-          new Editor()
-            .config((ctx) => {
-              ctx.set(rootCtx, root);
-              // @ts-ignore
-              ctx.set(defaultValueCtx, window.mdContent);
-              ctx.set(editorViewOptionsCtx, { editable: editable() });
-            })
-            .use(commonmark)
-        /*.use(emoji)
-                    .use(table)
-                    .use(math)*/
-      );
-    }
-    return <ReactEditor editor={editor} />;
-  };
-  return createEditor();
+    };*/
+
+  let context: Ctx;
+  const editor = useEditor(
+    (root) => {
+      return new Editor()
+        .config((ctx) => {
+          context = ctx;
+          ctx.set(rootCtx, root);
+          // @ts-ignore
+          if (window.mdContent) {
+            // @ts-ignore
+            ctx.set(defaultValueCtx, window.mdContent);
+          }
+          // @ts-ignore
+          ctx.set(listenerCtx, { markdown: [(x) => console.log(x())] });
+        })
+        .use(commonmark)
+        .use(clipboard)
+        .use(listener)
+        .use(history);
+    },
+    // @ts-ignore
+    [window.mdContent]
+  );
+
+  // return <EditorComponent ref={editorRef} editor={editor} />;
+  return <ReactEditor ref={editorRef} editor={editor} />;
 };
 
 export default MilkdownEditor;
