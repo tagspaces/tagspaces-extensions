@@ -1,4 +1,4 @@
-@import '../fonts/index.css';
+@import "../fonts/index.css";
 
 .milkdown {
   width: 100%;
@@ -30,7 +30,7 @@
   --surface: 250, 250, 250;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --neutral: 236, 239, 244;
   --solid: 216, 222, 233;
   --line: 67, 76, 94;
