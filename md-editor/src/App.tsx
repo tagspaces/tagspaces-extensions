@@ -20,8 +20,6 @@ import { slash } from "@milkdown/plugin-slash";
 import { tooltip } from "@milkdown/plugin-tooltip";
 import { history } from "@milkdown/plugin-history";
 import { Slice } from "prosemirror-model";
-import { Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import useEventListener from "./useEventListener";
 
 import "@milkdown/theme-nord/lib/theme.css";
@@ -32,6 +30,7 @@ import "@milkdown/plugin-slash/lib/style.css";
 import "@milkdown/plugin-table/lib/style.css";
 // import "@milkdown/plugin-math/lib/style.css";
 import "./extension.css";
+import FAB from "./fab";
 
 const MilkdownEditor: React.FC = () => {
   const editorRef = useRef<EditorRef | null>(null);
@@ -236,9 +235,7 @@ const MilkdownEditor: React.FC = () => {
   return (
     <>
       <ReactEditor ref={editorRef} editor={editor} />
-      <Fab color="primary" aria-label="add">
-        <AddIcon />
-      </Fab>
+      <FAB />
     </>
   );
 };

@@ -27,6 +27,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@milkdown/core": "4.9.6",
     "@milkdown/plugin-clipboard": "4.9.6",
     "@milkdown/plugin-emoji": "4.9.6",
