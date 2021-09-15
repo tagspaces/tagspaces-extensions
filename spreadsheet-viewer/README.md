@@ -1,3 +1,5 @@
-# viewerSpreadSheet
+# Spreadsheet viewer extension for TagSpaces
 
-TagSpaces viewer for CSV and spreadsheet files
+More information can be found in the [TagSpaces Docs](https://docs.tagspaces.org/extensions/spreadsheet-viewer)
+
+MIT licensed
