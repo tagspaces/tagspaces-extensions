@@ -17,7 +17,7 @@
  * https://usehooks-typescript.com/use-event-listener/
  * eslint-disable @typescript-eslint/ban-types
  */
-import { useRef, useEffect, RefObject } from "react";
+import { useRef, useEffect, RefObject } from 'react';
 
 // Hook
 export default function useEventListener<T>(
