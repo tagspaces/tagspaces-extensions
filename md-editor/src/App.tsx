@@ -16,8 +16,8 @@ import { createProsePlugin, AtomList } from '@milkdown/utils';
 import { Plugin, TextSelection } from 'prosemirror-state';
 import directive from 'remark-directive';
 
-import { EditorRef, ReactEditor, useEditor } from '@milkdown/react';
-import { commonmark } from '@milkdown/preset-commonmark';
+import { EditorRef, ReactEditor, useEditor, useNodeCtx } from '@milkdown/react';
+import { commonmark, image, link } from '@milkdown/preset-commonmark';
 
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { emoji } from '@milkdown/plugin-emoji';
@@ -49,12 +49,14 @@ const MilkdownEditor: React.FC = () => {
   // @ts-ignore
   const getContent = () => window.mdContent;
 
+  const pathToFile = getParameterByName('file');
+  const isWeb =
+    (document.URL.startsWith('http') &&
+      !document.URL.startsWith('http://localhost:1212/')) ||
+    pathToFile.startsWith('http');
   /*const changeContent = () => {
-    const pathToFile = getParameterByName('file');
-    const isWeb =
-      (document.URL.startsWith('http') &&
-        !document.URL.startsWith('http://localhost:1212/')) ||
-      pathToFile.startsWith('http');
+
+
     // code to run after render goes here
     // if (isContentLoaded) {
     const elems = document.getElementsByClassName('milkdown');
@@ -163,10 +165,10 @@ const MilkdownEditor: React.FC = () => {
     }
   });
 
-  /*function getParameterByName(paramName: string) {
+  function getParameterByName(paramName: string) {
     const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    const results = regex.exec(location.search);
+    const results = regex.exec(window.location.search);
     let param =
       results === null
         ? ''
@@ -184,20 +186,20 @@ const MilkdownEditor: React.FC = () => {
       url.indexOf('file://') === 0 ||
       url.indexOf('data:') === 0
     );
-  }*/
+  }
 
-  const id = 'links';
-  const link = nodeFactory({
+  // const id = 'links';
+  /*const link = nodeFactory({
     id,
     schema: {
-      /*attrs: {
+      /!*attrs: {
         href: { default: null },
-      },*/
+      },*!/
       group: 'inline',
       inline: true,
       marks: '',
       // atom: true,
-      /*
+      /!*
       parseDOM: [
         {
           tag: 'a',
@@ -212,7 +214,7 @@ const MilkdownEditor: React.FC = () => {
         },
       ],
       toDOM: (node) => ['a', { ...node.attrs, class: 'link' }, 0],
-      */
+      *!/
     },
     parser: {
       match: (node) => {
@@ -227,21 +229,21 @@ const MilkdownEditor: React.FC = () => {
     serializer: {
       match: (node) => node.type.name === id,
       runner: (state, node) => {
-        /*const span = document.createElement('span');
+        /!*const span = document.createElement('span');
         span.innerHTML = node.attrs.html;
         const img = span.querySelector('img');
         const title = img?.title;
         span.remove();
-        state.addNode('text', undefined, title);*/
-        /*state.addNode('link', undefined, undefined, {
+        state.addNode('text', undefined, title);*!/
+        /!*state.addNode('link', undefined, undefined, {
           name: 'link',
           attributes: {
             href: node.attrs.href,
           },
-        });*/
+        });*!/
       },
     },
-    /*inputRules: (nodeType) => [
+    /!*inputRules: (nodeType) => [
       new InputRule(/([])|\[(.*?)\]\(.*?\)/, (state, match, start, end) => {
         const [okay, href = ''] = match;
         const { tr } = state;
@@ -251,8 +253,8 @@ const MilkdownEditor: React.FC = () => {
 
         return tr;
       }),
-    ],*/
-  });
+    ],*!/
+  });*/
 
   let context: Ctx;
   const listenerConf = {
@@ -327,8 +329,73 @@ const MilkdownEditor: React.FC = () => {
     });
   });
 
+  const TSLink: React.FC = ({ children }) => {
+    const { node } = useNodeCtx();
+
+    // title={node.attrs.title}
+
+    const clickLink = (evt: any) => {
+      evt.preventDefault();
+
+      let path;
+      if (!hasURLProtocol(node.attrs.href)) {
+        path =
+          (isWeb ? '' : 'file://') +
+          // @ts-ignore
+          window.fileDirectory +
+          '/' +
+          encodeURIComponent(node.attrs.href);
+      } else {
+        path = node.attrs.href;
+      }
+
+      window.parent.postMessage(
+        JSON.stringify({
+          command: 'openLinkExternally',
+          link: path,
+        }),
+        '*'
+      );
+    };
+    return (
+      <a href="#" className="ts-link" onClick={clickLink}>
+        {children}
+      </a>
+    );
+  };
+
+  const TSImage: React.FC = ({ children }) => {
+    const { node } = useNodeCtx();
+
+    let path;
+    if (!hasURLProtocol(node.attrs.src)) {
+      path =
+        (isWeb ? '' : 'file://') +
+        // @ts-ignore
+        window.fileDirectory +
+        '/' +
+        node.attrs.src;
+    } else {
+      path = node.attrs.src;
+    }
+
+    return (
+      <img
+        // className="ts-image"
+        src={path}
+        alt={node.attrs.alt}
+        title={node.attrs.title}
+      />
+    );
+  };
+
   const editor = useEditor(
-    (root) => {
+    (root, renderReact) => {
+      const nodes = commonmark
+        // @ts-ignore
+        .configure(link, { view: renderReact(TSLink) })
+        .configure(image, { view: renderReact(TSImage) });
+
       return (
         Editor.make()
           .config((ctx) => {
@@ -342,8 +409,9 @@ const MilkdownEditor: React.FC = () => {
             ctx.set(editorViewOptionsCtx, { editable });
           })
           .use(nord)
+          .use(nodes)
           // .use(AtomList.create([clickPlugin()]))
-          .use([directiveRemarkPlugin, link])
+          //.use([directiveRemarkPlugin, link])
           .use(commonmark)
           .use(clipboard)
           .use(listener)

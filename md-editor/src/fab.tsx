@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import AboutIcon from '@material-ui/icons/Info';
+import CodeIcon from '@material-ui/icons/Code';
 import PrintIcon from '@material-ui/icons/Print';
 
 const FAB: React.FC = () => {
@@ -27,6 +28,11 @@ const FAB: React.FC = () => {
     {
       icon: <AboutIcon />,
       name: 'About',
+      action: () => setAboutDialogOpened(true),
+    },
+    {
+      icon: <CodeIcon />,
+      name: 'View Source',
       action: () => setAboutDialogOpened(true),
     },
     {
