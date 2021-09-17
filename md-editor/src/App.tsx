@@ -25,15 +25,9 @@ import { slash } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
 import { history } from '@milkdown/plugin-history';
 import { Slice } from 'prosemirror-model';
+import { nord } from '@milkdown/theme-nord';
+import { math } from '@milkdown/plugin-math';
 import useEventListener from './useEventListener';
-
-import '@milkdown/theme-nord/lib/theme.css';
-import '@milkdown/preset-commonmark/lib/style.css';
-import '@milkdown/plugin-emoji/lib/style.css';
-import '@milkdown/plugin-tooltip/lib/style.css';
-import '@milkdown/plugin-slash/lib/style.css';
-import '@milkdown/plugin-table/lib/style.css';
-// import "@milkdown/plugin-math/lib/style.css";
 import './extension.css';
 import FAB from './fab';
 
@@ -281,30 +275,28 @@ const MilkdownEditor: React.FC = () => {
 
   const editor = useEditor(
     (root) => {
-      return (
-        Editor.make()
-          .config((ctx) => {
-            context = ctx;
-            ctx.set(rootCtx, root);
-            const content = getContent();
-            if (content) {
-              ctx.set(defaultValueCtx, content);
-            }
-            ctx.set(listenerCtx, listenerConf); // { markdown: [(x) => console.log(x())] });
-            ctx.set(editorViewOptionsCtx, { editable });
-          })
-          // .use(nord)
-          .use([directiveRemarkPlugin, link])
-          .use(commonmark)
-          .use(clipboard)
-          .use(listener)
-          .use(history)
-          .use(emoji)
-          .use(table)
-          // .use(math)
-          .use(slash)
-          .use(tooltip)
-      );
+      return Editor.make()
+        .config((ctx) => {
+          context = ctx;
+          ctx.set(rootCtx, root);
+          const content = getContent();
+          if (content) {
+            ctx.set(defaultValueCtx, content);
+          }
+          ctx.set(listenerCtx, listenerConf); // { markdown: [(x) => console.log(x())] });
+          ctx.set(editorViewOptionsCtx, { editable });
+        })
+        .use(nord)
+        .use([directiveRemarkPlugin, link])
+        .use(commonmark)
+        .use(clipboard)
+        .use(listener)
+        .use(history)
+        .use(emoji)
+        .use(table)
+        .use(math)
+        .use(slash)
+        .use(tooltip);
     }
     //[window.mdContent]
   );
