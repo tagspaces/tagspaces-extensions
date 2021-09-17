@@ -1,59 +1,26 @@
 import React, { useState } from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Fab,
   Link,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
-import MoreIcon from '@material-ui/icons/More';
+import MoreIcon from '@material-ui/icons/MoreVert';
 import AboutIcon from '@material-ui/icons/Info';
 import PrintIcon from '@material-ui/icons/Print';
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      transform: 'translateZ(0px)',
-      flexGrow: 1,
-    },
-    exampleWrapper: {
-      position: 'relative',
-      marginTop: theme.spacing(3),
-      height: 380,
-    },
-    radioGroup: {
-      margin: theme.spacing(1, 0),
-    },
-    speedDial: {
-      position: 'absolute',
-      '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
-      },
-      '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
-        top: theme.spacing(2),
-        left: theme.spacing(2),
-      },
-    },
-  })
-);
 
 const FAB: React.FC = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
 
-  const classes = useStyles();
-  // const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
+  const handleFabClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
   };
 
   const actions = [
@@ -62,38 +29,38 @@ const FAB: React.FC = () => {
       name: 'About',
       action: () => setAboutDialogOpened(true),
     },
-    { icon: <PrintIcon />, name: 'Print', action: () => window.print() },
+    {
+      icon: <PrintIcon fontSize="small" />,
+      name: 'Print',
+      action: () => window.print(),
+    },
   ];
 
   return (
     <>
-      {/*<Fab
+      {Boolean(anchorEl) && (
+        <Menu
+          id="fab-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          {actions.map((action) => (
+            <MenuItem key={action.name} onClick={action.action}>
+              <ListItemIcon>{action.icon}</ListItemIcon>
+              <ListItemText>{action.name}</ListItemText>
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
+      <Fab
         color="primary"
         aria-label="add"
-        style={{ position: "absolute", right: 20, bottom: 20 }}
-        onClick={() => setAboutDialogOpened(true)}
+        style={{ position: 'absolute', right: 20, bottom: 20 }}
+        onClick={handleFabClick}
       >
         <MoreIcon />
-      </Fab>*/}
-      <SpeedDial
-        ariaLabel="SpeedDial example"
-        className={classes.speedDial}
-        hidden={false}
-        icon={<SpeedDialIcon />}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        open={open}
-        direction={'up'}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={action.action}
-          />
-        ))}
-      </SpeedDial>
+      </Fab>
       <Dialog
         open={isAboutDialogOpened}
         onClose={() => {
@@ -118,9 +85,9 @@ const FAB: React.FC = () => {
               );
             }}
           >
-            &nbsp; project page
+            project page
           </Link>
-          on GitHub for details about this extension.
+          &nbsp; on GitHub for details about this extension.
         </DialogContent>
       </Dialog>
     </>

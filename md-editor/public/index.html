@@ -15,6 +15,25 @@
       function getContent() {
         return window.mdContent;
       }
+
+      function getParameterByName(paramName) {
+        const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        let param =
+          results === null
+            ? ''
+            : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (param.includes('#')) {
+          param = param.split('#').join('%23');
+        }
+        return param;
+      }
+
+      const theme = getParameterByName('theme');
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
     </script>
   </head>
   <body>

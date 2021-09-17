@@ -9,7 +9,11 @@ import {
   rootCtx,
   remarkPluginFactory,
   nodeFactory,
+  serializerCtx,
+  schemaCtx,
 } from '@milkdown/core';
+import { createProsePlugin, AtomList } from '@milkdown/utils';
+import { Plugin, TextSelection } from 'prosemirror-state';
 import directive from 'remark-directive';
 
 import { EditorRef, ReactEditor, useEditor } from '@milkdown/react';
@@ -273,30 +277,83 @@ const MilkdownEditor: React.FC = () => {
   // @ts-ignore
   const directiveRemarkPlugin = remarkPluginFactory(directive);
 
+  const clickPlugin = createProsePlugin((_, utils) => {
+    const { ctx } = utils;
+    const schema = ctx.get(schemaCtx);
+    const parser = ctx.get(parserCtx);
+    const serializer = ctx.get(serializerCtx);
+    return new Plugin({
+      props: {
+        // https://github.com/herrdu/DEditor/blob/4557d4149f71da62532e9ab1754231f3301d8afd/src/extensions/Image.ts#L150
+        handleClickOn: (view, pos, node, nodePos, event, direct) => {
+          // view.dispatch(view.state.tr.replaceSelection(new Slice(slice.content, depth, depth)));
+
+          if (direct) {
+            setTimeout(() => {
+              if (pos === nodePos) {
+                view.dispatch(
+                  view.state.tr.setSelection(
+                    TextSelection.create(view.state.doc, pos, pos)
+                  )
+                );
+              } else {
+                view.dispatch(
+                  view.state.tr.setSelection(
+                    TextSelection.create(view.state.doc, pos + 1, pos + 1)
+                  )
+                );
+              }
+              console.log('view', view.state.selection);
+            }, 0);
+            console.log(
+              'handleClickOn',
+              this,
+              view,
+              pos,
+              node,
+              nodePos,
+              event,
+              direct
+            );
+          }
+          return false;
+
+          /*if (node.type.name === 'link') {
+            return true;
+          }
+          return false;*/
+        },
+      },
+    });
+  });
+
   const editor = useEditor(
     (root) => {
-      return Editor.make()
-        .config((ctx) => {
-          context = ctx;
-          ctx.set(rootCtx, root);
-          const content = getContent();
-          if (content) {
-            ctx.set(defaultValueCtx, content);
-          }
-          ctx.set(listenerCtx, listenerConf); // { markdown: [(x) => console.log(x())] });
-          ctx.set(editorViewOptionsCtx, { editable });
-        })
-        .use(nord)
-        .use([directiveRemarkPlugin, link])
-        .use(commonmark)
-        .use(clipboard)
-        .use(listener)
-        .use(history)
-        .use(emoji)
-        .use(table)
-        .use(math)
-        .use(slash)
-        .use(tooltip);
+      return (
+        Editor.make()
+          .config((ctx) => {
+            context = ctx;
+            ctx.set(rootCtx, root);
+            const content = getContent();
+            if (content) {
+              ctx.set(defaultValueCtx, content);
+            }
+            ctx.set(listenerCtx, listenerConf); // { markdown: [(x) => console.log(x())] });
+            ctx.set(editorViewOptionsCtx, { editable });
+          })
+          .use(nord)
+          // .use(AtomList.create([clickPlugin()]))
+          .use([directiveRemarkPlugin, link])
+          .use(commonmark)
+          .use(clipboard)
+          .use(listener)
+          .use(history)
+          .use(emoji)
+          .use(table)
+          .use(math)
+          .use(slash)
+          .use(tooltip)
+      );
     }
     //[window.mdContent]
   );
