@@ -1,4 +1,5 @@
 @import './fonts/material-icons.css';
+@import './scrollbars.css';
 
 .milkdown {
   width: 100%;
@@ -40,4 +41,21 @@
 
 /* body {
   background: rgba(var(--background), 1);
-} */
+}  */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background-color: transparent;
+  font-family: Ubuntu, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#root {
+  height: 100%;
+  overflow-y: auto;
+  overflow-y: overlay;
+}

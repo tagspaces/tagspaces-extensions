@@ -10,7 +10,7 @@ import {
   remarkPluginFactory,
   nodeFactory,
   serializerCtx,
-  schemaCtx,
+  schemaCtx
 } from '@milkdown/core';
 import { createProsePlugin, AtomList } from '@milkdown/utils';
 import { Plugin, TextSelection } from 'prosemirror-state';
@@ -23,7 +23,6 @@ import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { emoji } from '@milkdown/plugin-emoji';
 import { table } from '@milkdown/plugin-table';
 import { InputRule, inputRules } from 'prosemirror-inputrules';
-// import { math } from "@milkdown/plugin-math";
 import { clipboard } from '@milkdown/plugin-clipboard';
 import { slash } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
@@ -114,7 +113,7 @@ const MilkdownEditor: React.FC = () => {
   };*/
 
   // @ts-ignore
-  useEventListener('keyup', (event) => {
+  useEventListener('keyup', event => {
     if (
       editable() &&
       (event.ctrlKey || event.metaKey) &&
@@ -133,7 +132,7 @@ const MilkdownEditor: React.FC = () => {
   });
 
   // @ts-ignore
-  useEventListener('dblclick', (event) => {
+  useEventListener('dblclick', event => {
     if (!editable()) {
       window.parent.postMessage(
         JSON.stringify({ command: 'editDocument' }),
@@ -260,20 +259,20 @@ const MilkdownEditor: React.FC = () => {
   const listenerConf = {
     markdown: [
       // @ts-ignore
-      (getMarkdown) => {
+      getMarkdown => {
         if (editable()) {
           // @ts-ignore
           window.mdContent = getMarkdown();
           window.parent.postMessage(
             JSON.stringify({
-              command: 'contentChangedInEditor',
+              command: 'contentChangedInEditor'
               // filepath: filePath
             }),
             '*'
           );
         }
-      },
-    ],
+      }
+    ]
   };
 
   // @ts-ignore
@@ -324,8 +323,8 @@ const MilkdownEditor: React.FC = () => {
             return true;
           }
           return false;*/
-        },
-      },
+        }
+      }
     });
   });
 
@@ -352,7 +351,7 @@ const MilkdownEditor: React.FC = () => {
       window.parent.postMessage(
         JSON.stringify({
           command: 'openLinkExternally',
-          link: path,
+          link: path
         }),
         '*'
       );
@@ -398,7 +397,7 @@ const MilkdownEditor: React.FC = () => {
 
       return (
         Editor.make()
-          .config((ctx) => {
+          .config(ctx => {
             context = ctx;
             ctx.set(rootCtx, root);
             const content = getContent();
