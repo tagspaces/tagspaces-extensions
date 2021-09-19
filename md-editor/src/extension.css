@@ -2,16 +2,18 @@
 @import './scrollbars.css';
 
 .milkdown {
-  width: 100%;
-  padding: 10px;
+  width: 100% !important;
+  max-width: 70rem !important;
   box-shadow: none !important;
   background-color: transparent !important;
+  padding-top: 0 !important;
 }
 
 @media print {
   .milkdown {
-    width: 100%;
-    padding: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
     box-shadow: none !important;
     background-color: transparent !important;
   }
