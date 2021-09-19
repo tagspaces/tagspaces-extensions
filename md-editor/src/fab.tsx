@@ -8,12 +8,40 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import AboutIcon from '@material-ui/icons/Info';
 import CodeIcon from '@material-ui/icons/Code';
 import PrintIcon from '@material-ui/icons/Print';
+import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+
+const lightTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#1dd19f',
+      contrastText: '#ffffff'
+    },
+    secondary: {
+      main: '#11cb5f',
+      contrastText: '#ffffff'
+    }
+  }
+});
+
+const darkTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#ff9abe',
+      contrastText: '#ffffff'
+    },
+    secondary: {
+      main: '#11cb5f',
+      contrastText: '#ffffff'
+    }
+  }
+});
 
 const FAB: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -28,22 +56,24 @@ const FAB: React.FC = () => {
     {
       icon: <AboutIcon />,
       name: 'About',
-      action: () => setAboutDialogOpened(true),
+      action: () => setAboutDialogOpened(true)
     },
     {
       icon: <CodeIcon />,
       name: 'View Source',
-      action: () => setAboutDialogOpened(true),
+      action: () => setAboutDialogOpened(true)
     },
     {
       icon: <PrintIcon fontSize="small" />,
       name: 'Print',
-      action: () => window.print(),
-    },
+      action: () => window.print()
+    }
   ];
 
+  const theme = document.documentElement.getAttribute('data-theme');
+
   return (
-    <>
+    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
       {Boolean(anchorEl) && (
         <Menu
           id="fab-menu"
@@ -51,7 +81,7 @@ const FAB: React.FC = () => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          {actions.map((action) => (
+          {actions.map(action => (
             <MenuItem key={action.name} onClick={action.action}>
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
@@ -85,7 +115,8 @@ const FAB: React.FC = () => {
               window.parent.postMessage(
                 JSON.stringify({
                   command: 'openLinkExternally',
-                  link: 'https://github.com/tagspaces/tagspaces-extensions/tree/main/md-editor',
+                  link:
+                    'https://github.com/tagspaces/tagspaces-extensions/tree/main/md-editor'
                 }),
                 '*'
               );
@@ -96,7 +127,7 @@ const FAB: React.FC = () => {
           &nbsp; on GitHub for details about this extension.
         </DialogContent>
       </Dialog>
-    </>
+    </ThemeProvider>
   );
 };
 
