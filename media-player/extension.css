@@ -27,3 +27,16 @@ body {
   --plyr-audio-controls-background: black;
   --plyr-audio-control-color: white;
 }
+
+.audioPlayer .plyr__volume input[type='range'] {
+  width: 200px;
+}
+
+.audioPlayer .plyr__controls {
+  display: block;
+}
+
+.audioPlayer .plyr__control svg {
+  width: 40px;
+  height: 40px;
+}

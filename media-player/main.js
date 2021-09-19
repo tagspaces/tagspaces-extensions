@@ -83,6 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
       .find('.js-plyr')
       .append(fileSource);
 
+    if (enableVideoOutput) {
+      $(document)
+        .find('.js-plyr')
+        .addClass('videoPlayer')
+        .removeClass('audioPlayer');
+    } else {
+      $(document)
+        .find('.js-plyr')
+        .addClass('audioPlayer')
+        .removeClass('videoPlayer');
+    }
+
     player = new Plyr('#player', options);
 
     player.on('ended', () => {
