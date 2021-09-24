@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       captions: {
         defaultActive: true
       },
-      hideControls: false,
+      hideControls: enableVideoOutput,
       keyboard: { focused: true, global: true },
       fullscreen: { enabled: false }
     };
@@ -82,6 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
     $(document)
       .find('.js-plyr')
       .append(fileSource);
+
+    if (enableVideoOutput) {
+      $(document)
+        .find('.js-plyr')
+        .addClass('videoPlayer')
+        .removeClass('audioPlayer');
+    } else {
+      $(document)
+        .find('.js-plyr')
+        .addClass('audioPlayer')
+        .removeClass('videoPlayer');
+    }
 
     player = new Plyr('#player', options);
 
