@@ -2,13 +2,6 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 /* globals initI18N, getParameterByName, $, isWeb, isCordova, Viewer, EXIF, jQuery, Tiff */
 
-function getChromeVersion() {
-  const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-  return raw ? parseInt(raw[2], 10) : false;
-}
-
-const chromeVersion = getChromeVersion();
-
 $(document).ready(() => {
   let filePath = getParameterByName('file'); // TODO check decodeURIComponent loading fileswith#inthe.name
   const locale = getParameterByName('locale');
@@ -92,13 +85,6 @@ $(document).ready(() => {
           'viewer-container'
         );
         imageViewerContainer[0].style.background = 'transparent';
-        // if (
-        //   imageViewerContainer &&
-        //   imageViewerContainer[0] &&
-        //   imageViewerContainer[0].style
-        // ) {
-        //   imageViewerContainer[0].style.background = imageBackgroundColor;
-        // }
 
         if (
           filePath.toLowerCase().includes('.jpg') ||
@@ -164,13 +150,9 @@ $(document).ready(() => {
         }
       }
     });
-    viewer.full();
-
-    const $imageContentViewer = $('#imageContent');
-    const eTarget = event.target;
-
-    $imageContentViewer.addClass('transparentImageBackground');
-    $imgViewer.addClass('imgViewer');
+    setTimeout(() => {
+      viewer.full();
+    }, 10); // fix for issue making first loaded image invisible by incorrect margin-top
   });
 
   $('#imageContent').css('visibility', 'hidden');
@@ -303,8 +285,4 @@ $(document).ready(() => {
       }
     }
   }
-
-  // if (isCordova) {
-  //  $('#printButton').hide();
-  // }
 });
