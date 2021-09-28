@@ -17,7 +17,12 @@ import { Plugin, TextSelection } from 'prosemirror-state';
 import directive from 'remark-directive';
 
 import { EditorRef, ReactEditor, useEditor, useNodeCtx } from '@milkdown/react';
-import { commonmark, image, link } from '@milkdown/preset-commonmark';
+import {
+  commonmark,
+  image,
+  link,
+  paragraph,
+} from '@milkdown/preset-commonmark';
 
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { emoji } from '@milkdown/plugin-emoji';
@@ -33,9 +38,17 @@ import { math } from '@milkdown/plugin-math';
 import useEventListener from './useEventListener';
 import './extension.css';
 import FAB from './fab';
+import { CodeMirror, CodeMirrorRef } from './CodeMirror';
+import MilkdownEditor, { MilkdownRef } from './MilkdownEditor';
+import className from './style.module.css';
 
-const MilkdownEditor: React.FC = () => {
-  const editorRef = useRef<EditorRef | null>(null);
+const App: React.FC = () => {
+  const lockCode = React.useRef(false);
+  const milkdownRef = React.useRef<MilkdownRef>(null);
+  // const milkdownRef = useRef<EditorRef | null>(null);
+  const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
+  const [md, setMd] = React.useState('');
+  const [mode, setMode] = React.useState('');
   // const [isContentLoaded, setContentLoaded] = useState<boolean>(false);
 
   /*  useEffect(() => {
@@ -143,8 +156,9 @@ const MilkdownEditor: React.FC = () => {
 
   useEventListener('contentLoaded', () => {
     // setContentLoaded(true);
-    if (editorRef.current) {
-      const editor = editorRef.current.get();
+    if (milkdownRef.current) {
+      setMd(getContent());
+      /*const editor = milkdownRef.current.get();
       if (editor) {
         editor.action((ctx: Ctx) => {
           const view = ctx.get(editorViewCtx);
@@ -160,7 +174,7 @@ const MilkdownEditor: React.FC = () => {
             )
           );
         });
-      }
+      }*/
     }
   });
 
@@ -357,7 +371,7 @@ const MilkdownEditor: React.FC = () => {
       );
     };
     return (
-      <a href="#" className="ts-link" onClick={clickLink}>
+      <a href="#" onClick={clickLink}>
         {children}
       </a>
     );
@@ -388,9 +402,16 @@ const MilkdownEditor: React.FC = () => {
     );
   };
 
+  const TSParagraph: React.FC = ({ children }) => (
+    <p>
+      <div style={{ display: 'inline-flex' }}>{children}</div>
+    </p>
+  );
+
   const editor = useEditor(
     (root, renderReact) => {
       const nodes = commonmark
+        .configure(paragraph, { view: renderReact(TSParagraph) })
         // @ts-ignore
         .configure(link, { view: renderReact(TSLink) })
         .configure(image, { view: renderReact(TSImage) });
@@ -425,13 +446,57 @@ const MilkdownEditor: React.FC = () => {
     //[window.mdContent]
   );
 
+  const milkdownListener = React.useCallback((getMarkdown: () => string) => {
+    const lock = lockCode.current;
+    if (lock) return;
+
+    const { current } = codeMirrorRef;
+    if (!current) return;
+    const result = getMarkdown();
+    current.update(result);
+  }, []);
+
+  const onCodeChange = React.useCallback((getCode: () => string) => {
+    const { current } = milkdownRef;
+    if (!current) return;
+    const value = getCode();
+    current.update(value);
+  }, []);
+
+  const toggleViewSource = () => {
+    if (mode === 'TwoSide') {
+      setMode('');
+    } else {
+      setMode('TwoSide');
+    }
+  };
+
+  const classes = [
+    className.container,
+    mode === 'TwoSide' ? className.twoSide : '',
+  ].join(' ');
+  const isDarkMode = true;
   // return <EditorComponent ref={editorRef} editor={editor} />;
   return (
-    <>
-      <ReactEditor ref={editorRef} editor={editor} />
-      <FAB />
-    </>
+    <div style={{ marginTop: 70 }} className={classes}>
+      {/*<ReactEditor ref={milkdownRef} editor={editor} />*/}
+      <div className={className.milk}>
+        <MilkdownEditor
+          ref={milkdownRef}
+          content={md}
+          onChange={milkdownListener}
+        />
+      </div>
+      <CodeMirror
+        ref={codeMirrorRef}
+        value={getContent()}
+        onChange={onCodeChange}
+        dark={isDarkMode}
+        lock={lockCode}
+      />
+      <FAB toggleViewSource={toggleViewSource} />
+    </div>
   );
 };
 
-export default MilkdownEditor;
+export default App;

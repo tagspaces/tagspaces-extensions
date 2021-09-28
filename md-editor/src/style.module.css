@@ -1,0 +1,71 @@
+.container {
+  max-width: 72rem;
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  transition: all 0.4s ease-in-out;
+}
+
+.milk {
+  flex-grow: 1;
+  transition: all 0.4s ease-in-out;
+  flex-shrink: 2;
+}
+
+.twoSide {
+  gap: 1.25rem;
+  margin: 0;
+  max-width: unset;
+  .code {
+    width: unset;
+    height: unset;
+    box-sizing: border-box;
+    min-height: 30rem;
+    padding: 3.125rem 2rem;
+    border: 1px solid transparent;
+    overflow: auto;
+    flex: 1 1 40%;
+  }
+  .milk {
+    width: 50%;
+  }
+  .milk > div > div > div {
+    max-width: unset !important;
+  }
+}
+
+.code {
+  margin: 1.25rem 0;
+  background: palette(surface);
+  transition: all 0.4s ease-in-out, height 0s, padding 0s;
+  border: none;
+  width: 0;
+  height: 0;
+  flex: 0;
+  box-shadow: 0px 1px 1px palette(shadow, 0.14),
+    0px 2px 1px palette(shadow, 0.12), 0px 1px 3px palette(shadow, 0.2);
+  border-radius: var(--radius);
+  color: palette(neutral, 0.87);
+  font-size: 1.2rem;
+  line-height: 1.25rem;
+  overflow: hidden;
+  padding: 0;
+
+  ::selection {
+    background: palette(secondary, 0.38) !important;
+  }
+  @mixin scrollbar;
+
+  &.focus {
+    outline: none;
+    border: 1px solid palette(secondary);
+  }
+}
+
+@mixin query 72rem {
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

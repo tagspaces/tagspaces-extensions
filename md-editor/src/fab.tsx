@@ -16,6 +16,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import PrintIcon from '@material-ui/icons/Print';
 import { createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
+import { Content } from './useLazy';
 
 const lightTheme = createTheme({
   palette: {
@@ -43,7 +44,9 @@ const darkTheme = createTheme({
   },
 });
 
-const FAB: React.FC = () => {
+const FAB: React.FC<{ toggleViewSource: () => void }> = ({
+  toggleViewSource,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
@@ -61,7 +64,7 @@ const FAB: React.FC = () => {
     {
       icon: <CodeIcon />,
       name: 'View Source',
-      action: () => setAboutDialogOpened(true),
+      action: () => toggleViewSource(),
     },
     {
       icon: <PrintIcon fontSize="small" />,
