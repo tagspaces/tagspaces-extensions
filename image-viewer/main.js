@@ -68,6 +68,7 @@ $(document).ready(() => {
   let imageViewerContainer;
 
   $('#imageContent').on('load', event => {
+    const eTarget = event.target;
     viewer = new Viewer(document.getElementById('imageContent'), {
       movable: true,
       navbar: false,
