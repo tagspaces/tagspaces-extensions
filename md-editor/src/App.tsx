@@ -40,7 +40,7 @@ const App: React.FC = () => {
 
   // @ts-ignore
   useEventListener('dblclick', (event) => {
-    if (!readOnly()) {
+    if (readOnly()) {
       window.parent.postMessage(
         JSON.stringify({ command: 'editDocument' }),
         '*'
