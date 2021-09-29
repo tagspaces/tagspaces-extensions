@@ -17,8 +17,14 @@ import { slash } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
 import { gfm } from '@milkdown/preset-gfm';
 import { nord } from '@milkdown/theme-nord';
-import { commonmark } from '@milkdown/preset-commonmark';
+import {
+  commonmark,
+  image,
+  link,
+  paragraph,
+} from '@milkdown/preset-commonmark';
 import { table } from '@milkdown/plugin-table';
+import { AtomList } from '@milkdown/utils';
 
 const complete =
   (callback: () => void): MilkdownPlugin =>
@@ -34,6 +40,7 @@ export const createEditor = (
   defaultValue: string,
   readOnly: boolean | undefined,
   setEditorReady: (ready: boolean) => void,
+  nodes: AtomList<MilkdownPlugin>,
   onChange?: (getMarkdown: () => string) => void
 ) => {
   const editor = Editor.make()
@@ -44,7 +51,9 @@ export const createEditor = (
       ctx.set(listenerCtx, { markdown: onChange ? [onChange] : [] });
     })
     .use(nord)
+    .use(nodes)
     .use(gfm)
+    .use(commonmark)
     .use(complete(() => setEditorReady(true)))
     .use(clipboard)
     .use(listener)

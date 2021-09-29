@@ -16,6 +16,11 @@
         return window.mdContent;
       }
 
+      function setTheme(theme) {
+        window.theme = theme;
+        window.dispatchEvent(new Event('themeChanged'));
+      }
+
       function getParameterByName(paramName) {
         const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
         const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -30,10 +35,16 @@
         return param;
       }
 
-      const theme = getParameterByName('theme');
+      const pathToFile = getParameterByName('file');
+      window.isWeb =
+        (document.URL.startsWith('http') &&
+          !document.URL.startsWith('http://localhost:1212/')) ||
+        pathToFile.startsWith('http');
+
+      /*const theme = getParameterByName('theme'); // TODO migrate theme GET param in setContent(..theme)
       if (theme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-      }
+      }*/
     </script>
   </head>
   <body>
