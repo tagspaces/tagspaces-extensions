@@ -8,11 +8,12 @@ import {
 } from '@milkdown/core';
 import { clipboard } from '@milkdown/plugin-clipboard';
 // import { cursor } from '@milkdown/plugin-cursor';
+import { diagram } from '@milkdown/plugin-diagram';
 import { emoji } from '@milkdown/plugin-emoji';
 import { history } from '@milkdown/plugin-history';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { math } from '@milkdown/plugin-math';
-// import { prism } from '@milkdown/plugin-prism';
+import { prism } from '@milkdown/plugin-prism';
 import { slash } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
 import { gfm } from '@milkdown/preset-gfm';
@@ -59,11 +60,12 @@ export const createEditor = (
     .use(listener)
     .use(history)
     // .use(cursor)
-    // .use(prism)
-    .use(emoji)
+    .use(prism)
+    .use(diagram)
     // .use(table)
     .use(tooltip)
     .use(math)
+    .use(emoji)
     .use(slash);
 
   return editor;

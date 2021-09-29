@@ -8,6 +8,7 @@ type StateOptions = {
   onChange: (getString: () => string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
+  editable: boolean;
   value?: string;
 };
 
@@ -15,6 +16,7 @@ const createCodeMirrorState = ({
   onChange,
   lock,
   dark,
+  editable,
   value,
 }: StateOptions) => {
   return EditorState.create({
@@ -39,6 +41,8 @@ const createCodeMirrorState = ({
         },
         { dark }
       ),
+      // https://github.com/codemirror/codemirror.next/issues/173
+      EditorView.editable.of(editable),
     ],
   });
 };
@@ -58,10 +62,11 @@ type CodeMirrorProps = {
   onChange: (getString: () => string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
+  editable: boolean;
 };
 export type CodeMirrorRef = { update: (markdown: string) => void };
 export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
-  ({ value, onChange, lock, dark }, ref) => {
+  ({ value, onChange, lock, dark, editable }, ref) => {
     const divRef = React.useRef<HTMLDivElement>(null);
     const editorRef = React.useRef<ReturnType<typeof createCodeMirrorView>>();
     const [focus, setFocus] = React.useState(false);
@@ -74,6 +79,7 @@ export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
         onChange,
         lock,
         dark,
+        editable,
         value,
       });
       editorRef.current = editor;
@@ -89,7 +95,7 @@ export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
         if (!current) return;
 
         current.setState(
-          createCodeMirrorState({ onChange, lock, dark, value })
+          createCodeMirrorState({ onChange, lock, dark, editable, value })
         );
       },
     }));

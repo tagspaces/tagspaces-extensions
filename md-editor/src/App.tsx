@@ -254,6 +254,7 @@ const App: React.FC = () => {
             value={getContent()}
             onChange={onCodeChange}
             dark={isDarkMode}
+            editable={!readOnly()}
             lock={lockCode}
           />
         </div>

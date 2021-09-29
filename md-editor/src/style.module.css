@@ -1,3 +1,7 @@
+math {
+  display: none;
+}
+
 .container {
   max-width: 72rem;
   display: block;
