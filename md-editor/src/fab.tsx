@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import AboutIcon from '@material-ui/icons/Info';
@@ -21,30 +21,30 @@ const lightTheme = createTheme({
   palette: {
     primary: {
       main: '#1dd19f',
-      contrastText: '#ffffff',
+      contrastText: '#ffffff'
     },
     secondary: {
       main: '#11cb5f',
-      contrastText: '#ffffff',
-    },
-  },
+      contrastText: '#ffffff'
+    }
+  }
 });
 
 const darkTheme = createTheme({
   palette: {
     primary: {
       main: '#ff9abe',
-      contrastText: '#ffffff',
+      contrastText: '#ffffff'
     },
     secondary: {
       main: '#11cb5f',
-      contrastText: '#ffffff',
-    },
-  },
+      contrastText: '#ffffff'
+    }
+  }
 });
 
 const FAB: React.FC<{ toggleViewSource: () => void }> = ({
-  toggleViewSource,
+  toggleViewSource
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -58,18 +58,18 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
     {
       icon: <AboutIcon />,
       name: 'About',
-      action: () => setAboutDialogOpened(true),
+      action: () => setAboutDialogOpened(true)
     },
     {
       icon: <CodeIcon />,
       name: 'View Source',
-      action: () => toggleViewSource(),
+      action: () => toggleViewSource()
     },
     {
       icon: <PrintIcon fontSize="small" />,
       name: 'Print',
-      action: () => window.print(),
-    },
+      action: () => window.print()
+    }
   ];
 
   const theme = document.documentElement.getAttribute('data-theme');
@@ -83,7 +83,7 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          {actions.map((action) => (
+          {actions.map(action => (
             <MenuItem key={action.name} onClick={action.action}>
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
@@ -106,9 +106,9 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
         }}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">About Title</DialogTitle>
+        <DialogTitle id="simple-dialog-title">About this extension</DialogTitle>
         <DialogContent>
-          Please visit the &nbsp;
+          Please visit the dedicated&nbsp;
           <Link
             href="#"
             variant="body2"
@@ -117,7 +117,7 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
               window.parent.postMessage(
                 JSON.stringify({
                   command: 'openLinkExternally',
-                  link: 'https://github.com/tagspaces/tagspaces-extensions/tree/main/md-editor',
+                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
                 }),
                 '*'
               );
@@ -125,7 +125,7 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
           >
             project page
           </Link>
-          &nbsp; on GitHub for details about this extension.
+          &nbsp; in our documentation for more details.
         </DialogContent>
       </Dialog>
     </ThemeProvider>
