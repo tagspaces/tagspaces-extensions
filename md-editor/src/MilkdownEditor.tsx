@@ -7,13 +7,7 @@ import { createEditor } from './editor';
 import { Loading } from './Loading';
 import className from './style.module.css';
 import { Content, useLazy } from './useLazy';
-import {
-  commonmark,
-  image,
-  link,
-  paragraph,
-} from '@milkdown/preset-commonmark';
-import { gfm } from '@milkdown/preset-gfm';
+import { commonmark, image, link } from '@milkdown/preset-commonmark';
 
 type Props = {
   content: Content;

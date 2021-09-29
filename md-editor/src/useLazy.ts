@@ -7,22 +7,24 @@ export const useLazy = (content: Content) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (typeof content === 'string') {
-      setMd(content);
-      setLoading(false);
-      return;
-    }
-    content()
-      .then((s) => {
-        setMd(s.default);
+    if (content) {
+      if (typeof content === 'string') {
+        setMd(content);
         setLoading(false);
         return;
-      })
-      .catch((e) => {
-        console.error(e);
-        setMd('# 404 Not Found');
-        setLoading(false);
-      });
+      }
+      content()
+        .then((s) => {
+          setMd(s.default);
+          setLoading(false);
+          return;
+        })
+        .catch((e) => {
+          console.error(e);
+          setMd('# 404 Not Found');
+          setLoading(false);
+        });
+    }
   }, [content]);
 
   return [loading, md] as const;

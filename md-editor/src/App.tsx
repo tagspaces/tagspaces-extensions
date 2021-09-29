@@ -17,7 +17,7 @@ const App: React.FC = () => {
   // @ts-ignore
   const readOnly = () => !window.editMode;
   // @ts-ignore
-  const getContent = () => (window.mdContent ? window.mdContent : '');
+  const getContent = () => window.mdContent; //  ? window.mdContent : '');
 
   // @ts-ignore
   useEventListener('keyup', (event) => {

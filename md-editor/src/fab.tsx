@@ -16,7 +16,6 @@ import CodeIcon from '@material-ui/icons/Code';
 import PrintIcon from '@material-ui/icons/Print';
 import { createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { Content } from './useLazy';
 
 const lightTheme = createTheme({
   palette: {
