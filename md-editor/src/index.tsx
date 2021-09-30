@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { sendMessageToHost } from '../../extcommon';
+import useEventListener from './useEventListener';
+// import { sendMessageToHost } from '../../extcommon';
 
 // var setContent = (content: any, fileDirectory: string) => {
 //   alert(content);
 // };
+
+function sendMessageToHost(message: any) {
+  window.parent.postMessage(JSON.stringify(message), '*');
+}
 
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 

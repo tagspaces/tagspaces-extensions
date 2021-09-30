@@ -2,12 +2,16 @@
   "name": "@tagspaces/md-editor",
   "version": "1.0.0",
   "description": "TagSpaces extension for editing notes in markdown format",
-  "main": "index.js",
+  "homepage": "./",
   "scripts": {
-    "postinstall": "yarn vite build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "vite",
-    "build": "vite build"
+    "postinstall": "yarn build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:dev": "react-app-rewired build",
+    "build:env": "npx env-cmd -f .env.development react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "code-format": "npx prettier --write ."
   },
   "keywords": [
     "md",
@@ -22,23 +26,48 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@milkdown/core": "4.9.6",
-    "@milkdown/plugin-clipboard": "4.9.6",
-    "@milkdown/plugin-emoji": "4.9.6",
-    "@milkdown/plugin-history": "4.9.6",
-    "@milkdown/plugin-listener": "4.9.6",
-    "@milkdown/plugin-math": "4.9.6",
-    "@milkdown/plugin-slash": "4.9.6",
-    "@milkdown/plugin-table": "4.9.6",
-    "@milkdown/plugin-tooltip": "4.9.6",
-    "@milkdown/preset-commonmark": "4.9.6",
-    "@milkdown/preset-gfm": "4.9.6",
-    "@milkdown/react": "4.9.6",
-    "@milkdown/theme-nord": "4.9.6",
+    "@codemirror/basic-setup": "^0.19.0",
+    "@codemirror/lang-markdown": "^0.19.1",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@milkdown/core": "^4.12.0",
+    "@milkdown/plugin-clipboard": "^4.12.0",
+    "@milkdown/plugin-diagram": "^4.12.0",
+    "@milkdown/plugin-emoji": "^4.12.0",
+    "@milkdown/plugin-history": "^4.12.0",
+    "@milkdown/plugin-listener": "^4.12.0",
+    "@milkdown/plugin-math": "^4.12.0",
+    "@milkdown/plugin-prism": "^4.12.0",
+    "@milkdown/plugin-slash": "^4.12.0",
+    "@milkdown/plugin-table": "^4.12.0",
+    "@milkdown/plugin-tooltip": "^4.12.0",
+    "@milkdown/preset-commonmark": "^4.12.0",
+    "@milkdown/preset-gfm": "^4.12.0",
+    "@milkdown/react": "^4.12.0",
+    "@milkdown/theme-nord": "^4.12.0",
+    "@types/react": "^17.0.20",
+    "@types/react-dom": "^17.0.9",
     "material-design-icons": "^3.0.1",
-    "vite": "^2.4.4"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-loading-skeleton": "^2.2.0",
+    "remark-directive": "^2.0.0"
   },
   "devDependencies": {
-    "typescript": "4.2.3"
+    "react-app-rewired": "^2.1.8",
+    "react-scripts": "4.0.3",
+    "typescript": "4.4.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
