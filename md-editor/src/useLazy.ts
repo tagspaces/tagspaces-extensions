@@ -7,7 +7,7 @@ export const useLazy = (content: Content) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (content) {
+    if (content !== undefined) {
       if (typeof content === 'string') {
         setMd(content);
         setLoading(false);
