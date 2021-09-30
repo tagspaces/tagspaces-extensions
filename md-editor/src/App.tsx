@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import useEventListener from './useEventListener';
 import './extension.css';
 import FAB from './fab';
@@ -255,7 +255,7 @@ const App: React.FC = () => {
           lock={lockCode}
         />
       )}
-      <FAB toggleViewSource={toggleViewSource} />
+      <FAB toggleViewSource={toggleViewSource} mode={mode} />
     </div>
   );
 };

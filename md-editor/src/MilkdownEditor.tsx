@@ -8,6 +8,7 @@ import { Loading } from './Loading';
 import className from './style.module.css';
 import { Content, useLazy } from './useLazy';
 import { commonmark, image, link } from '@milkdown/preset-commonmark';
+import 'katex/dist/katex.css';
 
 type Props = {
   content: Content;

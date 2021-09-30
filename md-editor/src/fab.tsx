@@ -43,8 +43,9 @@ const darkTheme = createTheme({
   },
 });
 
-const FAB: React.FC<{ toggleViewSource: () => void }> = ({
+const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
   toggleViewSource,
+  mode,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -58,17 +59,26 @@ const FAB: React.FC<{ toggleViewSource: () => void }> = ({
     {
       icon: <AboutIcon />,
       name: 'About',
-      action: () => setAboutDialogOpened(true),
+      action: () => {
+        setAnchorEl(null);
+        setAboutDialogOpened(true);
+      },
     },
     {
       icon: <CodeIcon />,
-      name: 'View Source',
-      action: () => toggleViewSource(),
+      name: mode === 'Milkdown' ? 'View Markdown' : 'View Editor',
+      action: () => {
+        setAnchorEl(null);
+        toggleViewSource();
+      },
     },
     {
       icon: <PrintIcon fontSize="small" />,
       name: 'Print',
-      action: () => window.print(),
+      action: () => {
+        setAnchorEl(null);
+        window.print();
+      },
     },
   ];
 
