@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import AboutIcon from '@material-ui/icons/Info';
@@ -21,31 +21,31 @@ const lightTheme = createTheme({
   palette: {
     primary: {
       main: '#1dd19f',
-      contrastText: '#ffffff',
+      contrastText: '#ffffff'
     },
     secondary: {
       main: '#11cb5f',
-      contrastText: '#ffffff',
-    },
-  },
+      contrastText: '#ffffff'
+    }
+  }
 });
 
 const darkTheme = createTheme({
   palette: {
     primary: {
       main: '#ff9abe',
-      contrastText: '#ffffff',
+      contrastText: '#ffffff'
     },
     secondary: {
       main: '#11cb5f',
-      contrastText: '#ffffff',
-    },
-  },
+      contrastText: '#ffffff'
+    }
+  }
 });
 
 const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
   toggleViewSource,
-  mode,
+  mode
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -57,29 +57,29 @@ const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
 
   const actions = [
     {
-      icon: <AboutIcon />,
-      name: 'About',
-      action: () => {
-        setAnchorEl(null);
-        setAboutDialogOpened(true);
-      },
-    },
-    {
       icon: <CodeIcon />,
       name: mode === 'Milkdown' ? 'View Markdown' : 'View Editor',
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
-      },
+      }
     },
     {
-      icon: <PrintIcon fontSize="small" />,
+      icon: <PrintIcon />,
       name: 'Print',
       action: () => {
         setAnchorEl(null);
         window.print();
-      },
+      }
     },
+    {
+      icon: <AboutIcon />,
+      name: 'About',
+      action: () => {
+        setAnchorEl(null);
+        setAboutDialogOpened(true);
+      }
+    }
   ];
 
   const theme = document.documentElement.getAttribute('data-theme');
@@ -93,7 +93,7 @@ const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          {actions.map((action) => (
+          {actions.map(action => (
             <MenuItem key={action.name} onClick={action.action}>
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
@@ -127,7 +127,7 @@ const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
               window.parent.postMessage(
                 JSON.stringify({
                   command: 'openLinkExternally',
-                  link: 'https://docs.tagspaces.org/extensions/md-editor/',
+                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
                 }),
                 '*'
               );
