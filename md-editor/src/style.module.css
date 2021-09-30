@@ -2,14 +2,6 @@ math {
   display: none;
 }
 
-.container {
-  max-width: 72rem;
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  transition: all 0.4s ease-in-out;
-}
-
 .milk {
   flex-grow: 1;
   transition: all 0.4s ease-in-out;
@@ -18,15 +10,12 @@ math {
 
 .code {
   transition: all 0.4s ease-in-out, height 0s, padding 0s;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   line-height: 1.25rem;
   overflow: auto;
 }
 
-/*@mixin query 72rem {
-  .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-}*/
+.focus {
+  outline: none;
+  border: 1px solid;
+}

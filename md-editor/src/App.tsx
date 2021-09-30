@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
 
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const getContent = () => window.mdContent; //  ? window.mdContent : '');
 
   // @ts-ignore
-  useEventListener('keyup', event => {
+  useEventListener('keyup', (event) => {
     if (
       readOnly() &&
       (event.ctrlKey || event.metaKey) &&
@@ -39,7 +39,7 @@ const App: React.FC = () => {
   });
 
   // @ts-ignore
-  useEventListener('dblclick', event => {
+  useEventListener('dblclick', (event) => {
     if (readOnly()) {
       window.parent.postMessage(
         JSON.stringify({ command: 'editDocument' }),
@@ -219,7 +219,7 @@ const App: React.FC = () => {
     );*/
     window.parent.postMessage(
       JSON.stringify({
-        command: 'contentChangedInEditor'
+        command: 'contentChangedInEditor',
         // filepath: filePath
       }),
       '*'
@@ -237,27 +237,23 @@ const App: React.FC = () => {
   // return <EditorComponent ref={editorRef} editor={editor} />;
   // <ReactEditor ref={milkdownRef} editor={editor} />
   return (
-    <div className="container">
+    <div>
       {mode === 'Milkdown' ? (
-        <div className="milk">
-          <MilkdownEditor
-            ref={milkdownRef}
-            content={getContent()}
-            onChange={milkdownListener}
-            readOnly={readOnly()}
-          />
-        </div>
+        <MilkdownEditor
+          ref={milkdownRef}
+          content={getContent()}
+          onChange={milkdownListener}
+          readOnly={readOnly()}
+        />
       ) : (
-        <div className="code">
-          <CodeMirror
-            ref={codeMirrorRef}
-            value={getContent()}
-            onChange={onCodeChange}
-            dark={isDarkMode}
-            editable={!readOnly()}
-            lock={lockCode}
-          />
-        </div>
+        <CodeMirror
+          ref={codeMirrorRef}
+          value={getContent()}
+          onChange={onCodeChange}
+          dark={isDarkMode}
+          editable={!readOnly()}
+          lock={lockCode}
+        />
       )}
       <FAB toggleViewSource={toggleViewSource} />
     </div>
