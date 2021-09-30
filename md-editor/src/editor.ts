@@ -14,17 +14,11 @@ import { history } from '@milkdown/plugin-history';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { math } from '@milkdown/plugin-math';
 import { prism } from '@milkdown/plugin-prism';
-import { slash } from '@milkdown/plugin-slash';
+import { CursorStatus, slash, slashPlugin } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
 import { gfm } from '@milkdown/preset-gfm';
 import { nord } from '@milkdown/theme-nord';
-import {
-  commonmark,
-  image,
-  link,
-  paragraph,
-} from '@milkdown/preset-commonmark';
-import { table } from '@milkdown/plugin-table';
+import { commonmark } from '@milkdown/preset-commonmark';
 import { AtomList } from '@milkdown/utils';
 
 const complete =
@@ -66,7 +60,16 @@ export const createEditor = (
     .use(tooltip)
     .use(math)
     .use(emoji)
-    .use(slash);
+    .use(
+      slash.configure(slashPlugin, {
+        placeholder: {
+          [CursorStatus.Empty]: readOnly
+            ? 'Click the edit button or double click to start editing'
+            : 'Type / to use the slash commands...',
+          [CursorStatus.Slash]: 'Type to filter...',
+        },
+      })
+    );
 
   return editor;
 
