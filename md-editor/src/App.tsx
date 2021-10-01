@@ -20,21 +20,18 @@ const App: React.FC = () => {
   const getContent = () => window.mdContent; //  ? window.mdContent : '');
 
   // @ts-ignore
-  useEventListener('keyup', (event) => {
-    if (
-      readOnly() &&
-      (event.ctrlKey || event.metaKey) &&
-      event.key.toLowerCase() === 's'
-    ) {
-      window.parent.postMessage(
-        JSON.stringify({ command: 'saveDocument' }),
-        '*'
-      );
-    } else if (
-      (event.ctrlKey || event.metaKey) &&
-      event.key.toLowerCase() === 'p'
-    ) {
-      window.print();
+  useEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey) {
+      if (event.key.toLowerCase() === 's') {
+        if (!readOnly()) {
+          window.parent.postMessage(
+            JSON.stringify({ command: 'saveDocument' }),
+            '*'
+          );
+        }
+      } else if (event.key.toLowerCase() === 'p') {
+        window.print();
+      }
     }
   });
 
