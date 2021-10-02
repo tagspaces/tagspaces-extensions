@@ -240,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .removeClass('fa-check-circle-o')
         .addClass('fa-circle-o');
       loop = 'loopAll';
-      autoPlayEnabled = false;
       saveExtSettings();
     });
 
