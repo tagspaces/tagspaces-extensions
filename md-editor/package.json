@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "yarn build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "test": "react-scripts test --env=jsdom",
