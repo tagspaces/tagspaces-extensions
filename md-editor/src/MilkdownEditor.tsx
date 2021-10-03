@@ -29,7 +29,7 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
         if (!editorReady || !editorRef.current) return;
         const editor = editorRef.current.get();
         if (!editor) return;
-        editor.action((ctx) => {
+        editor.action(ctx => {
           const view = ctx.get(editorViewCtx);
           const parser = ctx.get(parserCtx);
           const doc = parser(markdown);
@@ -43,15 +43,16 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
             )
           );
         });
-      },
+      }
     }));
 
     function hasURLProtocol(url: any) {
       return (
-        url.indexOf('http://') === 0 ||
-        url.indexOf('https://') === 0 ||
-        url.indexOf('file://') === 0 ||
-        url.indexOf('data:') === 0
+        url.startsWith('http://') ||
+        url.startsWith('https://') ||
+        url.startsWith('file://') ||
+        url.startsWith('data:') ||
+        url.startsWith('ts:?ts')
       );
     }
 
@@ -81,7 +82,7 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
         window.parent.postMessage(
           JSON.stringify({
             command: 'openLinkExternally',
-            link: path,
+            link: path
           }),
           '*'
         );

@@ -96,9 +96,10 @@ export function sendMessageToHost(message) {
 
 export function hasURLProtocol(url) {
   return (
-    url.indexOf('http://') === 0 ||
-    url.indexOf('https://') === 0 ||
-    url.indexOf('file://') === 0 ||
-    url.indexOf('data:') === 0
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('file://') ||
+    url.startsWith('data:') ||
+    url.startsWith('ts:?ts')
   );
 }
