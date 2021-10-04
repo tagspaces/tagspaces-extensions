@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
-  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const getContent = () => window.mdContent; //  ? window.mdContent : '');
 
   // @ts-ignore
-  useEventListener('keydown', (event) => {
+  useEventListener('keydown', event => {
     if (event.ctrlKey || event.metaKey) {
       if (event.key.toLowerCase() === 's') {
         if (!readOnly()) {
@@ -36,7 +36,7 @@ const App: React.FC = () => {
   });
 
   // @ts-ignore
-  useEventListener('dblclick', (event) => {
+  useEventListener('dblclick', event => {
     if (readOnly()) {
       window.parent.postMessage(
         JSON.stringify({ command: 'editDocument' }),
@@ -216,7 +216,7 @@ const App: React.FC = () => {
     );*/
     window.parent.postMessage(
       JSON.stringify({
-        command: 'contentChangedInEditor',
+        command: 'contentChangedInEditor'
         // filepath: filePath
       }),
       '*'

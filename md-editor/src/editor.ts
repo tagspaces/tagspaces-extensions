@@ -1,10 +1,10 @@
 import {
-    defaultValueCtx,
-    Editor,
-    editorViewOptionsCtx,
-    EditorViewReady,
-    MilkdownPlugin,
-    rootCtx,
+  defaultValueCtx,
+  Editor,
+  editorViewOptionsCtx,
+  EditorViewReady,
+  MilkdownPlugin,
+  rootCtx
 } from '@milkdown/core';
 import { clipboard } from '@milkdown/plugin-clipboard';
 // import { cursor } from '@milkdown/plugin-cursor';
@@ -24,7 +24,7 @@ import { AtomList } from '@milkdown/utils';
 const complete =
   (callback: () => void): MilkdownPlugin =>
   () =>
-  async (ctx) => {
+  async ctx => {
     await ctx.wait(EditorViewReady);
 
     callback();
@@ -39,7 +39,7 @@ export const createEditor = (
   onChange?: (getMarkdown: () => string) => void
 ) => {
   const editor = Editor.make()
-    .config((ctx) => {
+    .config(ctx => {
       ctx.set(rootCtx, root);
       ctx.set(defaultValueCtx, defaultValue);
       ctx.set(editorViewOptionsCtx, { editable: () => !readOnly });
@@ -66,8 +66,8 @@ export const createEditor = (
           [CursorStatus.Empty]: readOnly
             ? 'Click the edit button or double click to start editing'
             : 'Type / to use the slash commands...',
-          [CursorStatus.Slash]: 'Type to filter...',
-        },
+          [CursorStatus.Slash]: 'Type to filter...'
+        }
       })
     );
 
