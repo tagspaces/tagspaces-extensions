@@ -4,7 +4,7 @@
   "description": "TagSpaces extension for editing notes in markdown format",
   "homepage": "./",
   "scripts": {
-    "postinstall": "yarn build",
+    "postinstall": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "start": "react-scripts start",
     "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "build:dev": "react-app-rewired build",
