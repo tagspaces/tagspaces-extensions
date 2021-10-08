@@ -22,6 +22,7 @@
     "shelljs": "^0.8.4"
   },
   "scripts": {
+    "postinstall": "cd md-editor && yarn install",
     "updatelibs": "node scripts/update-libs.js"
   },
   "license": "MIT"
