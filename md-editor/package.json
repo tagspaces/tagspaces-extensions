@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TagSpaces extension for editing notes in markdown format",
   "homepage": "./",
   "main": "build/index.js",
@@ -8,7 +8,6 @@
     "build/"
   ],
   "scripts": {
-    "postinstall": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "start": "react-scripts start",
     "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "build:dev": "react-app-rewired build",
