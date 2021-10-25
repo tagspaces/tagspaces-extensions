@@ -9,7 +9,8 @@ sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 $(document).ready(() => {
   const locale = getParameterByName('locale');
-  initI18N(locale, 'ns.viewerURL.json');
+  // initI18N(locale, 'ns.viewerURL.json');
+  initI18N('en_US', 'ns.viewerURL.json');
 });
 
 function setContent(content) {

@@ -9,7 +9,8 @@ const locale = getParameterByName('locale');
 const filePath = getParameterByName('file');
 
 $(document).ready(() => {
-  initI18N(locale, 'ns.viewerText.json');
+  // initI18N(locale, 'ns.viewerText.json');
+  initI18N('en_US', 'ns.viewerURL.json');
 });
 
 function setContent(content, fileDir) {
