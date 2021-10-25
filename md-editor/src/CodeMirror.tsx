@@ -17,14 +17,14 @@ const createCodeMirrorState = ({
   lock,
   dark,
   editable,
-  value,
+  value
 }: StateOptions) => {
   return EditorState.create({
     doc: value,
     extensions: [
       basicSetup,
       markdown(),
-      EditorView.updateListener.of((v) => {
+      EditorView.updateListener.of(v => {
         if (v.focusChanged) {
           lock.current = v.view.hasFocus;
         }
@@ -36,14 +36,14 @@ const createCodeMirrorState = ({
       EditorView.theme(
         {
           '&.cm-focused': {
-            outline: 'none',
-          },
+            outline: 'none'
+          }
         },
         { dark }
       ),
       // https://github.com/codemirror/codemirror.next/issues/173
-      EditorView.editable.of(editable),
-    ],
+      EditorView.editable.of(editable)
+    ]
   });
 };
 
@@ -53,7 +53,7 @@ type ViewOptions = {
 const createCodeMirrorView = ({ root, ...options }: ViewOptions) => {
   return new EditorView({
     state: createCodeMirrorState(options),
-    parent: root,
+    parent: root
   });
 };
 
@@ -80,7 +80,7 @@ export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
         lock,
         dark,
         editable,
-        value,
+        value
       });
       editorRef.current = editor;
 
@@ -97,7 +97,7 @@ export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
         current.setState(
           createCodeMirrorState({ onChange, lock, dark, editable, value })
         );
-      },
+      }
     }));
 
     return (

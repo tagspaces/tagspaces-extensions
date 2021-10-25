@@ -1,17 +1,21 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TagSpaces extension for editing notes in markdown format",
   "homepage": "./",
+  "main": "build/index.js",
+  "files": [
+    "build/"
+  ],
   "scripts": {
-    "postinstall": "yarn build",
     "start": "react-scripts start",
     "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "code-format": "npx prettier --write ."
+    "code-format": "npx prettier --write .",
+    "pkg-publish": "npm publish --access public"
   },
   "keywords": [
     "md",
@@ -19,11 +23,7 @@
     "editor",
     "tagspaces"
   ],
-  "author": {
-    "name": "TagSpaces UG",
-    "email": "info@tagspaces.org",
-    "url": "https://www.tagspaces.org"
-  },
+  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
     "@codemirror/basic-setup": "^0.19.0",
@@ -69,5 +69,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tagspaces/tagspaces-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tagspaces/tagspaces-extensions/issues"
   }
 }

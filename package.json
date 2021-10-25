@@ -3,10 +3,29 @@
   "version": "1.0.0",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
-  "author": {
-    "name": "TagSpaces UG",
-    "email": "info@tagspaces.org",
-    "url": "https://www.tagspaces.org"
+  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
+  "files": [
+    "archive-viewer/",
+    "document-viewer/",
+    "html-editor/",
+    "html-viewer/",
+    "image-viewer/",
+    "json-editor/",
+    "legacy/",
+    "libs/",
+    "md-editor/build/",
+    "media-player/",
+    "mhtml-viewer/",
+    "pdf-viewer/",
+    "rtf-viewer/",
+    "spreadsheet-viewer/",
+    "text-editor/",
+    "text-viewer/",
+    "url-viewer/"
+  ],
+  "scripts": {
+    "updatelibs": "node scripts/update-libs.js",
+    "pkg-publish": "npm publish --access public"
   },
   "devDependencies": {
     "bootstrap": "~3.4.1",
@@ -20,9 +39,6 @@
     "readability": "https://github.com/mozilla/readability.git#master",
     "dompurify": "~2.3.0",
     "shelljs": "^0.8.4"
-  },
-  "scripts": {
-    "updatelibs": "node scripts/update-libs.js"
   },
   "license": "MIT"
 }

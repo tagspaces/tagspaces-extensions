@@ -13,7 +13,7 @@ export const Loading = () => {
           style={{
             margin: '2.5rem 0',
             width: '50%',
-            lineHeight: '3.5rem',
+            lineHeight: '3.5rem'
           }}
         />
         <Skeleton

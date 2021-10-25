@@ -14,12 +14,12 @@ export const useLazy = (content: Content) => {
         return;
       }
       content()
-        .then((s) => {
+        .then(s => {
           setMd(s.default);
           setLoading(false);
           return;
         })
-        .catch((e) => {
+        .catch(e => {
           console.error(e);
           setMd('# 404 Not Found');
           setLoading(false);
