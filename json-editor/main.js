@@ -10,9 +10,9 @@ let isViewer = true;
 let filePath;
 const $document = $(document);
 
-$document.ready(() => {
-  const locale = getParameterByName('locale');
-  initI18N(locale, 'ns.editorJSON.json');
+$(() => {
+  // const locale = getParameterByName('locale');
+  initI18N('en_US', 'ns.editorJSON.json');
 
   if (isViewer) {
     $document.dblclick(() => {

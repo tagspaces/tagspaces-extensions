@@ -21,10 +21,7 @@ function togglePlay() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const locale = getParameterByName('locale');
-  const filePath =
-    getParameterByName('file') ||
-    'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4';
+  const filePath = getParameterByName('file');
   // const ext = filePath.split('.').pop().toLowerCase();
   // const extensionSupportedFileTypesAudio = ['mp3', 'ogg', 'flac'];
   // const extensionSupportedFileTypesVideo = ['mp4', 'webm', 'ogv', 'm4v'];
@@ -32,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let enableVideoOutput = true;
   let loop = 'loopAll'; // loopOne, noLoop, loopAll
 
-  initI18N(locale, 'ns.viewerAudioVideo.json');
+  // const locale = getParameterByName('locale');
+  initI18N('en_US', 'ns.viewerAudioVideo.json');
 
   loadExtSettings();
   initPlayer();

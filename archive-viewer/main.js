@@ -1,20 +1,20 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
-/* globals Handlebars, Nanobar, marked */
+/* globals Handlebars, Nanobar, initI18N, $ */
 'use strict';
 
 var JSZip, JSZipUtils;
-let maxPreviewSize = 1024 * 3 || {}; //3kb limit for preview
+let maxPreviewSize = 1024 * 3 || {}; // 3kb limit for preview
 
-$(document).ready(() => {
+$(() => {
   // const theme = getParameterByName('theme');
   // if (theme === 'dark') {
   //   document.documentElement.setAttribute('data-theme', 'dark');
   // }
 
-  const locale = getParameterByName('locale');
   const filePath = getParameterByName('file');
-  initI18N(locale, 'ns.viewerZIP.json');
+  // const locale = getParameterByName('locale');
+  initI18N('en_US', 'ns.viewerZIP.json');
 
   let extSettings;
   loadExtSettings();

@@ -8,13 +8,14 @@ sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 let $rtfContent;
 
-$(document).ready(() => {
-  const locale = getParameterByName('locale');
+$(() => {
   // const filePath = getParameterByName('file');
   // const searchQuery = getParameterByName('query');
   let extSettings;
 
-  initI18N(locale, 'ns.viewerRTF.json');
+  // const locale = getParameterByName('locale');
+  // initI18N(locale, 'ns.viewerRTF.json');
+  initI18N('en_US', 'ns.viewerRTF.json');
   loadExtSettings();
 
   $rtfContent = $('#rtfContent');

@@ -45,7 +45,7 @@ filetype.svg = 'xml';
 filetype.xml = 'xml';
 filetype.txt = 'txt';
 
-$(document).ready(() => {
+$(() => {
   initI18N(locale, 'ns.editorText.json');
 
   if (viewMode) {

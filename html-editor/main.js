@@ -112,9 +112,12 @@ function initEditor() {
       onChange: () => {
         sendMessageToHost({ command: 'contentChangedInEditor', filepath: '' });
       },
-      onKeyup: (e) => {
+      onKeyup: e => {
         if (e.ctrlKey && e.keyCode === 83 && currentFilePath) {
-          sendMessageToHost({ command: 'saveDocument', filepath: currentFilePath });
+          sendMessageToHost({
+            command: 'saveDocument',
+            filepath: currentFilePath
+          });
         }
       }
     }
@@ -130,9 +133,9 @@ function initEditor() {
   });
 }
 
-$(document).ready(() => {
-  const locale = getParameterByName('locale');
-  initI18N(locale, 'ns.editorHTML.json');
+$(() => {
+  // const locale = getParameterByName('locale');
+  initI18N('en_US', 'ns.editorHTML.json');
 });
 
 let sourceURL = '';
@@ -155,7 +158,10 @@ function getContent() {
   // Clean content
 
   // removing all scripts from the document
-  let cleanedContent = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+  let cleanedContent = content.replace(
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    ''
+  );
 
   // saving all images as png in base64 format
   let match;
@@ -163,9 +169,9 @@ function getContent() {
   let imgUrl = '';
   const rex = /<img.*?src="([^">]*\/([^">]*?))".*?>/g;
 
-  while (match = rex.exec(cleanedContent)) {
+  while ((match = rex.exec(cleanedContent))) {
     imgUrl = match[1];
-    console.log("URLs: " + imgUrl);
+    console.log('URLs: ' + imgUrl);
     if (imgUrl.indexOf('data:image') === 0) {
       // Ignore data url
     } else {
@@ -173,25 +179,36 @@ function getContent() {
     }
   }
 
-  urls.forEach((dataURLObject) => {
+  urls.forEach(dataURLObject => {
     if (dataURLObject[1].length > 7) {
-      cleanedContent = cleanedContent.split(dataURLObject[0]).join(dataURLObject[1]);
+      cleanedContent = cleanedContent
+        .split(dataURLObject[0])
+        .join(dataURLObject[1]);
     }
     return true;
     // console.log(dataURLObject[0]+" - "+dataURLObject[1]);
   });
   // end saving all images
 
-  cleanedContent = '<body data-sourceurl="' + sourceURL +
-                  '" data-scrappedon="' + scrappedOn +
-                  '" data-screenshot="' + screenshotDataURL +
-                  '" >' + cleanedContent + '</body>';
+  cleanedContent =
+    '<body data-sourceurl="' +
+    sourceURL +
+    '" data-scrappedon="' +
+    scrappedOn +
+    '" data-screenshot="' +
+    screenshotDataURL +
+    '" >' +
+    cleanedContent +
+    '</body>';
   // console.log(cleanedContent);
 
   const indexOfBody = currentContent.indexOf('<body');
   let htmlContent = '';
   if (indexOfBody >= 0 && currentContent.indexOf('</body>') > indexOfBody) {
-    htmlContent = currentContent.replace(/\<body[^>]*\>([^]*)\<\/body>/m, cleanedContent); // jshint ignore:line
+    htmlContent = currentContent.replace(
+      /\<body[^>]*\>([^]*)\<\/body>/m,
+      cleanedContent
+    ); // jshint ignore:line
   } else {
     htmlContent = cleanedContent;
   }
@@ -234,7 +251,9 @@ function setContent(content, filePath) {
       const scrappedOnRegex = /data-scrappedon="([^"]*)"/m;
       scrappedOn = content.match(scrappedOnRegex)[1];
     } catch (e) {
-      console.log('Error parsing the scrapping date from the HTML document. ' + e);
+      console.log(
+        'Error parsing the scrapping date from the HTML document. ' + e
+      );
     }
 
     try {
@@ -284,7 +303,7 @@ function setContent(content, filePath) {
     }
   }
 
-  urls.forEach((dataURLObject) => {
+  urls.forEach(dataURLObject => {
     if (dataURLObject[1].length > 7) {
       cleanedContent = cleanedContent
         .split(dataURLObject[0])
@@ -294,10 +313,16 @@ function setContent(content, filePath) {
   });
   // end saving all images
 
-  cleanedContent = '<body data-sourceurl="' + sourceURL +
-                  '" data-scrappedon="' + scrappedOn +
-                  '" data-screenshot="' + screenshotDataURL +
-                  '" >' + cleanedContent + '</body>';
+  cleanedContent =
+    '<body data-sourceurl="' +
+    sourceURL +
+    '" data-scrappedon="' +
+    scrappedOn +
+    '" data-screenshot="' +
+    screenshotDataURL +
+    '" >' +
+    cleanedContent +
+    '</body>';
 
   $htmlEditor = $('#htmlEditor');
   $htmlEditor.append(cleanedContent);
