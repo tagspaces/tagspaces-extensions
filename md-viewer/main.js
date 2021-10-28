@@ -1,7 +1,7 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
- /* globals marked, initI18N, getParameterByName, $, sendMessageToHost, isWeb */
+/* globals marked, initI18N, getParameterByName, $, sendMessageToHost, isWeb */
 
 'use strict';
 
@@ -9,10 +9,7 @@ sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 let $mdContent;
 
-$(document).ready(init);
-
-function init() {
-  const locale = getParameterByName('locale');
+$(() => {
   const filepath = getParameterByName('file');
 
   marked.setOptions({
@@ -33,6 +30,10 @@ function init() {
     sendMessageToHost({ command: 'editDocument' });
   });
 
+  let locale = getParameterByName('locale');
+  if (locale === 'en') {
+    locale = 'en_US';
+  }
   initI18N(locale, 'ns.viewerMD.json');
 
   $mdContent = $('#mdContent');
@@ -149,12 +150,13 @@ function init() {
   function loadExtSettings() {
     extSettings = JSON.parse(localStorage.getItem('viewerMDSettings'));
   }
-}
+});
 
 function setContent(content, fileDirectory) {
   $mdContent = $('#mdContent');
   const UTF8_BOM = '\ufeff';
-  if (content.startsWith(UTF8_BOM)) { // Cleaning BOM character
+  if (content.startsWith(UTF8_BOM)) {
+    // Cleaning BOM character
     content = content.substr(1);
   }
 
@@ -170,7 +172,7 @@ function setContent(content, fileDirectory) {
     );
   }
 
-  const hasURLProtocol = (url) => {
+  const hasURLProtocol = url => {
     return (
       url.indexOf('http://') === 0 ||
       url.indexOf('https://') === 0 ||
@@ -201,7 +203,7 @@ function setContent(content, fileDirectory) {
       }
 
       $(link).off();
-      $(link).on('click', (e) => {
+      $(link).on('click', e => {
         e.preventDefault();
         if (path) {
           currentSrc = encodeURIComponent(path);

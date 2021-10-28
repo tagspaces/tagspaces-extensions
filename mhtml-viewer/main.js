@@ -1,10 +1,10 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* global define MailParser, DOMPurify, Readability */
-/* globals marked, MailParser, Mousetrap */
+/* globals mailparser, DOMPurify, Readability, Mousetrap, $, isWeb, sendMessageToHost, getParameterByName */
 
 'use strict';
+
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 let readabilityContent;
@@ -13,10 +13,10 @@ let mhtmlViewer;
 const fontSize = 14;
 
 function setContent(content, filePathURI) {
-  //console.log('MHTML Content: '+content);
+  // console.log('MHTML Content: '+content);
   const mhtparser = new mailparser.MailParser();
-  mhtparser.on('end', function(mail_object) {
-    //console.log('mail_object:', mail_object);
+  mhtparser.on('end', mail_object => {
+    // console.log('mail_object:', mail_object);
 
     const contLocation = /^content-location:(.*$)/im.exec(content);
     mail_object.contentLocation =
@@ -48,7 +48,7 @@ function setContent(content, filePathURI) {
     }
 
     mhtmlViewer = document.getElementById('mhtmlViewer');
-    mhtmlViewer.style.fontSize = fontSize; //'large';
+    mhtmlViewer.style.fontSize = fontSize;
     mhtmlViewer.style.fontFamily = 'Helvetica, Arial, sans-serif';
     mhtmlViewer.style.background = '#ffffff';
     mhtmlViewer.style.color = '';
@@ -112,7 +112,10 @@ function updateHTMLContent($targetElement, content, fileDirectory) {
 function init(filePathURI, objectlocation) {
   let $htmlContent;
 
-  const locale = getParameterByName('locale');
+  let locale = getParameterByName('locale');
+  if (locale === 'en') {
+    locale = 'en_US';
+  }
   initI18N(locale, 'ns.viewerMHTML.json');
 
   let extSettings;
@@ -161,7 +164,7 @@ function init(filePathURI, objectlocation) {
   $('#changeStyleButton').hide();
   $('#resetStyleButton').hide();
 
-  //hide zoom operation menu items because they don't influence on the style
+  // hide zoom operation menu items because they don't influence on the style
   $('#zoomInButton').hide();
   $('#zoomOutButton').hide();
   $('#zoomResetButton').hide();
@@ -305,7 +308,7 @@ function init(filePathURI, objectlocation) {
     if (readabilityContent) {
       updateHTMLContent($('#mhtmlViewer'), readabilityContent);
     }
-    //if ($('#mhtmlViewer').data('clicked', true)) {
+    // if ($('#mhtmlViewer').data('clicked', true)) {
     $('#toSerifFont').show();
     $('#toSansSerifFont').show();
     $('#increasingFontSize').show();
@@ -320,7 +323,7 @@ function init(filePathURI, objectlocation) {
     $('#readabilityOn').hide();
     $('#changeStyleButton').hide();
     $('#resetStyleButton').hide();
-    //}
+    // }
   });
 
   $('#readabilityOff').off();

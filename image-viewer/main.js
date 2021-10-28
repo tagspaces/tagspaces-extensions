@@ -2,9 +2,12 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 /* globals initI18N, getParameterByName, $, isWeb, isCordova, Viewer, EXIF, jQuery, Tiff */
 
-$(document).ready(() => {
+$(() => {
   let filePath = getParameterByName('file'); // TODO check decodeURIComponent loading fileswith#inthe.name
-  const locale = getParameterByName('locale');
+  let locale = getParameterByName('locale');
+  if (locale === 'en') {
+    locale = 'en_US';
+  }
   initI18N(locale, 'ns.viewerImage.json');
 
   if (isCordova || isWeb) {

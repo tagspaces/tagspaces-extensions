@@ -9,14 +9,15 @@ let sourceURL;
 let screenshot;
 let scrappedon;
 
-$(document).ready(init);
-
 $(document).dblclick(() => {
   sendMessageToHost({ command: 'editDocument' });
 });
 
-function init() {
-  const locale = getParameterByName('locale');
+$(() => {
+  let locale = getParameterByName('locale');
+  if (locale === 'en') {
+    locale = 'en_US';
+  }
   initI18N(locale, 'ns.viewerHTML.json');
 
   const searchQuery = getParameterByName('query');
@@ -149,7 +150,7 @@ function init() {
   $('#readabilityFontSize').hide();
   $('#themeStyle').hide();
   $('#readabilityOff').hide();
-}
+});
 
 // fixing embedding of local images
 function fixingEmbeddingOfLocalImages($htmlContent, fileDirectory) {
