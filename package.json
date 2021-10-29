@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
@@ -33,11 +33,11 @@
     "font-awesome": "^4.7.0",
     "jquery": "~3.6.0",
     "mousetrap": "~1.5.3",
-    "marked": "~0.6.0",
+    "marked": "~3.0.8",
     "i18next": "~10.2.2",
     "jquery-i18next": "~1.2.1",
     "readability": "https://github.com/mozilla/readability.git#master",
-    "dompurify": "~2.3.0",
+    "dompurify": "~2.3.3",
     "shelljs": "^0.8.4"
   },
   "license": "MIT"

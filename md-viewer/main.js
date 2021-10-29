@@ -160,7 +160,7 @@ function setContent(content, fileDirectory) {
     content = content.substr(1);
   }
 
-  content = marked(content);
+  content = marked(DOMPurify.sanitize(content));
   $mdContent.empty().append(content);
 
   // $('base').attr('href', fileDirectory + '//');
