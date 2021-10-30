@@ -108,7 +108,7 @@ function sendMessageToHost(message) {
   }
 }
 
-$(document).ready(() => {
+$(() => {
   // Disable drag events in extensions
   $(document).on('drop dragend dragenter dragover', event => {
     event.preventDefault();
