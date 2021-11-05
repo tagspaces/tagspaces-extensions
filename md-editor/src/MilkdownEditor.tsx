@@ -87,10 +87,12 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
           '*'
         );
       };
-      return (
+      return readOnly ? (
         <a href="#" onClick={clickLink}>
           {children}
         </a>
+      ) : (
+        <a href="#">{children}</a>
       );
     };
 
