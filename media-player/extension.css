@@ -15,11 +15,8 @@ body {
   padding: 0px;
 }
 
-/* Remove to make the player's toolbar aligned to the bottom */
 .plyr__controls {
-  top: 0 !important;
-  bottom: unset !important;
-  padding-top: 25px !important;
+  padding-right: 70px !important;
 }
 
 :root {
