@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
@@ -13,6 +13,7 @@
     "json-editor/",
     "legacy/",
     "libs/",
+    "md-viewer/",
     "md-editor/build/",
     "media-player/",
     "mhtml-viewer/",
@@ -40,5 +41,9 @@
     "dompurify": "~2.3.3",
     "shelljs": "^0.8.4"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "yarn": "please-use-npm",
+    "npm": ">= 6.14.15"
+  }
 }
