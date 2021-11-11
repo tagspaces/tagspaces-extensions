@@ -63,3 +63,13 @@ body {
   overflow-y: auto;
   overflow-y: overlay;
 }
+
+.milkdown {
+  zoom: 90%;
+}
+
+.milkdown h1 {
+  font-size: 2.4rem;
+  margin-top: 1rem !important;
+  margin-bottom: 0.8rem !important;
+}
