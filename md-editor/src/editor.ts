@@ -14,7 +14,7 @@ import { history } from '@milkdown/plugin-history';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { math } from '@milkdown/plugin-math';
 import { prism } from '@milkdown/plugin-prism';
-import { CursorStatus, slash, slashPlugin } from '@milkdown/plugin-slash';
+import { defaultActions, slash, slashPlugin } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
 import { gfm } from '@milkdown/preset-gfm';
 import { nord } from '@milkdown/theme-nord';
@@ -61,14 +61,53 @@ export const createEditor = (
     .use(math)
     .use(emoji)
     .use(
-      slash.configure(slashPlugin, {
+      slash.configure(
+        slashPlugin,
+        {
+          config: ctx => {
+            // Get default slash plugin items
+            const actions = defaultActions(ctx);
+            // Define a status builder
+            return ({ isTopLevel, content, parentNode }) => {
+              // You can only show something at root level
+              if (!isTopLevel) return null;
+
+              // Empty content ? Set your custom empty placeholder !
+              if (!content) {
+                return {
+                  placeholder: readOnly
+                    ? 'Click the edit button or double click to start editing'
+                    : 'Type / to use the slash commands...'
+                };
+              }
+
+              if (content.startsWith('/')) {
+                return content === '/'
+                  ? {
+                      placeholder: 'Type to filter...',
+                      actions
+                    }
+                  : {
+                      // @ts-ignore
+                      actions: actions.filter(({ keyword }) =>
+                        keyword.some((key: any) =>
+                          key.includes(content.slice(1).toLocaleLowerCase())
+                        )
+                      )
+                    };
+              }
+            };
+          }
+        }
+        /*{
         placeholder: {
           [CursorStatus.Empty]: readOnly
             ? 'Click the edit button or double click to start editing'
             : 'Type / to use the slash commands...',
           [CursorStatus.Slash]: 'Type to filter...'
         }
-      })
+      }*/
+      )
     );
 
   return editor;

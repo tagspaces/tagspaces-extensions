@@ -131,8 +131,8 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
       (root, renderReact) => {
         const nodes = commonmark
           // .configure(paragraph, { view: renderReact(TSParagraph) })
-          // @ts-ignore
           .configure(link, { view: renderReact(TSLink) })
+          // @ts-ignore
           .configure(image, { view: renderReact(TSImage) });
         return createEditor(
           root,
