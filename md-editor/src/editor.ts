@@ -46,9 +46,9 @@ export const createEditor = (
       ctx.set(listenerCtx, { markdown: onChange ? [onChange] : [] });
     })
     .use(nord)
+    .use(commonmark)
     .use(nodes)
     .use(gfm)
-    .use(commonmark)
     .use(complete(() => setEditorReady(true)))
     .use(clipboard)
     .use(listener)
