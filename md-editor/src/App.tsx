@@ -206,21 +206,24 @@ const App: React.FC = () => {
 
   const updateContent = (content: string) => {
     // @ts-ignore
-    window.mdContent = content;
-    // @ts-ignore
-    window.editMode = true;
-    // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
-    /*window.parent.postMessage(
-        JSON.stringify({ command: 'editDocument' }),
+    if (window.mdContent !== content) {
+      // @ts-ignore
+      window.mdContent = content;
+      // @ts-ignore
+      window.editMode = true;
+      // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
+      /*window.parent.postMessage(
+          JSON.stringify({ command: 'editDocument' }),
+          '*'
+      );*/
+      window.parent.postMessage(
+        JSON.stringify({
+          command: 'contentChangedInEditor'
+          // filepath: filePath
+        }),
         '*'
-    );*/
-    window.parent.postMessage(
-      JSON.stringify({
-        command: 'contentChangedInEditor'
-        // filepath: filePath
-      }),
-      '*'
-    );
+      );
+    }
   };
 
   const toggleViewSource = () => {
