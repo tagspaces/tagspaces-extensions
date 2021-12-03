@@ -205,10 +205,18 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
+    const cleanNewContent = content
+      .replaceAll('\\_', '_')
+      .replaceAll('\n', '');
     // @ts-ignore
-    if (window.mdContent !== content) {
+    const cleanContent = window.mdContent
+      .replaceAll('\\_', '_')
+      .replaceAll('\n', '');
+
+    if (cleanContent !== cleanNewContent) {
       // @ts-ignore
       window.mdContent = content;
+      // console.log('content changed:' + content);
       // @ts-ignore
       window.editMode = true;
       // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
