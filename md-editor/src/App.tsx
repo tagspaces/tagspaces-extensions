@@ -186,7 +186,14 @@ const App: React.FC = () => {
   );*/
 
   const milkdownListener = React.useCallback((getMarkdown: () => string) => {
-    updateContent(getMarkdown());
+    const content = getMarkdown();
+    if (
+      !milkdownRef.current ||
+      // @ts-ignore
+      !milkdownRef.current.isEqualMarkdown(window.mdContent, content)
+    ) {
+      updateContent(getMarkdown());
+    }
     /*const lock = lockCode.current;
     if (lock) return;
 
@@ -205,9 +212,7 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
-    const cleanNewContent = content
-      .replaceAll('\\_', '_')
-      .replaceAll('\n', '');
+    const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
     // @ts-ignore
     const cleanContent = window.mdContent
       .replaceAll('\\_', '_')

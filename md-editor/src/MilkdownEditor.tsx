@@ -16,7 +16,7 @@ type Props = {
   onChange?: (getMarkdown: () => string) => void;
 };
 
-export type MilkdownRef = { update: (markdown: string) => void };
+export type MilkdownRef = { update: (markdown: string) => void, isEqualMarkdown: (prev: string, next: string) => boolean };
 const MilkdownEditor = forwardRef<MilkdownRef, Props>(
   ({ content, readOnly, onChange }, ref) => {
     const editorRef = React.useRef<EditorRef>(null);
@@ -43,6 +43,19 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
             )
           );
         });
+      },
+      isEqualMarkdown: (prev: string, next: string) => {
+        if (!editorReady || !editorRef.current) return false;
+        const editor = editorRef.current.get();
+        if (!editor) return false;
+        return editor.action(ctx => {
+          const parser = ctx.get(parserCtx);
+          const prevDoc = parser(prev)?.toJSON();
+          const nextDoc = parser(next)?.toJSON();
+          console.log(JSON.stringify(prevDoc));
+          console.log(JSON.stringify(nextDoc));
+          return JSON.stringify(prevDoc) === JSON.stringify(nextDoc);
+        })
       }
     }));
 
