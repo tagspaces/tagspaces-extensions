@@ -1,0 +1,12 @@
+{
+  "changeTheme": "Changer de Thème",
+  "save": "Sauvegarder",
+  "print": "Imprimer",
+  "about": "À Propos",
+  "aboutTitle": "À propos de l'extension editorText",
+  "markdownPreview": "Aperçu Markdown",
+  "markdownTitle": "Prévisualisation de Markdown",
+  "markdownHelpButton": "Aide pour MarkDown",
+  "markdownHelpDialogTitle": "Référence Syntaxique Markdown",
+  "-": "-"
+}

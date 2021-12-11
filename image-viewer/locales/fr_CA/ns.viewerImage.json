@@ -1,0 +1,19 @@
+{
+    "zoomOut": "Zoom Arrière",
+    "zoomIn": "Zoom Avant",
+    "zoomReset": "Taille Normale",
+    "rotateRight": "Faire Tourner vers la Droite",
+    "rotateLeft": "Faire Tourner vers la Gauche",
+    "flipHorizontal": "Retourner Horizontalement",
+    "flipVertical": "Retourner Verticalement",
+    "flipBoth": "Retourner les Deux",
+    "print": "Imprimer",
+    "about": "À Propos",
+    "aboutTitle": "À Propos de ViewerImage",
+    "exif": "Montrer Exif et IPTC",
+    "exifTitle": "Données des Images Exif et IPTC",
+    "changeBackgroundColor": "Changer la Couleur de l'Arrière-plan",
+    "fitToScreen": "Adapter à l'Écran",
+    "toggleBlackAndWhiteColor": "Basculer le Noir et Blanc",
+    "-": "-"
+}
