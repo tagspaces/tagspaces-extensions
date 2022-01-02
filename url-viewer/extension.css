@@ -6,4 +6,6 @@ body {
 
 .viewerURLButton {
   margin: 10px;
+  background-color: #1dd19f;
+  color: white;
 }

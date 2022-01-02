@@ -42,13 +42,13 @@ function setContent(content) {
 
   $htmlContent.append(
     $('<a>', {
-      class: 'viewerURLButton btn btn-primary',
+      class: 'viewerURLButton btn',
       title: 'Opens the URL in the default browser',
       'data-url': url,
       text: 'Open URL'
     })
       .prepend("<i class='fa fa-external-link'></i>&nbsp;")
-      .click(e => {
+      .on('click', e => {
         e.preventDefault();
         sendMessageToHost({
           command: 'openLinkExternally',
