@@ -42,7 +42,7 @@ function setContent(content) {
 
   $htmlContent.append(
     $('<a>', {
-      class: 'viewerURLButton btn',
+      class: 'viewerURLButton btn btn-primary',
       title: 'Opens the URL in the default browser',
       'data-url': url,
       text: 'Open URL'
