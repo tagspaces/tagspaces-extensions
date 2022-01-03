@@ -29,11 +29,11 @@ $(() => {
 
   const styles = [
     '',
-    'solarized-dark',
+    // 'solarized-dark',
     'github',
     'metro-vibes',
-    'clearness',
-    'clearness-dark'
+    'clearness'
+    // 'clearness-dark'
   ];
   let currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
