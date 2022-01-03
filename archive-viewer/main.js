@@ -7,11 +7,6 @@ var JSZip, JSZipUtils;
 let maxPreviewSize = 1024 * 3 || {}; // 3kb limit for preview
 
 $(() => {
-  // const theme = getParameterByName('theme');
-  // if (theme === 'dark') {
-  //   document.documentElement.setAttribute('data-theme', 'dark');
-  // }
-
   const filePath = getParameterByName('file');
   // const locale = getParameterByName('locale');
   initI18N('en_US', 'ns.viewerZIP.json');
