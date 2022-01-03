@@ -17,33 +17,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import { createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
-const lightTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#1dd19f',
-      contrastText: '#ffffff'
-    },
-    secondary: {
-      main: '#11cb5f',
-      contrastText: '#ffffff'
-    }
-  }
-});
-
-const darkTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#ff9abe',
-      contrastText: '#ffffff'
-    },
-    secondary: {
-      main: '#11cb5f',
-      contrastText: '#ffffff'
-    }
-  }
-});
-
-const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
+const MainMenu: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
   toggleViewSource,
   mode
 }) => {
@@ -82,10 +56,34 @@ const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
     }
   ];
 
-  const theme = document.documentElement.getAttribute('data-theme');
+  // const theme = document.documentElement.getAttribute('data-theme');
+
+  const primaryBackgroundColor = window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue('--primary-background-color')
+    .trim();
+  const primaryTextColor = window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue('--primary-text-color')
+    .trim();
+
+  console.log('CSS: ' + primaryBackgroundColor);
+
+  const tsTheme = createTheme({
+    palette: {
+      primary: {
+        main: primaryBackgroundColor,
+        contrastText: primaryTextColor
+      },
+      secondary: {
+        main: '#11cb5f',
+        contrastText: '#ffffff'
+      }
+    }
+  });
 
   return (
-    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+    <ThemeProvider theme={tsTheme}>
       {Boolean(anchorEl) && (
         <Menu
           id="fab-menu"
@@ -142,4 +140,4 @@ const FAB: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
   );
 };
 
-export default FAB;
+export default MainMenu;

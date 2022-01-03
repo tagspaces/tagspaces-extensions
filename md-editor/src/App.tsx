@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 import useEventListener from './useEventListener';
 import './extension.css';
-import FAB from './fab';
+import MainMenu from './MainMenu';
 import { CodeMirror, CodeMirrorRef } from './CodeMirror';
 import MilkdownEditor, { MilkdownRef } from './MilkdownEditor';
 
@@ -205,9 +205,7 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
-    const cleanNewContent = content
-      .replaceAll('\\_', '_')
-      .replaceAll('\n', '');
+    const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
     // @ts-ignore
     const cleanContent = window.mdContent
       .replaceAll('\\_', '_')
@@ -263,7 +261,7 @@ const App: React.FC = () => {
           lock={lockCode}
         />
       )}
-      <FAB toggleViewSource={toggleViewSource} mode={mode} />
+      <MainMenu toggleViewSource={toggleViewSource} mode={mode} />
     </div>
   );
 };

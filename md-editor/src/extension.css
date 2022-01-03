@@ -5,8 +5,7 @@
   width: 100% !important;
   max-width: 70rem !important;
   box-shadow: none !important;
-  background-color: transparent !important;
-  padding-top: 0 !important;
+  padding-top: 5px;
 }
 
 @media print {
@@ -42,10 +41,6 @@
   --background: 19, 19, 19;
   --surface: 48, 48, 48;
 }
-
-/* body {
-  background: rgba(var(--background), 1);
-}  */
 
 html,
 body {
