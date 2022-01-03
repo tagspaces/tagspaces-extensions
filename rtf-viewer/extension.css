@@ -4,7 +4,9 @@
   overflow: auto;
   height: 100%;
   font-size: 13px;
-  margin: 5px;
+  padding: 5px;
+  color: rgb(17, 17, 17);
+  background-color: whitesmoke;
 }
 
 .zoomSmallest {
