@@ -65,17 +65,15 @@
   color: white;
 }
 
-.roundButton:hover, .roundButton:active,  .roundButton:focus {
+.roundButton:hover,
+.roundButton:active,
+.roundButton:focus {
   border-radius: 50%;
   color: white;
 }
 
 .perspectiveMainMenuButton {
-  background-color: #DCEB1E;
-}
-
-.viewerMainMenuButton {
-  background-color: #1DD19F;
+  background-color: #dceb1e;
 }
 
 #mainContainer {
@@ -105,26 +103,36 @@
   border-top: 1px solid lightgray;
 }
 
-.col1, .col2, .col3 {
+.col1,
+.col2,
+.col3 {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
 }
 
-.col1 .navbar, .col1 > .row2, .col1 > .row3, .col2 .navbar, .col2 .row3, .col3 .navbar {
-	background-color: #F2F2F2 !important;
+.col1 .navbar,
+.col1 > .row2,
+.col1 > .row3,
+.col2 .navbar,
+.col2 .row3,
+.col3 .navbar {
+  background-color: #f2f2f2 !important;
 }
 
 .col1 .navbar {
-	padding-left: 5px;
+  padding-left: 5px;
 }
 
-.col2 .navbar, .col3 .navbar {
+.col2 .navbar,
+.col3 .navbar {
   padding-left: 5px;
   padding-right: 5px;
 }
 
-#showTagGroups, #showLocations, #contactUs {
+#showTagGroups,
+#showLocations,
+#contactUs {
   width: 60px;
 }
 
@@ -149,7 +157,7 @@
 
   height: 100%;
   min-width: 300px;
-  box-shadow: 2px 0px 3px -1px rgba(0,0,0,0.2);
+  box-shadow: 2px 0px 3px -1px rgba(0, 0, 0, 0.2);
   z-index: 1010;
 }
 
@@ -160,8 +168,8 @@
 
   min-height: 80px;
 
-	box-shadow: 0px 7px 20px 0px rgba(242, 242, 242, 1);
-	z-index: 1;
+  box-shadow: 0px 7px 20px 0px rgba(242, 242, 242, 1);
+  z-index: 1;
 }
 
 .col1 .row1 .navbar {
@@ -183,9 +191,9 @@
   -ms-flex: 0 1 45px;
 
   min-height: 45px;
-	padding-left: 5px;
-	padding-top: 5px;
-	box-shadow: 0px -7px 20px 0px rgba(242, 242, 242, 1);
+  padding-left: 5px;
+  padding-top: 5px;
+  box-shadow: 0px -7px 20px 0px rgba(242, 242, 242, 1);
   z-index: 1;
 }
 
@@ -221,12 +229,12 @@
   display: -webkit-flex;
 
   min-height: 80px;
-  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
 .col2 .row1 nav {
-  flex:1;
+  flex: 1;
   margin-bottom: 0;
 }
 
@@ -241,7 +249,6 @@
   min-height: 0px;
   border-right: solid 1px #ddd;
 }
-
 
 /*==== COL3 ====== */
 
@@ -276,12 +283,12 @@
   display: -webkit-flex;
 
   min-height: 80px;
-  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
 .col3 .row1 nav {
-  flex:1;
+  flex: 1;
   margin-bottom: 0;
 }
 
@@ -316,9 +323,9 @@
 }
 
 #tagsContainer {
-    width: 100%;
-    max-height: 55px;
-    margin: 0;
+  width: 100%;
+  max-height: 55px;
+  margin: 0;
 }
 
 #fileViewerMainToolbar {
