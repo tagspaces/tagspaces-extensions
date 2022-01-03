@@ -5,8 +5,8 @@
   height: 100%;
   font-size: 13px;
   padding: 5px;
-  color: rgb(17, 17, 17);
-  background-color: whitesmoke;
+  color: var(--default-text-color) 1;
+  background-color: var(--default-background-color);
 }
 
 .zoomSmallest {

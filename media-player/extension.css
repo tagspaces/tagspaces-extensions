@@ -20,7 +20,7 @@ body {
 }
 
 :root {
-  --plyr-color-main: #1dd19f;
+  --plyr-color-main: var(--primary-background-color);
   --plyr-audio-controls-background: black;
   --plyr-audio-control-color: white;
 }

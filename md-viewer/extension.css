@@ -1,12 +1,11 @@
 @import '../legacy/common.css';
 
-body {
-  font-size: 13px;
-}
-
 #mdContent {
   overflow: auto;
   height: 100%;
+  font-size: var(--default-text-size);
+  color: var(--default-text-color);
+  background-color: var(--default-background-color);
 }
 
 .zoomSmallest {

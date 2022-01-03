@@ -3,6 +3,9 @@
 #htmlout {
   height: 100%;
   overflow: auto;
+  font-size: var(--default-text-size);
+  color: var(--default-text-color);
+  background-color: var(--default-background-color);
 }
 
 #htmlout table {

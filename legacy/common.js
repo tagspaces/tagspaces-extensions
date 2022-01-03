@@ -22,6 +22,15 @@ const isWeb =
 const isWin = navigator.appVersion.includes('Win');
 const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
 
+function setTheme(theme) {
+  document.documentElement.className = theme;
+}
+
+const theme = getParameterByName('theme');
+if (theme) {
+  document.documentElement.className = theme;
+}
+
 function getParameterByName(paramName) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');

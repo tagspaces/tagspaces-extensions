@@ -6,9 +6,9 @@ body {
 }
 
 #mhtmlViewer {
-  font-size: 14px;
-  color: rgb(17, 17, 17);
-  background-color: whitesmoke;
+  font-size: var(--default-text-size);
+  color: var(--default-text-color);
+  background-color: var(--default-background-color);
 }
 
 #readabilityFont {

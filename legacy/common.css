@@ -3,6 +3,7 @@
 @import 'general.css';
 @import 'layout.css';
 @import 'components.css';
+@import 'theming.css';
 
 #aboutExtensionModal img {
   width: 100%;

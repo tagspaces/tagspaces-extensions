@@ -3,9 +3,9 @@
 #htmlContent {
   overflow: auto;
   height: 100%;
-  font-size: 13px;
-  color: rgb(17, 17, 17);
-  background-color: whitesmoke;
+  font-size: var(--default-text-size);
+  color: var(--default-text-color);
+  background-color: var(--default-background-color);
 }
 
 .zoomSmallest {
