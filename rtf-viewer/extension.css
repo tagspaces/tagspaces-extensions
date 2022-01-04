@@ -3,8 +3,8 @@
 #rtfContent {
   overflow: auto;
   height: 100%;
-  font-size: 13px;
   padding: 5px;
+  font-size: var(--default-text-size);
   color: var(--default-text-color) 1;
   background-color: var(--default-background-color);
 }
