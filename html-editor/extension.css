@@ -3,8 +3,17 @@
 html,
 body {
   height: 100%;
-  font-size: 13px;
+  color: var(--default-text-color) 1;
+  background-color: var(--default-background-color);
   padding: 0 !important;
+}
+
+.note-editor.note-frame {
+  border: none !important;
+  box-shadow: none !important;
+  font-size: var(--default-text-size);
+  color: var(--default-text-color) 1;
+  background-color: var(--default-background-color);
 }
 
 .note-editor {

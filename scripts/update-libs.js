@@ -55,3 +55,27 @@ sh.mkdir('libs/readability');
 sh.cp('node_modules/readability/README.md', 'libs/readability');
 sh.cp('node_modules/readability/JSDOMParser.js', 'libs/readability');
 sh.cp('node_modules/readability/Readability.js', 'libs/readability');
+
+sh.rm('-rf', 'html-editor/libs/summernote');
+sh.mkdir('html-editor/libs/summernote');
+sh.mkdir('html-editor/libs/summernote/dist');
+sh.mkdir('html-editor/libs/summernote/dist/font');
+sh.mkdir('html-editor/libs/summernote/dist/lang');
+sh.cp('node_modules/summernote/README.md', 'html-editor/libs/summernote');
+sh.cp('node_modules/summernote/LICENSE', 'html-editor/libs/summernote');
+sh.cp(
+  'node_modules/summernote/dist/font/*',
+  'html-editor/libs/summernote/dist/font/'
+);
+sh.cp(
+  'node_modules/summernote/dist/lang/*.js',
+  'html-editor/libs/summernote/dist/lang/'
+);
+sh.cp(
+  'node_modules/summernote/dist/summernote.css',
+  'html-editor/libs/summernote/dist/summernote.css'
+);
+sh.cp(
+  'node_modules/summernote/dist/summernote.min.js',
+  'html-editor/libs/summernote/dist/summernote.min.js'
+);

@@ -39,6 +39,7 @@
     "jquery-i18next": "~1.2.1",
     "readability": "https://github.com/mozilla/readability.git#master",
     "dompurify": "~2.3.3",
+    "summernote": "~0.8.20",
     "shelljs": "^0.8.4"
   },
   "license": "MIT",
