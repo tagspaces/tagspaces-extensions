@@ -9,12 +9,19 @@
 }
 
 @media print {
+  body {
+    height: auto !important;
+  }
   .milkdown {
-    width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
     box-shadow: none !important;
-    background-color: transparent !important;
+  }
+  .MuiPaper-root,
+  button.MuiFab-root,
+  button.MuiButtonBase-root,
+  button.MuiFab-primary {
+    display: none;
   }
 }
 
