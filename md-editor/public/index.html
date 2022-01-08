@@ -19,6 +19,7 @@
 
       function setTheme(theme) {
         document.documentElement.className = theme;
+        document.documentElement.setAttribute("data-theme", theme);
         window.theme = theme;
         window.dispatchEvent(new Event('themeChanged'));
       }

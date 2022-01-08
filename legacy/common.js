@@ -24,6 +24,7 @@ const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
 
 function setTheme(theme) {
   document.documentElement.className = theme;
+  // document.documentElement.setAttribute("data-theme", "dark");
 }
 
 const theme = getParameterByName('theme');
