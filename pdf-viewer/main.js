@@ -8,7 +8,24 @@
   document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
       const pdfViewer = document.getElementById('pdfviewer');
-      pdfViewer.setAttribute('src', 'generic/web/viewer.html?file=' + encodeURIComponent(filePath));
+      pdfViewer.setAttribute(
+        'src',
+        'generic/web/viewer.html?file=' + encodeURIComponent(filePath)
+      );
     }
   };
 })();
+
+// function setTheme(theme) {
+//   // document.documentElement.className = theme;
+//   if (theme === 'dark') {
+//     document.documentElement.setAttribute('data-theme', 'dark');
+//   } else {
+//     document.documentElement.setAttribute('data-theme', 'light');
+//   }
+//   console.log('Theme:' + document.documentElement.getAttribute('data-theme'));
+// }
+
+// if (theme) {
+//   setTheme(theme);
+// }
