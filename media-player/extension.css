@@ -8,11 +8,13 @@ body {
   padding: 0px;
 }
 
-#main {
+main {
   height: 100%;
+  display: flex;
+}
+
+#container {
   width: 100%;
-  margin: 0px;
-  padding: 0px;
 }
 
 .plyr__controls {
