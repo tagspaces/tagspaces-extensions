@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       captions: {
         defaultActive: true
       },
-      hideControls: enableVideoOutput,
+      hideControls: false, //  enableVideoOutput,
       keyboard: { focused: true, global: true },
       fullscreen: { enabled: false }
     };
