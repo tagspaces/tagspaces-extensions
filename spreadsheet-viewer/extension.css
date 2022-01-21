@@ -4,8 +4,9 @@
   height: 100%;
   overflow: auto;
   font-size: var(--default-text-size);
-  color: var(--default-text-color);
-  background-color: var(--default-background-color);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 10px;
 }
 
 #htmlout table {
@@ -20,4 +21,6 @@
 #htmlout table td {
   border: 1px solid gray;
   padding: 3px;
+  color: var(--text-color);
+  background-color: var(--background-color);  
 }
