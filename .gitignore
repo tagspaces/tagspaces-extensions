@@ -21,6 +21,5 @@ libs/**/*.slim.min.js
 libs/**/*.slim.min.map
 node_modules
 3d-viewer
-ebook-viewer
 .idea
 *.iml
