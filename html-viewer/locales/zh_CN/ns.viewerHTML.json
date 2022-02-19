@@ -17,9 +17,9 @@
     "increasingFontSize": "增大字号",
     "decreasingFontSize": "减小字号",
     "changeBackgroundColor": "改变背景色",
-    "sourceURL": "Web Page Source URL",
+    "sourceURL": "網頁原始路徑",
     "openSourceURL": "在默认浏览器中打开源网址",
-    "htmlDetails": "Web Scraping Details",
-    "webPageSavedOn": "Web Page Saved On",
+    "htmlDetails": "網頁抓取詳情",
+    "webPageSavedOn": "網頁儲存在",
     "-": "-"
 }
