@@ -5,7 +5,7 @@ export const Loading = () => {
   return (
     <div className="milkdown">
       <SkeletonTheme
-        color="rgba(var(--background), 1)"
+        baseColor="rgba(var(--background), 1)"
         highlightColor="rgba(var(--surface), 1)"
       >
         <Skeleton

@@ -16,9 +16,7 @@ import { math } from '@milkdown/plugin-math';
 import { prism } from '@milkdown/plugin-prism';
 import { defaultActions, slash, slashPlugin } from '@milkdown/plugin-slash';
 import { tooltip } from '@milkdown/plugin-tooltip';
-import { gfm } from '@milkdown/preset-gfm';
 import { nord } from '@milkdown/theme-nord';
-import { commonmark } from '@milkdown/preset-commonmark';
 import { AtomList } from '@milkdown/utils';
 
 const complete =
@@ -36,19 +34,24 @@ export const createEditor = (
   readOnly: boolean | undefined,
   setEditorReady: (ready: boolean) => void,
   nodes: AtomList<MilkdownPlugin>,
-  onChange?: (getMarkdown: () => string) => void
+  onChange?: (markdown: string, prevMarkdown: string | null) => void
 ) => {
   const editor = Editor.make()
     .config(ctx => {
       ctx.set(rootCtx, root);
       ctx.set(defaultValueCtx, defaultValue);
       ctx.set(editorViewOptionsCtx, { editable: () => !readOnly });
-      ctx.set(listenerCtx, { markdown: onChange ? [onChange] : [] });
+      // ctx.set(listenerCtx, { markdown: onChange ? [onChange] : [] });
+      ctx.get(listenerCtx).markdownUpdated((ctx, markdown, prevMarkdown) => {
+        if (onChange) {
+          onChange(markdown, prevMarkdown);
+        }
+      });
     })
     .use(nord)
-    .use(commonmark)
+    // .use(commonmark)
     .use(nodes)
-    .use(gfm)
+    // .use(gfm)
     .use(complete(() => setEditorReady(true)))
     .use(clipboard)
     .use(listener)
