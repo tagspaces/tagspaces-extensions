@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "TagSpaces extension for editing notes in markdown format",
   "homepage": "./",
   "main": "build/index.js",
@@ -40,6 +40,7 @@
     "@milkdown/plugin-prism": "5.5.0",
     "@milkdown/plugin-slash": "5.5.0",
     "@milkdown/plugin-tooltip": "5.5.0",
+    "@milkdown/preset-commonmark": "5.5.0",
     "@milkdown/preset-gfm": "5.5.0",
     "@milkdown/react": "5.5.0",
     "@milkdown/theme-nord": "5.5.0",

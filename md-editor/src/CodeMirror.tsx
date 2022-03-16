@@ -6,7 +6,7 @@ import React from 'react';
 import className from './style.module.css';
 
 type StateOptions = {
-  onChange: (code: string, prevCode: string | null) => void;
+  onChange: (code: string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;
@@ -31,7 +31,7 @@ const createCodeMirrorState = ({
         }
         if (v.docChanged) {
           //const getString = () => v.state.doc.toString();
-          onChange(v.state.doc.toString(), v.view.state.doc.toJSON().join("\n"));
+          onChange(v.state.doc.toString());
         }
       }),
       EditorView.theme(
@@ -60,7 +60,7 @@ const createCodeMirrorView = ({ root, ...options }: ViewOptions) => {
 
 type CodeMirrorProps = {
   value: string;
-  onChange: (code: string, prevCode: string | null) => void;
+  onChange: (code: string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;
