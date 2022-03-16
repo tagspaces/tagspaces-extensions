@@ -1,11 +1,12 @@
-import { basicSetup, EditorState, EditorView } from '@codemirror/basic-setup';
+import { basicSetup, EditorState } from '@codemirror/basic-setup';
+import { EditorView, ViewUpdate } from "@codemirror/view"
 import { markdown } from '@codemirror/lang-markdown';
 import React from 'react';
 
 import className from './style.module.css';
 
 type StateOptions = {
-  onChange: (getString: () => string) => void;
+  onChange: (code: string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;
@@ -24,13 +25,13 @@ const createCodeMirrorState = ({
     extensions: [
       basicSetup,
       markdown(),
-      EditorView.updateListener.of(v => {
+      EditorView.updateListener.of((v: ViewUpdate) => {
         if (v.focusChanged) {
           lock.current = v.view.hasFocus;
         }
         if (v.docChanged) {
-          const getString = () => v.state.doc.toString();
-          onChange(getString);
+          //const getString = () => v.state.doc.toString();
+          onChange(v.state.doc.toString());
         }
       }),
       EditorView.theme(
@@ -59,7 +60,7 @@ const createCodeMirrorView = ({ root, ...options }: ViewOptions) => {
 
 type CodeMirrorProps = {
   value: string;
-  onChange: (getString: () => string) => void;
+  onChange: (code: string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;

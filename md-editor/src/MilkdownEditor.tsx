@@ -13,13 +13,14 @@ import 'katex/dist/katex.css';
 type Props = {
   content: Content;
   readOnly?: boolean;
-  onChange?: (getMarkdown: () => string) => void;
+  onChange?: (markdown: string, prevMarkdown: string | null) => void;
 };
 
 export type MilkdownRef = { update: (markdown: string) => void };
 const MilkdownEditor = forwardRef<MilkdownRef, Props>(
   ({ content, readOnly, onChange }, ref) => {
-    const editorRef = React.useRef<EditorRef>(null);
+    // const editorRef = React.useRef<EditorRef>(null);
+    const editorRef = React.useRef({} as EditorRef);
     const [editorReady, setEditorReady] = React.useState(false);
 
     const [loading, md] = useLazy(content);
@@ -131,8 +132,8 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
       (root, renderReact) => {
         const nodes = commonmark
           // .configure(paragraph, { view: renderReact(TSParagraph) })
-          .configure(link, { view: () => renderReact(TSLink) })
-          .configure(image, { view: () => renderReact(TSImage) });
+          .configure(link, { view: renderReact(TSLink) })
+          .configure(image, { view: renderReact(TSImage) });
         return createEditor(
           root,
           md,

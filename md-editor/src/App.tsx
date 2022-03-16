@@ -185,33 +185,37 @@ const App: React.FC = () => {
     //[window.mdContent]
   );*/
 
-  const milkdownListener = React.useCallback((getMarkdown: () => string) => {
-    updateContent(getMarkdown());
-    /*const lock = lockCode.current;
+  const milkdownListener = React.useCallback(
+    (markdown: string, prevMarkdown: string | null) => {
+      updateContent(markdown, prevMarkdown);
+      /*const lock = lockCode.current;
     if (lock) return;
 
     const { current } = codeMirrorRef;
     if (!current) return;
     const result = getMarkdown();
     current.update(result);*/
-  }, []);
+    },
+    []
+  );
 
-  const onCodeChange = React.useCallback((getCode: () => string) => {
-    updateContent(getCode());
+  const onCodeChange = React.useCallback((code: string) => {
+    updateContent(code, null);
     /*const { current } = milkdownRef;
     if (!current) return;
     const value = getCode();
     current.update(value);*/
   }, []);
 
-  const updateContent = (content: string) => {
-    const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
+  const updateContent = (content: string, prevContent: string | null) => {
+    /*const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
     // @ts-ignore
     const cleanContent = window.mdContent
       .replaceAll('\\_', '_')
-      .replaceAll('\n', '');
+      .replaceAll('\n', '');*/
 
-    if (cleanContent !== cleanNewContent) {
+    if (content !== prevContent) {
+      // if (cleanContent !== cleanNewContent) {
       // @ts-ignore
       window.mdContent = content;
       // console.log('content changed:' + content);
