@@ -7,7 +7,7 @@ import { createEditor } from './editor';
 import { Loading } from './Loading';
 import className from './style.module.css';
 import { Content, useLazy } from './useLazy';
-import { commonmark, image, link } from '@milkdown/preset-commonmark';
+import { gfm, image, link } from '@milkdown/preset-gfm';
 import 'katex/dist/katex.css';
 
 type Props = {
@@ -130,7 +130,7 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
 
     const editor = useEditor(
       (root, renderReact) => {
-        const nodes = commonmark
+        const nodes = gfm
           // .configure(paragraph, { view: renderReact(TSParagraph) })
           .configure(link, { view: renderReact(TSLink) })
           .configure(image, { view: renderReact(TSImage) });
