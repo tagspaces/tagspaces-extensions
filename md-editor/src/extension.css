@@ -79,3 +79,8 @@ body {
   margin-top: 1rem !important;
   margin-bottom: 0.8rem !important;
 }
+
+.milkdown-menu-wrapper {
+  position: relative;
+  overflow: auto;
+}
