@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
@@ -16,7 +16,7 @@
     "libs/",
     "md-viewer/",
     "md-editor/build/",
-    "media-player/",
+    "media-player/build/",
     "mhtml-viewer/",
     "pdf-viewer/",
     "rtf-viewer/",

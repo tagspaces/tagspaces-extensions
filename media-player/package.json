@@ -1,9 +1,12 @@
 {
   "name": "@tagspaces/media-player",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A TagSpaces extension allowing playing of audio and video files.",
-  "homepage": "https://www.tagspaces.org",
-  "main": "main.js",
+  "homepage": "./",
+  "main": "build/index.js",
+  "files": [
+    "build/"
+  ],
   "author": {
     "name": "TagSpaces UG",
     "email": "info@tagspaces.org",
@@ -19,7 +22,41 @@
       "mp3"
     ]
   },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
+    "build:dev": "react-app-rewired build",
+    "build:env": "npx env-cmd -f .env.development react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "code-format": "npx prettier --write ."
+  },
   "dependencies": {
-    "plyr": "~3.6.7"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "plyr-react": "^5.1.0",
+    "@mui/material": "^5.9.2",
+    "@mui/icons-material": "^5.8.4",
+    "@emotion/react": "11.10.0",
+    "@emotion/styled": "11.10.0"
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "5.0.1",
+    "typescript": "4.7.4",
+    "prettier": "^2.7.1",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
