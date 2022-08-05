@@ -10,6 +10,7 @@ import {
 import 'plyr-react/plyr.css';
 import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
+// import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
 
 interface Props extends PlyrProps {
   filePath: string;
@@ -106,6 +107,8 @@ const App: React.FC = () => {
   if (searchParam && searchParam.has('file')) {
     filePath = searchParam.get('file') || '';
   }
+  const fileName = filePath.split('/').pop();
+  // const fileThumb = getThumbFileLocationForFile(filePath); TODO rethink this
 
   const audio: MediaType = 'audio';
   const video: MediaType = 'video';
@@ -131,11 +134,12 @@ const App: React.FC = () => {
       {
         src: filePath
       }
-    ]
-    /*poster: '/path/to/poster.jpg',
-  previewThumbnails: {
-    src: '/path/to/thumbnails.vtt',
-  },
+    ],
+    /*poster: fileThumb, //'/path/to/poster.jpg',
+    previewThumbnails: {
+      src: fileThumb //'/path/to/thumbnails.vtt',
+    }*/
+    /*
   tracks: [
     {
       kind: 'captions',
@@ -195,10 +199,13 @@ const App: React.FC = () => {
     // },
     displayDuration: true,
     autoplay: autoPlay.current,
+    mediaMetadata: {
+      title: fileName
+    },
     /*captions: {
     defaultActive: true
   },*/
-    // hideControls: false,
+    hideControls: false,
     keyboard: { focused: true, global: true },
     fullscreen: { enabled: false }
   };
