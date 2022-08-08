@@ -14,7 +14,7 @@ import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
 import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
 import { HideProvider, useHide } from './HideContext';
-import useEventListener from "./useEventListener";
+import useEventListener from './useEventListener';
 
 interface Props extends PlyrProps {
   filePath: string;
@@ -74,7 +74,7 @@ const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
   });
 
   React.useEffect(() => {
-    const { current } = ref as React. MutableRefObject<APITypes>;
+    const { current } = ref as React.MutableRefObject<APITypes>;
     if (source !== null) {
       current.plyr.source = source;
     }
@@ -100,7 +100,7 @@ const App: React.FC = () => {
     defaultVideoOutput = extSettings.enableVideoOutput;
     defaultLoop = extSettings.loop;
   }
-  // const isHiddenMainMenu = React.useRef<boolean>(false);
+  const isControlsHidden = React.useRef<boolean>(false);
   const autoPlay = React.useRef<boolean>(defaultAutoPlay);
   const enableVideoOutput = React.useRef<boolean>(defaultVideoOutput);
   const loop = React.useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
@@ -122,12 +122,14 @@ const App: React.FC = () => {
   useEventListener('enterfullscreen', () => {
     const { current } = ref as React.MutableRefObject<APITypes>;
     const api = current as { plyr: PlyrInstance };
+    isControlsHidden.current = true;
     api.plyr.toggleControls(false);
   });
 
   useEventListener('exitfullscreen', () => {
     const { current } = ref as React.MutableRefObject<APITypes>;
     const api = current as { plyr: PlyrInstance };
+    isControlsHidden.current = false;
     api.plyr.toggleControls(true);
   });
 
@@ -195,9 +197,6 @@ const App: React.FC = () => {
   ],*/
   });
 
-  /*function setHiddenMainMenu(value: boolean) {
-    isHiddenMainMenu.current = value;
-  }*/
   function setAutoPlay(value: boolean) {
     autoPlay.current = value;
     saveExtSettings();
@@ -245,7 +244,7 @@ const App: React.FC = () => {
     /*captions: {
     defaultActive: true
   },*/
-    hideControls: false, // hideControls,
+    hideControls: isControlsHidden.current, // false,
     keyboard: { focused: true, global: true },
     fullscreen: { enabled: false }
   };
