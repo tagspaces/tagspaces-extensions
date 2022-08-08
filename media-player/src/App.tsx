@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import fscreen from 'fscreen';
+//import http from 'http';
+//import { parse, URL } from 'url';
 import './extension.css';
 import {
   APITypes,
@@ -10,23 +13,18 @@ import {
 import 'plyr-react/plyr.css';
 import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
-// import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
+import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
+import { HideProvider, useHide } from './HideContext';
 
 interface Props extends PlyrProps {
   filePath: string;
   getLoopMode: () => string;
-  // setHiddenMainMenu: (value: boolean) => void;
 }
 
 const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
-  const {
-    source,
-    options = null,
-    getLoopMode,
-    filePath
-    // setHiddenMainMenu
-  } = props;
+  const { source, options = null, getLoopMode, filePath } = props;
   const raptorRef = usePlyr(ref, { options, source });
+  const { dispatch } = useHide();
 
   function sendMessageToHost(message: any) {
     window.parent.postMessage(JSON.stringify(message), '*');
@@ -61,16 +59,22 @@ const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
         sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
       }
     });
-    /*api.plyr.on('controlshidden', () => {
-      setHiddenMainMenu(true);
+    api.plyr.on('controlshidden', () => {
+      dispatch({ type: 'hide' });
     });
     api.plyr.on('controlsshown', () => {
-      setHiddenMainMenu(false);
+      dispatch({ type: 'show' });
+    });
+    /*api.plyr.on('enterfullscreen', () => {
+      api.plyr.toggleControls(true);
+    });
+    api.plyr.on('exitfullscreen', () => {
+      api.plyr.toggleControls(true);
     });*/
   });
 
   React.useEffect(() => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
+    const { current } = ref as React. MutableRefObject<APITypes>;
     if (source !== null) {
       current.plyr.source = source;
     }
@@ -108,12 +112,67 @@ const App: React.FC = () => {
     filePath = searchParam.get('file') || '';
   }
   const fileName = filePath.split('/').pop();
-  // const fileThumb = getThumbFileLocationForFile(filePath); TODO rethink this
+  const fileThumb = getThumbFileLocationForFile(filePath);
 
   const audio: MediaType = 'audio';
   const video: MediaType = 'video';
 
   const isAudioType = /\.(mp3|wav)$/i.test(filePath);
+
+  React.useEffect(() => {
+    if (fscreen.fullscreenEnabled) {
+      fscreen.addEventListener(
+          'fullscreenchange',
+          handleFullscreenChange,
+          false
+      );
+      fscreen.addEventListener('fullscreenerror', handleFullscreenError, false);
+      return () => {
+        fscreen.removeEventListener('fullscreenchange', handleFullscreenChange);
+        fscreen.removeEventListener('fullscreenerror', handleFullscreenError);
+      };
+    }
+  });
+
+  const handleFullscreenChange = useCallback(e => {
+    let change = '';
+    const { current } = ref as React.MutableRefObject<APITypes>;
+    const api = current as { plyr: PlyrInstance };
+    if (fscreen.fullscreenElement !== null) {
+      change = 'Entered fullscreen mode';
+      api.plyr.toggleControls(true);
+    } else {
+      change = 'Exited fullscreen mode';
+      api.plyr.toggleControls(false);
+    }
+    console.log(change);
+  }, []);
+
+  const handleFullscreenError = useCallback(e => {
+    console.log('Fullscreen Error', e);
+  }, []);
+
+  /*function urlExists(url) {
+    return new Promise(resolve => {
+      const urlParsed = parse(url);
+      const options = {
+        method: 'HEAD',
+        host: urlParsed.host,
+        path: urlParsed.pathname,
+        port: urlParsed.port
+      };
+
+      const req = http.request(options, res => {
+        if (res.statusCode !== undefined) {
+          resolve(res.statusCode < 400 || res.statusCode >= 500);
+        } else {
+          resolve(false);
+        }
+      });
+
+      req.end();
+    });
+  }*/
 
   function saveExtSettings() {
     const extSettings = {
@@ -135,10 +194,10 @@ const App: React.FC = () => {
         src: filePath
       }
     ],
-    /*poster: fileThumb, //'/path/to/poster.jpg',
+    poster: fileThumb, //'/path/to/poster.jpg',
     previewThumbnails: {
       src: fileThumb //'/path/to/thumbnails.vtt',
-    }*/
+    }
     /*
   tracks: [
     {
@@ -174,6 +233,7 @@ const App: React.FC = () => {
     saveExtSettings();
   }
 
+  const hideControls = fscreen.fullscreenEnabled && fscreen.fullscreenElement !== null; //typeof window !== undefined && window.innerHeight === window.screen.height
   const videoOptions = {
     controls: [
       'play-large', // The large play button in the center
@@ -200,39 +260,42 @@ const App: React.FC = () => {
     displayDuration: true,
     autoplay: autoPlay.current,
     mediaMetadata: {
-      title: fileName
+      title: fileName,
+      artwork: [fileThumb]
     },
     /*captions: {
     defaultActive: true
   },*/
-    hideControls: false,
+    hideControls: hideControls,
     keyboard: { focused: true, global: true },
     fullscreen: { enabled: false }
   };
 
   return (
-    <div id="container">
-      {filePath && (
-        <CustomPlyrInstance
-          ref={ref}
-          source={videoSource}
-          options={videoOptions}
-          getLoopMode={() => loop.current}
-          filePath={filePath}
-          // setHiddenMainMenu={setHiddenMainMenu}
+    <HideProvider>
+      <div id="container">
+        {filePath && (
+          <CustomPlyrInstance
+            ref={ref}
+            source={videoSource}
+            options={videoOptions}
+            getLoopMode={() => loop.current}
+            filePath={filePath}
+            // setHiddenMainMenu={setHiddenMainMenu}
+          />
+        )}
+        <MainMenu
+          // isHidden={isHiddenMainMenu.current}
+          isAudioType={isAudioType}
+          autoPlay={autoPlay.current}
+          setAutoPlay={setAutoPlay}
+          loop={loop.current}
+          setLoop={setLoop}
+          enableVideoOutput={enableVideoOutput.current}
+          setVideoOutput={setVideoOutput}
         />
-      )}
-      <MainMenu
-        // isHidden={isHiddenMainMenu.current}
-        isAudioType={isAudioType}
-        autoPlay={autoPlay.current}
-        setAutoPlay={setAutoPlay}
-        loop={loop.current}
-        setLoop={setLoop}
-        enableVideoOutput={enableVideoOutput.current}
-        setVideoOutput={setVideoOutput}
-      />
-    </div>
+      </div>
+    </HideProvider>
   );
 };
 

@@ -16,11 +16,11 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Divider } from '@mui/material';
+import { useHide } from './HideContext';
 // https://medium.com/@danfyfe/using-react-context-with-functional-components-153cbd9ba214
 // import MenuVisibilityContext from "./MenuVisibilityContext";
 
 const MainMenu: React.FC<{
-  // isHidden: boolean;
   isAudioType: boolean;
   autoPlay: boolean;
   setAutoPlay: (autoPlay: boolean) => void;
@@ -29,7 +29,6 @@ const MainMenu: React.FC<{
   enableVideoOutput: boolean;
   setVideoOutput: (video: boolean) => void;
 }> = ({
-  // isHidden,
   isAudioType,
   autoPlay,
   setAutoPlay,
@@ -38,6 +37,8 @@ const MainMenu: React.FC<{
   enableVideoOutput,
   setVideoOutput
 }) => {
+  const { state } = useHide();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
@@ -91,7 +92,6 @@ const MainMenu: React.FC<{
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
-        //  style={{ display: isHidden ? 'none' : 'block' }}
       >
         <MenuItem
           onClick={() => {
@@ -183,14 +183,16 @@ const MainMenu: React.FC<{
           <ListItemText>About</ListItemText>
         </MenuItem>
       </Menu>
-      <Fab
-        color="primary"
-        aria-label="add"
-        style={{ position: 'absolute', right: 20, bottom: 20 }}
-        onClick={handleFabClick}
-      >
-        <MoreIcon />
-      </Fab>
+      {!state.hide && (
+        <Fab
+          color="primary"
+          aria-label="add"
+          style={{ position: 'absolute', right: 20, bottom: 20 }}
+          onClick={handleFabClick}
+        >
+          <MoreIcon />
+        </Fab>
+      )}
       <Dialog
         open={isAboutDialogOpened}
         onClose={() => {
