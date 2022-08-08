@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import fscreen from 'fscreen';
+import React from 'react';
 //import http from 'http';
 //import { parse, URL } from 'url';
 import './extension.css';
@@ -15,6 +14,7 @@ import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
 import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
 import { HideProvider, useHide } from './HideContext';
+import useEventListener from "./useEventListener";
 
 interface Props extends PlyrProps {
   filePath: string;
@@ -119,38 +119,17 @@ const App: React.FC = () => {
 
   const isAudioType = /\.(mp3|wav)$/i.test(filePath);
 
-  React.useEffect(() => {
-    if (fscreen.fullscreenEnabled) {
-      fscreen.addEventListener(
-          'fullscreenchange',
-          handleFullscreenChange,
-          false
-      );
-      fscreen.addEventListener('fullscreenerror', handleFullscreenError, false);
-      return () => {
-        fscreen.removeEventListener('fullscreenchange', handleFullscreenChange);
-        fscreen.removeEventListener('fullscreenerror', handleFullscreenError);
-      };
-    }
-  });
-
-  const handleFullscreenChange = useCallback(e => {
-    let change = '';
+  useEventListener('enterfullscreen', () => {
     const { current } = ref as React.MutableRefObject<APITypes>;
     const api = current as { plyr: PlyrInstance };
-    if (fscreen.fullscreenElement !== null) {
-      change = 'Entered fullscreen mode';
-      api.plyr.toggleControls(true);
-    } else {
-      change = 'Exited fullscreen mode';
-      api.plyr.toggleControls(false);
-    }
-    console.log(change);
-  }, []);
+    api.plyr.toggleControls(false);
+  });
 
-  const handleFullscreenError = useCallback(e => {
-    console.log('Fullscreen Error', e);
-  }, []);
+  useEventListener('exitfullscreen', () => {
+    const { current } = ref as React.MutableRefObject<APITypes>;
+    const api = current as { plyr: PlyrInstance };
+    api.plyr.toggleControls(true);
+  });
 
   /*function urlExists(url) {
     return new Promise(resolve => {
@@ -233,7 +212,7 @@ const App: React.FC = () => {
     saveExtSettings();
   }
 
-  const hideControls = fscreen.fullscreenEnabled && fscreen.fullscreenElement !== null; //typeof window !== undefined && window.innerHeight === window.screen.height
+  // const hideControls = fscreen.fullscreenEnabled && fscreen.fullscreenElement !== null; //typeof window !== undefined && window.innerHeight === window.screen.height
   const videoOptions = {
     controls: [
       'play-large', // The large play button in the center
@@ -266,7 +245,7 @@ const App: React.FC = () => {
     /*captions: {
     defaultActive: true
   },*/
-    hideControls: hideControls,
+    hideControls: false, // hideControls,
     keyboard: { focused: true, global: true },
     fullscreen: { enabled: false }
   };

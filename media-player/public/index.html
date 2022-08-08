@@ -4,6 +4,14 @@
     <title>TagSpaces Media Player</title>
     <meta charset="UTF-8" />
     <link href="../../legacy/theming.css" rel="stylesheet" />
+    <script>
+      function enterFullscreen() {
+        window.dispatchEvent(new Event('enterfullscreen'));
+      }
+      function exitFullscreen() {
+        window.dispatchEvent(new Event('exitfullscreen'));
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
