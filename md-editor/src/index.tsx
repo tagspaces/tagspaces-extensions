@@ -5,7 +5,7 @@ import App from './App';
 function sendMessageToHost(message: any) {
   window.parent.postMessage(JSON.stringify(message), '*');
 }
-
+// mdContent is not received without this message.
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 ReactDOM.render(

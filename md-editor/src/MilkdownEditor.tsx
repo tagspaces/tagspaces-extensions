@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import { editorViewCtx, parserCtx } from '@milkdown/core';
 import { EditorRef, ReactEditor, useEditor, useNodeCtx } from '@milkdown/react';
 import { Slice } from 'prosemirror-model';
@@ -8,27 +8,31 @@ import { Loading } from './Loading';
 import className from './style.module.css';
 import { Content, useLazy } from './useLazy';
 import { gfm, image, link } from '@milkdown/preset-gfm';
+import { switchTheme } from '@milkdown/utils';
 import 'katex/dist/katex.css';
+import { nordDark, nordLight } from '@milkdown/theme-nord';
 
 type Props = {
   content: Content;
   readOnly?: boolean;
+  dark?: boolean;
   onChange?: (markdown: string, prevMarkdown: string | null) => void;
 };
 
 export type MilkdownRef = { update: (markdown: string) => void };
 const MilkdownEditor = forwardRef<MilkdownRef, Props>(
-  ({ content, readOnly, onChange }, ref) => {
+  ({ content, readOnly, onChange, dark }, ref) => {
     // const editorRef = React.useRef<EditorRef>(null);
-    const editorRef = React.useRef({} as EditorRef);
-    const [editorReady, setEditorReady] = React.useState(false);
+    // const editorRef = React.useRef({} as EditorRef);
+    // const [editorReady, setEditorReady] = React.useState(false);
 
     const [loading, md] = useLazy(content);
 
     React.useImperativeHandle(ref, () => ({
       update: (markdown: string) => {
-        if (!editorReady || !editorRef.current) return;
-        const editor = editorRef.current.get();
+        // if (!editorReady || !editorRef.current) return;
+        if (editorLoading) return;
+        const editor = getInstance();
         if (!editor) return;
         editor.action(ctx => {
           const view = ctx.get(editorViewCtx);
@@ -59,8 +63,9 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
 
     // @ts-ignore
     const isWeb = window.isWeb;
+    //https://github.com/Saul-Mirone/milkdown/blob/main/examples/react/component/milkdown/index.tsx
 
-    const TSLink: React.FC = ({ children }) => {
+    const TSLink: React.FC<{ children: ReactNode }> = ({ children }) => {
       const { node } = useNodeCtx();
 
       // title={node.attrs.title}
@@ -97,7 +102,7 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
       );
     };
 
-    const TSImage: React.FC = ({ children }) => {
+    const TSImage: React.FC<{ children: ReactNode }> = ({ children }) => {
       const { node } = useNodeCtx();
 
       let path;
@@ -128,7 +133,11 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
           </p>
       );*/
 
-    const editor = useEditor(
+    const {
+      editor,
+      getInstance,
+      loading: editorLoading
+    } = useEditor(
       (root, renderReact) => {
         const nodes = gfm
           // .configure(paragraph, { view: renderReact(TSParagraph) })
@@ -138,7 +147,7 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
           root,
           md,
           readOnly,
-          setEditorReady,
+          // setEditorReady,
           nodes,
           onChange
         );
@@ -146,12 +155,21 @@ const MilkdownEditor = forwardRef<MilkdownRef, Props>(
       [readOnly, md, onChange]
     );
 
+    React.useEffect(() => {
+      if (editorLoading) return;
+      const editor = getInstance();
+      if (!editor) return;
+      editor
+        .action(switchTheme(dark ? nordDark : nordLight))
+        .then(() => console.log('theme switched ' + dark));
+    }, [editorLoading, getInstance, dark]);
+
     return (
       <div className={className.editor}>
         {loading ? (
           <Loading />
         ) : (
-          <ReactEditor ref={editorRef} editor={editor} />
+          <ReactEditor /*ref={editorRef}*/ editor={editor} />
         )}
       </div>
     );

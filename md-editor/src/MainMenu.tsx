@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Fab,
-  Link,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem
-} from '@material-ui/core';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import AboutIcon from '@material-ui/icons/Info';
-import CodeIcon from '@material-ui/icons/Code';
-import PrintIcon from '@material-ui/icons/Print';
-import { createTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Link from '@mui/material/Link';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Fab from '@mui/material/Fab';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import AboutIcon from '@mui/icons-material/Info';
+import CodeIcon from '@mui/icons-material/Code';
+import PrintIcon from '@mui/icons-material/Print';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const MainMenu: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
   toggleViewSource,

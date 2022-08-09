@@ -17,7 +17,7 @@ const App: React.FC = () => {
   // @ts-ignore
   const readOnly = () => !window.editMode;
   // @ts-ignore
-  const getContent = () => window.mdContent; //  ? window.mdContent : '');
+  const getContent = () => (window.mdContent ? window.mdContent : '');
 
   // @ts-ignore
   useEventListener('keydown', event => {
@@ -185,55 +185,79 @@ const App: React.FC = () => {
     //[window.mdContent]
   );*/
 
-  const milkdownListener = React.useCallback(
+  /*const milkdownListener = React.useCallback(
     (markdown: string, prevMarkdown: string | null) => {
       updateContent(markdown, prevMarkdown);
-      /*const lock = lockCode.current;
+      /!*const lock = lockCode.current;
     if (lock) return;
 
     const { current } = codeMirrorRef;
     if (!current) return;
     const result = getMarkdown();
-    current.update(result);*/
+    current.update(result);*!/
+    },
+    []
+  );*/
+  const milkdownListener = React.useCallback(
+    (markdown: string, prevMarkdown: string | null) => {
+      const lock = lockCode.current;
+      if (lock) return;
+
+      if (prevMarkdown !== null && markdown !== prevMarkdown) {
+        updateContent(markdown);
+      }
+      // update codeMirror
+      const { current } = codeMirrorRef;
+      if (!current) return;
+      current.update(markdown);
     },
     []
   );
 
-  const onCodeChange = React.useCallback((code: string) => {
-    updateContent(code, null);
-    /*const { current } = milkdownRef;
+  const onCodeChange = React.useCallback((getCode: () => string) => {
+    const { current } = milkdownRef;
     if (!current) return;
     const value = getCode();
-    current.update(value);*/
+    current.update(value);
+    updateContent(value);
   }, []);
 
-  const updateContent = (content: string, prevContent: string | null) => {
+  /*const onCodeChange = React.useCallback((code: string) => {
+    updateContent(code, null);
+    /!*const { current } = milkdownRef;
+    if (!current) return;
+    const value = getCode();
+    current.update(value);*!/
+  }, []);*/
+
+  const updateContent = (content: string) => {
+    //, prevContent: string | null) => {
     /*const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
     // @ts-ignore
     const cleanContent = window.mdContent
       .replaceAll('\\_', '_')
       .replaceAll('\n', '');*/
 
-    if (content !== prevContent) {
-      // if (cleanContent !== cleanNewContent) {
-      // @ts-ignore
-      window.mdContent = content;
-      // console.log('content changed:' + content);
-      // @ts-ignore
-      window.editMode = true;
-      // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
-      /*window.parent.postMessage(
+    // if (content !== prevContent) {
+    // if (cleanContent !== cleanNewContent) {
+    // @ts-ignore
+    window.mdContent = content;
+    // console.log('content changed:' + content);
+    // @ts-ignore
+    window.editMode = true;
+    // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
+    /*window.parent.postMessage(
           JSON.stringify({ command: 'editDocument' }),
           '*'
       );*/
-      window.parent.postMessage(
-        JSON.stringify({
-          command: 'contentChangedInEditor'
-          // filepath: filePath
-        }),
-        '*'
-      );
-    }
+    window.parent.postMessage(
+      JSON.stringify({
+        command: 'contentChangedInEditor'
+        // filepath: filePath
+      }),
+      '*'
+    );
+    // }
   };
 
   const toggleViewSource = () => {
@@ -246,25 +270,40 @@ const App: React.FC = () => {
 
   // return <EditorComponent ref={editorRef} editor={editor} />;
   // <ReactEditor ref={milkdownRef} editor={editor} />
+  const milkdownStyle =
+    mode === 'Milkdown'
+      ? { width: '100%', height: '100%' }
+      : { width: 0, height: 0, overflow: 'hidden' };
+  const codeMirrorStyle =
+    mode === 'Milkdown'
+      ? { width: 0, height: 0, overflow: 'hidden' }
+      : { width: '100%', height: '100%' };
   return (
     <div>
-      {mode === 'Milkdown' ? (
-        <MilkdownEditor
-          ref={milkdownRef}
-          content={getContent()}
-          onChange={milkdownListener}
-          readOnly={readOnly()}
-        />
-      ) : (
-        <CodeMirror
-          ref={codeMirrorRef}
-          value={getContent()}
-          onChange={onCodeChange}
-          dark={isDarkMode}
-          editable={!readOnly()}
-          lock={lockCode}
-        />
+      {getContent() && (
+        <>
+          <div style={milkdownStyle}>
+            <MilkdownEditor
+              ref={milkdownRef}
+              content={getContent()}
+              onChange={milkdownListener}
+              readOnly={readOnly()}
+              dark={isDarkMode}
+            />
+          </div>
+          <div style={codeMirrorStyle}>
+            <CodeMirror
+              ref={codeMirrorRef}
+              value={getContent()}
+              onChange={onCodeChange}
+              dark={isDarkMode}
+              editable={!readOnly()}
+              lock={lockCode}
+            />
+          </div>
+        </>
       )}
+
       <MainMenu toggleViewSource={toggleViewSource} mode={mode} />
     </div>
   );
