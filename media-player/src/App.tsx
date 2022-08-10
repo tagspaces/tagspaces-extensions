@@ -1,93 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 //import http from 'http';
 //import { parse, URL } from 'url';
 import './extension.css';
-import {
-  APITypes,
-  PlyrInstance,
-  PlyrProps,
-  PlyrSource,
-  usePlyr
-} from 'plyr-react';
+import { APITypes, PlyrInstance, PlyrSource } from 'plyr-react';
 import 'plyr-react/plyr.css';
 import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
 import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
-import { HideProvider, useHide } from './HideContext';
+import { HideProvider } from './HideContext';
 import useEventListener from './useEventListener';
-
-interface Props extends PlyrProps {
-  filePath: string;
-  getLoopMode: () => string;
-}
-
-const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
-  const { source, options = null, getLoopMode, filePath } = props;
-  const raptorRef = usePlyr(ref, { options, source });
-  const { dispatch } = useHide();
-
-  function sendMessageToHost(message: any) {
-    window.parent.postMessage(JSON.stringify(message), '*');
-  }
-
-  // Do all api access here, it is guaranteed to be called with the latest plyr instance
-  React.useEffect(() => {
-    /**
-     * Fool react for using forward ref as normal ref
-     * NOTE: in a case you don't need the forward mechanism and handle everything via props
-     * you can create the ref inside the component by yourself
-     */
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    if (current.plyr.source === null) return;
-
-    const api = current as { plyr: PlyrInstance };
-    api.plyr.on('ready', () => {
-      console.log("I'm ready");
-      // api.plyr.play();
-    });
-    api.plyr.on('canplay', () => {
-      // NOTE: browser may pause you from doing so:  https://goo.gl/xX8pDD
-      //api.plyr.play();
-      console.log('duration of audio is', api.plyr.duration);
-    });
-    api.plyr.on('ended', () => {
-      if (getLoopMode() === 'loopOne') {
-        api.plyr.play();
-      } else if (getLoopMode() === 'noLoop') {
-        // player.stop();
-      } else {
-        sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
-      }
-    });
-    api.plyr.on('controlshidden', () => {
-      dispatch({ type: 'hide' });
-    });
-    api.plyr.on('controlsshown', () => {
-      dispatch({ type: 'show' });
-    });
-    /*api.plyr.on('enterfullscreen', () => {
-      api.plyr.toggleControls(true);
-    });
-    api.plyr.on('exitfullscreen', () => {
-      api.plyr.toggleControls(true);
-    });*/
-  });
-
-  React.useEffect(() => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    if (source !== null) {
-      current.plyr.source = source;
-    }
-  }, [source]);
-
-  return (
-    <video
-      id="player"
-      ref={raptorRef as React.MutableRefObject<HTMLVideoElement>}
-      className="plyr-react plyr"
-    />
-  );
-});
+import CustomPlyrInstance from './CustomPlyrInstance';
 
 const App: React.FC = () => {
   const items = localStorage.getItem('viewerAudioVideoSettings');
@@ -105,6 +27,7 @@ const App: React.FC = () => {
   const enableVideoOutput = React.useRef<boolean>(defaultVideoOutput);
   const loop = React.useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
   const ref = React.useRef<APITypes>(null);
+  const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const searchParam = new URLSearchParams(window.location.search);
   let filePath = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
@@ -167,19 +90,20 @@ const App: React.FC = () => {
     );
   }
 
-  const [videoSource, setVideoSource] = React.useState<PlyrSource>({
-    type: isAudioType ? audio : enableVideoOutput.current ? video : audio,
-    title: 'TagSpaces',
-    sources: [
-      {
-        src: filePath
+  const videoSource: PlyrSource = useMemo(
+    () => ({
+      type: isAudioType ? audio : enableVideoOutput.current ? video : audio,
+      title: 'TagSpaces',
+      sources: [
+        {
+          src: filePath
+        }
+      ],
+      poster: fileThumb, //'/path/to/poster.jpg',
+      previewThumbnails: {
+        src: fileThumb //'/path/to/thumbnails.vtt',
       }
-    ],
-    poster: fileThumb, //'/path/to/poster.jpg',
-    previewThumbnails: {
-      src: fileThumb //'/path/to/thumbnails.vtt',
-    }
-    /*
+      /*
   tracks: [
     {
       kind: 'captions',
@@ -195,7 +119,9 @@ const App: React.FC = () => {
       src: '/path/to/captions.fr.vtt',
     },
   ],*/
-  });
+    }),
+    [isAudioType, filePath, fileThumb, enableVideoOutput.current]
+  );
 
   function setAutoPlay(value: boolean) {
     autoPlay.current = value;
@@ -203,7 +129,9 @@ const App: React.FC = () => {
   }
   function setVideoOutput(value: boolean) {
     enableVideoOutput.current = value;
-    setVideoSource({ ...videoSource, type: value ? video : audio });
+    // https://github.com/chintan9/plyr-react/issues/917#issuecomment-1210140340
+    // setVideoSource({ ...videoSource, type: value ? video : audio });
+    forceUpdate();
     saveExtSettings();
   }
   function setLoop(value: string) {
@@ -212,58 +140,57 @@ const App: React.FC = () => {
   }
 
   // const hideControls = fscreen.fullscreenEnabled && fscreen.fullscreenElement !== null; //typeof window !== undefined && window.innerHeight === window.screen.height
-  const videoOptions = {
-    controls: [
-      'play-large', // The large play button in the center
-      'restart', // Restart playback
-      'rewind', // Rewind by the seek time (default 10 seconds)
-      'play', // Play/pause playback
-      'fast-forward', // Fast forward by the seek time (default 10 seconds)
-      'progress', // The progress bar and scrubber for playback and buffering
-      'current-time', // The current time of playback
-      // 'duration', // The full duration of the media
-      'mute', // Toggle mute
-      'volume', // Volume control
-      // 'captions', // Toggle captions
-      // 'settings', // Settings menu
-      'pip' // Picture-in-picture (currently Safari only)
-      // 'airplay', // Airplay (currently Safari only)
-      // 'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-      // 'fullscreen', // Toggle fullscreen
-    ],
-    // title: 'TagSpaces',
-    // tooltips: {
-    //  controls: true
-    // },
-    displayDuration: true,
-    autoplay: autoPlay.current,
-    mediaMetadata: {
-      title: fileName,
-      artwork: [fileThumb]
-    },
-    /*captions: {
+  const videoOptions = useMemo(
+    () => ({
+      controls: [
+        'play-large', // The large play button in the center
+        'restart', // Restart playback
+        'rewind', // Rewind by the seek time (default 10 seconds)
+        'play', // Play/pause playback
+        'fast-forward', // Fast forward by the seek time (default 10 seconds)
+        'progress', // The progress bar and scrubber for playback and buffering
+        'current-time', // The current time of playback
+        // 'duration', // The full duration of the media
+        'mute', // Toggle mute
+        'volume', // Volume control
+        // 'captions', // Toggle captions
+        // 'settings', // Settings menu
+        'pip' // Picture-in-picture (currently Safari only)
+        // 'airplay', // Airplay (currently Safari only)
+        // 'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
+        // 'fullscreen', // Toggle fullscreen
+      ],
+      // title: 'TagSpaces',
+      // tooltips: {
+      //  controls: true
+      // },
+      displayDuration: true,
+      autoplay: autoPlay.current,
+      mediaMetadata: {
+        title: fileName,
+        artwork: [fileThumb]
+      },
+      /*captions: {
     defaultActive: true
   },*/
-    hideControls: isControlsHidden.current, // false,
-    keyboard: { focused: true, global: true },
-    fullscreen: { enabled: false }
-  };
+      hideControls: isControlsHidden.current, // false,
+      keyboard: { focused: true, global: true },
+      fullscreen: { enabled: false }
+    }),
+    [fileName, fileThumb, autoPlay.current, isControlsHidden.current]
+  );
 
   return (
     <HideProvider>
       <div id="container">
-        {filePath && (
-          <CustomPlyrInstance
-            ref={ref}
-            source={videoSource}
-            options={videoOptions}
-            getLoopMode={() => loop.current}
-            filePath={filePath}
-            // setHiddenMainMenu={setHiddenMainMenu}
-          />
-        )}
+        <CustomPlyrInstance
+          ref={ref}
+          source={videoSource}
+          options={videoOptions}
+          getLoopMode={() => loop.current}
+          filePath={filePath}
+        />
         <MainMenu
-          // isHidden={isHiddenMainMenu.current}
           isAudioType={isAudioType}
           autoPlay={autoPlay.current}
           setAutoPlay={setAutoPlay}
