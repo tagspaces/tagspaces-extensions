@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
@@ -31,9 +31,12 @@
   ],
   "scripts": {
     "updatelibs": "node scripts/update-libs.js",
+    "build": "npm run build-media-player && npm run build-md-editor",
+    "build-media-player": "cd media-player && npm run build && cd ..",
+    "build-md-editor": "cd md-editor && npm run build && cd ..",
     "copy-build": "shx cp -rL media-player/build/static media-player && shx cp media-player/build/index.html media-player",
     "drop-build": "npx rimraf media-player/index.html media-player/static",
-    "pkg-publish": "npm run copy-build && npm publish --access public && npm run drop-build"
+    "pkg-publish": "npm run build && npm run copy-build && npm publish --access public && npm run drop-build"
   },
   "devDependencies": {
     "bootstrap": "~3.4.1",
