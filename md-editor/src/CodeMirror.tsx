@@ -6,7 +6,7 @@ import React from 'react';
 import className from './style.module.css';
 
 type StateOptions = {
-  onChange: (code: string) => void;
+  onChange: (getString: () => string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;
@@ -30,8 +30,8 @@ const createCodeMirrorState = ({
           lock.current = v.view.hasFocus;
         }
         if (v.docChanged) {
-          //const getString = () => v.state.doc.toString();
-          onChange(v.state.doc.toString());
+          const getString = () => v.state.doc.toString();
+          onChange(getString);
         }
       }),
       EditorView.theme(
@@ -60,7 +60,7 @@ const createCodeMirrorView = ({ root, ...options }: ViewOptions) => {
 
 type CodeMirrorProps = {
   value: string;
-  onChange: (code: string) => void;
+  onChange: (getString: () => string) => void;
   lock: React.MutableRefObject<boolean>;
   dark: boolean;
   editable: boolean;
@@ -105,7 +105,7 @@ export const CodeMirror = React.forwardRef<CodeMirrorRef, CodeMirrorProps>(
       <div
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        className={className.code + (focus ? ' ' + className.focus : '')}
+        className={className['code'] + (focus ? ' ' + className['focus'] : '')}
       >
         <div ref={divRef} />
       </div>
