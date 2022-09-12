@@ -17,7 +17,7 @@ const App: React.FC = () => {
   // @ts-ignore
   const readOnly = () => !window.editMode;
   // @ts-ignore
-  const getContent = () => (window.mdContent ? window.mdContent : '');
+  const getContent = () => window.mdContent;
 
   // @ts-ignore
   useEventListener('keydown', event => {
@@ -280,7 +280,7 @@ const App: React.FC = () => {
       : { width: '100%', height: '100%' };
   return (
     <div>
-      {getContent() && (
+      {getContent() !== undefined && (
         <>
           <div style={milkdownStyle}>
             <MilkdownEditor

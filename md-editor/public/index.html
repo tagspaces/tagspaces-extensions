@@ -3,14 +3,14 @@
   <head>
     <title>TagSpaces Markdown Editor</title>
     <meta charset="UTF-8" />
-    <link href="../../legacy/theming.css" rel="stylesheet">
+    <link href="../../legacy/theming.css" rel="stylesheet" />
     <script>
       function setContent(content, fileDirectory, editMode) {
+        console.log('Content updated, event triggered');
         window.mdContent = content;
         window.editMode = !editMode;
         window.fileDirectory = fileDirectory;
         window.dispatchEvent(new Event('contentLoaded'));
-        console.log('Content updated, event triggered');
       }
 
       function getContent() {
@@ -19,7 +19,7 @@
 
       function setTheme(theme) {
         document.documentElement.className = theme;
-        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute('data-theme', theme);
         window.theme = theme;
         window.dispatchEvent(new Event('themeChanged'));
       }
