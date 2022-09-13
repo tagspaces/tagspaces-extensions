@@ -9,11 +9,11 @@
 }
 
 .milkdown .editor {
-  padding: 10px 0 10px 0 !important;
+  padding: 10px !important;
 }
 
 .milkdown .editor p img {
-  max-width: 100%;
+  max-width: 99%;
 }
 
 .milkdown a {
