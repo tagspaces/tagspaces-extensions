@@ -30,7 +30,7 @@
     "@mui/material": "^5.9.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@tagspaces/tagspaces-md": "2.0.25"
+    "@tagspaces/tagspaces-md": "2.0.33"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
