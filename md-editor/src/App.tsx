@@ -2,8 +2,7 @@ import React, { useReducer } from 'react';
 import useEventListener from './useEventListener';
 import './extension.css';
 import MainMenu from './MainMenu';
-import { CodeMirror, CodeMirrorRef } from './CodeMirror';
-import MilkdownEditor, { MilkdownRef } from './MilkdownEditor';
+import { MilkdownEditor, MilkdownRef, CodeMirror, CodeMirrorRef } from "@tagspaces/tagspaces-md";
 
 const App: React.FC = () => {
   const lockCode = React.useRef(false);
