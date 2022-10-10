@@ -1,65 +1,5 @@
-@import './fonts/material-icons.css';
+@import '~@tagspaces/tagspaces-md/lib/milkdown.css';
 @import './scrollbars.css';
-
-.milkdown {
-  width: 100% !important;
-  max-width: 70rem !important;
-  box-shadow: none !important;
-  padding-top: 0;
-}
-
-.milkdown .editor {
-  padding: 10px !important;
-}
-
-.milkdown .editor p img {
-  max-width: 99%;
-}
-
-.milkdown a {
-  color: var(--secondary);
-}
-
-@media print {
-  body {
-    height: auto !important;
-  }
-  .milkdown {
-    max-width: 100% !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-  .MuiPaper-root,
-  button.MuiFab-root,
-  button.MuiButtonBase-root,
-  button.MuiFab-primary {
-    display: none;
-  }
-}
-
-:root {
-  --font: Roboto, HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue,
-    Helvetica, Arial, Lucida Grande, sans-serif;
-  --font-code: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  --shadow: 59, 66, 82 !important;
-  --primary: 94, 129, 172 !important;
-  --secondary: 129, 161, 193 !important;
-  --radius: 4px !important;
-  --line-width: 1px !important;
-  --neutral: 46, 52, 64 !important;
-  --solid: 76, 86, 106 !important;
-  --line: 216, 222, 233 !important;
-  --background: 255, 255, 255 !important;
-  --surface: 250, 250, 250 !important;
-}
-
-[data-theme='dark'] {
-  --neutral: 236, 239, 244 !important;
-  --solid: 216, 222, 233 !important;
-  --line: 67, 76, 94 !important;
-  --background: 19, 19, 19 !important;
-  --surface: 48, 48, 48 !important;
-}
 
 html,
 body {
@@ -76,14 +16,4 @@ body {
   height: 100%;
   overflow-y: auto;
   overflow-y: overlay;
-}
-
-.milkdown {
-  zoom: 90%;
-}
-
-.milkdown h1 {
-  font-size: 2.4rem;
-  margin-top: 1rem !important;
-  margin-bottom: 0.8rem !important;
 }
