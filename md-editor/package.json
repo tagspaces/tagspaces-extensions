@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "TagSpaces extension for editing notes in markdown format",
   "homepage": "./",
   "main": "build/index.js",
@@ -15,6 +15,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "code-format": "npx prettier --write .",
+    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/md-editor/build",
+    "build:pack": "npm run build && npm run npmpack",
     "pkg-publish": "npm publish --access public"
   },
   "keywords": [
@@ -30,7 +32,7 @@
     "@mui/material": "^5.9.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@tagspaces/tagspaces-md": "2.0.33"
+    "@tagspaces/tagspaces-md": "2.0.47"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

@@ -2,10 +2,16 @@ import React, { useReducer } from 'react';
 import useEventListener from './useEventListener';
 import './extension.css';
 import MainMenu from './MainMenu';
-import { MilkdownEditor, MilkdownRef, CodeMirror, CodeMirrorRef } from "@tagspaces/tagspaces-md";
+import {
+  MilkdownEditor,
+  MilkdownRef,
+  CodeMirror,
+  CodeMirrorRef
+} from '@tagspaces/tagspaces-md';
 
 const App: React.FC = () => {
   const lockCode = React.useRef(false);
+  const focus = React.useRef(false);
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
@@ -197,21 +203,20 @@ const App: React.FC = () => {
     },
     []
   );*/
-  const milkdownListener = React.useCallback(
-    (markdown: string, prevMarkdown: string | null) => {
-      const lock = lockCode.current;
-      if (lock) return;
 
-      if (prevMarkdown !== null && markdown !== prevMarkdown) {
-        updateContent(markdown);
-      }
-      // update codeMirror
-      const { current } = codeMirrorRef;
-      if (!current) return;
-      current.update(markdown);
-    },
-    []
-  );
+  const milkdownListener = React.useCallback((markdown: string) => {
+    const lock = lockCode.current;
+    if (lock) return;
+
+    //if (markdown !== prevMarkdown.current) {
+    // prevMarkdown.current !== null &&
+    updateContent(markdown);
+    //}
+    // update codeMirror
+    const { current } = codeMirrorRef;
+    if (!current) return;
+    current.update(markdown);
+  }, []);
 
   const onCodeChange = React.useCallback((getCode: () => string) => {
     const { current } = milkdownRef;
@@ -239,24 +244,25 @@ const App: React.FC = () => {
 
     // if (content !== prevContent) {
     // if (cleanContent !== cleanNewContent) {
-    // @ts-ignore
-    window.mdContent = content;
-    // console.log('content changed:' + content);
-    // @ts-ignore
-    window.editMode = true;
-    // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
-    /*window.parent.postMessage(
+    if (focus.current) {
+      // @ts-ignore
+      window.mdContent = content;
+      // console.log('content changed:' + content);
+      // @ts-ignore
+      window.editMode = true;
+      // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
+      /*window.parent.postMessage(
           JSON.stringify({ command: 'editDocument' }),
           '*'
       );*/
-    window.parent.postMessage(
-      JSON.stringify({
-        command: 'contentChangedInEditor'
-        // filepath: filePath
-      }),
-      '*'
-    );
-    // }
+      window.parent.postMessage(
+        JSON.stringify({
+          command: 'contentChangedInEditor'
+          // filepath: filePath
+        }),
+        '*'
+      );
+    }
   };
 
   const toggleViewSource = () => {
@@ -286,6 +292,9 @@ const App: React.FC = () => {
               ref={milkdownRef}
               content={getContent()}
               onChange={milkdownListener}
+              onFocus={() => {
+                focus.current = true;
+              }}
               readOnly={readOnly()}
               dark={isDarkMode}
             />
