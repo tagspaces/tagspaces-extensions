@@ -1,13 +1,13 @@
 {
-    "findInDocument": "Find in document",
-    "startSearch": "Start Search",
+    "findInDocument": "إبحث في الوتيقة",
+    "startSearch": "إبدأ البحث",
     "cancelSearch": "Cancel Search",
     "zoomOut": "Zoom Out",
     "zoomIn": "Zoom In",
     "zoomReset": "Zoom Reset",
     "changeTheme": "Change Theme",
     "resetTheme": "Reset Theme",
-    "print": "Print",
+    "print": "إطبع",
     "about": "About",
     "aboutTitle": "About Markdown Viewer",
     "-": "-"
