@@ -96,30 +96,40 @@ $(() => {
         ) {
           EXIF.getData(eTarget, () => {
             orientation = EXIF.getTag(eTarget, 'Orientation');
-            // if (chromeVersion && chromeVersion >= 81) {
-            //   // no rotation needed
-            // } else {
-            //   switch (orientation) {
-            //     case 8:
-            //       viewer.rotate(-90);
-            //       break;
-            //     case 3:
-            //       viewer.rotate(180);
-            //       break;
-            //     case 6:
-            //       viewer.rotate(90);
-            //       break;
-            //     case 1:
-            //       viewer.rotate(0);
-            //       break;
-            //     default:
-            //       break;
-            //   }
-            // }
-
             // console.log(EXIF.pretty(this));
             // Construct EXIF info
             exifObj = {};
+            exifObj['Width'] = eTarget.naturalWidth;
+            exifObj['Height'] = eTarget.naturalHeight;
+            orientationText = "0°";
+            // 1= 0 degrees: the correct orientation, no adjustment is required.
+            // 2= 0 degrees, mirrored: image has been flipped back-to-front.
+            // 3= 180 degrees: image is upside down.
+            // 4= 180 degrees, mirrored: image has been flipped back-to-front and is upside down.
+            // 5= 90 degrees: image has been flipped back-to-front and is on its side.
+            // 6= 90 degrees, mirrored: image is on its side.
+            // 7= 270 degrees: image has been flipped back-to-front and is on its far side.
+            // 8= 270 degrees, mirrored: image is on its far side.
+            if (orientation === 1) {
+              orientationText = '0°';
+            } else if (orientation === 2) {
+              orientationText = '0°, mirrored';
+            } else if (orientation === 3) {
+              orientationText = '180°';
+            } else if (orientation === 4) {
+              orientationText = '180°, mirrored';
+            } else if (orientation === 5) {
+              orientationText = '90°';
+            } else if (orientation === 6) {
+              orientationText = '90°, mirrored°';
+            } else if (orientation === 7) {
+              orientationText = '270°';
+            } else if (orientation === 8) {              
+              orientationText = '270°, mirrored';
+            }
+            if (orientation) {
+              exifObj['Orientation'] = orientationText;
+            }
             const tags = [
               'Make',
               'Model',
@@ -128,6 +138,8 @@ $(() => {
               'Copyright',
               'ExposureTime ',
               'FNumber',
+              'Flash',
+              'WhiteBalance',
               'ISOSpeedRatings',
               'ShutterSpeedValue',
               'ApertureValue',
@@ -145,12 +157,16 @@ $(() => {
             }
             jQuery.extend(exifObj, eTarget.iptcdata);
             if (!jQuery.isEmptyObject(exifObj)) {
-              $('#exifButton')
-                .parent()
-                .show();
               printEXIF();
             }
           });
+        } else {
+          exifObj = {};
+          exifObj['Width'] = eTarget.naturalWidth;
+          exifObj['Height'] = eTarget.naturalHeight;
+          if (!jQuery.isEmptyObject(exifObj)) {
+            printEXIF();
+          }
         }
       }
     });

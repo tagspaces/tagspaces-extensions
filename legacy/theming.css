@@ -11,7 +11,7 @@
 
 :root.dark {
   --background-color: #303030;
-  --text-color: #ffffff;
+  /* --text-color: #ffffff; */
   --primary-background-color: #ff9abe;
   --primary-text-color: #ffffff;
 }
