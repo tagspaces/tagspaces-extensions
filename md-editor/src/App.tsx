@@ -10,7 +10,7 @@ import {
 } from '@tagspaces/tagspaces-md';
 
 const App: React.FC = () => {
-  const lockCode = React.useRef(false);
+  const focusCode = React.useRef(false);
   const focus = React.useRef(false);
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
@@ -205,7 +205,7 @@ const App: React.FC = () => {
   );*/
 
   const milkdownListener = React.useCallback((markdown: string) => {
-    const lock = lockCode.current;
+    const lock = focusCode.current;
     if (lock) return;
 
     //if (markdown !== prevMarkdown.current) {
@@ -244,7 +244,7 @@ const App: React.FC = () => {
 
     // if (content !== prevContent) {
     // if (cleanContent !== cleanNewContent) {
-    if (focus.current) {
+    if (focus.current || focusCode.current) {
       // @ts-ignore
       window.mdContent = content;
       // console.log('content changed:' + content);
@@ -306,7 +306,7 @@ const App: React.FC = () => {
               onChange={onCodeChange}
               dark={isDarkMode}
               editable={!readOnly()}
-              lock={lockCode}
+              lock={focusCode}
             />
           </div>
         </>
