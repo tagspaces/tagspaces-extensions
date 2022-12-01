@@ -17,3 +17,8 @@ body {
   overflow-y: auto;
   overflow-y: overlay;
 }
+
+/* Fix for the color of markdown links in codemirror */
+.ͼc {
+  color: var(--primary-background-color) !important;
+}
