@@ -89,6 +89,9 @@ $(() => {
           'viewer-container'
         );
         imageViewerContainer[0].style.background = 'transparent';
+        exifObj = {};
+        exifObj['Width'] = eTarget.naturalWidth;
+        exifObj['Height'] = eTarget.naturalHeight;
 
         if (
           filePath.toLowerCase().includes('.jpg') ||
@@ -101,7 +104,7 @@ $(() => {
             exifObj = {};
             exifObj['Width'] = eTarget.naturalWidth;
             exifObj['Height'] = eTarget.naturalHeight;
-            orientationText = "0°";
+            orientationText = '0°';
             // 1= 0 degrees: the correct orientation, no adjustment is required.
             // 2= 0 degrees, mirrored: image has been flipped back-to-front.
             // 3= 180 degrees: image is upside down.
@@ -124,7 +127,7 @@ $(() => {
               orientationText = '90°, mirrored°';
             } else if (orientation === 7) {
               orientationText = '270°';
-            } else if (orientation === 8) {              
+            } else if (orientation === 8) {
               orientationText = '270°, mirrored';
             }
             if (orientation) {
@@ -160,13 +163,9 @@ $(() => {
               printEXIF();
             }
           });
-        } else {
-          exifObj = {};
-          exifObj['Width'] = eTarget.naturalWidth;
-          exifObj['Height'] = eTarget.naturalHeight;
-          if (!jQuery.isEmptyObject(exifObj)) {
-            printEXIF();
-          }
+        }
+        if (!jQuery.isEmptyObject(exifObj)) {
+          printEXIF();
         }
       }
     });
