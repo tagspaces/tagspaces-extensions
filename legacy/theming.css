@@ -21,6 +21,11 @@ body {
   color: var(--text-color);
 }
 
+/* Overwriting text color in bootstrap modal dialogs */
+.modal {
+  color: black !important;
+}
+
 /* div,
 input,
 textarea,
