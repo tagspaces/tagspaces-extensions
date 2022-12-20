@@ -14,6 +14,7 @@ import SearchIcon from '@mui/icons-material/FindInPage';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import i18n from './i18n';
 
 const MainMenu: React.FC<{
   toggleViewSource: () => void;
@@ -48,7 +49,7 @@ const MainMenu: React.FC<{
     // },
     {
       icon: <PrintIcon />,
-      name: 'Print',
+      name: i18n.t('print'),
       action: () => {
         setAnchorEl(null);
         window.print();
@@ -56,7 +57,7 @@ const MainMenu: React.FC<{
     },
     {
       icon: <AboutIcon />,
-      name: 'About',
+      name: i18n.t('about'),
       action: () => {
         setAnchorEl(null);
         setAboutDialogOpened(true);
@@ -120,9 +121,9 @@ const MainMenu: React.FC<{
         onClose={() => {
           setAboutDialogOpened(false);
         }}
-        aria-labelledby="simple-dialog-title"
+        aria-labelledby="dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">About this extension</DialogTitle>
+        <DialogTitle id="dialog-title">{i18n.t('aboutTitle')}</DialogTitle>
         <DialogContent>
           Please visit the dedicated&nbsp;
           <Link

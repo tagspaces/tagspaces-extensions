@@ -5,6 +5,7 @@ import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import './extension.css';
+import i18n from './i18n';
 import MainMenu from './MainMenu';
 import {
   MilkdownEditor,
@@ -30,6 +31,9 @@ const App: React.FC = () => {
   const readOnly = () => !window.editMode;
   // @ts-ignore
   const getContent = () => window.mdContent;
+
+  // @ts-ignore
+  i18n.changeLanguage(window.locale);
 
   // @ts-ignore
   useEventListener('keydown', event => {

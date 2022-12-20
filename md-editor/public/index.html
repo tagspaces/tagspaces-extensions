@@ -44,6 +44,8 @@
           !document.URL.startsWith('http://localhost:1212/')) ||
         pathToFile.startsWith('http');
 
+      window.locale = getParameterByName('locale');
+
       /*const theme = getParameterByName('theme'); // TODO migrate theme GET param in setContent(..theme)
       if (theme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
