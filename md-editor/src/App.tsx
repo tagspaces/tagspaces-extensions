@@ -1,5 +1,9 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
+import Mark from 'mark.js';
 import useEventListener from './useEventListener';
+import Fab from '@mui/material/Fab';
+import TextField from '@mui/material/TextField';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import './extension.css';
 import MainMenu from './MainMenu';
 import {
@@ -12,10 +16,13 @@ import {
 const App: React.FC = () => {
   const focusCode = React.useRef(false);
   const focus = React.useRef(false);
+  const contentRef = React.useRef(null);
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+  const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
@@ -36,8 +43,13 @@ const App: React.FC = () => {
         }
       } else if (event.key.toLowerCase() === 'p') {
         window.print();
+        // } else if (event.key.toLowerCase() === 'f') {
+        //   setFilterVisible(!isFilterVisible);
       }
     }
+    // if (event.key.toLowerCase() === 'escape') {
+    //   setFilterVisible(false);
+    // }
   });
 
   // @ts-ignore
@@ -56,153 +68,26 @@ const App: React.FC = () => {
 
   useEventListener('contentLoaded', () => {
     forceUpdate();
-    // if (milkdownRef.current || codeMirrorRef.current) {
-    // setMd(getContent());
-    /*const editor = milkdownRef.current.get();
-      if (editor) {
-        editor.action((ctx: Ctx) => {
-          const view = ctx.get(editorViewCtx);
-          const parser = ctx.get(parserCtx);
-          const doc = parser(getContent());
-          if (!doc) return;
-          const state = view.state;
-          view.dispatch(
-            state.tr.replace(
-              0,
-              state.doc.content.size,
-              new Slice(doc.content, 0, 0)
-            )
-          );
-        });
-      }*/
-    // }
   });
 
-  /*let context: Ctx;
-  const listenerConf = {
-    markdown: [
-      // @ts-ignore
-      (getMarkdown) => {
-        if (editable()) {
-          // @ts-ignore
-          window.mdContent = getMarkdown();
-          window.parent.postMessage(
-            JSON.stringify({
-              command: 'contentChangedInEditor',
-              // filepath: filePath
-            }),
-            '*'
-          );
-        }
-      },
-    ],
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(event.target.value);
   };
 
-  // @ts-ignore
-  const directiveRemarkPlugin = remarkPluginFactory(directive);
-
-  const clickPlugin = createProsePlugin((_, utils) => {
-    const { ctx } = utils;
-    const schema = ctx.get(schemaCtx);
-    const parser = ctx.get(parserCtx);
-    const serializer = ctx.get(serializerCtx);
-    return new Plugin({
-      props: {
-        // https://github.com/herrdu/DEditor/blob/4557d4149f71da62532e9ab1754231f3301d8afd/src/extensions/Image.ts#L150
-        handleClickOn: (view, pos, node, nodePos, event, direct) => {
-          // view.dispatch(view.state.tr.replaceSelection(new Slice(slice.content, depth, depth)));
-
-          if (direct) {
-            setTimeout(() => {
-              if (pos === nodePos) {
-                view.dispatch(
-                  view.state.tr.setSelection(
-                    TextSelection.create(view.state.doc, pos, pos)
-                  )
-                );
-              } else {
-                view.dispatch(
-                  view.state.tr.setSelection(
-                    TextSelection.create(view.state.doc, pos + 1, pos + 1)
-                  )
-                );
-              }
-              console.log('view', view.state.selection);
-            }, 0);
-            console.log(
-              'handleClickOn',
-              this,
-              view,
-              pos,
-              node,
-              nodePos,
-              event,
-              direct
-            );
-          }
-          return false;
-
-          /!*if (node.type.name === 'link') {
-            return true;
-          }
-          return false;*!/
-        },
-      },
-    });
-  });
-
-
-  const editor = useEditor(
-    (root, renderReact) => {
-      const nodes = commonmark
-        .configure(paragraph, { view: renderReact(TSParagraph) })
-        // @ts-ignore
-        .configure(link, { view: renderReact(TSLink) })
-        .configure(image, { view: renderReact(TSImage) });
-
-      return (
-        Editor.make()
-          .config((ctx) => {
-            context = ctx;
-            ctx.set(rootCtx, root);
-            const content = getContent();
-            if (content) {
-              ctx.set(defaultValueCtx, content);
-            }
-            ctx.set(listenerCtx, listenerConf); // { markdown: [(x) => console.log(x())] });
-            ctx.set(editorViewOptionsCtx, { editable });
-          })
-          .use(nord)
-          .use(nodes)
-          // .use(AtomList.create([clickPlugin()]))
-          //.use([directiveRemarkPlugin, link])
-          .use(commonmark)
-          .use(clipboard)
-          .use(listener)
-          .use(history)
-          .use(emoji)
-          .use(table)
-          .use(math)
-          .use(slash)
-          .use(tooltip)
-      );
-    }
-    //[window.mdContent]
-  );*/
-
-  /*const milkdownListener = React.useCallback(
-    (markdown: string, prevMarkdown: string | null) => {
-      updateContent(markdown, prevMarkdown);
-      /!*const lock = lockCode.current;
-    if (lock) return;
-
-    const { current } = codeMirrorRef;
-    if (!current) return;
-    const result = getMarkdown();
-    current.update(result);*!/
-    },
-    []
-  );*/
+  // useEffect(() => {
+  //   let content;
+  //   if (contentRef && contentRef.current) {
+  //     content = contentRef.current;
+  //   } else {
+  //     return;
+  //   }
+  //   const markInstance = new Mark(content);
+  //   markInstance.unmark({
+  //     done: () => {
+  //       markInstance.mark(searchQuery);
+  //     }
+  //   });
+  // });
 
   const milkdownListener = React.useCallback((markdown: string) => {
     const lock = focusCode.current;
@@ -226,24 +111,7 @@ const App: React.FC = () => {
     updateContent(value);
   }, []);
 
-  /*const onCodeChange = React.useCallback((code: string) => {
-    updateContent(code, null);
-    /!*const { current } = milkdownRef;
-    if (!current) return;
-    const value = getCode();
-    current.update(value);*!/
-  }, []);*/
-
   const updateContent = (content: string) => {
-    //, prevContent: string | null) => {
-    /*const cleanNewContent = content.replaceAll('\\_', '_').replaceAll('\n', '');
-    // @ts-ignore
-    const cleanContent = window.mdContent
-      .replaceAll('\\_', '_')
-      .replaceAll('\n', '');*/
-
-    // if (content !== prevContent) {
-    // if (cleanContent !== cleanNewContent) {
     if (focus.current || focusCode.current) {
       // @ts-ignore
       window.mdContent = content;
@@ -273,8 +141,6 @@ const App: React.FC = () => {
     }
   };
 
-  // return <EditorComponent ref={editorRef} editor={editor} />;
-  // <ReactEditor ref={milkdownRef} editor={editor} />
   const milkdownStyle =
     mode === 'Milkdown'
       ? { width: '100%', height: '100%' }
@@ -286,7 +152,7 @@ const App: React.FC = () => {
   return (
     <div>
       {getContent() !== undefined && (
-        <>
+        <div ref={contentRef}>
           <div style={milkdownStyle}>
             <MilkdownEditor
               ref={milkdownRef}
@@ -309,10 +175,24 @@ const App: React.FC = () => {
               lock={focusCode}
             />
           </div>
-        </>
+        </div>
       )}
-
-      <MainMenu toggleViewSource={toggleViewSource} mode={mode} />
+      {/* {isFilterVisible && (
+        <TextField
+          style={{ position: 'absolute', right: 80, bottom: 20 }}
+          label="Search in text"
+          autoFocus
+          size="small"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+      )} */}
+      <MainMenu
+        toggleViewSource={toggleViewSource}
+        isFilterVisible={isFilterVisible}
+        setFilterVisible={setFilterVisible}
+        mode={mode}
+      />
     </div>
   );
 };

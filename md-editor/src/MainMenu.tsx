@@ -10,14 +10,17 @@ import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
+import SearchIcon from '@mui/icons-material/FindInPage';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const MainMenu: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
-  toggleViewSource,
-  mode
-}) => {
+const MainMenu: React.FC<{
+  toggleViewSource: () => void;
+  isFilterVisible: boolean;
+  setFilterVisible: (isFilterVisible: boolean) => void;
+  mode: string;
+}> = ({ toggleViewSource, isFilterVisible, setFilterVisible, mode }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
@@ -35,6 +38,14 @@ const MainMenu: React.FC<{ toggleViewSource: () => void; mode: string }> = ({
         toggleViewSource();
       }
     },
+    // {
+    //   icon: <SearchIcon />,
+    //   name: 'Toggle search filter',
+    //   action: () => {
+    //     setAnchorEl(null);
+    //     setFilterVisible(!isFilterVisible);
+    //   }
+    // },
     {
       icon: <PrintIcon />,
       name: 'Print',
