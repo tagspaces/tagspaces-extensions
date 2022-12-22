@@ -38,18 +38,43 @@ $(() => {
   let orientation;
   let viewer;
 
+  // if (
+  //   filePath.toLowerCase().endsWith('.tiff') ||
+  //   filePath.toLowerCase().endsWith('.tif')
+  // ) {
+  //   $.getScript('libs/tiff.js/tiff.min.js', () => {
+  //     const xhr = new XMLHttpRequest();
+  //     xhr.responseType = 'arraybuffer';
+  //     xhr.open('GET', filePath);
+  //     xhr.onload = () => {
+  //       const tiff = new Tiff({ buffer: xhr.response });
+  //       const canvas = tiff.toCanvas();
+  //       $('#imageContent').attr('src', canvas.toDataURL());
+  //     };
+  //     xhr.send();
+  //   });
   if (
+    filePath.toLowerCase().endsWith('.cr2') ||
+    filePath.toLowerCase().endsWith('.dng') ||
+    filePath.toLowerCase().endsWith('.nef') ||
     filePath.toLowerCase().endsWith('.tiff') ||
     filePath.toLowerCase().endsWith('.tif')
   ) {
-    $.getScript('libs/tiff.js/tiff.min.js', () => {
+    $.getScript('libs/utif.js/UTIF.js', () => {
       const xhr = new XMLHttpRequest();
       xhr.responseType = 'arraybuffer';
       xhr.open('GET', filePath);
       xhr.onload = () => {
-        const tiff = new Tiff({ buffer: xhr.response });
-        const canvas = tiff.toCanvas();
-        $('#imageContent').attr('src', canvas.toDataURL());
+        // const tiff = new Tiff({ buffer: xhr.response });
+        // const canvas = tiff.toCanvas();
+
+        const ifds = UTIF.decode(xhr.response);
+        // UTIF.decodeImage(xhr.response, ifds[0]);
+        const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
+        // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
+        console.log(ifds[0].width, ifds[0].height, ifds[0]);
+
+        $('#imageContent').attr('src', dataURL);
       };
       xhr.send();
     });
