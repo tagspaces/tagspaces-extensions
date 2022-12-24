@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%">
+  <head>
+    <title>3D Viewer for TagSpaces</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+  </head>
+  <script type="module" src="libs/model-viewer/model-viewer.min.js"></script>
+  <script>
+    function getParameterByName(paramName) {
+      const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      let param =
+        results === null
+          ? ''
+          : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      if (param.includes('#')) {
+        param = param.split('#').join('%23');
+      }
+      return param;
+    }
+
+    const filePath = getParameterByName('file');
+    const isWeb =
+      (document.URL.startsWith('http') &&
+        !document.URL.startsWith('http://localhost:1212/')) ||
+      filePath.startsWith('http');
+
+    document.onreadystatechange = () => {
+      if (document.readyState === 'complete') {
+        const modelViewer = document.querySelector('model-viewer');
+        modelViewer.src = isWeb ? filePath : 'file://' + filePath;
+      }
+    };
+  </script>
+  <body style="width: 100%; height: 100%; overflow: hidden;">
+    <model-viewer
+      style="width: 100%; height: 100%"
+      ar
+      shadow-intensity="1"
+      camera-controls
+      touch-action="pan-y"
+    ></model-viewer>
+  </body>
+</html>

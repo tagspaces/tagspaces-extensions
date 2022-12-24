@@ -79,3 +79,14 @@ sh.cp(
   'node_modules/summernote/dist/summernote.min.js',
   'html-editor/libs/summernote/dist/summernote.min.js'
 );
+
+sh.rm('-rf', '3d-viewer/libs/model-viewer');
+sh.mkdir('3d-viewer/libs/model-viewer');
+sh.cp(
+  'node_modules/@google/model-viewer/dist/model-viewer.min.js',
+  '3d-viewer/libs/model-viewer'
+);
+sh.cp(
+  'node_modules/@google/model-viewer/LICENSE',
+  '3d-viewer/libs/model-viewer'
+);

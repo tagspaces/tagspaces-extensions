@@ -20,7 +20,6 @@ libs/**/*.slim.js
 libs/**/*.slim.min.js
 libs/**/*.slim.min.map
 node_modules
-3d-viewer
 tagspacespro
 .idea
 *.iml
