@@ -26,21 +26,13 @@ body {
   color: black !important;
 }
 
-/* div,
-input,
-textarea,
-span,
-p {
-  color: var(--text-color);
-} */
-/* color: rgba(var(--text-color), 1) !important; */
-
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-  background-color: var(--primary-background-color);
-  color: var(--primary-text-color);
+  background-color: var(--primary-background-color) !important;
+  color: var(--primary-text-color) !important;
+  border: 0;
 }
 
 .viewerMainMenuButton {
