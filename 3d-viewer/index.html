@@ -12,6 +12,9 @@
       .modal-backdrop {
         z-index: -1;
       }
+      .bi {
+        margin-right: 5px;
+      }
       body {
         background-color: transparent;
       }
@@ -34,6 +37,14 @@
         return param;
       }
 
+      function sendMessageToHost(message) {
+        if (typeof sendToParent === 'function') {
+          sendToParent(message);
+        } else {
+          window.parent.postMessage(JSON.stringify(message), '*');
+        }
+      }
+
       const filePath = getParameterByName('file');
       const isWeb =
         (document.URL.startsWith('http') &&
@@ -44,52 +55,58 @@
         if (document.readyState === 'complete') {
           const modelViewer = document.querySelector('model-viewer');
           modelViewer.src = isWeb ? filePath : 'file://' + filePath;
-        }
 
-        const screenshotModal = new bootstrap.Modal('#screenshotModal', {});
-        const viewer3D = document.querySelector('model-viewer');
-        const saveButton = document.getElementById('saveScreenshotButton');
+          const screenshotModal = new bootstrap.Modal('#screenshotModal', {});
+          const viewer3D = document.querySelector('model-viewer');
+          const saveButton = document.getElementById('saveScreenshotButton');
 
-        function saveScreenshot() {
-          saveButton.removeEventListener('click', saveScreenshot);
-          const imageEl = document.getElementById('screenshotImg');
-          fetch(imageEl.src)
-            .then(res => res.blob())
-            .then(blob => {
-              saveAs(blob, 'Screenshot3DModel.png');
-            });
-          screenshotModal.hide();
-        }
-
-        document
-          .getElementById('printMenuItem')
-          .addEventListener('click', () => {
-            setTimeout(() => {
-              window.print();
-            }, 300);
-          });
-
-        document
-          .getElementById('screenshotMenuItem')
-          .addEventListener('click', () => {
-            const screenshotURL = viewer3D.toDataURL('image/png');
+          function saveScreenshot() {
+            saveButton.removeEventListener('click', saveScreenshot);
             const imageEl = document.getElementById('screenshotImg');
-            imageEl.setAttribute('src', screenshotURL);
-            screenshotModal.show();
+            fetch(imageEl.src)
+              .then(res => res.blob())
+              .then(blob => {
+                saveAs(blob, 'Screenshot3DModel.png');
+              });
+            screenshotModal.hide();
+          }
 
-            // const viewer3D = document.createElement('model-viewer');
-            // // viewer3D.setAttribute('style', 'left: -10000px;');
-            // viewer3D.src =
-            //   'file:///home/na/Desktop/3D-Models/apollo_exterior-150k-4096.glb';
-            // viewer3D.addEventListener('load', () => {
-            //   const screenshotURL = viewer3D.toDataURL('image/jpg');
-            //   const imageEl = document.getElementById('screenshotImg');
-            //   imageEl.setAttribute('src', screenshotURL);
-            // });
-            // document.body.appendChild(viewer3D);
+          document.getElementById('docsLink').addEventListener('click', e => {
+            e.preventDefault();
+            const msg = { command: 'openLinkExternally', link: e.target.href };
+            sendMessageToHost(msg);
           });
 
-        saveButton.addEventListener('click', saveScreenshot);
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
+
+          document
+            .getElementById('screenshotMenuItem')
+            .addEventListener('click', () => {
+              const screenshotURL = viewer3D.toDataURL('image/png');
+              const imageEl = document.getElementById('screenshotImg');
+              imageEl.setAttribute('src', screenshotURL);
+              screenshotModal.show();
+
+              // const viewer3D = document.createElement('model-viewer');
+              // // viewer3D.setAttribute('style', 'left: -10000px;');
+              // viewer3D.src =
+              //   'file:///home/na/Desktop/3D-Models/apollo_exterior-150k-4096.glb';
+              // viewer3D.addEventListener('load', () => {
+              //   const screenshotURL = viewer3D.toDataURL('image/jpg');
+              //   const imageEl = document.getElementById('screenshotImg');
+              //   imageEl.setAttribute('src', screenshotURL);
+              // });
+              // document.body.appendChild(viewer3D);
+            });
+
+          saveButton.addEventListener('click', saveScreenshot);
+        }
       };
     </script>
   </head>
@@ -114,14 +131,47 @@
         >
           ⋮
         </button>
-        <ul class="dropdown-menu">
+        <ul
+          class="dropdown-menu"
+          style="transform: translate(-106px, 4px) !important;"
+        >
           <li>
-            <a id="screenshotMenuItem" class="dropdown-item" href="#"
-              >Take Screenshot</a
+            <a id="screenshotMenuItem" class="dropdown-item" href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                sm
+                fill="currentColor"
+                class="bi"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M.002 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2V3zm1 9v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12zm5-6.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0z"
+                />
+              </svg>
+              Take Screenshot</a
             >
           </li>
           <li>
-            <a id="printMenuItem" class="dropdown-item" href="#">Print</a>
+            <a id="printMenuItem" class="dropdown-item" href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-printer-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+                />
+                <path
+                  d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+                />
+              </svg>
+              Print</a
+            >
           </li>
           <li><hr class="dropdown-divider" /></li>
           <li>
@@ -130,7 +180,20 @@
               href="#"
               data-bs-toggle="modal"
               data-bs-target="#aboutModal"
-              >About</a
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-info-circle-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                />
+              </svg>
+              About</a
             >
           </li>
         </ul>
@@ -157,8 +220,13 @@
             ></button>
           </div>
           <div class="modal-body">
-            Please visit the dedicated <a>extension page</a> in our
-            documentation for more details.
+            Please visit the dedicated
+            <a
+              id="docsLink"
+              href="https://docs.tagspaces.org/extensions/3d-viewer"
+              >page</a
+            >
+            for this extension in our documentation.
           </div>
           <div class="modal-footer">
             <button
