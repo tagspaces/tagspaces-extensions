@@ -44,9 +44,11 @@
   },
   "devDependencies": {
     "@google/model-viewer": "^2.1.1",
-    "bootstrap": "~3.4.1",
-    "bootswatch": "~3.4.1",
+    "bootstrap": "3.4.1",
+    "bootstrap5": "npm:bootstrap@5.2.3",
+    "bootswatch": "3.4.1",
     "dompurify": "~2.3.3",
+    "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "i18next": "~10.2.2",
     "jquery": "~3.6.0",

@@ -80,7 +80,8 @@ sh.cp(
   'html-editor/libs/summernote/dist/summernote.min.js'
 );
 
-sh.rm('-rf', '3d-viewer/libs/model-viewer');
+sh.rm('-rf', '3d-viewer/libs/');
+sh.mkdir('3d-viewer/libs');
 sh.mkdir('3d-viewer/libs/model-viewer');
 sh.cp(
   'node_modules/@google/model-viewer/dist/model-viewer.min.js',
@@ -89,4 +90,20 @@ sh.cp(
 sh.cp(
   'node_modules/@google/model-viewer/LICENSE',
   '3d-viewer/libs/model-viewer'
+);
+sh.mkdir('3d-viewer/libs/bootstrap');
+sh.cp('node_modules/bootstrap5/LICENSE', '3d-viewer/libs/bootstrap');
+sh.cp(
+  'node_modules/bootstrap5/dist/js/bootstrap.bundle.min.js',
+  '3d-viewer/libs/bootstrap'
+);
+sh.cp(
+  'node_modules/bootstrap5/dist/css/bootstrap.min.css',
+  '3d-viewer/libs/bootstrap'
+);
+sh.mkdir('3d-viewer/libs/file-saver');
+sh.cp('node_modules/file-saver/LICENSE.md', '3d-viewer/libs/file-saver');
+sh.cp(
+  'node_modules/file-saver/dist/FileSaver.min.js',
+  '3d-viewer/libs/file-saver'
 );
