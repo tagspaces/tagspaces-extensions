@@ -6,75 +6,212 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <script src="../libs/jquery/dist/jquery.min.js"></script>
-    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../legacy/theming.css" />
+    <style>
+      .bi {
+        margin-right: 5px;
+      }
+    </style>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
-    <script src="../libs/marked/marked.min.js"></script>
-    <script src="../legacy/common.js"></script>
-    <script src="main.js"></script>
-    <link rel="stylesheet" href="extension.css" />
+    <script src="../common/common.js"></script>
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      initI18N(locale, 'ns.extension.json');
+
+      document.onreadystatechange = () => {
+        if (document.readyState === 'complete') {
+          sendMessageToHost({ command: 'loadDefaultTextContent' });
+
+          document.getElementById('docsLink').addEventListener('click', e => {
+            e.preventDefault();
+            const msg = { command: 'openLinkExternally', link: e.target.href };
+            sendMessageToHost(msg);
+          });
+        }
+      };
+
+      function setContent(content) {
+        const htmlContent = document.getElementById('htmlContent');
+        const urlBegin = 'URL=';
+        const commentTag = 'COMMENT=';
+        let url = content.substring(
+          content.indexOf(urlBegin) + urlBegin.length,
+          content.length
+        );
+
+        let comment = content.substring(
+          content.indexOf(commentTag) + commentTag.length,
+          content.length
+        );
+
+        // preventing the case the url is at the end of the file or line after the url lines
+        url = url + '\n';
+        url = url.substring(0, url.indexOf('\n'));
+
+        const openURLButton = document.getElementById('openURLButton');
+        openURLButton.addEventListener('click', e => {
+          e.preventDefault();
+          const msg = { command: 'openLinkExternally', link: url };
+          sendMessageToHost(msg);
+        });
+
+        const urlInput = document.getElementById('urlInput');
+        urlInput.setAttribute('value', url);
+
+        if (comment.startsWith('data:image')) {
+          const screenshotImg = document.getElementById('screenshotImg');
+          screenshotImg.setAttribute('src', comment);
+          screenshotImg.style['display'] = 'block';
+        }
+      }
+    </script>
   </head>
   <body>
-    <div id="htmlContent"></div>
-    <div class="btn-group dropup extMainMenu">
+    <div id="htmlContent" style="margin: 10px;">
+      <input
+        id="urlInput"
+        class="form-control"
+        type="text"
+        value="URL of the bookmark"
+        aria-label="readonly input example"
+        readonly
+        style="margin-bottom: 10px;"
+      />
       <button
         type="button"
-        id="viewerMainMenuButton"
-        class="btn roundButton dropdown-toggle viewerMainMenuButton"
-        data-toggle="dropdown"
+        id="openURLButton"
+        title="Opens the URL in the default browser"
+        class="btn btn-primary"
       >
-        <i class="fa fa-ellipsis-v fa-2x"></i>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-box-arrow-up-right"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
+          />
+        </svg>
+        <span data-i18n="open URL" />
       </button>
-      <ul class="dropdown-menu pull-right">
-        <li class="dropdown-header">
-          <button class="close">&times;</button>&nbsp;
-        </li>
-        <li class="divider"></li>
+      <img
+        id="screenshotImg"
+        title="Screenshot of the original web page"
+        style="margin-top: 10px; width: 100%; display: none"
+      />
+    </div>
+    <div
+      class="btn-group dropup-center dropup"
+      style="position: absolute; right: 20px; bottom: 20px;"
+    >
+      <button
+        type="button"
+        class="btn btn-primary  btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        style="border-radius: 30px; font-weight: bolder; height: 50px"
+      >
+        ⋮
+      </button>
+      <ul
+        class="dropdown-menu"
+        style="transform: translate(-106px, 4px) !important;"
+      >
         <li>
-          <a id="aboutButton">
-            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="about"
-            ></span>
+          <a id="printMenuItem" class="dropdown-item" href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-printer-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+              />
+              <path
+                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+              />
+            </svg>
+            <span data-i18n="print" />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-info-circle-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+            <span data-i18n="about" />
           </a>
         </li>
       </ul>
     </div>
     <div
-      class="modal fullScreenMobile"
-      id="aboutExtensionModal"
+      class="modal fade"
+      id="aboutModal"
       tabindex="-1"
-      role="dialog"
+      aria-labelledby="aboutModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
+            <h1 class="modal-title fs-5" id="aboutModalLabel">
+              <span data-i18n="aboutTitle" />
+            </h1>
             <button
               type="button"
-              id="closeAboutDialogButton"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="aboutTitle"></h4>
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <div class="modal-body markdown-content">
-            <br />Please visit the
-            <a href="https://github.com/tagspaces/tagspaces-extensions"
-              >project page</a
+          <div class="modal-body">
+            Please visit the dedicated
+            <a
+              id="docsLink"
+              href="https://docs.tagspaces.org/extensions/url-viewer"
+              >page</a
             >
-            on GitHub for details about this extension.<br /><br />
+            for the URL Viewer extension in our documentation.
           </div>
           <div class="modal-footer">
             <button
+              type="button"
               class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
+              data-bs-dismiss="modal"
             >
-              <i class="fa fa-check fa-lg"></i>
+              <span data-i18n="ok" />
             </button>
           </div>
         </div>
