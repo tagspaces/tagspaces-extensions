@@ -21,6 +21,14 @@ sh.mkdir('libs/bootstrap');
 sh.cp('-R', 'node_modules/bootstrap/dist', 'libs/bootstrap');
 sh.cp('node_modules/bootstrap/LICENSE', 'libs/bootstrap');
 
+sh.mkdir('libs/bootstrap5');
+sh.cp('node_modules/bootstrap5/LICENSE', 'libs/bootstrap5');
+sh.cp(
+  'node_modules/bootstrap5/dist/js/bootstrap.bundle.min.js',
+  'libs/bootstrap5'
+);
+sh.cp('node_modules/bootstrap5/dist/css/bootstrap.min.css', 'libs/bootstrap5');
+
 sh.mkdir('libs/dompurify');
 sh.cp('-R', 'node_modules/dompurify/dist', 'libs/dompurify/');
 sh.cp('node_modules/dompurify/LICENSE', 'libs/dompurify');
@@ -90,16 +98,6 @@ sh.cp(
 sh.cp(
   'node_modules/@google/model-viewer/LICENSE',
   '3d-viewer/libs/model-viewer'
-);
-sh.mkdir('3d-viewer/libs/bootstrap');
-sh.cp('node_modules/bootstrap5/LICENSE', '3d-viewer/libs/bootstrap');
-sh.cp(
-  'node_modules/bootstrap5/dist/js/bootstrap.bundle.min.js',
-  '3d-viewer/libs/bootstrap'
-);
-sh.cp(
-  'node_modules/bootstrap5/dist/css/bootstrap.min.css',
-  '3d-viewer/libs/bootstrap'
 );
 sh.mkdir('3d-viewer/libs/file-saver');
 sh.cp('node_modules/file-saver/LICENSE.md', '3d-viewer/libs/file-saver');
