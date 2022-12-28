@@ -34,7 +34,7 @@
     "url-viewer/"
   ],
   "scripts": {
-    "updatelibs": "node scripts/update-libs.js",
+    "updatelibs": "node common/update-libs.js",
     "build": "npm run build-media-player && npm run build-md-editor",
     "build-media-player": "cd media-player && npm install && npm run build && cd ..",
     "build-md-editor": "cd md-editor && npm install && npm run build && cd ..",
