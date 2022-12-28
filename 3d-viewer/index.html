@@ -22,34 +22,15 @@
     <script src="libs/file-saver/FileSaver.min.js"></script>
     <script src="libs/bootstrap/bootstrap.bundle.min.js"></script>
     <script type="module" src="libs/model-viewer/model-viewer.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../common/common.js"></script>
     <script>
-      function getParameterByName(paramName) {
-        const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-        const results = regex.exec(location.search);
-        let param =
-          results === null
-            ? ''
-            : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        if (param.includes('#')) {
-          param = param.split('#').join('%23');
-        }
-        return param;
-      }
-
-      function sendMessageToHost(message) {
-        if (typeof sendToParent === 'function') {
-          sendToParent(message);
-        } else {
-          window.parent.postMessage(JSON.stringify(message), '*');
-        }
-      }
-
       const filePath = getParameterByName('file');
-      const isWeb =
-        (document.URL.startsWith('http') &&
-          !document.URL.startsWith('http://localhost:1212/')) ||
-        filePath.startsWith('http');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      initI18N(locale, 'ns.extension.json');
 
       document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
@@ -150,8 +131,8 @@
                   d="M.002 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2V3zm1 9v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12zm5-6.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0z"
                 />
               </svg>
-              Take Screenshot</a
-            >
+              <span data-i18n="takeScreenshot" />
+            </a>
           </li>
           <li>
             <a id="printMenuItem" class="dropdown-item" href="#">
@@ -170,8 +151,8 @@
                   d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
                 />
               </svg>
-              Print</a
-            >
+              <span data-i18n="print" />
+            </a>
           </li>
           <li><hr class="dropdown-divider" /></li>
           <li>
@@ -193,8 +174,8 @@
                   d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
                 />
               </svg>
-              About</a
-            >
+              <span data-i18n="about" />
+            </a>
           </li>
         </ul>
       </div>
@@ -210,7 +191,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="aboutModalLabel">
-              About 3D Viewer
+              <span data-i18n="aboutTitle" />
             </h1>
             <button
               type="button"
@@ -226,7 +207,7 @@
               href="https://docs.tagspaces.org/extensions/3d-viewer"
               >page</a
             >
-            for this extension in our documentation.
+            for the 3D Viewer extension in our documentation.
           </div>
           <div class="modal-footer">
             <button
@@ -234,7 +215,7 @@
               class="btn btn-primary"
               data-bs-dismiss="modal"
             >
-              Ok
+              <span data-i18n="ok" />
             </button>
           </div>
         </div>
@@ -251,7 +232,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="screenshotModalLabel">
-              Screenshot
+              <span data-i18n="takeScreenshot" />
             </h1>
             <button
               type="button"
@@ -269,14 +250,14 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn" data-bs-dismiss="modal">
-              Cancel
+              <span data-i18n="cancel" />
             </button>
             <button
               type="button"
               id="saveScreenshotButton"
               class="btn btn-primary"
             >
-              Save
+              <span data-i18n="save" />
             </button>
           </div>
         </div>
