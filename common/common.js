@@ -57,8 +57,42 @@ function getFileContentPromise(fullPath, type) {
   });
 }
 
-function initI18N(locale, filename) {
-  getFileContentPromise('../common/locales/en_US/' + filename, 'text') // loading fallback lng
+function toDataURL(src, callback, format) {
+  let imageFormat = 'image/jpeg';
+  if (format && format.toLowerCase() === 'png') {
+    imageFormat = 'image/png';
+  } else if (format && format.toLowerCase() === 'webp') {
+    imageFormat = 'image/webp';
+  }
+  const image = new Image();
+  image.crossOrigin = 'Anonymous';
+  image.onload = function() {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = this.naturalHeight;
+    canvas.width = this.naturalWidth;
+    context.drawImage(this, 0, 0);
+    const dataURL = canvas.toDataURL(imageFormat, 0.9);
+    callback(dataURL);
+  };
+  image.src = src;
+}
+
+function extractFileName(filePath, dirSeparator = '/') {
+  if (filePath.endsWith(dirSeparator)) {
+    return '';
+  }
+  return filePath
+    ? filePath.substring(
+        filePath.lastIndexOf(dirSeparator) + 1,
+        filePath.length
+      )
+    : filePath;
+}
+
+function initI18N(locale, filename, localePath) {
+  lPath = localePath || '../common/locales';
+  getFileContentPromise(lPath + '/en_US/' + filename, 'text') // loading fallback lng
     .then(enLocale => {
       const i18noptions = {
         lng: locale,
@@ -68,10 +102,7 @@ function initI18N(locale, filename) {
       };
       i18noptions.resources.en_US = {};
       i18noptions.resources.en_US.translation = JSON.parse(enLocale);
-      getFileContentPromise(
-        '../common/locales/' + locale + '/' + filename,
-        'text'
-      )
+      getFileContentPromise(lPath + '/' + locale + '/' + filename, 'text')
         .then(content => {
           i18noptions.resources[locale] = {};
           i18noptions.resources[locale].translation = JSON.parse(content);
@@ -80,6 +111,10 @@ function initI18N(locale, filename) {
             const el4i18n = document.querySelectorAll('[data-i18n]');
             el4i18n.forEach(el => {
               el.textContent = i18next.t(el.dataset.i18n);
+            });
+            const elTit4i18n = document.querySelectorAll('[data-i18ntitle]');
+            elTit4i18n.forEach(el => {
+              el.setAttribute('title', i18next.t(el.dataset.i18ntitle));
             });
           });
           return true;
@@ -91,6 +126,10 @@ function initI18N(locale, filename) {
             const el4i18n = document.querySelectorAll('[data-i18n]');
             el4i18n.forEach(el => {
               el.textContent = i18next.t(el.dataset.i18n);
+            });
+            const elTit4i18n = document.querySelectorAll('[data-i18ntitle]');
+            elTit4i18n.forEach(el => {
+              el.setAttribute('title', i18next.t(el.dataset.i18ntitle));
             });
           });
         });

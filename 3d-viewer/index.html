@@ -41,12 +41,14 @@
           const saveButton = document.getElementById('saveScreenshotButton');
 
           function saveScreenshot() {
-            saveButton.removeEventListener('click', saveScreenshot);
             const imageEl = document.getElementById('screenshotImg');
             fetch(imageEl.src)
               .then(res => res.blob())
               .then(blob => {
-                saveAs(blob, 'Screenshot3DModel.png');
+                saveAs(
+                  blob,
+                  extractFileName(filePath, isWin ? '\\' : '/') + '.png'
+                );
               });
             screenshotModal.hide();
           }
