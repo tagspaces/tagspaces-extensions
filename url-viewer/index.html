@@ -33,6 +33,14 @@
             const msg = { command: 'openLinkExternally', link: e.target.href };
             sendMessageToHost(msg);
           });
+
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
         }
       };
 
