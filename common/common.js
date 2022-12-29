@@ -118,3 +118,51 @@ function sendMessageToHost(message) {
     window.parent.postMessage(JSON.stringify(message), '*');
   }
 }
+
+function insertAboutDialog(url) {
+  document.body.innerHTML += `
+  <div
+    class="modal fade"
+    id="aboutModal"
+    tabindex="-1"
+    aria-labelledby="aboutModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="aboutModalLabel">
+            <span data-i18n="aboutTitle" />
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Please visit the dedicated
+          <a id="docsLink" href="${url}">page</a
+          >
+          for this extension in our documentation.
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+          >
+            <span data-i18n="ok" />
+          </button>
+        </div>
+      </div>
+    </div>  
+  `;
+  const aboutModal = new bootstrap.Modal('#aboutModal', {});
+  document.getElementById('docsLink').addEventListener('click', e => {
+    e.preventDefault();
+    const msg = { command: 'openLinkExternally', link: e.target.href };
+    sendMessageToHost(msg);
+  });
+}

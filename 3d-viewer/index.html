@@ -7,19 +7,16 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../legacy/theming.css" />
+    <link rel="stylesheet" href="../common/common.css" />
     <style>
       .modal-backdrop {
         z-index: -1;
-      }
-      .bi {
-        margin-right: 5px;
       }
       body {
         background-color: transparent;
       }
     </style>
-    <script src="libs/file-saver/FileSaver.min.js"></script>
+    <script src="../libs/file-saver/FileSaver.min.js"></script>
     <script type="module" src="libs/model-viewer/model-viewer.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
@@ -34,6 +31,8 @@
 
       document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
+          insertAboutDialog('https://docs.tagspaces.org/extensions/3d-viewer');
+
           const modelViewer = document.querySelector('model-viewer');
           modelViewer.src = isWeb ? filePath : 'file://' + filePath;
 
@@ -51,12 +50,6 @@
               });
             screenshotModal.hide();
           }
-
-          document.getElementById('docsLink').addEventListener('click', e => {
-            e.preventDefault();
-            const msg = { command: 'openLinkExternally', link: e.target.href };
-            sendMessageToHost(msg);
-          });
 
           document
             .getElementById('printMenuItem')
@@ -180,47 +173,6 @@
         </ul>
       </div>
     </model-viewer>
-    <div
-      class="modal fade"
-      id="aboutModal"
-      tabindex="-1"
-      aria-labelledby="aboutModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="aboutModalLabel">
-              <span data-i18n="aboutTitle" />
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Please visit the dedicated
-            <a
-              id="docsLink"
-              href="https://docs.tagspaces.org/extensions/3d-viewer"
-              >page</a
-            >
-            for the 3D Viewer extension in our documentation.
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-            >
-              <span data-i18n="ok" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div
       class="modal fade"
       id="screenshotModal"

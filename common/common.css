@@ -1,0 +1,50 @@
+:root,
+:root.light {
+  --default-background-color: #f5f5f5;
+  --default-text-color: #111111;
+  --default-text-size: 14px;
+  --background-color: #f7f7f7;
+  --text-color: #111111;
+  --primary-background-color: #1dd19f;
+  --primary-text-color: #ffffff;
+}
+
+:root.dark {
+  --background-color: #303030;
+  --text-color: #ffffff; 
+  --primary-background-color: #1dd19f;
+  --primary-text-color: #ffffff;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Overwriting text color in bootstrap modal dialogs */
+.modal {
+  color: black !important;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--primary-background-color) !important;
+  color: var(--primary-text-color) !important;
+  border: 0;
+}
+
+.viewerMainMenuButton {
+  background-color: var(--primary-background-color);
+}
+
+.bi {
+  margin-right: 5px;
+}
+
+@media print {
+  .extFabMenu {
+    display: none;
+  }
+}

@@ -44,6 +44,11 @@ sh.mkdir('libs/dompurify');
 sh.cp('-R', 'node_modules/dompurify/dist', 'libs/dompurify/');
 sh.cp('node_modules/dompurify/LICENSE', 'libs/dompurify');
 
+sh.rm('-rf', 'libs/file-saver/');
+sh.mkdir('libs/file-saver');
+sh.cp('node_modules/file-saver/LICENSE.md', 'libs/file-saver');
+sh.cp('node_modules/file-saver/dist/FileSaver.min.js', 'libs/file-saver');
+
 sh.rm('-rf', 'libs/viewerjs/');
 sh.mkdir('libs/viewerjs');
 sh.cp('node_modules/viewerjs/dist/viewer.min.js', 'libs/viewerjs');
@@ -115,10 +120,4 @@ sh.cp(
 sh.cp(
   'node_modules/@google/model-viewer/LICENSE',
   '3d-viewer/libs/model-viewer'
-);
-sh.mkdir('3d-viewer/libs/file-saver');
-sh.cp('node_modules/file-saver/LICENSE.md', '3d-viewer/libs/file-saver');
-sh.cp(
-  'node_modules/file-saver/dist/FileSaver.min.js',
-  '3d-viewer/libs/file-saver'
 );
