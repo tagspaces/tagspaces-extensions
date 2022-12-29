@@ -9,33 +9,68 @@
     <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
     <link href="../libs/viewerjs/viewer.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="extension.css" />
     <script src="../common/common.js"></script>
     <script src="../libs/viewerjs/viewer.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="libs/exif-js/exif.js"></script>
+    <script src="../libs/file-saver/FileSaver.min.js"></script>
+    <style>
+      .viewer-container {
+        width: 100%;
+        height: 100%;
+      }
+
+      #extFabMenu,
+      #extFabMenu > ul {
+        z-index: 3000;
+      }
+
+      .modal {
+        z-index: 3002;
+      }
+
+      .viewer-button {
+        visibility: hidden;
+      }
+
+      .viewer-backdrop {
+        background-color: transparent;
+      }
+
+      /* .makeBlackAndWhite {
+        -webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+      }
+
+      .makeSepia {
+        -webkit-filter: sepia(100%);
+        -moz-filter: sepia(100%);
+      }
+
+      .make50Dark {
+        -webkit-filter: brightness(50%);
+        -moz-filter: brightness(50%);
+      }
+
+      .increaseContrast {
+        -webkit-filter: contrast(200%);
+        -moz-filter: contrast(200%);
+      } */
+    </style>
     <script>
       let filePath = getParameterByName('file');
       let locale = getParameterByName('locale');
       if (locale === 'en') {
         locale = 'en_US';
       }
-      initI18N(locale, 'ns.extension.json');
+      initI18N(locale, 'ns.viewerImage.json', 'locales');
 
       document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
           );
-
-          document
-            .getElementById('printMenuItem')
-            .addEventListener('click', () => {
-              setTimeout(() => {
-                window.print();
-              }, 300);
-            });
 
           if (isCordova || isWeb) {
             // Cordova or web case
@@ -77,31 +112,39 @@
             filePath.toLowerCase().endsWith('.tiff') ||
             filePath.toLowerCase().endsWith('.tif')
           ) {
-            // $.getScript('libs/utif.js/UTIF.js', () => {
-            //   const xhr = new XMLHttpRequest();
-            //   xhr.responseType = 'arraybuffer';
-            //   xhr.open('GET', filePath);
-            //   xhr.onload = () => {
-            //     const ifds = UTIF.decode(xhr.response);
-            //     // UTIF.decodeImage(xhr.response, ifds[0]);
-            //     const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
-            //     // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
-            //     console.log(ifds[0].width, ifds[0].height, ifds[0]);
-            //     $('#imageContent').attr('src', dataURL);
-            //   };
-            //   xhr.send();
-            // });
+            const script = document.createElement('script');
+            script.onload = function() {
+              const xhr = new XMLHttpRequest();
+              xhr.responseType = 'arraybuffer';
+              xhr.open('GET', filePath);
+              xhr.onload = () => {
+                const ifds = UTIF.decode(xhr.response);
+                // UTIF.decodeImage(xhr.response, ifds[0]);
+                const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
+                // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
+                // console.log(ifds[0].width, ifds[0].height, ifds[0]);
+                imageContent.setAttribute('src', dataURL);
+              };
+              xhr.send();
+            };
+            script.src = 'libs/utif.js/UTIF.js';
+            document.head.appendChild(script);
           } else if (filePath.toLowerCase().endsWith('.psd')) {
-            // $.getScript('libs/psd/dist/psd.min.js', () => {
-            //   const PSD = require('psd');
-            //   PSD.fromURL(filePath)
-            //     .then(psd => {
-            //       const image = psd.image.toPng();
-            //       $('#imageContent').attr('src', image.getAttribute('src'));
-            //       return true;
-            //     })
-            //     .catch(() => console.warn('Error loading PSD'));
-            // });
+            const script = document.createElement('script');
+            script.onload = function() {
+              const PSD = require('psd');
+              PSD.fromURL(filePath)
+                .then(psd => {
+                  const image = psd.image.toPng();
+                  imageContent.setAttribute('src', image.getAttribute('src'));
+                  return true;
+                })
+                .catch(
+                  e => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
+                );
+            };
+            script.src = 'libs/psd/dist/psd.min.js';
+            document.head.appendChild(script);
           } else {
             imageContent.setAttribute('src', filePath);
           }
@@ -196,15 +239,11 @@
                         exifObj[prop] = eTarget.exifdata[prop];
                       }
                     }
-                    // jQuery.extend(exifObj, eTarget.iptcdata);
-                    // if (!jQuery.isEmptyObject(exifObj)) {
-                    //   printEXIF();
-                    // }
+                    metaData = { ...exifObj, ...eTarget.iptcdata };
+                    printEXIF(metaData);
                   });
                 }
-                // if (!jQuery.isEmptyObject(exifObj)) {
-                //   printEXIF();
-                // }
+                printEXIF(exifObj);
               }
             });
             setTimeout(() => {
@@ -213,6 +252,62 @@
           });
 
           imageContent.style['visibility'] = 'hidden';
+
+          document
+            .getElementById('exportJPGImage')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              toDataURL(imageContent.src, dataURL => {
+                fetch(dataURL)
+                  .then(res => res.blob())
+                  .then(blob => {
+                    saveAs(
+                      blob,
+                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg'
+                    );
+                  });
+              });
+            });
+
+          document
+            .getElementById('exportPNGImage')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              toDataURL(
+                imageContent.src,
+                dataURL => {
+                  fetch(dataURL)
+                    .then(res => res.blob())
+                    .then(blob => {
+                      saveAs(
+                        blob,
+                        extractFileName(filePath, isWin ? '\\' : '/') + '.png'
+                      );
+                    });
+                },
+                'png'
+              );
+            });
+
+          document
+            .getElementById('exportWEBPImage')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              toDataURL(
+                imageContent.src,
+                dataURL => {
+                  fetch(dataURL)
+                    .then(res => res.blob())
+                    .then(blob => {
+                      saveAs(
+                        blob,
+                        extractFileName(filePath, isWin ? '\\' : '/') + '.webp'
+                      );
+                    });
+                },
+                'webp'
+              );
+            });
 
           const offset = 0;
           document
@@ -341,58 +436,75 @@
               }
             });
 
-          function printEXIF() {
-            // const $exifRow = $('#exifRow').clone(); // Preparing the template
-            // const $exifTableBody = $('#exifTableBody');
-            // $exifTableBody.empty();
-            // for (let key in exifObj) {
-            //   if (exifObj.hasOwnProperty(key) && exifObj[key].length !== 0) {
-            //     $exifRow.find('th').text(key);
-            //     $exifRow.find('td').text(exifObj[key]);
-            //     $exifTableBody.append($exifRow.clone());
-            //   }
-            // }
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
+
+          function printEXIF(metaData) {
+            if (Object.keys(metaData).length < 1) {
+              return;
+            }
+            const exifTableBody = document.getElementById('exifTableBody');
+            exifTableBody.textContent = '';
+            for (let key in metaData) {
+              if (metaData.hasOwnProperty(key) && metaData[key].length !== 0) {
+                const tr = document.createElement('tr');
+                const th = document.createElement('th');
+                const td = document.createElement('td');
+                th.textContent = key;
+                td.textContent = metaData[key];
+                tr.appendChild(th);
+                tr.appendChild(td);
+                exifTableBody.appendChild(tr);
+              }
+            }
           }
         }
       };
     </script>
   </head>
   <body>
-    <div id="imageContainer">
-      <img id="imageContent" />
+    <div
+      id="imageContainer"
+      style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"
+    >
+      <img
+        id="imageContent"
+        style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"
+      />
     </div>
 
     <div
-      class="modal"
+      class="modal fade"
       id="exifExtensionModal"
       tabindex="-1"
-      role="dialog"
+      aria-labelledby="exifModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <a
+            <h1 class="modal-title fs-5">
+              <span data-i18n="exifTitle" />
+            </h1>
+            <button
               type="button"
-              id="closeExIf"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-              ><i class="fa fa-times"></i
-            ></a>
-            <h4
-              class="modal-title"
-              id="myModalLabel2"
-              data-i18n="exifTitle"
-            ></h4>
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
-            <table class="table table-striped table-condensed">
+            <table
+              class="table table-striped table-sm"
+              style="font-size: smaller;"
+            >
               <thead>
-                <!--tr>
-            <th>Key</th>
-            <th>Value</th>
-          </tr-->
+                <!--tr><th>Key</th><th>Value</th></tr-->
               </thead>
               <tbody id="exifTableBody">
                 <tr id="exifRow">
@@ -404,11 +516,11 @@
           </div>
           <div class="modal-footer">
             <button
+              type="button"
               class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
+              data-bs-dismiss="modal"
             >
-              <i class="fa fa-check fa-lg"></i>
+              <span data-i18n="ok" />
             </button>
           </div>
         </div>
@@ -431,14 +543,79 @@
       </button>
       <ul class="dropdown-menu">
         <li>
-          <div id="zoomInOutButtons">
-            <div class="btn-group" data-toggle="buttons">
-              <a id="zoomOutButton"
-                ><label class="btn btn-secondary" data-i18n="zoomOut"></label
-              ></a>
-              <a id="zoomInButton"
-                ><label class="btn btn-secondary" data-i18n="zoomIn"></label
-              ></a>
+          <div class="dropdown-item">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+              />
+            </svg>
+            <div
+              class="btn-group"
+              role="group"
+              aria-label="Zoom control"
+              style="width: 150px; border: 1px solid gray;"
+            >
+              <button
+                id="zoomOutButton"
+                type="button"
+                class="btn"
+                data-i18ntitle="zoomOut"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-zoom-out"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+                  />
+                  <path
+                    d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"
+                  />
+                </svg>
+              </button>
+              <button
+                id="zoomInButton"
+                type="button"
+                class="btn"
+                data-i18ntitle="zoomIn"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-zoom-in"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+                  />
+                  <path
+                    d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </li>
@@ -494,31 +671,117 @@
         </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
-          <div id="themeStyle">
-            <div class="btn-group" data-toggle="buttons">
-              <a id="whiteBackgroundColor"
-                ><label
-                  class="btn btn-secondary"
-                  data-i18n="changeBackgroundColor"
-                  >&nbsp;</label
-                ></a
+          <div class="dropdown-item" id="themeStyle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-palette-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M12.433 10.07C14.133 10.585 16 11.15 16 8a8 8 0 1 0-8 8c1.996 0 1.826-1.504 1.649-3.08-.124-1.101-.252-2.237.351-2.92.465-.527 1.42-.237 2.433.07zM8 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4.5 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+              />
+            </svg>
+            <div
+              class="btn-group"
+              data-toggle="buttons"
+              style="width: 150px; border: 1px solid gray;"
+            >
+              <a
+                id="whiteBackgroundColor"
+                class="btn"
+                style="background-color: #ffffff; color: #282a36;"
+                data-i18ntitle="changeBackgroundColor"
+                >&nbsp;</a
               >
-              <a id="blackBackgroundColor"
-                ><label class="btn btn-black" data-i18n="changeBackgroundColor"
-                  >&nbsp;</label
-                ></a
+              <a
+                id="blackBackgroundColor"
+                class="btn"
+                style="background-color: #282a36; color: #ffffff;"
+                data-i18ntitle="changeBackgroundColor"
+                >&nbsp;</a
               >
-              <a id="sepiaBackgroundColor"
-                ><label class="btn btn-sepia" data-i18n="changeBackgroundColor"
-                  >&nbsp;</label
-                ></a
+              <a
+                id="sepiaBackgroundColor"
+                class="btn"
+                style="background-color: #f4ecd8; color: #5b4636;"
+                data-i18ntitle="changeBackgroundColor"
+                >&nbsp;</a
               >
             </div>
           </div>
         </li>
         <li>
           <a id="flipBlackAndWhiteColor" class="dropdown-item">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-heptagon-half"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M7.779.052a.5.5 0 0 1 .442 0l6.015 2.97a.5.5 0 0 1 .267.34l1.485 6.676a.5.5 0 0 1-.093.415l-4.162 5.354a.5.5 0 0 1-.395.193H4.662a.5.5 0 0 1-.395-.193L.105 10.453a.5.5 0 0 1-.093-.415l1.485-6.676a.5.5 0 0 1 .267-.34L7.779.053zM8 15h3.093l3.868-4.975-1.383-6.212L8 1.058V15z"
+              />
+            </svg>
             <span data-i18n="toggleBlackAndWhiteColor"></span>
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a id="exportJPGImage" class="dropdown-item" href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-filetype-jpg"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-4.34 8.132c.076.153.123.317.14.492h-.776a.797.797 0 0 0-.097-.249.689.689 0 0 0-.17-.19.707.707 0 0 0-.237-.126.96.96 0 0 0-.299-.044c-.285 0-.507.1-.665.302-.156.201-.234.484-.234.85v.498c0 .234.032.439.097.615a.881.881 0 0 0 .304.413.87.87 0 0 0 .519.146.967.967 0 0 0 .457-.096.67.67 0 0 0 .272-.264c.06-.11.091-.23.091-.363v-.255H8.24v-.59h1.576v.798c0 .193-.032.377-.097.55a1.29 1.29 0 0 1-.293.458 1.37 1.37 0 0 1-.495.313c-.197.074-.43.111-.697.111a1.98 1.98 0 0 1-.753-.132 1.447 1.447 0 0 1-.533-.377 1.58 1.58 0 0 1-.32-.58 2.482 2.482 0 0 1-.105-.745v-.506c0-.362.066-.678.2-.95.134-.271.328-.482.582-.633.256-.152.565-.228.926-.228.238 0 .45.033.636.1.187.066.347.158.48.275.133.117.238.253.314.407ZM0 14.786c0 .164.027.319.082.465.055.147.136.277.243.39.11.113.245.202.407.267.164.062.354.093.569.093.42 0 .748-.115.984-.345.238-.23.358-.566.358-1.005v-2.725h-.791v2.745c0 .202-.046.357-.138.466-.092.11-.233.164-.422.164a.499.499 0 0 1-.454-.246.577.577 0 0 1-.073-.27H0Zm4.92-2.86H3.322v4h.791v-1.343h.803c.287 0 .531-.057.732-.172.203-.118.358-.276.463-.475.108-.201.161-.427.161-.677 0-.25-.052-.475-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.546 1.333a.795.795 0 0 1-.085.381.574.574 0 0 1-.238.24.794.794 0 0 1-.375.082H4.11v-1.406h.66c.218 0 .389.06.512.182.123.12.185.295.185.521Z"
+              />
+            </svg>
+            <span data-i18n="exportJPGImage" /><span>(no metadata, 90%)</span>
+          </a>
+        </li>
+        <li>
+          <a id="exportPNGImage" class="dropdown-item" href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-filetype-png"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M14 4.5V14a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3.76 8.132c.076.153.123.317.14.492h-.776a.797.797 0 0 0-.097-.249.689.689 0 0 0-.17-.19.707.707 0 0 0-.237-.126.96.96 0 0 0-.299-.044c-.285 0-.506.1-.665.302-.156.201-.234.484-.234.85v.498c0 .234.032.439.097.615a.881.881 0 0 0 .304.413.87.87 0 0 0 .519.146.967.967 0 0 0 .457-.096.67.67 0 0 0 .272-.264c.06-.11.091-.23.091-.363v-.255H8.82v-.59h1.576v.798c0 .193-.032.377-.097.55a1.29 1.29 0 0 1-.293.458 1.37 1.37 0 0 1-.495.313c-.197.074-.43.111-.697.111a1.98 1.98 0 0 1-.753-.132 1.447 1.447 0 0 1-.533-.377 1.58 1.58 0 0 1-.32-.58 2.482 2.482 0 0 1-.105-.745v-.506c0-.362.067-.678.2-.95.134-.271.328-.482.582-.633.256-.152.565-.228.926-.228.238 0 .45.033.636.1.187.066.348.158.48.275.133.117.238.253.314.407Zm-8.64-.706H0v4h.791v-1.343h.803c.287 0 .531-.057.732-.172.203-.118.358-.276.463-.475a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.475-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.381.574.574 0 0 1-.238.24.794.794 0 0 1-.375.082H.788v-1.406h.66c.218 0 .389.06.512.182.123.12.185.295.185.521Zm1.964 2.666V13.25h.032l1.761 2.675h.656v-3.999h-.75v2.66h-.032l-1.752-2.66h-.662v4h.747Z"
+              />
+            </svg>
+            <span data-i18n="exportPNGImage" />
+          </a>
+        </li>
+        <li>
+          <a id="exportWEBPImage" class="dropdown-item" href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-files"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"
+              />
+            </svg>
+            <span data-i18n="exportWEBPImage" />
           </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
@@ -526,9 +789,21 @@
           <a
             id="exifButton"
             class="dropdown-item"
-            data-toggle="modal"
-            data-target="#exifExtensionModal"
-          >
+            data-bs-toggle="modal"
+            data-bs-target="#exifExtensionModal"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-camera-fill"
+              viewBox="0 0 16 16"
+            >
+              <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+              <path
+                d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"
+              />
+            </svg>
             <span data-i18n="exif"></span>
           </a>
         </li>
