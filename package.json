@@ -55,9 +55,11 @@
     "jquery-i18next": "~1.2.1",
     "marked": "~3.0.8",
     "mousetrap": "~1.5.3",
+    "psd": "3.4.0",
     "readability": "https://github.com/mozilla/readability.git#master",
     "shelljs": "^0.8.4",
-    "summernote": "~0.8.20"
+    "summernote": "~0.8.20",
+    "viewerjs": "1.11.1"
   },
   "license": "MIT",
   "engines": {
