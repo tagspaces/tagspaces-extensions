@@ -1,143 +1,581 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-  <script src="../libs/jquery/dist/jquery.min.js"></script>
-  <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../libs/i18next/i18next.min.js"></script>
-  <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
-  <script src="../libs/marked/marked.min.js"></script>
-  <script src="../legacy/common.js"></script>
-  <script src="../libs/viewerjs/viewer.min.js"></script>
-  <script src="libs/nanobar/nanobar.min.js"></script>
-  <script src="libs/exif-js/exif.js"></script>
-  <script src="main.js"></script>
-  <link  href="../libs/viewerjs/viewer.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="extension.css"/>
-</head>
-<body>
-<div class="btn-group dropup extMainMenu">
-  <button type="button" id="viewerMainMenuButton" class="btn dropdown-toggle roundButton viewerMainMenuButton" data-toggle="dropdown">
-     <i class="fa fa-ellipsis-v fa-2x"></i>
-  </button>
-  <ul class="dropdown-menu pull-right">
-    <li class="dropdown-header">
-      <button class="close">&times;</button>&nbsp;
-    </li>
-    <li class="divider"></li>
-    <li>
-      <div id="zoomInOutButtons">
-        <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="zoomOutButton"><label class="btn btn-secondary" data-i18n="[title]zoomOut"><i class="fa fa-search-minus fa-lg fa-fw"></i></label></a>
-          <a id="zoomInButton"><label class="btn btn-secondary" data-i18n="[title]zoomIn"><i class="fa fa-search-plus fa-lg fa-fw"></i></label></a>
-        </div>
-      </div>
-    </li>
-    <li>
-      <div id="resetButtons">
-        <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="zoomResetButton"><label class="btn btn-secondary" data-i18n="[title]zoomReset"><i class="fa fa-arrows-alt fa-lg fa-fw"></i></label></a>
-          <a id="fitToScreen"><label class="btn btn-secondary" data-i18n="[title]fitToScreen"><i class="fa fa-mail-reply fa-lg fa-fw"></i></label></a>
-        </div>
-      </div>
-    </li>
-    <li class="divider"></li>
-    <li>
-      <div id="rotateButtons">
-        <i class="fa fa-refresh fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="rotateRightButton"><label class="btn btn-secondary" data-i18n="[title]rotateRight"><i class="fa fa-rotate-right fa-lg fa-fw"></i></label></a>
-          <a id="rotateLeftButton"><label class="btn btn-secondary" data-i18n="[title]rotateLeft"><i class="fa fa-rotate-left fa-lg fa-fw"></i></label></a>
-        </div>
-      </div>
-    </li>
-    <li>
-      <div id="flipButtons">
-        <i class="fa fa-arrows fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="flipHorizontal"><label class="btn btn-secondary" data-i18n="[title]flipHorizontal"><i class="fa fa-arrows-h fa-lg fa-fw"></i></label></a>
-          <a id="flipVertical"><label class="btn btn-secondary" data-i18n="[title]flipVertical"><i class="fa fa-arrows-v fa-lg fa-fw"></i></label></a>
-          <!--<a id="flipBoth"><label class="btn btn-sepia" data-i18n="[title]flipBoth"><i class="fa fa-arrows fa-lg fa-fw"></i></label></a>-->
-        </div>
-      </div>
-    </li>
-    <li class="divider"></li>
-    <li>
-      <div id="themeStyle">
-        <i class="fa fa-paint-brush fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="whiteBackgroundColor"><label class="btn btn-secondary" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
-          <a id="blackBackgroundColor"><label class="btn btn-black" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
-          <a id="sepiaBackgroundColor"><label class="btn btn-sepia" data-i18n="[title]changeBackgroundColor">&nbsp;</label></a>
-        </div>
-      </div>
-    </li>
-    <li><a id="flipBlackAndWhiteColor">
-      <i class="fa fa-adjust fa-lg fa-fw"></i>&nbsp;<span data-i18n="toggleBlackAndWhiteColor"></span>
-    </a></li>
-    <li class="divider"></li>
-    <li><a id="exifButton" data-toggle="modal" data-target="#exifExtensionModal">
-      <i class="fa fa-info-circle fa-lg fa-fw"></i>&nbsp;<span data-i18n="exif"></span>
-    </a></li>
-    <li><a id="printButton">
-        <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span data-i18n="print"></span>
-    </a></li>
-    <li><a id="aboutButton">
-      <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span data-i18n="about"></span>
-    </a></li>
-  </ul>
-</div>
-<div id="imageContainer">
-  <div id="nanoBar" class="progress-nanobar">
-  </div>
-  <img id="imageContent">
-</div>
-<div class="modal fullScreenMobile" id="aboutExtensionModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" id="closeAboutDialogButton" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
-        <h4 class="modal-title" data-i18n="aboutTitle"></h4>
-      </div>
-      <div class="modal-body">
-        <br><!-- Content loaded from the README.md.--><br><br>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><i class="fa fa-check fa-lg"></i>
-        </button>
-      </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
+    <link href="../libs/viewerjs/viewer.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="extension.css" />
+    <script src="../common/common.js"></script>
+    <script src="../libs/viewerjs/viewer.min.js"></script>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="libs/exif-js/exif.js"></script>
+    <script>
+      let filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      initI18N(locale, 'ns.extension.json');
+
+      document.onreadystatechange = () => {
+        if (document.readyState === 'complete') {
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/image-viewer'
+          );
+
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
+
+          if (isCordova || isWeb) {
+            // Cordova or web case
+          } else {
+            filePath = 'file://' + filePath;
+          }
+
+          let exifObj;
+
+          // load settings for viewerSettings
+          const extSettings = JSON.parse(
+            localStorage.getItem('imageViewerSettings')
+          );
+          let imageBackgroundColor = '#000000';
+          if (extSettings && extSettings.imageBackgroundColor) {
+            imageBackgroundColor = extSettings.imageBackgroundColor;
+          }
+
+          // save settings for viewerSettings
+          function saveExtSettings() {
+            const settings = {
+              imageBackgroundColor
+            };
+            localStorage.setItem(
+              'imageViewerSettings',
+              JSON.stringify(settings)
+            );
+            console.debug(settings);
+          }
+
+          let orientation;
+          let viewer;
+          const imageContent = document.getElementById('imageContent');
+
+          if (
+            filePath.toLowerCase().endsWith('.cr2') ||
+            filePath.toLowerCase().endsWith('.dng') ||
+            filePath.toLowerCase().endsWith('.nef') ||
+            filePath.toLowerCase().endsWith('.tiff') ||
+            filePath.toLowerCase().endsWith('.tif')
+          ) {
+            // $.getScript('libs/utif.js/UTIF.js', () => {
+            //   const xhr = new XMLHttpRequest();
+            //   xhr.responseType = 'arraybuffer';
+            //   xhr.open('GET', filePath);
+            //   xhr.onload = () => {
+            //     const ifds = UTIF.decode(xhr.response);
+            //     // UTIF.decodeImage(xhr.response, ifds[0]);
+            //     const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
+            //     // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
+            //     console.log(ifds[0].width, ifds[0].height, ifds[0]);
+            //     $('#imageContent').attr('src', dataURL);
+            //   };
+            //   xhr.send();
+            // });
+          } else if (filePath.toLowerCase().endsWith('.psd')) {
+            // $.getScript('libs/psd/dist/psd.min.js', () => {
+            //   const PSD = require('psd');
+            //   PSD.fromURL(filePath)
+            //     .then(psd => {
+            //       const image = psd.image.toPng();
+            //       $('#imageContent').attr('src', image.getAttribute('src'));
+            //       return true;
+            //     })
+            //     .catch(() => console.warn('Error loading PSD'));
+            // });
+          } else {
+            imageContent.setAttribute('src', filePath);
+          }
+
+          let imageViewerContainer;
+
+          imageContent.addEventListener('load', e => {
+            const eTarget = event.target;
+            viewer = new Viewer(document.getElementById('imageContent'), {
+              movable: true,
+              navbar: false,
+              toolbar: false,
+              title: false,
+              transition: false,
+              fullscreen: true,
+              inline: 'inline',
+              // fading: true,
+              hide: e => {
+                console.log(e.type);
+              },
+              viewed: () => {
+                imageViewerContainer = document.getElementsByClassName(
+                  'viewer-container'
+                );
+                imageViewerContainer[0].style.background = 'transparent';
+                exifObj = {};
+                exifObj['Width'] = eTarget.naturalWidth;
+                exifObj['Height'] = eTarget.naturalHeight;
+
+                if (
+                  filePath.toLowerCase().includes('.jpg') ||
+                  filePath.toLowerCase().includes('.jpeg')
+                ) {
+                  EXIF.getData(eTarget, () => {
+                    orientation = EXIF.getTag(eTarget, 'Orientation');
+                    // console.log(EXIF.pretty(this));
+                    // Construct EXIF info
+                    exifObj = {};
+                    exifObj['Width'] = eTarget.naturalWidth;
+                    exifObj['Height'] = eTarget.naturalHeight;
+                    orientationText = '0°';
+                    // 1= 0 degrees: the correct orientation, no adjustment is required.
+                    // 2= 0 degrees, mirrored: image has been flipped back-to-front.
+                    // 3= 180 degrees: image is upside down.
+                    // 4= 180 degrees, mirrored: image has been flipped back-to-front and is upside down.
+                    // 5= 90 degrees: image has been flipped back-to-front and is on its side.
+                    // 6= 90 degrees, mirrored: image is on its side.
+                    // 7= 270 degrees: image has been flipped back-to-front and is on its far side.
+                    // 8= 270 degrees, mirrored: image is on its far side.
+                    if (orientation === 1) {
+                      orientationText = '0°';
+                    } else if (orientation === 2) {
+                      orientationText = '0°, mirrored';
+                    } else if (orientation === 3) {
+                      orientationText = '180°';
+                    } else if (orientation === 4) {
+                      orientationText = '180°, mirrored';
+                    } else if (orientation === 5) {
+                      orientationText = '90°';
+                    } else if (orientation === 6) {
+                      orientationText = '90°, mirrored°';
+                    } else if (orientation === 7) {
+                      orientationText = '270°';
+                    } else if (orientation === 8) {
+                      orientationText = '270°, mirrored';
+                    }
+                    if (orientation) {
+                      exifObj['Orientation'] = orientationText;
+                    }
+                    const tags = [
+                      'Make',
+                      'Model',
+                      'DateTime',
+                      'Artist',
+                      'Copyright',
+                      'ExposureTime ',
+                      'FNumber',
+                      'Flash',
+                      'WhiteBalance',
+                      'ISOSpeedRatings',
+                      'ShutterSpeedValue',
+                      'ApertureValue',
+                      'FocalLength',
+                      'GPSLatitude',
+                      'GPSLatitudeRef',
+                      'GPSLongitude',
+                      'GPSLongitudeRef'
+                    ];
+                    for (let tag in tags) {
+                      const prop = tags[tag];
+                      if (eTarget.exifdata.hasOwnProperty(prop)) {
+                        exifObj[prop] = eTarget.exifdata[prop];
+                      }
+                    }
+                    // jQuery.extend(exifObj, eTarget.iptcdata);
+                    // if (!jQuery.isEmptyObject(exifObj)) {
+                    //   printEXIF();
+                    // }
+                  });
+                }
+                // if (!jQuery.isEmptyObject(exifObj)) {
+                //   printEXIF();
+                // }
+              }
+            });
+            setTimeout(() => {
+              viewer.full();
+            }, 10); // fix for issue making first loaded image invisible by incorrect margin-top
+          });
+
+          imageContent.style['visibility'] = 'hidden';
+
+          const offset = 0;
+          document
+            .getElementById('zoomInButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              viewer.zoom(offset + 1);
+            });
+
+          document
+            .getElementById('zoomOutButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              viewer.zoom(offset - 1);
+            });
+
+          document
+            .getElementById('zoomResetButton')
+            .addEventListener('click', e => {
+              viewer.zoomTo(1);
+            });
+
+          document
+            .getElementById('fitToScreen')
+            .addEventListener('click', e => {
+              viewer.reset();
+            });
+
+          document
+            .getElementById('rotateLeftButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              viewer.rotate(-90);
+            });
+
+          document
+            .getElementById('rotateRightButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              viewer.rotate(90);
+            });
+
+          let flipHorizontal;
+          let flipVertical;
+          let flipBoth;
+          let flipColor;
+          document
+            .getElementById('flipHorizontal')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              if (flipHorizontal === true) {
+                flipHorizontal = false;
+                viewer.scaleX(1); // Flip horizontal
+              } else {
+                flipHorizontal = true;
+                viewer.scaleX(-1); // Flip horizontal
+              }
+            });
+
+          document
+            .getElementById('flipVertical')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              if (flipVertical === true) {
+                flipVertical = false;
+                viewer.scaleY(1); // Flip horizontal
+              } else {
+                flipVertical = true;
+                viewer.scaleY(-1); // Flip vertical
+              }
+            });
+
+          // document.getElementById('flipBoth').addEventListener('click', e => {
+          //   e.stopPropagation();
+          //   if (flipBoth === true) {
+          //     flipBoth = false;
+          //     viewer.scale(1); // Flip horizontal
+          //   } else {
+          //     flipBoth = true;
+          //     viewer.scale(-1); // Flip both horizontal and vertical
+          //   }
+          // });
+
+          document
+            .getElementById('whiteBackgroundColor')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              document.body.style.background = '#ffffff';
+              imageViewerContainer[0].style.background = '#ffffff';
+              imageBackgroundColor = '#ffffff';
+              saveExtSettings();
+            });
+
+          document
+            .getElementById('blackBackgroundColor')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              document.body.style.background = '#000000';
+              imageViewerContainer[0].style.background = '#000000';
+              imageBackgroundColor = '#000000';
+              saveExtSettings();
+            });
+
+          document
+            .getElementById('sepiaBackgroundColor')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              document.body.style.background = '#f4ecd8';
+              imageViewerContainer[0].style.background = '#f4ecd8';
+              imageBackgroundColor = '#f4ecd8';
+              saveExtSettings();
+            });
+
+          document
+            .getElementById('flipBlackAndWhiteColor')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              if (flipColor) {
+                flipColor = false;
+                imageViewerContainer[0].style.filter = 'grayscale(0%)';
+                imageViewerContainer[0].style.WebkitFilter = 'grayscale(0%)';
+              } else {
+                flipColor = true;
+                imageViewerContainer[0].style.filter = 'grayscale(100%)';
+                imageViewerContainer[0].style.WebkitFilter = 'grayscale(100%)';
+              }
+            });
+
+          function printEXIF() {
+            // const $exifRow = $('#exifRow').clone(); // Preparing the template
+            // const $exifTableBody = $('#exifTableBody');
+            // $exifTableBody.empty();
+            // for (let key in exifObj) {
+            //   if (exifObj.hasOwnProperty(key) && exifObj[key].length !== 0) {
+            //     $exifRow.find('th').text(key);
+            //     $exifRow.find('td').text(exifObj[key]);
+            //     $exifTableBody.append($exifRow.clone());
+            //   }
+            // }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div id="imageContainer">
+      <img id="imageContent" />
     </div>
-  </div>
-</div>
-<div class="modal" id="exifExtensionModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <a type="button" id="closeExIf" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></a>
-        <h4 class="modal-title" id="myModalLabel2" data-i18n="exifTitle"></h4>
-      </div>
-      <div class="modal-body">
-      <table class="table table-striped table-condensed">
-          <thead>
-          <!--tr>
+
+    <div
+      class="modal"
+      id="exifExtensionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <a
+              type="button"
+              id="closeExIf"
+              class="close"
+              data-dismiss="modal"
+              aria-hidden="true"
+              ><i class="fa fa-times"></i
+            ></a>
+            <h4
+              class="modal-title"
+              id="myModalLabel2"
+              data-i18n="exifTitle"
+            ></h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped table-condensed">
+              <thead>
+                <!--tr>
             <th>Key</th>
             <th>Value</th>
           </tr-->
-          </thead>
-          <tbody id="exifTableBody">
-            <tr id="exifRow"><th></th><td></td></tr>
-          </tbody>
-        </table>
-      </table>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><i class="fa fa-check fa-lg"></i></button>
+              </thead>
+              <tbody id="exifTableBody">
+                <tr id="exifRow">
+                  <th></th>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-primary"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              <i class="fa fa-check fa-lg"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-</body>
+
+    <div
+      class="btn-group dropup-center dropup"
+      style="position: absolute; right: 20px; bottom: 20px;"
+      id="extFabMenu"
+    >
+      <button
+        type="button"
+        class="btn btn-primary  btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        style="border-radius: 30px; font-weight: bolder; height: 50px"
+      >
+        ⋮
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <div id="zoomInOutButtons">
+            <div class="btn-group" data-toggle="buttons">
+              <a id="zoomOutButton"
+                ><label class="btn btn-secondary" data-i18n="zoomOut"></label
+              ></a>
+              <a id="zoomInButton"
+                ><label class="btn btn-secondary" data-i18n="zoomIn"></label
+              ></a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div id="resetButtons">
+            <div class="btn-group" data-toggle="buttons">
+              <a id="zoomResetButton"
+                ><label class="btn btn-secondary" data-i18n="zoomReset"></label
+              ></a>
+              <a id="fitToScreen"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="fitToScreen"
+                ></label
+              ></a>
+            </div>
+          </div>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <div id="rotateButtons">
+            <div class="btn-group" data-toggle="buttons">
+              <a id="rotateRightButton"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="rotateRight"
+                ></label
+              ></a>
+              <a id="rotateLeftButton"
+                ><label class="btn btn-secondary" data-i18n="rotateLeft"></label
+              ></a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div id="flipButtons">
+            <div class="btn-group" data-toggle="buttons">
+              <a id="flipHorizontal"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="flipHorizontal"
+                ></label
+              ></a>
+              <a id="flipVertical"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="flipVertical"
+                ></label
+              ></a>
+              <!--<a id="flipBoth"><label class="btn btn-sepia" data-i18n="flipBoth"></label></a>-->
+            </div>
+          </div>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <div id="themeStyle">
+            <div class="btn-group" data-toggle="buttons">
+              <a id="whiteBackgroundColor"
+                ><label
+                  class="btn btn-secondary"
+                  data-i18n="changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+              <a id="blackBackgroundColor"
+                ><label class="btn btn-black" data-i18n="changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+              <a id="sepiaBackgroundColor"
+                ><label class="btn btn-sepia" data-i18n="changeBackgroundColor"
+                  >&nbsp;</label
+                ></a
+              >
+            </div>
+          </div>
+        </li>
+        <li>
+          <a id="flipBlackAndWhiteColor" class="dropdown-item">
+            <span data-i18n="toggleBlackAndWhiteColor"></span>
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a
+            id="exifButton"
+            class="dropdown-item"
+            data-toggle="modal"
+            data-target="#exifExtensionModal"
+          >
+            <span data-i18n="exif"></span>
+          </a>
+        </li>
+        <li>
+          <a id="printMenuItem" class="dropdown-item" href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-printer-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+              />
+              <path
+                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+              />
+            </svg>
+            <span data-i18n="print" />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-info-circle-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+            <span data-i18n="about" />
+          </a>
+        </li>
+      </ul>
+    </div>
+  </body>
 </html>

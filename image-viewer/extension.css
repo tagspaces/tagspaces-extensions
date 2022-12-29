@@ -1,22 +1,3 @@
-@import '../legacy/common.css';
-
-.btn,
-.btn:hover,
-.btn:focus,
-.btn:active,
-.btn-link,
-.btn-link:hover,
-.btn-link:focus,
-.btn-link:active {
-  outline: none !important;
-  background-image: none;
-}
-
-@media print {
-  .extMainMenu {
-    display: none;
-  }
-}
 
 body,
 html {
@@ -45,6 +26,23 @@ html {
   margin: auto;
   object-fit: contain;
 }
+
+#extFabMenu, #extFabMenu > ul {
+  z-index: 3000;
+}
+
+.modal {
+  z-index: 3002;
+}
+
+.viewer-button {
+  visibility: hidden;
+}
+
+.viewer-backdrop {
+  background-color: transparent;
+}
+
 
 #themeStyle {
   margin-left: 19px;
@@ -109,27 +107,6 @@ html {
   -moz-filter: blur(5px);
 }
 
-/* Progress-bar nanobar */
-.progress-nanobar {
-  width: 100%;
-  height: 4px;
-  z-index: 9999;
-  top: 0px;
-  float: left;
-  position: fixed;
-}
-
-.extMainMenu {
-  z-index: 10000;
-}
-
-.modal {
-  z-index: 10002;
-}
-
-.viewer-button {
-  visibility: hidden;
-}
 
 .btn-black {
   background-color: #282a36;
@@ -141,17 +118,3 @@ html {
   color: #5b4636;
 }
 
-.dropdown-menu {
-  width: 180px;
-}
-
-.viewer-backdrop {
-  background-color: transparent;
-  /* background: repeating-linear-gradient(
-    45deg,
-    #d5d5d5,
-    #d5d5d5 10px,
-    #a7a7a7 10px,
-    #a7a7a7 20px
-  ); */
-}

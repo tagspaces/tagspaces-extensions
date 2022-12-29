@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../legacy/theming.css" />
+    <link rel="stylesheet" href="../common/common.css" />
     <style>
       .bi {
         margin-right: 5px;
@@ -28,11 +28,7 @@
         if (document.readyState === 'complete') {
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-          document.getElementById('docsLink').addEventListener('click', e => {
-            e.preventDefault();
-            const msg = { command: 'openLinkExternally', link: e.target.href };
-            sendMessageToHost(msg);
-          });
+          insertAboutDialog('https://docs.tagspaces.org/extensions/url-viewer');
 
           document
             .getElementById('printMenuItem')
@@ -114,7 +110,7 @@
             d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
           />
         </svg>
-        <span data-i18n="open URL" />
+        <span data-i18n="openURL" />
       </button>
       <img
         id="screenshotImg"
@@ -123,6 +119,7 @@
       />
     </div>
     <div
+      id="extFabMenu"
       class="btn-group dropup-center dropup"
       style="position: absolute; right: 20px; bottom: 20px;"
     >
@@ -135,10 +132,7 @@
       >
         ⋮
       </button>
-      <ul
-        class="dropdown-menu"
-        style="transform: translate(-106px, 4px) !important;"
-      >
+      <ul class="dropdown-menu">
         <li>
           <a id="printMenuItem" class="dropdown-item" href="#">
             <svg
@@ -183,47 +177,6 @@
           </a>
         </li>
       </ul>
-    </div>
-    <div
-      class="modal fade"
-      id="aboutModal"
-      tabindex="-1"
-      aria-labelledby="aboutModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="aboutModalLabel">
-              <span data-i18n="aboutTitle" />
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Please visit the dedicated
-            <a
-              id="docsLink"
-              href="https://docs.tagspaces.org/extensions/url-viewer"
-              >page</a
-            >
-            for the URL Viewer extension in our documentation.
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-            >
-              <span data-i18n="ok" />
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </body>
 </html>
