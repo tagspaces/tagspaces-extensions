@@ -1,12 +1,13 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.49",
+  "version": "1.0.51",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "files": [
     "3d-viewer/",
     "archive-viewer/",
+    "common/",
     "document-viewer/",
     "ebook-viewer/",
     "html-editor/",
