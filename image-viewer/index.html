@@ -37,26 +37,6 @@
       .viewer-backdrop {
         background-color: transparent;
       }
-
-      /* .makeBlackAndWhite {
-        -webkit-filter: grayscale(100%);
-        -moz-filter: grayscale(100%);
-      }
-
-      .makeSepia {
-        -webkit-filter: sepia(100%);
-        -moz-filter: sepia(100%);
-      }
-
-      .make50Dark {
-        -webkit-filter: brightness(50%);
-        -moz-filter: brightness(50%);
-      }
-
-      .increaseContrast {
-        -webkit-filter: contrast(200%);
-        -moz-filter: contrast(200%);
-      } */
     </style>
     <script>
       let filePath = getParameterByName('file');
@@ -431,7 +411,7 @@
                 imageViewerContainer[0].style.WebkitFilter = 'grayscale(0%)';
               } else {
                 flipColor = true;
-                imageViewerContainer[0].style.filter = 'grayscale(100%)';
+                imageViewerContainer[0].style.filter = 'grayscale(100%)'; // sepia(100%) brightness(50%) contrast(200%)
                 imageViewerContainer[0].style.WebkitFilter = 'grayscale(100%)';
               }
             });
@@ -544,14 +524,7 @@
       <ul class="dropdown-menu">
         <li>
           <div class="dropdown-item">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-search"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
               />
@@ -567,15 +540,9 @@
                 type="button"
                 class="btn"
                 data-i18ntitle="zoomOut"
+                style="border-right: 1px solid gray"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-zoom-out"
-                  viewBox="0 0 16 16"
-                >
+                <svg width="16" height="16" class="bi">
                   <path
                     fill-rule="evenodd"
                     d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
@@ -595,14 +562,7 @@
                 class="btn"
                 data-i18ntitle="zoomIn"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-zoom-in"
-                  viewBox="0 0 16 16"
-                >
+                <svg width="16" height="16" class="bi">
                   <path
                     fill-rule="evenodd"
                     d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
@@ -620,66 +580,136 @@
           </div>
         </li>
         <li>
-          <div id="resetButtons">
-            <div class="btn-group" data-toggle="buttons">
-              <a id="zoomResetButton"
-                ><label class="btn btn-secondary" data-i18n="zoomReset"></label
-              ></a>
-              <a id="fitToScreen"
-                ><label
-                  class="btn btn-secondary"
-                  data-i18n="fitToScreen"
-                ></label
-              ></a>
+          <div id="resetButtons" class="dropdown-item">
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+              />
+            </svg>
+            <div
+              class="btn-group"
+              data-toggle="buttons"
+              style="width: 150px; border: 1px solid gray;"
+            >
+              <button
+                id="zoomResetButton"
+                class="btn"
+                data-i18ntitle="zoomReset"
+                style="border-right: 1px solid gray"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z"
+                  />
+                </svg>
+              </button>
+              <button id="fitToScreen" class="btn" data-i18ntitle="fitToScreen">
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707zm0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
-          <div id="rotateButtons">
-            <div class="btn-group" data-toggle="buttons">
-              <a id="rotateRightButton"
-                ><label
-                  class="btn btn-secondary"
-                  data-i18n="rotateRight"
-                ></label
-              ></a>
-              <a id="rotateLeftButton"
-                ><label class="btn btn-secondary" data-i18n="rotateLeft"></label
-              ></a>
+          <div id="rotateButtons" class="dropdown-item">
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+              />
+            </svg>
+            <div
+              class="btn-group"
+              data-toggle="buttons"
+              style="width: 150px; border: 1px solid gray;"
+            >
+              <button
+                id="rotateRightButton"
+                class="btn"
+                data-i18ntitle="rotateRight"
+                style="border-right: 1px solid gray"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                  />
+                  <path
+                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                  />
+                </svg>
+              </button>
+              <button
+                id="rotateLeftButton"
+                class="btn"
+                data-i18ntitle="rotateLeft"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"
+                  />
+                  <path
+                    d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </li>
         <li>
-          <div id="flipButtons">
-            <div class="btn-group" data-toggle="buttons">
-              <a id="flipHorizontal"
-                ><label
-                  class="btn btn-secondary"
-                  data-i18n="flipHorizontal"
-                ></label
-              ></a>
-              <a id="flipVertical"
-                ><label
-                  class="btn btn-secondary"
-                  data-i18n="flipVertical"
-                ></label
-              ></a>
-              <!--<a id="flipBoth"><label class="btn btn-sepia" data-i18n="flipBoth"></label></a>-->
+          <div id="flipButtons" class="dropdown-item">
+            <svg width="16" height="16" class="bi">
+              <path
+                fill-rule="evenodd"
+                d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z"
+              />
+            </svg>
+            <div
+              class="btn-group"
+              data-toggle="buttons"
+              style="width: 150px; border: 1px solid gray;"
+            >
+              <button
+                id="flipHorizontal"
+                class="btn"
+                data-i18ntitle="flipHorizontal"
+                style="border-right: 1px solid gray"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"
+                  />
+                </svg>
+              </button>
+              <button
+                id="flipVertical"
+                class="btn"
+                data-i18ntitle="flipVertical"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
           <div class="dropdown-item" id="themeStyle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-palette-fill"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 d="M12.433 10.07C14.133 10.585 16 11.15 16 8a8 8 0 1 0-8 8c1.996 0 1.826-1.504 1.649-3.08-.124-1.101-.252-2.237.351-2.92.465-.527 1.42-.237 2.433.07zM8 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4.5 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
               />
@@ -733,35 +763,32 @@
         <li><hr class="dropdown-divider" /></li>
         <li>
           <a id="exportJPGImage" class="dropdown-item" href="#">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-filetype-jpg"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 fill-rule="evenodd"
-                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-4.34 8.132c.076.153.123.317.14.492h-.776a.797.797 0 0 0-.097-.249.689.689 0 0 0-.17-.19.707.707 0 0 0-.237-.126.96.96 0 0 0-.299-.044c-.285 0-.507.1-.665.302-.156.201-.234.484-.234.85v.498c0 .234.032.439.097.615a.881.881 0 0 0 .304.413.87.87 0 0 0 .519.146.967.967 0 0 0 .457-.096.67.67 0 0 0 .272-.264c.06-.11.091-.23.091-.363v-.255H8.24v-.59h1.576v.798c0 .193-.032.377-.097.55a1.29 1.29 0 0 1-.293.458 1.37 1.37 0 0 1-.495.313c-.197.074-.43.111-.697.111a1.98 1.98 0 0 1-.753-.132 1.447 1.447 0 0 1-.533-.377 1.58 1.58 0 0 1-.32-.58 2.482 2.482 0 0 1-.105-.745v-.506c0-.362.066-.678.2-.95.134-.271.328-.482.582-.633.256-.152.565-.228.926-.228.238 0 .45.033.636.1.187.066.347.158.48.275.133.117.238.253.314.407ZM0 14.786c0 .164.027.319.082.465.055.147.136.277.243.39.11.113.245.202.407.267.164.062.354.093.569.093.42 0 .748-.115.984-.345.238-.23.358-.566.358-1.005v-2.725h-.791v2.745c0 .202-.046.357-.138.466-.092.11-.233.164-.422.164a.499.499 0 0 1-.454-.246.577.577 0 0 1-.073-.27H0Zm4.92-2.86H3.322v4h.791v-1.343h.803c.287 0 .531-.057.732-.172.203-.118.358-.276.463-.475.108-.201.161-.427.161-.677 0-.25-.052-.475-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.546 1.333a.795.795 0 0 1-.085.381.574.574 0 0 1-.238.24.794.794 0 0 1-.375.082H4.11v-1.406h.66c.218 0 .389.06.512.182.123.12.185.295.185.521Z"
+                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
               />
             </svg>
-            <span data-i18n="exportJPGImage" /><span>(no metadata, 90%)</span>
+            <span
+              data-i18n="exportJPGImage"
+              data-i18ntitle="exportJPGImageTitle"
+            />
           </a>
         </li>
         <li>
           <a id="exportPNGImage" class="dropdown-item" href="#">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-filetype-png"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 fill-rule="evenodd"
-                d="M14 4.5V14a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3.76 8.132c.076.153.123.317.14.492h-.776a.797.797 0 0 0-.097-.249.689.689 0 0 0-.17-.19.707.707 0 0 0-.237-.126.96.96 0 0 0-.299-.044c-.285 0-.506.1-.665.302-.156.201-.234.484-.234.85v.498c0 .234.032.439.097.615a.881.881 0 0 0 .304.413.87.87 0 0 0 .519.146.967.967 0 0 0 .457-.096.67.67 0 0 0 .272-.264c.06-.11.091-.23.091-.363v-.255H8.82v-.59h1.576v.798c0 .193-.032.377-.097.55a1.29 1.29 0 0 1-.293.458 1.37 1.37 0 0 1-.495.313c-.197.074-.43.111-.697.111a1.98 1.98 0 0 1-.753-.132 1.447 1.447 0 0 1-.533-.377 1.58 1.58 0 0 1-.32-.58 2.482 2.482 0 0 1-.105-.745v-.506c0-.362.067-.678.2-.95.134-.271.328-.482.582-.633.256-.152.565-.228.926-.228.238 0 .45.033.636.1.187.066.348.158.48.275.133.117.238.253.314.407Zm-8.64-.706H0v4h.791v-1.343h.803c.287 0 .531-.057.732-.172.203-.118.358-.276.463-.475a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.475-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.381.574.574 0 0 1-.238.24.794.794 0 0 1-.375.082H.788v-1.406h.66c.218 0 .389.06.512.182.123.12.185.295.185.521Zm1.964 2.666V13.25h.032l1.761 2.675h.656v-3.999h-.75v2.66h-.032l-1.752-2.66h-.662v4h.747Z"
+                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
               />
             </svg>
             <span data-i18n="exportPNGImage" />
@@ -769,16 +796,14 @@
         </li>
         <li>
           <a id="exportWEBPImage" class="dropdown-item" href="#">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-files"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
-                d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"
+                fill-rule="evenodd"
+                d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
               />
             </svg>
             <span data-i18n="exportWEBPImage" />
@@ -791,14 +816,7 @@
             class="dropdown-item"
             data-bs-toggle="modal"
             data-bs-target="#exifExtensionModal"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-camera-fill"
-              viewBox="0 0 16 16"
-            >
+            ><svg width="16" height="16" class="bi">
               <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
               <path
                 d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"
@@ -809,14 +827,7 @@
         </li>
         <li>
           <a id="printMenuItem" class="dropdown-item" href="#">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-printer-fill"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
               />
