@@ -44,13 +44,14 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
-      initI18N(locale, 'ns.viewerImage.json', 'locales');
 
       document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
           );
+
+          initI18N(locale, 'ns.viewerImage.json', 'locales');
 
           if (isCordova || isWeb) {
             // Cordova or web case
@@ -237,6 +238,7 @@
             .getElementById('exportJPGImage')
             .addEventListener('click', e => {
               e.stopPropagation();
+              // TODO hide menu
               toDataURL(imageContent.src, dataURL => {
                 fetch(dataURL)
                   .then(res => res.blob())
