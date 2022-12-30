@@ -9,11 +9,16 @@
     "flipBoth": "Flip Both",
     "print": "Istampa",
     "about": "Dwar",
-    "aboutTitle": "Dwar ViewerImage",
+    "aboutTitle": "About this extension",
     "exif": "Show Image Details",
     "exifTitle": "Image Details (EXIF and IPTC data)",
     "changeBackgroundColor": "Change Background Color",
     "fitToScreen": "Fit To Screen",
     "toggleBlackAndWhiteColor": "Toggle Black&White",
+    "ok": "Ok",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }

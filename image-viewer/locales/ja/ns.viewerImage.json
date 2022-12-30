@@ -9,11 +9,16 @@
     "flipBoth": "両方の反転",
     "print": "プリント",
     "about": "詳細",
-    "aboutTitle": "ViewerImageについて",
+    "aboutTitle": "About this extension",
     "exif": "Show Image Details",
     "exifTitle": "Image Details (EXIF and IPTC data)",
     "changeBackgroundColor": "背景色の変更",
     "fitToScreen": "スクリーンに合わせる",
     "toggleBlackAndWhiteColor": "黒と白の切り替え",
+    "ok": "Ok",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }

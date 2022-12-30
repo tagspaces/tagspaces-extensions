@@ -9,11 +9,16 @@
     "flipBoth": "Flipp begge",
     "print": "Print",
     "about": "Om",
-    "aboutTitle": "Om ViewerImage",
+    "aboutTitle": "About this extension",
     "exif": "Show Image Details",
     "exifTitle": "Image Details (EXIF and IPTC data)",
     "changeBackgroundColor": "Endre bakgrunnsfarge ",
     "fitToScreen": "Tilpass til skjerm",
     "toggleBlackAndWhiteColor": "Veksle sort & hvit",
+    "ok": "Ok",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }

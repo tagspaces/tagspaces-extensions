@@ -9,11 +9,16 @@
     "flipBoth": "Retourner les Deux",
     "print": "Imprimer",
     "about": "À Propos",
-    "aboutTitle": "À Propos de ViewerImage",
+    "aboutTitle": "About this extension",
     "exif": "Show Image Details",
     "exifTitle": "Image Details (EXIF and IPTC data)",
     "changeBackgroundColor": "Changer la Couleur de l'Arrière-plan",
     "fitToScreen": "Adapter à l'Écran",
     "toggleBlackAndWhiteColor": "Basculer le Noir et Blanc",
+    "ok": "Ok",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }

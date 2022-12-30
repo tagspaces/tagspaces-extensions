@@ -9,11 +9,16 @@
     "flipBoth": "Flip Both",
     "print": "Presi",
     "about": "Pri",
-    "aboutTitle": "Pri ViewerImage",
+    "aboutTitle": "About this extension",
     "exif": "Show Image Details",
     "exifTitle": "Image Details (EXIF and IPTC data)",
     "changeBackgroundColor": "Ŝanĝi Fonan Koloron",
     "fitToScreen": "Adapti Al Ekrano",
     "toggleBlackAndWhiteColor": "Baskuli Grizoskalon",
+    "ok": "Akcepti",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }

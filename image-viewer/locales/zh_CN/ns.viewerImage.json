@@ -9,11 +9,16 @@
     "flipBoth": "双向翻转",
     "print": "打印",
     "about": "关于",
-    "aboutTitle": "关于ViewerImage",
+    "aboutTitle": "關於此擴展",
     "exif": "顯示圖片細節",
     "exifTitle": "圖片細節 (EXIF 和 IPTC 資料)",
     "changeBackgroundColor": "改变背景色",
     "fitToScreen": "适应屏幕",
     "toggleBlackAndWhiteColor": "切换黑白效果",
+    "ok": "好的",
+    "exportPNGImage": "Export in PNG format",
+    "exportJPGImage": "Export in JPG format",
+    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
+    "exportWEBPImage": "Export in WEBP format",
     "-": "-"
 }
