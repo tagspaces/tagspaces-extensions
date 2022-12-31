@@ -11,8 +11,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "codemirror": "5.62.2",
-    "shelljs": "^0.8.4"
+    "codemirror": "5.65.11",
+    "shelljs": "^0.8.5"
   },
   "scripts": {
     "postinstall": "node scripts/update-libs.js"

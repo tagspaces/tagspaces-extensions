@@ -220,7 +220,7 @@
     return mode.startState ? mode.startState(a1, a2) : true
   }
 
-  var modeMethods = ({
+  var modeMethods = {
     __proto__: null,
     modes: modes,
     mimeModes: mimeModes,
@@ -233,7 +233,7 @@
     copyState: copyState,
     innerMode: innerMode,
     startState: startState
-  });
+  };
 
   // declare global: globalThis, CodeMirror
 
@@ -256,7 +256,7 @@
   CodeMirror.defaults = { indentUnit: 2 };
 
   // CodeMirror, copyright (c) by Marijn Haverbeke and others
-  // Distributed under an MIT license: https://codemirror.net/LICENSE
+  // Distributed under an MIT license: https://codemirror.net/5/LICENSE
 
   (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -276,7 +276,7 @@
       var ie = /MSIE \d/.test(navigator.userAgent);
       var ie_lt9 = ie && (document.documentMode == null || document.documentMode < 9);
       var node = callback, col = 0;
-      node.innerHTML = "";
+      node.textContent = "";
       callback = function(text, style) {
         if (text == "\n") {
           // Emitting LF or CRLF on IE8 or earlier results in an incorrect display.

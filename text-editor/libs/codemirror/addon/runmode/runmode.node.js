@@ -219,7 +219,7 @@ function startState(mode, a1, a2) {
   return mode.startState ? mode.startState(a1, a2) : true
 }
 
-var modeMethods = ({
+var modeMethods = {
   __proto__: null,
   modes: modes,
   mimeModes: mimeModes,
@@ -232,7 +232,7 @@ var modeMethods = ({
   copyState: copyState,
   innerMode: innerMode,
   startState: startState
-});
+};
 
 // Copy StringStream and mode methods into exports (CodeMirror) object.
 exports.StringStream = StringStream;
@@ -253,7 +253,7 @@ exports.splitLines = function(string) { return string.split(/\r?\n|\r/) };
 exports.defaults = { indentUnit: 2 };
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/5/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -273,7 +273,7 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
     var ie = /MSIE \d/.test(navigator.userAgent);
     var ie_lt9 = ie && (document.documentMode == null || document.documentMode < 9);
     var node = callback, col = 0;
-    node.innerHTML = "";
+    node.textContent = "";
     callback = function(text, style) {
       if (text == "\n") {
         // Emitting LF or CRLF on IE8 or earlier results in an incorrect display.

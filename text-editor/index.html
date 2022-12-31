@@ -6,12 +6,37 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <script src="../libs/jquery/dist/jquery.min.js"></script>
-    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="libs/codemirror/addon/fold/foldgutter.css" />
+    <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="libs/codemirror/addon/dialog/dialogs.css" />
+    <link
+      rel="stylesheet"
+      href="libs/codemirror/addon/search/matchesonscrollbar.css"
+    />
+    <base />
+    <style>
+      .bi {
+        margin-right: 5px;
+      }
+
+      body {
+        overflow: auto;
+      }
+
+      .CodeMirror {
+        font-size: 90%;
+      }
+
+      /* Help users use markselection to safely style text background */
+      span.CodeMirror-selectedtext {
+        background: #ffe6cc !important;
+      }
+    </style>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
-    <script src="../libs/marked/marked.min.js"></script>
-    <script src="../legacy/common.js"></script>
+    <script src="../common/common.js"></script>
     <script src="libs/codemirror/lib/codemirror.js"></script>
     <script src="libs/codemirror/addon/mode/loadmode.js"></script>
     <script src="libs/codemirror/addon/dialog/dialog.js"></script>
@@ -22,235 +47,300 @@
     <script src="libs/codemirror/addon/search/jump-to-line.js"></script>
     <script src="libs/codemirror/addon/selection/active-line.js"></script>
     <script src="libs/codemirror/addon/selection/mark-selection.js"></script>
-    <script src="main.js"></script>
-    <link rel="stylesheet" href="libs/codemirror/addon/fold/foldgutter.css" />
-    <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="extension.css" />
-    <link rel="stylesheet" href="libs/codemirror/addon/dialog/dialogs.css" />
-    <link
-      rel="stylesheet"
-      href="libs/codemirror/addon/search/matchesonscrollbar.css"
-    />
-    <base />
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      initI18N(locale, 'ns.extension.json');
+
+      let cmEditor;
+      let viewMode = true;
+      const filetype = [];
+      filetype.h = 'clike';
+      filetype.c = 'clike';
+      filetype.clj = 'clojure';
+      filetype.coffee = 'coffeescript';
+      filetype.cpp = 'clike';
+      filetype.cs = 'clike';
+      filetype.css = 'css';
+      filetype.groovy = 'groovy';
+      filetype.haxe = 'haxe';
+      filetype.htm = 'xml';
+      filetype.html = 'xml';
+      filetype.java = 'clike';
+      filetype.js = 'javascript';
+      filetype.ts = 'javascript';
+      filetype.jsm = 'javascript';
+      filetype.json = 'javascript';
+      filetype.less = 'less';
+      filetype.lua = 'lua';
+      filetype.markdown = 'markdown';
+      filetype.md = 'markdown';
+      filetype.mdown = 'markdown';
+      filetype.mdwn = 'markdown';
+      filetype.mkd = 'markdown';
+      filetype.ml = 'ocaml';
+      filetype.mli = 'ocaml';
+      filetype.pl = 'perl';
+      filetype.php = 'php';
+      filetype.py = 'python';
+      filetype.rb = 'ruby';
+      filetype.sh = 'shell';
+      filetype.sql = 'sql';
+      filetype.svg = 'xml';
+      filetype.xml = 'xml';
+      filetype.txt = 'txt';
+
+      document.onreadystatechange = () => {
+        if (document.readyState === 'complete') {
+          sendMessageToHost({ command: 'loadDefaultTextContent' });
+
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/text-editor'
+          );
+
+          if (viewMode) {
+            document.body.addEventListener('dblclick', () => {
+              sendMessageToHost({ command: 'editDocument' });
+            });
+          }
+
+          let extSettings;
+          loadExtSettings();
+
+          function loadExtSettings() {
+            extSettings = JSON.parse(
+              localStorage.getItem('editorTextSettings')
+            );
+          }
+
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
+        }
+      };
+
+      function viewerMode(isViewerMode) {
+        viewMode = isViewerMode;
+        if (!viewMode) {
+          cmEditor.focus();
+        }
+
+        // cmEditor.options.lineNumbers = isViewerMode;
+        cmEditor.options.cursorBlinkRate = isViewerMode ? -1 : 530;
+        cmEditor.options.readOnly = isViewerMode;
+        cmEditor.options.foldGutter = isViewerMode;
+        cmEditor.options.styleActiveLine = isViewerMode;
+        cmEditor.options.matchBrackets = isViewerMode;
+        cmEditor.options.showCursorWhenSelecting = isViewerMode;
+        cmEditor.options.autofocus = !isViewerMode;
+        cmEditor.refresh();
+      }
+
+      function getContent() {
+        return cmEditor.getValue();
+      }
+
+      function setContent(content, fileDirectory, isViewMode) {
+        const editorText = document.getElementById('editorText');
+        editorText.innerHTML =
+          "<div id='code' style='width: 100%; height: 100%; z-index: 9999;'>";
+
+        let fileExt = '';
+        let cleanedPath = filePath;
+        const lastindexQuestionMark = filePath.lastIndexOf('?');
+        if (lastindexQuestionMark > 0) {
+          // Removing everything after ? in URLs .png?queryParam1=2342
+          cleanedPath = filePath.substring(0, lastindexQuestionMark);
+        }
+        fileExt = cleanedPath
+          .substring(cleanedPath.lastIndexOf('.') + 1, cleanedPath.length)
+          .toLowerCase();
+        const mode = filetype[fileExt];
+
+        const place = document.getElementById('code');
+        cmEditor = new CodeMirror(place, {
+          mode,
+          lineNumbers: true,
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          lineWrapping: true,
+          tabSize: 2,
+          // lineSeparator: isWin ? '\n\r' : null, // TODO check under windows if content contains \n\r -> set
+          styleSelectedText: true,
+          showCursorWhenSelecting: true,
+          autofocus: !viewMode
+          // theme: 'lesser-dark',
+          // extraKeys: keys // workarrounded with bindGlobal plugin for mousetrap
+        });
+
+        CodeMirror.modeURL = 'libs/codemirror/mode/%N/%N.js';
+        if (mode) {
+          cmEditor.setOption('mode', mode);
+          CodeMirror.autoLoadMode(cmEditor, mode);
+        } else {
+          console.warn('Invalid mode !' + mode);
+        }
+
+        viewerMode(isViewMode);
+
+        cmEditor.setSize('100%', '100%');
+
+        const UTF8_BOM = '\ufeff';
+        if (content.indexOf(UTF8_BOM) === 0) {
+          content = content.substring(1, content.length);
+        }
+
+        cmEditor.setValue(content);
+        cmEditor.clearHistory();
+        cmEditor.refresh();
+        cmEditor.addKeyMap({
+          'Ctrl-S': () => {
+            if (!viewMode) {
+              sendMessageToHost({
+                command: 'saveDocument',
+                filepath: filePath
+              });
+            }
+          }
+        });
+
+        CodeMirror.on(cmEditor, 'change', () => {
+          if (!viewMode) {
+            sendMessageToHost({
+              command: 'contentChangedInEditor',
+              filepath: filePath
+            });
+            document.getElementsByClassName(
+              'CodeMirror-cursor'
+            )[0].style.display = 'block';
+          } else {
+            document.getElementsByClassName(
+              'CodeMirror-cursor'
+            )[0].style.display = 'none';
+          }
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="editorText"></div>
-    <div class="btn-group dropup extMainMenu">
+    <div
+      id="extFabMenu"
+      class="btn-group dropup-center dropup"
+      style="position: absolute; right: 20px; bottom: 20px;"
+    >
       <button
-        id="viewerMainMenuButton"
         type="button"
-        class="btn roundButton dropdown-toggle viewerMainMenuButton"
-        data-toggle="dropdown"
+        class="btn btn-primary  btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        style="border-radius: 30px; font-weight: bolder; height: 50px"
       >
-        <i class="fa fa-ellipsis-v fa-2x"></i>
+        ⋮
       </button>
-      <ul class="dropdown-menu pull-right">
-        <li class="dropdown-header">
-          <button class="close">&times;</button>
-          &nbsp;
-        </li>
+      <ul class="dropdown-menu">
         <li>
-          <a id="printButton">
-            <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="print"
-            ></span>
+          <a id="printMenuItem" class="dropdown-item" href="#">
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+              />
+              <path
+                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+              />
+            </svg>
+            <span data-i18n="print" />
           </a>
         </li>
+        <li><hr class="dropdown-divider" /></li>
         <li>
-          <a id="markdownPreview">
-            <i class="fa fa-eye fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="markdownPreview"
-            ></span>
-          </a>
-        </li>
-        <li>
-          <a id="mdHelpButton">
-            <i class="fa fa-info fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="markdownHelpButton"
-            ></span>
-          </a>
-        </li>
-        <li>
-          <a id="aboutButton">
-            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="about"
-            ></span>
+          <a
+            class="dropdown-item"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+            <span data-i18n="about" />
           </a>
         </li>
       </ul>
     </div>
-    <div
-      class="modal"
-      id="aboutExtensionModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              id="closeAboutDialogButton"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="aboutTitle"></h4>
-          </div>
-          <div class="modal-body">
-            <br />Please visit the
-            <a href="https://github.com/tagspaces/tagspaces-extensions"
-              >project page</a
-            >
-            on GitHub for details about this extension.<br /><br />
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div
-      class="modal"
-      id="markdownPreviewModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
+    <!-- <table id="markdownHelpModal">
+      <tbody>
+        <tr>
+          <td><strong>Bold</strong></td>
+          <td>**bold**</td>
+        </tr>
+        <tr>
+          <td><i>Italics</i></td>
+          <td>*italics*</td>
+        </tr>
+        <tr>
+          <td>
+            <del>Strikethrough</del>
+          </td>
+          <td>~~strikethrough~~</td>
+        </tr>
+        <tr>
+          <td>Header</td>
+          <td># H1 ## H2 ### H3</td>
+        </tr>
+        <tr>
+          <td>
+            <li>item</li>
+          </td>
+          <td>* item</td>
+        </tr>
+        <tr>
+          <td>Blockquote</td>
+          <td>&gt; blockquote</td>
+        </tr>
+        <tr>
+          <td>
+            <a
+              href="https://www.youtube.com/watch?v=8rMo5EFAqgM"
+              target="_blank"
+              >Link</a
             >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="markdownTitle"></h4>
-          </div>
-          <div class="modal-body markdown-content"></div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="modal"
-      id="markdownHelpModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="markdownHelpDialogTitle"></h4>
-          </div>
-          <div class="modal-body">
-            <table>
-              <tbody>
-                <tr>
-                  <td><strong>Bold</strong></td>
-                  <td>**bold**</td>
-                </tr>
-                <tr>
-                  <td><i>Italics</i></td>
-                  <td>*italics*</td>
-                </tr>
-                <tr>
-                  <td>
-                    <del>Strikethrough</del>
-                  </td>
-                  <td>~~strikethrough~~</td>
-                </tr>
-                <tr>
-                  <td>Header</td>
-                  <td># H1 ## H2 ### H3</td>
-                </tr>
-                <tr>
-                  <td>
-                    <li>item</li>
-                  </td>
-                  <td>* item</td>
-                </tr>
-                <tr>
-                  <td>Blockquote</td>
-                  <td>&gt; blockquote</td>
-                </tr>
-                <tr>
-                  <td>
-                    <a
-                      href="https://www.youtube.com/watch?v=8rMo5EFAqgM"
-                      target="_blank"
-                      >Link</a
-                    >
-                  </td>
-                  <td>[title](http://)</td>
-                </tr>
-                <tr>
-                  <td>Image</td>
-                  <td>![alt](http://)</td>
-                </tr>
-                <tr>
-                  <td><code>code</code></td>
-                  <td>`code`</td>
-                </tr>
-                <tr>
-                  <td>
-                    <pre
-                      style="display: inline-block; margin: 4px 0"
-                    ><code><span class="keyword">var </span>code = <span
-                  class="string">"formatted"</span>;</code></pre>
-                  </td>
-                  <td style="line-height: 100%">
-                    ```
-                    <i style="color: rgba(0,0,0,0.5)"
-                      >(for line break click shift+enter)</i
-                    ><br />var code = "formatted";<br />```
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </td>
+          <td>[title](http://)</td>
+        </tr>
+        <tr>
+          <td>Image</td>
+          <td>![alt](http://)</td>
+        </tr>
+        <tr>
+          <td><code>code</code></td>
+          <td>`code`</td>
+        </tr>
+        <tr>
+          <td>
+            <pre
+              style="display: inline-block; margin: 4px 0"
+            ><code><span class="keyword">var </span>code = <span
+          class="string">"formatted"</span>;</code></pre>
+          </td>
+          <td style="line-height: 100%">
+            ```
+            <i style="color: rgba(0,0,0,0.5)"
+              >(for line break click shift+enter)</i
+            ><br />var code = "formatted";<br />```
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
   </body>
 </html>
