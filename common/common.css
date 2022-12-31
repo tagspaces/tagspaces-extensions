@@ -43,8 +43,21 @@ body {
   margin-right: 5px;
 }
 
+#extFabMenu {
+  position: fixed; 
+  right: 20px; 
+  bottom: 20px;
+}
+
+#extFabMenu > button {
+  border-radius: 30px; 
+  font-weight: bolder; 
+  height: 50px; 
+  width: 50px;
+}
+
 @media print {
-  .extFabMenu {
+  #extFabMenu {
     display: none;
   }
 }

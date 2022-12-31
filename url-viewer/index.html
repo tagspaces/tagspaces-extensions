@@ -23,7 +23,7 @@
         locale = 'en_US';
       }
 
-      document.onreadystatechange = () => {
+      document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
@@ -39,7 +39,7 @@
               }, 300);
             });
         }
-      };
+      });
 
       function setContent(content) {
         const htmlContent = document.getElementById('htmlContent');
@@ -112,17 +112,12 @@
         style="margin-top: 10px; width: 100%; display: none"
       />
     </div>
-    <div
-      id="extFabMenu"
-      class="btn-group dropup-center dropup"
-      style="position: absolute; right: 20px; bottom: 20px;"
-    >
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
         class="btn btn-primary  btn-lg"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style="border-radius: 30px; font-weight: bolder; height: 50px"
       >
         ⋮
       </button>

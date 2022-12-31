@@ -45,7 +45,7 @@
         locale = 'en_US';
       }
 
-      document.onreadystatechange = () => {
+      document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
@@ -442,7 +442,7 @@
             }
           }
         }
-      };
+      });
     </script>
   </head>
   <body>
@@ -505,17 +505,12 @@
       </div>
     </div>
 
-    <div
-      class="btn-group dropup-center dropup"
-      style="position: absolute; right: 20px; bottom: 20px;"
-      id="extFabMenu"
-    >
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
         class="btn btn-primary  btn-lg"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style="border-radius: 30px; font-weight: bolder; height: 50px"
       >
         ⋮
       </button>
