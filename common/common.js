@@ -14,15 +14,46 @@ const isWeb =
 const isWin = navigator.appVersion.includes('Win');
 const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
 
+/** Handle theming */
 function setTheme(theme) {
   document.documentElement.className = theme;
   // document.documentElement.setAttribute("data-theme", "dark");
+}
+
+const rootEl = document.querySelector(':root');
+const primaryColor = getParameterByName('primecolor').replace('%23', '#');
+const textColor = getParameterByName('textcolor').replace('%23', '#');
+const backgroundColor = getParameterByName('bgndcolor').replace('%23', '#');
+if (primaryColor) {
+  rootEl.style.setProperty('--primary-background-color', primaryColor);
+  rootEl.style.setProperty('--default-background-color', backgroundColor);
+  rootEl.style.setProperty('--background-color', backgroundColor);
+  rootEl.style.setProperty('--primary-text-color', textColor);
+  rootEl.style.setProperty('--text-color', textColor);
 }
 
 const theme = getParameterByName('theme');
 if (theme) {
   document.documentElement.className = theme;
 }
+
+document.addEventListener('readystatechange', () => {
+  if (document.readyState === 'complete') {
+    if (isCordova) {
+      document.getElementById('printMenuItem').style.display = 'none';
+    }
+    // } else {
+    //   document.getElementById('printMenuItem').addEventListener('click', () => {
+    //     alert(document.getElementById('printMenuItem').innerHTML);
+    //     setTimeout(() => {
+    //       window.print();
+    //     }, 300);
+    //   });
+    // }
+  }
+});
+
+/**  Helper functions */
 
 function getParameterByName(paramName) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
