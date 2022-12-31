@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <link href="../libs/bootstrap5/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <style>
       .bi {
@@ -22,13 +22,14 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
-      initI18N(locale, 'ns.extension.json');
 
       document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/url-viewer');
+
+          initI18N(locale, 'ns.extension.json');
 
           document
             .getElementById('printMenuItem')
@@ -93,14 +94,7 @@
         title="Opens the URL in the default browser"
         class="btn btn-primary"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16"
-        >
+        <svg width="16" height="16" class="bi">
           <path
             fill-rule="evenodd"
             d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
@@ -135,14 +129,7 @@
       <ul class="dropdown-menu">
         <li>
           <a id="printMenuItem" class="dropdown-item" href="#">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-printer-fill"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
               />
@@ -161,14 +148,7 @@
             data-bs-toggle="modal"
             data-bs-target="#aboutModal"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-info-circle-fill"
-              viewBox="0 0 16 16"
-            >
+            <svg width="16" height="16" class="bi">
               <path
                 d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
               />
