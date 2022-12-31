@@ -237,8 +237,6 @@
           document
             .getElementById('exportJPGImage')
             .addEventListener('click', e => {
-              e.stopPropagation();
-              // TODO hide menu
               toDataURL(imageContent.src, dataURL => {
                 fetch(dataURL)
                   .then(res => res.blob())
@@ -254,7 +252,6 @@
           document
             .getElementById('exportPNGImage')
             .addEventListener('click', e => {
-              e.stopPropagation();
               toDataURL(
                 imageContent.src,
                 dataURL => {
@@ -274,7 +271,6 @@
           document
             .getElementById('exportWEBPImage')
             .addEventListener('click', e => {
-              e.stopPropagation();
               toDataURL(
                 imageContent.src,
                 dataURL => {
