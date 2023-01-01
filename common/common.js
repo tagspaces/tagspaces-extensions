@@ -67,6 +67,15 @@ function getParameterByName(paramName) {
   return param;
 }
 
+function loadExtSettings(key) {
+  return JSON.parse(localStorage.getItem(key));
+}
+
+function saveExtSettings(key, value) {
+  const settings = localStorage.setItem(key, JSON.stringify(value));
+  console.debug(settings);
+}
+
 function getFileContentPromise(fullPath, type) {
   return new Promise((resolve, reject) => {
     const fileURL = fullPath;
