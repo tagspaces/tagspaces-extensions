@@ -293,6 +293,16 @@ function insertAboutDialog(helpURL) {
 
   handleLinks(document.getElementById('aboutModal'));
 
+  getFileContentPromise('../package.json', 'text')
+    .then(content => {
+      const extVersion = JSON.parse(content).version;
+      document.getElementById('aboutModalLabel').title =
+        'Extension package version: ' + extVersion;
+    })
+    .catch(e => {
+      console.log('Error getting extension version');
+    });
+
   document.getElementById('helpButton').addEventListener('click', e => {
     // e.preventDefault();
     const msg = { command: 'openLinkExternally', link: helpURL };
