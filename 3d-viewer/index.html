@@ -56,11 +56,7 @@
 
           document
             .getElementById('printMenuItem')
-            .addEventListener('click', () => {
-              setTimeout(() => {
-                window.print();
-              }, 300);
-            });
+            .addEventListener('click', openPrintDialog);
 
           document
             .getElementById('screenshotMenuItem')

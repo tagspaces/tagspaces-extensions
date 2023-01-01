@@ -54,6 +54,19 @@ document.addEventListener('readystatechange', () => {
 });
 
 /**  Helper functions */
+function hideLoadingAnimation() {
+  document.getElementById('loadingAnimation').style.visibility = 'hidden';
+}
+
+// function insertLoadingAnimation() {
+//   document.body.innerHTML += `
+//   <div id="loadingAnimation" style="text-align: center;">
+//     <div class="spinner-border m-5" role="status">
+//       <span class="visually-hidden">Loading...</span>
+//     </div>
+//   </div>
+//   `;
+// }
 
 function getParameterByName(paramName) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -241,6 +254,12 @@ function hasURLProtocol(url) {
     url.startsWith('ts://?ts') ||
     url.startsWith('ts:?ts')
   );
+}
+
+function openPrintDialog() {
+  setTimeout(() => {
+    window.print();
+  }, 300);
 }
 
 function insertAboutDialog(helpURL) {
