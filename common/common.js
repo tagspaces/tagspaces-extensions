@@ -198,7 +198,52 @@ function sendMessageToHost(message) {
   }
 }
 
-function insertAboutDialog(url) {
+function handleLinks(domElement) {
+  const allLinks = domElement.querySelectorAll('a');
+  allLinks.forEach(link => {
+    let currentSrc = link.href;
+    let path;
+    if (currentSrc.startsWith('#')) {
+      // Leave the default link behaviour by internal links
+    } else {
+      // if (!hasURLProtocol(currentSrc)) {
+      //   path =
+      //     (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+      //   link.href = path;
+      // }
+      isExternal = isExternalLink(currentSrc);
+      link.innerText += ' ⧉';
+      link.title = currentSrc;
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        // if (path) {
+        //   currentSrc = encodeURIComponent(path);
+        // }
+        sendMessageToHost({
+          command: 'openLinkExternally',
+          link: currentSrc
+        });
+      });
+    }
+  });
+}
+
+function isExternalLink(url) {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+function hasURLProtocol(url) {
+  return (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('file://') ||
+    url.startsWith('data:') ||
+    url.startsWith('ts://?ts') ||
+    url.startsWith('ts:?ts')
+  );
+}
+
+function insertAboutDialog(helpURL) {
   document.body.innerHTML += `
   <div
     class="modal fade"
@@ -221,17 +266,23 @@ function insertAboutDialog(url) {
           ></button>
         </div>
         <div class="modal-body">
-          Please visit the dedicated
-          <a id="docsLink" href="${url}">page</a
-          >
-          for this extension in our documentation.
+          This extension is license under the permissive MIT license. The source code can be found in this git repository
+          <a href="https://github.com/tagspaces/tagspaces-extensions">github.com/tagspaces/tagspaces-extensions</a
+          >.
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="justify-content: space-between;">
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="helpButton"
+          >
+            <span data-i18n="documentation" />
+          </button>
           <button
             type="button"
             class="btn btn-primary"
             data-bs-dismiss="modal"
-          >
+            >
             <span data-i18n="ok" />
           </button>
         </div>
@@ -239,9 +290,12 @@ function insertAboutDialog(url) {
     </div>  
   `;
   const aboutModal = new bootstrap.Modal('#aboutModal', {});
-  document.getElementById('docsLink').addEventListener('click', e => {
-    e.preventDefault();
-    const msg = { command: 'openLinkExternally', link: e.target.href };
+
+  handleLinks(document.getElementById('aboutModal'));
+
+  document.getElementById('helpButton').addEventListener('click', e => {
+    // e.preventDefault();
+    const msg = { command: 'openLinkExternally', link: helpURL };
     sendMessageToHost(msg);
   });
 }
