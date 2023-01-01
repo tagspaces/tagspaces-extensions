@@ -21,6 +21,7 @@
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
     <script>
@@ -65,7 +66,9 @@
           cleanedContent = cleanedContent.substring(0, previewSize);
         }
 
-        document.getElementById('textContentArea').textContent = cleanedContent;
+        document.getElementById(
+          'textContentArea'
+        ).textContent = DOMPurify.sanitize(cleanedContent);
       }
     </script>
   </head>
