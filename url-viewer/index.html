@@ -37,7 +37,6 @@
       });
 
       function setContent(content) {
-        const htmlContent = document.getElementById('htmlContent');
         const urlBegin = 'URL=';
         const commentTag = 'COMMENT=';
         let url = content.substring(
@@ -73,34 +72,35 @@
     </script>
   </head>
   <body>
-    <div id="htmlContent" style="margin: 10px;">
-      <input
-        id="urlInput"
-        class="form-control"
-        type="text"
-        value="URL of the bookmark"
-        aria-label="readonly input example"
-        readonly
-        style="margin-bottom: 10px;"
-      />
-      <button
-        type="button"
-        id="openURLButton"
-        title="Opens the URL in the default browser"
-        class="btn btn-primary"
-      >
-        <svg width="16" height="16" class="bi">
-          <path
-            fill-rule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
-          />
-        </svg>
-        <span data-i18n="openURL" />
-      </button>
+    <div style="margin: 10px;">
+      <div class="input-group">
+        <input
+          id="urlInput"
+          type="text"
+          class="form-control"
+          value="URL of the bookmark"
+          aria-label="readonly input example"
+          readonly
+        />
+        <button
+          type="button"
+          id="openURLButton"
+          title="Opens the URL in the default browser"
+          class="btn btn-primary btn-sm"
+        >
+          <svg width="16" height="16" class="bi">
+            <path
+              fill-rule="evenodd"
+              d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
+            />
+          </svg>
+          <span data-i18n="openURL" />
+        </button>
+      </div>
       <img
         id="screenshotImg"
         title="Screenshot of the original web page"
