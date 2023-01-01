@@ -262,6 +262,100 @@ function openPrintDialog() {
   }, 300);
 }
 
+/* BEGIN: Find in content functionality */
+function markInText() {
+  showFindToolbar();
+  if (markInstance && queryArray.length > 0) {
+    markInstance.unmark({
+      done: function() {
+        markInstance.mark(queryArray, {});
+      }
+    });
+  }
+}
+
+function startSearch() {
+  const queryInput = document.getElementById('queryInput').value;
+  queryArray = queryInput.split(' ');
+  markInText();
+}
+
+function initFindToolbar() {
+  document.body.innerHTML =
+    `
+  <div id="findToolbar" style="display: none; margin: 10px; width: auto;">
+    <div class="input-group">
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Find in document..."
+        id="queryInput"
+        aria-label="Search"
+        aria-describedby="search-addon"
+      />
+      <button
+        id="startSearch"
+        type="button"
+        class="btn btn-primary"
+      >
+      <svg width="16" height="16" class="bi">
+        <path
+          d="M4.5 1A1.5 1.5 0 0 0 3 2.5V3h4v-.5A1.5 1.5 0 0 0 5.5 1h-1zM7 4v1h2V4h4v.882a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V13H9v-1.5a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5V13H1V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V4h4zM1 14v.5A1.5 1.5 0 0 0 2.5 16h3A1.5 1.5 0 0 0 7 14.5V14H1zm8 0v.5a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5V14H9zm4-11H9v-.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5V3z"
+        />
+      </svg>
+      </button>
+    </div>
+  </div>
+  ` + document.body.innerHTML;
+
+  document.getElementById('queryInput').addEventListener('keyup', evt => {
+    // if (evt.key === 'Enter') {
+    startSearch();
+    // }
+  });
+
+  document.addEventListener('keyup', evt => {
+    if (evt.key === 'Escape') {
+      hideFindToolbar();
+    }
+  });
+
+  document.getElementById('startSearch').addEventListener('click', startSearch);
+
+  document
+    .getElementById('toggleFindMenuItem')
+    .addEventListener('click', toggleFindToolbar);
+
+  if (searchQuery) {
+    queryArray = searchQuery.split(':');
+  }
+  const documentContent = document.getElementById('documentContent');
+  markInstance = new Mark(documentContent);
+  if (queryArray && queryArray.length > 0) {
+    document.getElementById('queryInput').value = queryArray.join(' ');
+    markInText();
+  }
+}
+
+function hideFindToolbar() {
+  document.getElementById('findToolbar').style.display = 'none';
+  document.getElementById('queryInput').value = '';
+  markInstance.unmark();
+}
+
+function showFindToolbar() {
+  document.getElementById('findToolbar').style.display = 'block';
+  document.getElementById('queryInput').focus();
+}
+
+function toggleFindToolbar() {
+  const isFindToolbarVisible =
+    document.getElementById('findToolbar').style.display === 'block';
+  isFindToolbarVisible ? hideFindToolbar() : showFindToolbar();
+}
+
+/* END: Find in content functionality */
+
 function insertAboutDialog(helpURL) {
   document.body.innerHTML += `
   <div
