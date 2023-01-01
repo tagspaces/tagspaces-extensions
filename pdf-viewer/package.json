@@ -10,5 +10,7 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "pdfjs-dist": "3.1.81"
+  }
 }
