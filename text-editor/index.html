@@ -97,6 +97,13 @@
             'https://docs.tagspaces.org/extensions/text-editor'
           );
 
+          if (viewMode) {
+            document.body.addEventListener('dblclick', () => {
+              sendMessageToHost({ command: 'editDocument' });
+            });
+          }
+
+          // Handling settings
           let extSettings = loadExtSettings('editorTextSettings');
 
           const editorText = document.getElementById('editorText');
@@ -114,13 +121,7 @@
           }
           saveSettings();
 
-          if (viewMode) {
-            document.body.addEventListener('dblclick', () => {
-              sendMessageToHost({ command: 'editDocument' });
-            });
-          }
-
-          const offset = 0;
+          // Bind handler for button
           document
             .getElementById('zoomInButton')
             .addEventListener('click', e => {
