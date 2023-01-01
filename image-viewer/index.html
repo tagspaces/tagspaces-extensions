@@ -139,6 +139,8 @@
                 console.log(e.type);
               },
               viewed: () => {
+                hideLoadingAnimation();
+
                 imageViewerContainer = document.getElementsByClassName(
                   'viewer-container'
                 );
@@ -350,17 +352,6 @@
               }
             });
 
-          // document.getElementById('flipBoth').addEventListener('click', e => {
-          //   e.stopPropagation();
-          //   if (flipBoth === true) {
-          //     flipBoth = false;
-          //     viewer.scale(1); // Flip horizontal
-          //   } else {
-          //     flipBoth = true;
-          //     viewer.scale(-1); // Flip both horizontal and vertical
-          //   }
-          // });
-
           document
             .getElementById('whiteBackgroundColor')
             .addEventListener('click', e => {
@@ -418,11 +409,7 @@
 
           document
             .getElementById('printMenuItem')
-            .addEventListener('click', () => {
-              setTimeout(() => {
-                window.print();
-              }, 300);
-            });
+            .addEventListener('click', openPrintDialog);
 
           function printEXIF(metaData) {
             if (Object.keys(metaData).length < 1) {
@@ -448,6 +435,11 @@
     </script>
   </head>
   <body>
+    <div id="loadingAnimation" style="text-align: center;">
+      <div class="spinner-border m-5" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <div
       id="imageContainer"
       style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"
