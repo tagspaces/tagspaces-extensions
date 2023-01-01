@@ -61,25 +61,17 @@
 
           let exifObj;
 
-          // load settings for viewerSettings
-          const extSettings = JSON.parse(
-            localStorage.getItem('imageViewerSettings')
-          );
+          let extSettings = loadExtSettings('imageViewerSettings');
+
           let imageBackgroundColor = '#000000';
           if (extSettings && extSettings.imageBackgroundColor) {
             imageBackgroundColor = extSettings.imageBackgroundColor;
+            document.body.style.background = imageBackgroundColor;
+            // imageViewerContainer[0].style.background = '#ffffff';
           }
 
-          // save settings for viewerSettings
-          function saveExtSettings() {
-            const settings = {
-              imageBackgroundColor
-            };
-            localStorage.setItem(
-              'imageViewerSettings',
-              JSON.stringify(settings)
-            );
-            console.debug(settings);
+          function saveSettings() {
+            saveExtSettings('imageViewerSettings', { imageBackgroundColor });
           }
 
           let orientation;
@@ -376,7 +368,7 @@
               document.body.style.background = '#ffffff';
               imageViewerContainer[0].style.background = '#ffffff';
               imageBackgroundColor = '#ffffff';
-              saveExtSettings();
+              saveSettings();
             });
 
           document
@@ -386,7 +378,7 @@
               document.body.style.background = '#000000';
               imageViewerContainer[0].style.background = '#000000';
               imageBackgroundColor = '#000000';
-              saveExtSettings();
+              saveSettings();
             });
 
           document
@@ -396,7 +388,17 @@
               document.body.style.background = '#f4ecd8';
               imageViewerContainer[0].style.background = '#f4ecd8';
               imageBackgroundColor = '#f4ecd8';
-              saveExtSettings();
+              saveSettings();
+            });
+
+          document
+            .getElementById('resetBackgroundColor')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              document.body.style.background = 'transparent';
+              imageViewerContainer[0].style.background = 'transparent';
+              imageBackgroundColor = 'transparent';
+              saveSettings();
             });
 
           document
@@ -710,29 +712,43 @@
             <div
               class="btn-group"
               data-toggle="buttons"
-              style="width: 150px; border: 1px solid gray;"
+              style="width: 180px; border: 1px solid gray;"
             >
               <a
                 id="whiteBackgroundColor"
                 class="btn"
-                style="background-color: #ffffff; color: #282a36;"
+                style="width: 45px; background-color: #ffffff; color: #282a36;"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
               <a
                 id="blackBackgroundColor"
                 class="btn"
-                style="background-color: #282a36; color: #ffffff;"
+                style="width: 45px; background-color: #282a36; color: #ffffff;"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
               <a
                 id="sepiaBackgroundColor"
                 class="btn"
-                style="background-color: #f4ecd8; color: #5b4636;"
+                style="width: 45px; background-color: #f4ecd8; color: #5b4636;"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
+              <a
+                id="resetBackgroundColor"
+                class="btn"
+                style="width: 45px; background-color: #ffffff; color: #050505;"
+                data-i18ntitle="resetBackgroundColor"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                  />
+                  <path
+                    d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708z"
+                  /></svg
+              ></a>
             </div>
           </div>
         </li>
