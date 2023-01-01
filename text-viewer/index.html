@@ -6,132 +6,126 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <script src="../libs/jquery/dist/jquery.min.js"></script>
-    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      #textContent {
+        overflow: auto;
+        height: 100%;
+      }
+    </style>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
-    <script src="../libs/marked/marked.min.js"></script>
-    <script src="../libs/jquery.highlight.js"></script>
-    <script src="../legacy/common.js"></script>
-    <script src="main.js"></script>
-    <link rel="stylesheet" href="extension.css" />
+    <script src="../common/common.js"></script>
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') {
+          sendMessageToHost({
+            command: 'loadDefaultTextContent',
+            preview: true
+          });
+
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/text-viewer'
+          );
+
+          initI18N(locale, 'ns.extension.json');
+
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', () => {
+              setTimeout(() => {
+                window.print();
+              }, 300);
+            });
+        }
+      });
+
+      function setContent(content, fileDir) {
+        // Cutting preview content 10kb
+        const previewSize = 1024 * 10;
+        // console.log('Content size: ' + content.length);
+
+        // removing the script tags from the content
+        let cleanedContent = content
+          .toString()
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+        if (cleanedContent.length > previewSize) {
+          cleanedContent = cleanedContent.substring(0, previewSize);
+        }
+
+        document.getElementById('textContentArea').textContent = cleanedContent;
+      }
+    </script>
   </head>
   <body>
-    <div id="searchToolbar" style="display: none;">
-      <div class="flexLayout">
-        <button
-          class="btn btn-link"
-          id="clearSearchExtButton"
-          data-i18n="[title]cancelSearch"
-        >
-          <i class="fa fa-lg fa-eraser"></i>
-        </button>
-        <input
-          class="flexMaxWidth"
-          id="searchBox"
-          type="text"
-          data-i18n="[placeholder]findInDocument"
-        />
-        <button
-          class="btn btn-link"
-          id="searchExtButton"
-          data-i18n="[title]startSearch"
-        >
-          <i class="fa fa-lg fa-binoculars"></i>
-        </button>
-      </div>
-    </div>
     <div
       style="padding: 5px; background-color: transparent; width: 100%; height: 100%;"
       class="flexLayoutVertical"
       id="mainLayout"
     >
-      <span style="margin-left: auto; margin-right: auto; font-size: 14px;"
-        >File preview: </span
-      ><textarea
+      <div
+        style="margin-left: auto; margin-right: auto; font-size: 14px;"
+        data-i18n="fileContentPreview"
+      ></div>
+      <textarea
         id="textContentArea"
         readonly="readonly"
-        style="background-color: transparent; color: gray; padding: 5px; overflow: auto; height: 100%; width: 100%; font-size: 13px; margin: 0px;  border: gray solid 1px; border-radius: 4px;"
+        style="background-color: transparent; color: gray; padding: 5px; overflow: auto; height: 97%; width: 100%; font-size: 13px; margin: 0px;  border: gray solid 1px; border-radius: 4px;"
         class="flexMaxHeight"
       ></textarea>
     </div>
-    <div class="btn-group dropup extMainMenu">
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
-        id="viewerMainMenuButton"
-        class="btn roundButton dropdown-toggle viewerMainMenuButton"
-        data-toggle="dropdown"
+        class="btn btn-primary btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
       >
-        <i class="fa fa-ellipsis-v fa-2x"></i>
+        ⋮
       </button>
-      <ul class="dropdown-menu pull-right">
-        <li class="dropdown-header">
-          <button class="close">&times;</button>&nbsp;
-        </li>
-        <li class="divider"></li>
+      <ul class="dropdown-menu">
         <li>
-          <a id="findInFile">
-            <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="findInDocument"
-            ></span>
+          <a id="printMenuItem" class="dropdown-item" href="#">
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+              />
+              <path
+                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+              />
+            </svg>
+            <span data-i18n="print" />
           </a>
         </li>
-        <li class="divider"></li>
+        <li><hr class="dropdown-divider" /></li>
         <li>
-          <a id="printButton">
-            <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="print"
-            ></span>
-          </a>
-        </li>
-        <li>
-          <a id="aboutButton">
-            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="about"
-            ></span>
+          <a
+            class="dropdown-item"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+            <span data-i18n="about" />
           </a>
         </li>
       </ul>
-    </div>
-    <div
-      class="modal"
-      id="aboutExtensionModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              id="closeAboutDialogButton"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="aboutTitle"></h4>
-          </div>
-          <div class="modal-body markdown-content">
-            <br />Please visit the
-            <a href="https://github.com/tagspaces/tagspaces-extensions"
-              >project page</a
-            >
-            on GitHub for details about this extension.<br /><br />
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </body>
 </html>
