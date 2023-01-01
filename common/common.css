@@ -35,6 +35,20 @@ body {
   border: 0;
 }
 
+/* .btn-outline-primary,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  border: 1px solid var(--primary-background-color);
+  color: var(--primary-background-color);
+  text-transform: uppercase;
+} 
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-background-color);
+  color: var(--primary-text-color);
+} */
+
 .viewerMainMenuButton {
   background-color: var(--primary-background-color);
 }
