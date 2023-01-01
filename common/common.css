@@ -54,6 +54,7 @@ body {
   font-weight: bolder; 
   height: 50px; 
   width: 50px;
+  padding-left: 15px;
 }
 
 @media print {
