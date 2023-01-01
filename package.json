@@ -54,6 +54,7 @@
     "i18next": "~10.2.2",
     "jquery": "~3.6.0",
     "jquery-i18next": "~1.2.1",
+    "mark.js": "^8.11.1",
     "marked": "~3.0.8",
     "mousetrap": "~1.5.3",
     "psd": "3.4.0",

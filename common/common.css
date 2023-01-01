@@ -62,6 +62,14 @@ body {
   }
 }
 
+/* Needed for mark.js */
+mark{
+  background: orange;
+  color: black;
+  border-radius: 5px;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: transparent;

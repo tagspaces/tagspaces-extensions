@@ -66,6 +66,11 @@ sh.mkdir('libs/marked');
 sh.cp('node_modules/marked/LICENSE.md', 'libs/marked');
 sh.cp('node_modules/marked/marked.min.js', 'libs/marked');
 
+sh.rm('-rf', 'libs/mark.js/');
+sh.mkdir('libs/mark.js/');
+sh.cp('node_modules/mark.js/LICENSE', 'libs/mark.js');
+sh.cp('node_modules/mark.js/dist/mark.min.js', 'libs/mark.js');
+
 sh.rm('-rf', 'libs/i18next/');
 sh.mkdir('libs/i18next');
 sh.cp('node_modules/i18next/LICENSE', 'libs/i18next');
