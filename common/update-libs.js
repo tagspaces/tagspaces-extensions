@@ -131,3 +131,9 @@ sh.cp(
   'node_modules/@google/model-viewer/LICENSE',
   '3d-viewer/libs/model-viewer'
 );
+
+sh.rm('-rf', 'ebook-viewer/libs');
+sh.mkdir('ebook-viewer/libs/');
+sh.mkdir('ebook-viewer/libs/epubjs');
+sh.cp('node_modules/epubjs/dist/epub.min.js', 'ebook-viewer/libs/epubjs');
+sh.cp('node_modules/epubjs/license', 'ebook-viewer/libs/epubjs');

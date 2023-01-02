@@ -48,6 +48,7 @@
     "bootstrap": "3.4.1",
     "bootstrap5": "npm:bootstrap@5.2.3",
     "bootswatch": "3.4.1",
+    "epubjs": "0.3.93",
     "dompurify": "~2.3.3",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
