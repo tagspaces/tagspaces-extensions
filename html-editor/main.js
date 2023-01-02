@@ -2,9 +2,8 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* globals $ isCordova sendMessageToHost initI18N getParameterByName */
-sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-let $htmlEditor;
+let htmlEditor;
 let currentFilePath;
 
 function initEditor() {
@@ -102,7 +101,7 @@ function initEditor() {
     }
   };
 
-  $htmlEditor.summernote({
+  htmlEditor.summernote({
     focus: true,
     height: '200px',
     disableDragAndDrop: true,
@@ -132,11 +131,6 @@ function initEditor() {
     console.log(window.innerHeight);
   });
 }
-
-$(() => {
-  // const locale = getParameterByName('locale');
-  initI18N('en_US', 'ns.editorHTML.json');
-});
 
 let sourceURL = '';
 let currentContent;
@@ -216,21 +210,7 @@ function getContent() {
   return htmlContent;
 }
 
-function getBase64Image(imgURL) {
-  const canvas = document.createElement('canvas');
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.src = imgURL;
-  canvas.width = img.width;
-  canvas.height = img.height;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(img, 0, 0);
-  return canvas.toDataURL('image/png');
-}
-
 function setContent(content, filePath) {
-  // adjusting relative paths
-  // $('base').attr('href', currentFilePath);
   currentContent = content;
   currentFilePath = filePath;
 
@@ -324,15 +304,15 @@ function setContent(content, filePath) {
     cleanedContent +
     '</body>';
 
-  $htmlEditor = $('#htmlEditor');
-  $htmlEditor.append(cleanedContent);
+  htmlEditor = $('#documentContent');
+  htmlEditor.append(cleanedContent);
 
-  $htmlEditor.find('.tsCheckBox').each((index, checkbox) => {
+  htmlEditor.find('.tsCheckBox').each((index, checkbox) => {
     $(checkbox).removeAttr('disabled');
   });
 
   // Check if summernote is loaded
-  if (typeof $htmlEditor.summernote === 'function') {
+  if (typeof htmlEditor.summernote === 'function') {
     initEditor();
   }
 }

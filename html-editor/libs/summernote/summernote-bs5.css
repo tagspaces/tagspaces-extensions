@@ -809,4 +809,14 @@ html .note-fullscreen-body, body .note-fullscreen-body {
     overflow: hidden !important;
 }
 
-/*# sourceMappingURL=summernote.css.map*/
+.note-toolbar {
+    background: #8080801d;
+}
+
+.note-btn-group .note-btn {
+    border-color: #00000032;
+    padding: 0.28rem 0.65rem;
+    font-size: 13px;
+}
+
+/*# sourceMappingURL=summernote-bs5.css.map*/
