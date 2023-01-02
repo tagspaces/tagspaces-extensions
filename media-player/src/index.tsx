@@ -6,7 +6,7 @@ function sendMessageToHost(message: any) {
   window.parent.postMessage(JSON.stringify(message), '*');
 }
 
-sendMessageToHost({ command: 'loadDefaultTextContent' });
+// sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 ReactDOM.render(
   <React.StrictMode>

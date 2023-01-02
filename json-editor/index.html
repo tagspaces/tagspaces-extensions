@@ -6,128 +6,324 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <script src="libs/jsoneditor/dist/jsoneditor-minimalist.min.js"></script>
-    <script src="../libs/jquery/dist/jquery.min.js"></script>
-    <script src="../libs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="../libs/jquery-i18next/jquery-i18next.min.js"></script>
-    <script src="../libs/marked/marked.min.js"></script>
-    <script src="../legacy/common.js"></script>
-    <script type="text/javascript" src="main.js"></script>
-    <link rel="stylesheet" href="extension.css" />
+    <title>JSON Viewer and Editor for TagSpaces</title>
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/jsoneditor/dist/jsoneditor.min.css" />
-    <base />
+    <link rel="stylesheet" href="../common/common.css" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .jsoneditor {
+        border: 0px;
+      }
+    </style>
+    <script src="libs/jsoneditor/dist/jsoneditor-minimalist.min.js"></script>
+    <script src="../libs/marked/marked.min.js"></script>
+    <script src="../libs/mark.js/mark.min.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../common/common.js"></script>
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+      let jsonEditor;
+      let isViewer = true;
+
+      document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') {
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/json-editor'
+          );
+
+          initI18N(locale, 'ns.extension.json');
+
+          sendMessageToHost({ command: 'loadDefaultTextContent' });
+
+          if (isViewer) {
+            document.body.addEventListener('dblclick', () => {
+              sendMessageToHost({ command: 'editDocument' });
+            });
+          }
+
+          // Handling settings
+          let extSettings = loadExtSettings('jsonEditorSettings');
+
+          function saveSettings() {
+            saveExtSettings('jsonEditorSettings', { zoomLevel });
+          }
+
+          let zoomLevel = 100;
+          if (extSettings && extSettings.zoomLevel) {
+            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
+              zoomLevel = extSettings.zoomLevel;
+            }
+            document.getElementById('documentContent').style.zoom =
+              zoomLevel + '%';
+          }
+          saveSettings();
+
+          document
+            .getElementById('zoomInButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel + 10;
+              if (zoomLevel >= 500) {
+                zoomLevel = 500;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomOutButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel - 10;
+              if (zoomLevel < 30) {
+                zoomLevel = 30;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomResetButton')
+            .addEventListener('click', e => {
+              zoomLevel = 100;
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('printMenuItem')
+            .addEventListener('click', openPrintDialog);
+
+          // $('#markdownHelpModal').off();
+          // $('#markdownHelpModal').on('show.bs.modal', () => {
+          //   $.ajax({
+          //     url: 'libs/jsoneditor/docs/shortcut_keys.md',
+          //     type: 'GET'
+          //   })
+          //     .done(jsonData => {
+          //       if (marked) {
+          //         const modalBody = $('#markdownHelpModal .modal-body');
+          //         modalBody.html(marked(jsonData, { sanitize: true }));
+          //         handleLinks(modalBody);
+          //       } else {
+          //         console.log('markdown to html transformer not found');
+          //       }
+          //     })
+          //     .fail(data => {
+          //       console.warn('Loading file failed ' + data);
+          //     });
+          // });
+
+          // $('#jsonHelpButton').off();
+          // $('#jsonHelpButton').on('click', () => {
+          //   $('#markdownHelpModal').modal({ show: true });
+          // });
+        }
+      });
+
+      function contentChanged() {
+        sendMessageToHost({
+          command: 'contentChangedInEditor',
+          filepath: filePath
+        });
+      }
+
+      function getContent() {
+        if (jsonEditor) {
+          return JSON.stringify(jsonEditor.get());
+        }
+      }
+
+      function setContent(jsonContentParam, filePathParam, isViewMode) {
+        const UTF8_BOM = '\ufeff';
+        let jsonContent = jsonContentParam;
+        if (jsonContent.indexOf(UTF8_BOM) === 0) {
+          jsonContent = jsonContent.substring(1, jsonContent.length);
+        }
+
+        // filePath = filePathParam;
+        try {
+          jsonContent = JSON.parse(jsonContent);
+        } catch (e) {
+          console.log('Error parsing JSON document. ' + e);
+          return false;
+        }
+
+        const options = {
+          search: true,
+          history: true,
+          mode: isViewer ? 'view' : 'tree',
+          // modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
+          onError: err => {
+            console.warn(err.toString());
+          },
+          onChange: contentChanged
+        };
+
+        const container = document.getElementById('documentContent');
+
+        if (
+          !!Object.keys(jsonContent) &&
+          (typeof jsonContent !== 'function' || jsonContent === null)
+        ) {
+          // console.debug(Object.keys(jsonContent));
+          jsonEditor = new JSONEditor(container, options, jsonContent);
+        } else {
+          throw new TypeError('Object.keys called on non-object');
+        }
+
+        viewerMode(isViewMode);
+      }
+
+      function viewerMode(isViewerMode) {
+        isViewer = isViewerMode;
+        if (isViewerMode) {
+          jsonEditor.setMode('view');
+        } else {
+          jsonEditor.setMode('tree');
+        }
+      }
+    </script>
   </head>
   <body>
-    <div id="jsonEditor"></div>
-    <div class="btn-group dropup extMainMenu">
-      <button
-        type="button"
-        class="btn roundButton dropdown-toggle viewerMainMenuButton"
-        data-toggle="dropdown"
-      >
-        <i class="fa fa-ellipsis-v fa-2x"></i>
-      </button>
-      <ul class="dropdown-menu pull-right">
-        <li class="dropdown-header">
-          <button class="close">&times;</button>
-          &nbsp;
-        </li>
-        <li class="divider"></li>
-        <li>
-          <a id="printButton">
-            <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="print"
-            ></span>
-          </a>
-        </li>
-        <li>
-          <a id="jsonHelpButton">
-            <i class="fa fa-info fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="JSONHelp"
-            ></span>
-          </a>
-        </li>
-        <li>
-          <a id="aboutButton">
-            <i class="fa fa-comment fa-lg fa-fw"></i>&nbsp;<span
-              data-i18n="about"
-            ></span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div
-      class="modal fullScreenMobile"
-      id="aboutExtensionModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="aboutTitle"></h4>
-          </div>
-          <div class="modal-body markdown-content">
-            <br />Please visit the
-            <a href="https://github.com/tagspaces/tagspaces-extensions"
-              >project page</a
-            >
-            on GitHub for details about this extension.<br /><br />
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- <a id="jsonHelpButton">
+      <i class="fa fa-info fa-lg fa-fw"></i>&nbsp;<span
+        data-i18n="JSONHelp"
+      ></span>
+    </a>
     <div
       class="modal fullScreenMobile"
       id="markdownHelpModal"
       tabindex="-1"
       role="dialog"
       aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-hidden="true"
+    ></div> -->
+    <div
+      id="documentContent"
+      style="border-width: 0 !important; width: 100%; height: 100%; "
+    ></div>
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        ⋮
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <div class="dropdown-item">
+            <div
+              class="btn-group"
+              role="group"
+              aria-label="Zoom control"
+              style="width: 150px; border: 1px solid gray;"
             >
-              <i class="fa fa-times"></i>
-            </button>
-            <h4 class="modal-title" data-i18n="JSONHelpTitle"></h4>
+              <button
+                id="zoomOutButton"
+                type="button"
+                class="btn"
+                data-i18ntitle="zoomOut"
+                style="border-right: 1px solid gray"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+                  />
+                  <path
+                    d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"
+                  />
+                </svg>
+              </button>
+              <button
+                id="zoomResetButton"
+                type="button"
+                class="btn"
+                data-i18ntitle="zoomOut"
+                style="border-right: 1px solid gray"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                  />
+                </svg>
+              </button>
+              <button
+                id="zoomInButton"
+                type="button"
+                class="btn"
+                data-i18ntitle="zoomIn"
+              >
+                <svg width="16" height="16" class="bi">
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"
+                  />
+                  <path
+                    d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div class="modal-body markdown-content"></div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-dismiss="modal"
-              aria-hidden="true"
-            >
-              <i class="fa fa-check fa-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a id="printMenuItem" class="dropdown-item" href="#">
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
+              />
+              <path
+                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
+              />
+            </svg>
+            <span data-i18n="print" />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            <svg width="16" height="16" class="bi">
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+              />
+            </svg>
+            <span data-i18n="about" />
+          </a>
+        </li>
+      </ul>
     </div>
   </body>
 </html>
