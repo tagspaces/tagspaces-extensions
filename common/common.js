@@ -86,7 +86,7 @@ function loadExtSettings(key) {
 
 function saveExtSettings(key, value) {
   const settings = localStorage.setItem(key, JSON.stringify(value));
-  console.debug(settings);
+  // console.debug(settings);
 }
 
 function getFileContentPromise(fullPath, type) {
