@@ -285,8 +285,7 @@ function startSearch() {
 }
 
 function initFindToolbar() {
-  document.body.innerHTML =
-    `
+  document.getElementById('findToolbarPlaceholder').innerHTML = `
   <div id="findToolbar" style="display: none; margin: 10px; width: auto;">
     <div class="input-group">
       <input
@@ -310,7 +309,7 @@ function initFindToolbar() {
       </button>
     </div>
   </div>
-  ` + document.body.innerHTML;
+  `;
 
   document.getElementById('queryInput').addEventListener('keyup', evt => {
     // if (evt.key === 'Enter') {
