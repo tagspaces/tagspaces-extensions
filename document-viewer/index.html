@@ -91,7 +91,7 @@
 
           let zoomLevel = 100;
           if (extSettings && extSettings.zoomLevel) {
-            if (zoomLevel => 30 && zoomLevel <= 500) {
+            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
               zoomLevel = extSettings.zoomLevel;
             }
             documentContent.style.zoom = zoomLevel + '%';
@@ -149,6 +149,7 @@
     </script>
   </head>
   <body>
+    <div id="findToolbarPlaceholder"></div>
     <div id="documentContent"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
