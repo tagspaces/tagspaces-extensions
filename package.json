@@ -55,6 +55,7 @@
     "i18next": "~10.2.2",
     "jquery": "~3.6.0",
     "jquery-i18next": "~1.2.1",
+    "jsoneditor": "9.9.2",
     "jszip": "3.10.1",
     "jszip-utils": "0.1.0",
     "mark.js": "^8.11.1",

@@ -142,3 +142,25 @@ sh.mkdir('ebook-viewer/libs/');
 sh.mkdir('ebook-viewer/libs/epubjs');
 sh.cp('node_modules/epubjs/dist/epub.min.js', 'ebook-viewer/libs/epubjs');
 sh.cp('node_modules/epubjs/license', 'ebook-viewer/libs/epubjs');
+
+sh.rm('-rf', 'json-editor/libs');
+sh.mkdir('json-editor/libs/');
+sh.mkdir('json-editor/libs/jsoneditor');
+sh.mkdir('json-editor/libs/jsoneditor/img');
+sh.cp(
+  'node_modules/jsoneditor/dist/jsoneditor-minimalist.min.js',
+  'json-editor/libs/jsoneditor'
+);
+sh.cp(
+  'node_modules/jsoneditor/dist/jsoneditor.min.css',
+  'json-editor/libs/jsoneditor'
+);
+sh.cp(
+  'node_modules/jsoneditor/dist/img/jsoneditor-icons.svg',
+  'json-editor/libs/jsoneditor/img'
+);
+sh.cp(
+  'node_modules/jsoneditor/docs/shortcut_keys.md',
+  'json-editor/libs/jsoneditor'
+);
+sh.cp('node_modules/jsoneditor/LICENSE', 'json-editor/libs/jsoneditor');
