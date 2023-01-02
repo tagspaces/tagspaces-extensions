@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
+    <title>RTF Viewer for TagSpaces</title>
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <link rel="stylesheet" href="libs/rtf/samples/jquery.svg.css" />
@@ -27,7 +28,7 @@
     <script src="libs/rtf/rtf.js"></script>
     <script src="libs/rtf/wmf.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
-    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <!-- <script src="../libs/dompurify/dist/purify.min.js"></script> -->
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
@@ -37,11 +38,6 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
-
-      // Find in document
-      const searchQuery = getParameterByName('query'); // 'help:file';
-      let queryArray = [];
-      let markInstance;
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {

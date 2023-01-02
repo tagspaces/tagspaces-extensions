@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
+    <title>Document Viewer for TagSpaces</title>
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <style>
@@ -41,11 +42,6 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
-
-      // Find in document
-      const searchQuery = getParameterByName('query'); // 'help:file';
-      let queryArray = [];
-      let markInstance;
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {

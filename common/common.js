@@ -263,6 +263,10 @@ function openPrintDialog() {
 }
 
 /* BEGIN: Find in content functionality */
+
+let queryArray = [];
+let markInstance;
+
 function markInText() {
   showFindToolbar();
   if (markInstance && queryArray.length > 0) {
@@ -326,6 +330,7 @@ function initFindToolbar() {
     .getElementById('toggleFindMenuItem')
     .addEventListener('click', toggleFindToolbar);
 
+  const searchQuery = getParameterByName('query'); // 'help:file';
   if (searchQuery) {
     queryArray = searchQuery.split(':');
   }
