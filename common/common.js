@@ -211,6 +211,17 @@ function sendMessageToHost(message) {
   }
 }
 
+function fixingEmbeddingOfLocalImages(domElement, fileDirectory) {
+  const allImages = domElement.querySelectorAll('img');
+  allImages.forEach(image => {
+    const currentSrc = image.src;
+    if (!hasURLProtocol(currentSrc)) {
+      const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+      image.src = path;
+    }
+  });
+}
+
 function handleLinks(domElement) {
   const allLinks = domElement.querySelectorAll('a');
   allLinks.forEach(link => {
