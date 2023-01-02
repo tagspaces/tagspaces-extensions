@@ -76,6 +76,11 @@ sh.mkdir('libs/jszip/');
 sh.cp('node_modules/jszip/LICENSE.markdown', 'libs/jszip');
 sh.cp('node_modules/jszip/dist/jszip.min.js', 'libs/jszip');
 
+sh.rm('-rf', 'libs/jszip-utils/');
+sh.mkdir('libs/jszip-utils/');
+sh.cp('node_modules/jszip-utils/LICENSE.markdown', 'libs/jszip-utils');
+sh.cp('node_modules/jszip-utils/dist/jszip-utils.min.js', 'libs/jszip-utils');
+
 sh.rm('-rf', 'libs/i18next/');
 sh.mkdir('libs/i18next');
 sh.cp('node_modules/i18next/LICENSE', 'libs/i18next');
