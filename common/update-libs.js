@@ -71,6 +71,11 @@ sh.mkdir('libs/mark.js/');
 sh.cp('node_modules/mark.js/LICENSE', 'libs/mark.js');
 sh.cp('node_modules/mark.js/dist/mark.min.js', 'libs/mark.js');
 
+sh.rm('-rf', 'libs/jszip/');
+sh.mkdir('libs/jszip/');
+sh.cp('node_modules/jszip/LICENSE.markdown', 'libs/jszip');
+sh.cp('node_modules/jszip/dist/jszip.min.js', 'libs/jszip');
+
 sh.rm('-rf', 'libs/i18next/');
 sh.mkdir('libs/i18next');
 sh.cp('node_modules/i18next/LICENSE', 'libs/i18next');
