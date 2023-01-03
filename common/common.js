@@ -95,7 +95,7 @@ function getFileContentPromise(fullPath, type) {
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', fileURL, true);
-    xhr.responseType = type || 'arraybuffer';
+    xhr.responseType = type || 'arraybuffer'; // arraybuffer, text, blob, document, json,
     xhr.onerror = reject;
 
     xhr.onload = () => {
