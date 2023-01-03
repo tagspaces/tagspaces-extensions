@@ -267,12 +267,6 @@ function hasURLProtocol(url) {
   );
 }
 
-function openPrintDialog() {
-  setTimeout(() => {
-    window.print();
-  }, 300);
-}
-
 /* BEGIN: Find in content functionality */
 
 let queryArray = [];
@@ -312,11 +306,11 @@ function initFindToolbar() {
         type="button"
         class="btn btn-primary"
       >
-      <svg width="16" height="16" class="bi">
-        <path
-          d="M4.5 1A1.5 1.5 0 0 0 3 2.5V3h4v-.5A1.5 1.5 0 0 0 5.5 1h-1zM7 4v1h2V4h4v.882a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V13H9v-1.5a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5V13H1V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V4h4zM1 14v.5A1.5 1.5 0 0 0 2.5 16h3A1.5 1.5 0 0 0 7 14.5V14H1zm8 0v.5a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5V14H9zm4-11H9v-.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5V3z"
-        />
-      </svg>
+        <svg width="24" height="24" class="bi">
+          <path
+            d="M20 19.59V8l-6-6H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c.45 0 .85-.15 1.19-.4l-4.43-4.43c-.8.52-1.74.83-2.76.83-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5c0 1.02-.31 1.96-.83 2.75L20 19.59zM9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"
+          ></path>
+        </svg>
       </button>
     </div>
   </div>
@@ -355,7 +349,7 @@ function initFindToolbar() {
 function hideFindToolbar() {
   document.getElementById('findToolbar').style.display = 'none';
   document.getElementById('queryInput').value = '';
-  markInstance.unmark();
+  markInstance && markInstance.unmark();
 }
 
 function showFindToolbar() {
@@ -371,8 +365,55 @@ function toggleFindToolbar() {
 
 /* END: Find in content functionality */
 
+function insertToggleFindMenuItem() {
+  document.getElementById('toggleFindMenuItemPlaceholder').innerHTML = `
+    <a id="toggleFindMenuItem" class="dropdown-item" href="#">
+      <svg width="24" height="24" class="bi">
+        <path
+          d="M20 19.59V8l-6-6H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c.45 0 .85-.15 1.19-.4l-4.43-4.43c-.8.52-1.74.83-2.76.83-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5c0 1.02-.31 1.96-.83 2.75L20 19.59zM9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"
+        ></path>
+      </svg>
+      <span data-i18n="findInDocument" />
+    </a>
+  `;
+}
+
+function insertPrintMenuItem() {
+  document.getElementById('printMenuItemPlaceholder').innerHTML = `
+    <a id="printMenuItem" class="dropdown-item" href="#">
+      <svg width="24" height="24" class="bi">
+        <path
+          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
+        ></path>
+      </svg>
+      <span data-i18n="print" />
+    </a>
+  `;
+  document.getElementById('printMenuItem').addEventListener('click', () => {
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  });
+}
+
 function insertAboutDialog(helpURL) {
-  document.body.innerHTML += `
+  document.getElementById('aboutMenuItemPlaceholder').innerHTML = `
+    <a
+      class="dropdown-item"
+      href="#"
+      data-bs-toggle="modal"
+      data-bs-target="#aboutModal"
+    >
+      <svg width="24" height="24" class="bi">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+        ></path>
+      </svg>
+      <span data-i18n="about" />
+    </a>
+  `;
+
+  document.getElementById('aboutDialogPlaceholder').innerHTML = `
   <div
     class="modal fade"
     id="aboutModal"

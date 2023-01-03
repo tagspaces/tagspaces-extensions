@@ -22,9 +22,8 @@
 
       #documentContent {
         height: 100%;
-        font-size: var(--default-text-size);
-        color: var(--default-text-color);
-        background-color: var(--default-background-color);
+        color: var(--text-color);
+        background-color: var(--background-color);
         padding: 10px;
       }
 
@@ -92,6 +91,10 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog('https://docs.tagspaces.org/extensions/md-viewer');
+
+          insertPrintMenuItem();
+
+          insertToggleFindMenuItem();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -236,10 +239,6 @@
           //   e.stopPropagation();
           //   readabilityViewer.style.fontFamily = 'Georgia, Times New Roman, serif';
           // });
-
-          document
-            .getElementById('printMenuItem')
-            .addEventListener('click', openPrintDialog);
         }
       });
 
@@ -275,6 +274,7 @@
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="documentContent"></div>
+    <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
@@ -432,45 +432,10 @@
           </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
-        <li>
-          <a id="toggleFindMenuItem" class="dropdown-item" href="#">
-            <svg width="16" height="16" class="bi">
-              <path
-                d="M4.5 1A1.5 1.5 0 0 0 3 2.5V3h4v-.5A1.5 1.5 0 0 0 5.5 1h-1zM7 4v1h2V4h4v.882a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V13H9v-1.5a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5V13H1V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V4h4zM1 14v.5A1.5 1.5 0 0 0 2.5 16h3A1.5 1.5 0 0 0 7 14.5V14H1zm8 0v.5a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5V14H9zm4-11H9v-.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5V3z"
-              />
-            </svg>
-            <span data-i18n="findInDocument" />
-          </a>
-        </li>
-        <li>
-          <a id="printMenuItem" class="dropdown-item" href="#">
-            <svg width="16" height="16" class="bi">
-              <path
-                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"
-              />
-              <path
-                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"
-              />
-            </svg>
-            <span data-i18n="print" />
-          </a>
-        </li>
+        <li id="toggleFindMenuItemPlaceholder"></li>
+        <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
-        <li>
-          <a
-            class="dropdown-item"
-            href="#"
-            data-bs-toggle="modal"
-            data-bs-target="#aboutModal"
-          >
-            <svg width="16" height="16" class="bi">
-              <path
-                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
-              />
-            </svg>
-            <span data-i18n="about" />
-          </a>
-        </li>
+        <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
   </body>

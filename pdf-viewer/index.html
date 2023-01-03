@@ -7,10 +7,10 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <script src="../common/common.js"></script>
-    <!-- <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
-    <script src="../libs/i18next/i18next.min.js"></script> -->
+    <script src="../libs/i18next/i18next.min.js"></script>
     <script>
       const filePath = getParameterByName('file');
       let locale = getParameterByName('locale');
@@ -25,19 +25,9 @@
             'generic/web/viewer.html?file=' + encodeURIComponent(filePath)
           );
 
-          // insertAboutDialog(
-          //   'https://docs.tagspaces.org/extensions/pdf-viewer'
-          // );
+          insertAboutDialog('https://docs.tagspaces.org/extensions/pdf-viewer');
 
-          // initI18N(locale, 'ns.extension.json');
-
-          // document
-          //   .getElementById('printMenuItem')
-          //   .addEventListener('click', () => {
-          //     setTimeout(() => {
-          //       window.print();
-          //     }, 300);
-          //   });
+          initI18N(locale, 'ns.extension.json');
         }
       });
     </script>
@@ -48,7 +38,8 @@
       id="pdfviewer"
       style="width: 100%; border: 0; height: 100%;"
     ></iframe>
-    <!-- <div id="extFabMenu" class="btn-group dropup-center dropup">
+    <div id="aboutDialogPlaceholder"></div>
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
         class="btn btn-primary btn-lg"
@@ -58,33 +49,10 @@
         ⋮
       </button>
       <ul class="dropdown-menu">
-        <li>
-          <a id="printMenuItem" class="dropdown-item" href="#">
-            <svg width="24" height="24" class="bi">
-              <path
-                d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
-              ></path>
-            </svg>
-            <span data-i18n="print" />
-          </a>
-        </li>
-        <li><hr class="dropdown-divider" /></li>
-        <li>
-          <a
-            class="dropdown-item"
-            href="#"
-            data-bs-toggle="modal"
-            data-bs-target="#aboutModal"
-          >
-            <svg width="24" height="24" class="bi">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
-              ></path>
-            </svg>
-            <span data-i18n="about" />
-          </a>
-        </li>
+        <!-- <li id="printMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li> -->
+        <li id="aboutMenuItemPlaceholder"></li>
       </ul>
-    </div> -->
+    </div>
   </body>
 </html>
