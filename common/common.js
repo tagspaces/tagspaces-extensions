@@ -378,6 +378,82 @@ function insertToggleFindMenuItem() {
   `;
 }
 
+function insertChangeStyleMenuItemMenuItem() {
+  document.getElementById('changeStyleMenuItemPlaceholder').innerHTML = `
+    <a id="changeStyleButton" class="dropdown-item" href="#">
+      <svg width="24" height="24" class="bi">
+        <path
+          d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.2-.64-1.67-.08-.1-.13-.21-.13-.33 0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm5.5 11c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-4c-.83 0-1.5-.67-1.5-1.5S13.67 6 14.5 6s1.5.67 1.5 1.5S15.33 9 14.5 9zM5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S7.33 13 6.5 13 5 12.33 5 11.5zm6-4c0 .83-.67 1.5-1.5 1.5S8 8.33 8 7.5 8.67 6 9.5 6s1.5.67 1.5 1.5z"
+        ></path>
+      </svg>
+      <span data-i18n="changeTheme" />
+    </a>  
+  `;
+}
+
+function insertResetStyleMenuItemMenuItem() {
+  document.getElementById('resetStyleMenuItemPlaceholder').innerHTML = `
+    <a id="resetStyleButton" class="dropdown-item" href="#">
+      <svg width="24" height="24" class="bi">
+        <path
+          d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93 0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34C4.9 8.79 4 10.79 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z"
+        ></path>
+      </svg>
+      <span data-i18n="resetTheme" />
+    </a>
+  `;
+}
+
+function insertZoomContentMenuItem() {
+  document.getElementById('zoomContentMenuItemPlaceholder').innerHTML = `
+    <div class="dropdown-item">
+      <svg width="24" height="24" class="bi">
+        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+      </svg>
+      <div
+        class="btn-group"
+        role="group"
+        aria-label="Zoom control"
+        style="width: 160px; border: 1px solid gray;"
+      >
+        <button
+          id="zoomOutButton"
+          type="button"
+          class="btn"
+          data-i18ntitle="zoomOut"
+          style="border-right: 1px solid gray"
+        >
+          <svg width="24" height="24" class="bi">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"></path>
+          </svg>
+        </button>
+        <button
+          id="zoomResetButton"
+          type="button"
+          class="btn"
+          data-i18ntitle="zoomOut"
+          style="border-right: 1px solid gray"
+        >
+          <svg width="24" height="24" class="bi">
+            <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"></path>
+          </svg>
+        </button>
+        <button
+          id="zoomInButton"
+          type="button"
+          class="btn"
+          data-i18ntitle="zoomIn"
+        >
+          <svg width="24" height="24" class="bi">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+            <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 function insertPrintMenuItem() {
   document.getElementById('printMenuItemPlaceholder').innerHTML = `
     <a id="printMenuItem" class="dropdown-item" href="#">
