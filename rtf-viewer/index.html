@@ -41,7 +41,10 @@
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
+          getFileContentPromise(filePath, 'text').then(content => {
+            displayRtfFile(stringToBinaryArray(content));
+            initFindToolbar();
+          });
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/rtf-viewer');
 
@@ -184,12 +187,6 @@
             throw e;
           }
         }
-      }
-
-      function setContent(content, fileDir) {
-        displayRtfFile(stringToBinaryArray(content));
-
-        initFindToolbar();
       }
     </script>
   </head>
