@@ -431,7 +431,7 @@ function insertZoomContentMenuItem() {
           id="zoomResetButton"
           type="button"
           class="btn"
-          data-i18ntitle="zoomOut"
+          data-i18ntitle="zoomReset"
           style="border-right: 1px solid gray"
         >
           <svg width="24" height="24" class="bi">
