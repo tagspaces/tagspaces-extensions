@@ -9,12 +9,12 @@
     <title>Markdown Viewer for TagSpaces</title>
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="libs/markdown-css/markdown.css" />
+    <!-- <link rel="stylesheet" href="libs/markdown-css/markdown.css" />
     <link rel="stylesheet" href="libs/markdown-css/github.css" />
     <link rel="stylesheet" href="libs/markdown-css/metro-vibes.css" />
     <link rel="stylesheet" href="libs/markdown-css/solarized-dark.css" />
     <link rel="stylesheet" href="libs/markdown-css/clearness.css" />
-    <link rel="stylesheet" href="libs/markdown-css/clearness-dark.css" />
+    <link rel="stylesheet" href="libs/markdown-css/clearness-dark.css" /> -->
     <style>
       body {
         overflow: overlay;
@@ -95,8 +95,8 @@
           insertPrintMenuItem();
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
-          insertChangeStyleMenuItemMenuItem();
-          insertResetStyleMenuItemMenuItem();
+          // insertChangeStyleMenuItemMenuItem();
+          // insertResetStyleMenuItemMenuItem();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -169,26 +169,26 @@
                 zoomLevel + '%';
             });
 
-          document
-            .getElementById('changeStyleButton')
-            .addEventListener('click', e => {
-              styleIndex = styleIndex + 1;
-              if (styleIndex >= styles.length) {
-                styleIndex = 0;
-              }
-              document.getElementById('documentContent').classList.value =
-                'markdown ' + styles[styleIndex];
-              saveSettings();
-            });
+          // document
+          //   .getElementById('changeStyleButton')
+          //   .addEventListener('click', e => {
+          //     styleIndex = styleIndex + 1;
+          //     if (styleIndex >= styles.length) {
+          //       styleIndex = 0;
+          //     }
+          //     document.getElementById('documentContent').classList.value =
+          //       'markdown ' + styles[styleIndex];
+          //     saveSettings();
+          //   });
 
-          document
-            .getElementById('resetStyleButton')
-            .addEventListener('click', e => {
-              styleIndex = 0;
-              document.getElementById('documentContent').classList.value =
-                'markdown';
-              saveSettings();
-            });
+          // document
+          //   .getElementById('resetStyleButton')
+          //   .addEventListener('click', e => {
+          //     styleIndex = 0;
+          //     document.getElementById('documentContent').classList.value =
+          //       'markdown';
+          //     saveSettings();
+          //   });
 
           // $('#toSansSerifFont').on('click', e => {
           //   e.stopPropagation();
@@ -246,7 +246,7 @@
       </button>
       <ul class="dropdown-menu">
         <li id="zoomContentMenuItemPlaceholder"></li>
-        <li><hr class="dropdown-divider" /></li>
+        <!-- <li><hr class="dropdown-divider" /></li> -->
         <li id="changeStyleMenuItemPlaceholder"></li>
         <li id="resetStyleMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
