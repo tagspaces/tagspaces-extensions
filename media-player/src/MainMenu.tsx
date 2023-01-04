@@ -193,7 +193,7 @@ const MainMenu: React.FC<{
       {!state.hide && (
         <Fab
           color="primary"
-          aria-label="add"
+          aria-label="open extension menu"
           style={{
             position: 'absolute',
             right: 20,

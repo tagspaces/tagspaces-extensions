@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TagSpaces Media Player</title>
+    <title>Media Player for TagSpaces</title>
     <meta charset="UTF-8" />
     <link href="../../common/common.css" rel="stylesheet" />
     <script>
@@ -11,6 +11,26 @@
       function exitFullscreen() {
         window.dispatchEvent(new Event('exitfullscreen'));
       }
+
+      function getParameterByName(paramName) {
+        const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        let param =
+          results === null
+            ? ''
+            : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (param.includes('#')) {
+          param = param.split('#').join('%23');
+        }
+        return param;
+      }
+
+      const rootEl = document.querySelector(':root');
+      const primaryColor = getParameterByName('primecolor').replace('%23', '#');
+      const textColor = getParameterByName('textcolor').replace('%23', '#');
+      primaryColor && rootEl.style.setProperty('--primary-color', primaryColor);
+      textColor && rootEl.style.setProperty('--primary-text-color', textColor);
     </script>
   </head>
   <body>

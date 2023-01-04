@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -69,14 +71,14 @@ const MainMenu: React.FC<{
 
   const primaryBackgroundColor = window
     .getComputedStyle(document.documentElement)
-    .getPropertyValue('--primary-background-color')
+    .getPropertyValue('--primary-color')
     .trim();
   const primaryTextColor = window
     .getComputedStyle(document.documentElement)
     .getPropertyValue('--primary-text-color')
     .trim();
 
-  console.log('CSS: ' + primaryBackgroundColor);
+  // console.log('CSS: ' + primaryBackgroundColor);
 
   const tsTheme = createTheme({
     palette: {
@@ -97,6 +99,14 @@ const MainMenu: React.FC<{
         <Menu
           id="fab-menu"
           anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
@@ -110,8 +120,14 @@ const MainMenu: React.FC<{
       )}
       <Fab
         color="primary"
-        aria-label="add"
-        style={{ position: 'absolute', right: 20, bottom: 20 }}
+        aria-label="open extension menu"
+        style={{
+          position: 'absolute',
+          right: 20,
+          bottom: 20,
+          width: 50,
+          height: 50
+        }}
         onClick={handleFabClick}
       >
         <MoreIcon />
@@ -142,8 +158,13 @@ const MainMenu: React.FC<{
           >
             project page
           </Link>
-          &nbsp; in our documentation for more details.
+          &nbsp; in the TagSpaces' documentation for more details.
         </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAboutDialogOpened(false)} color="primary">
+            Ok
+          </Button>
+        </DialogActions>
       </Dialog>
     </ThemeProvider>
   );
