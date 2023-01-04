@@ -28,17 +28,19 @@
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
+          getFileContentPromise(filePath, 'text')
+            .then(content => {
+              setContent(content);
+            })
+            .catch(e => {
+              console.log('Error getting content for: ' + filePath);
+            });
 
           insertPrintMenuItem();
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/url-viewer');
 
           initI18N(locale, 'ns.extension.json');
-
-          document
-            .getElementById('printMenuItem')
-            .addEventListener('click', openPrintDialog);
         }
       });
 
