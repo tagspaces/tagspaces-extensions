@@ -23,7 +23,7 @@ body {
 }
 
 :root {
-  --plyr-color-main: var(--primary-background-color);
+  --plyr-color-main: var(--primary-color);
   --plyr-audio-controls-background: black;
   --plyr-audio-control-color: white;
 }

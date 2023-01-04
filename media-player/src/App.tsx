@@ -42,7 +42,7 @@ const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
 
     const api = current as { plyr: PlyrInstance };
     api.plyr.on('ready', () => {
-      console.log("I'm ready");
+      console.log('Plyr is ready');
       // api.plyr.play();
     });
     api.plyr.on('canplay', () => {
