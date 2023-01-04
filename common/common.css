@@ -21,6 +21,11 @@ body {
   color: var(--text-color);
 }
 
+/* Disable drag and drop on images */
+img {
+  pointer-events: none;
+}
+
 /* Overwriting text color in bootstrap modal dialogs */
 .modal {
   color: black !important;
