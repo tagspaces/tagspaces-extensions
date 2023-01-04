@@ -26,6 +26,7 @@ const textColor = getParameterByName('textcolor').replace('%23', '#');
 const backgroundColor = getParameterByName('bgndcolor').replace('%23', '#');
 if (primaryColor) {
   rootEl.style.setProperty('--primary-background-color', primaryColor);
+  rootEl.style.setProperty('--primary-color', primaryColor);
   rootEl.style.setProperty('--default-background-color', backgroundColor);
   rootEl.style.setProperty('--background-color', backgroundColor);
   rootEl.style.setProperty('--primary-text-color', textColor);
@@ -455,6 +456,10 @@ function insertZoomContentMenuItem() {
 }
 
 function insertPrintMenuItem() {
+  if (isCordova) {
+    // Printing is not supported on Android
+    return true;
+  }
   document.getElementById('printMenuItemPlaceholder').innerHTML = `
     <a id="printMenuItem" class="dropdown-item" href="#">
       <svg width="24" height="24" class="bi">

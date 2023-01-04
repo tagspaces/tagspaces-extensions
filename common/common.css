@@ -70,10 +70,10 @@ img {
 
 #extFabMenu > button {
   border-radius: 30px; 
-  font-weight: bolder; 
   height: 50px; 
   width: 50px;
-  padding-left: 15px;
+  padding-top: 5px;
+  padding-left: 13px;
 }
 
 @media print {
