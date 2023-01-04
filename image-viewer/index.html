@@ -121,6 +121,16 @@
             };
             script.src = 'libs/psd/dist/psd.min.js';
             document.head.appendChild(script);
+          } else if (filePath.toLowerCase().endsWith('.tga')) {
+            const script = document.createElement('script');
+            script.onload = function() {
+              const tga = new TgaLoader();
+              tga.open(filePath, () => {
+                imageContent.setAttribute('src', tga.getDataURL('image/png'));
+              });
+            };
+            script.src = 'libs/tga.js/tga.js';
+            document.head.appendChild(script);
           } else {
             imageContent.setAttribute('src', filePath);
           }

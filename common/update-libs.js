@@ -130,3 +130,8 @@ sh.cp(
   'json-editor/libs/jsoneditor'
 );
 sh.cp('node_modules/jsoneditor/LICENSE', 'json-editor/libs/jsoneditor');
+
+sh.rm('-rf', 'image-viewer/libs/tga.js/');
+sh.mkdir('image-viewer/libs/tga.js');
+sh.cp('node_modules/tga-js/LICENSE.md', 'image-viewer/libs/tga.js');
+sh.cp('node_modules/tga-js/dist/umd/tga.js', 'image-viewer/libs/tga.js');
