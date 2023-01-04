@@ -18,6 +18,7 @@
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
@@ -45,16 +46,18 @@
       });
 
       function setContent(content) {
+        const cleanedContent = DOMPurify.sanitize(content);
+
         const urlBegin = 'URL=';
-        const commentTag = 'COMMENT=';
-        let url = content.substring(
-          content.indexOf(urlBegin) + urlBegin.length,
-          content.length
+        let url = cleanedContent.substring(
+          cleanedContent.indexOf(urlBegin) + urlBegin.length,
+          cleanedContent.length
         );
 
-        let comment = content.substring(
-          content.indexOf(commentTag) + commentTag.length,
-          content.length
+        const commentTag = 'COMMENT=';
+        let comment = cleanedContent.substring(
+          cleanedContent.indexOf(commentTag) + commentTag.length,
+          cleanedContent.length
         );
 
         // preventing the case the url is at the end of the file or line after the url lines
