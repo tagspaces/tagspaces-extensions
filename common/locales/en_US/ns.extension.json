@@ -6,6 +6,7 @@
   "zoomOut": "Zoom Out",
   "zoomIn": "Zoom In",
   "zoomReset": "Zoom Reset",
+  "toggleLineNumbers": "Toggle line numbers",
   "changeTheme": "Change Theme",
   "resetTheme": "Reset Theme",
   "print": "Print",
