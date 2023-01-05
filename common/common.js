@@ -306,14 +306,16 @@ function initReadabilityMode(filePath) {
         ).style.display = isReadabilityMode ? 'none' : 'inline';
       });
 
-    document.getElementById(
-      'readabilityContent'
-    ).innerHTML = readabilityContent;
+    const readabilityEl = document.getElementById('readabilityContent');
+    readabilityEl.innerHTML = readabilityContent;
+
     document.getElementById('readabilityOnLabel').style.display = 'none';
     document.getElementById('readabilityOffLabel').style.display = 'inline';
     document.getElementById('readabilityContent').style.display = 'block';
     document.getElementById('documentContent').style.display = 'none';
     document.getElementById('fontTypeMenutItem').style.display = 'block';
+
+    handleLinks(readabilityEl);
   }
 }
 

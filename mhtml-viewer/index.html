@@ -14,44 +14,20 @@
         overflow: overlay;
       }
 
-      #documentContent {
-        height: 100%;
-        font-size: var(--default-text-size);
+      #documentContent,
+      #readabilityContent {
         color: var(--text-color);
         background-color: var(--default-background-color);
+        margin: 15px;
       }
 
-      #documentContent img {
+      #documentContent img,
+      #readabilityContent img {
         max-width: 100%;
       }
-
-      /* Readability */
-      #htmlViewer {
-        height: 100%;
-        font-size: 14px;
-      }
-
-      #readabilityFont {
-        margin-left: 19px;
-        margin-top: 11px;
-      }
-
-      #sanSerifLabel {
-        font-family: Helvetica, Arial, sans-serif;
-      }
-
-      #serifLabel {
-        font-family: Georgia, Times New Roman, serif;
-      }
-
-      #readabilityFontSize {
-        margin-left: 19px;
-        margin-top: 11px;
-      }
     </style>
+    <script src="../libs/readability/Readability.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
-    <!-- <script src="../libs/readability/Readability.js"></script>
-    <script src="../libs/readability/JSDOMParser.js"></script> -->
     <script src="libs/mailparser/mailparser.min.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
@@ -66,16 +42,6 @@
 
       let readabilityContent;
       let cleanedHTML;
-      let mhtmlViewer;
-
-      const styles = [
-        '',
-        'solarized-dark',
-        'github',
-        'metro-vibes',
-        'clearness',
-        'clearness-dark'
-      ];
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -90,7 +56,13 @@
 
           initI18N(locale, 'ns.extension.json');
 
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
+          getFileContentPromise(filePath, 'text')
+            .then(content => {
+              setContent(content);
+            })
+            .catch(e => {
+              console.log('Error getting content for: ' + filePath);
+            });
 
           document.body.addEventListener('dblclick', () => {
             sendMessageToHost({ command: 'editDocument' });
@@ -102,7 +74,7 @@
           let extSettings = loadExtSettings('viewerMHTMLSettings');
 
           function saveSettings() {
-            saveExtSettings('viewerMHTMLSettings', { styleIndex, zoomLevel });
+            saveExtSettings('viewerMHTMLSettings', { zoomLevel });
           }
 
           let zoomLevel = 100;
@@ -112,13 +84,6 @@
             }
             documentContent.style.zoom = zoomLevel + '%';
           }
-
-          let styleIndex = 0;
-          if (extSettings && extSettings.styleIndex) {
-            styleIndex = extSettings.styleIndex;
-          }
-
-          documentContent.classList.value = 'markdown ' + styles[styleIndex];
           saveSettings();
 
           document
@@ -131,6 +96,8 @@
               }
               saveSettings();
               document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+              document.getElementById('readabilityContent').style.zoom =
                 zoomLevel + '%';
             });
 
@@ -145,6 +112,8 @@
               saveSettings();
               document.getElementById('documentContent').style.zoom =
                 zoomLevel + '%';
+              document.getElementById('readabilityContent').style.zoom =
+                zoomLevel + '%';
             });
 
           document
@@ -154,53 +123,35 @@
               saveSettings();
               document.getElementById('documentContent').style.zoom =
                 zoomLevel + '%';
+              document.getElementById('readabilityContent').style.zoom =
+                zoomLevel + '%';
             });
 
-          // document
-          //   .getElementById('whiteBackgroundColor')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     document.body.style.background = '#ffffff';
-          //     // imageViewerContainer[0].style.background = '#ffffff';
-          //     // imageBackgroundColor = '#ffffff';
-          //     //   readabilityViewer.style.background = '#ffffff';
-          //     //   readabilityViewer.style.color = '';
-          //     saveSettings();
-          //   });
+          document
+            .getElementById('toSansSerifFontButton')
+            .addEventListener('click', e => {
+              document.getElementById('readabilityContent').style.fontFamily =
+                'Helvetica, Arial, sans-serif';
+              e.stopPropagation();
+            });
 
-          // document
-          //   .getElementById('blackBackgroundColor')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     document.body.style.background = '#000000';
-          //     // imageViewerContainer[0].style.background = '#000000';
-          //     // imageBackgroundColor = '#000000';
-          //     saveSettings();
-          //   });
+          document
+            .getElementById('toSerifFontButton')
+            .addEventListener('click', e => {
+              document.getElementById('readabilityContent').style.fontFamily =
+                'Georgia, Times New Roman, serif';
+              e.stopPropagation();
+            });
 
-          // document
-          //   .getElementById('sepiaBackgroundColor')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     document.body.style.background = '#f4ecd8';
-          //     // imageViewerContainer[0].style.background = '#f4ecd8';
-          //     // imageBackgroundColor = '#f4ecd8';
-          //     saveSettings();
-          //   });
-
-          // document
-          //   .getElementById('resetBackgroundColor')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     document.body.style.background = 'transparent';
-          //     // imageViewerContainer[0].style.background = 'transparent';
-          //     // imageBackgroundColor = 'transparent';
-          //     saveSettings();
-          //   });
+          // $('#openInNewWindowButton').on('click', () => {
+          //   window.parent.open(filePath, '_blank'); // , 'nodeIntegration=0'
+          // });
 
           document
             .getElementById('openSourceURL')
             .addEventListener('click', e => {
+              const sourceURL = document.getElementById('html-data-sourceurl')
+                .value;
               if (sourceURL && sourceURL.length > 0) {
                 sendMessageToHost({
                   command: 'openLinkExternally',
@@ -224,178 +175,54 @@
             .addEventListener('click', () => {
               webscrapingDetailsModal.show();
             });
-
-          // Menu: hide readability items
-          // $('#readabilityFont').hide();
-          // $('#readabilityFontSize').hide();
-          // $('#themeStyle').hide();
-          // $('#readabilityOff').hide();
         }
       });
 
-      function setContent(content, fileDirectory) {
+      function setContent(content) {
         const mhtparser = new mailparser.MailParser();
-        mhtparser.on('end', mail_object => {
+        mhtparser.on('end', mhtmlObject => {
           // console.log('mail_object:', mail_object);
 
           const contLocation = /^content-location:(.*$)/im.exec(content);
-          mail_object.contentLocation =
+          mhtmlObject.contentLocation =
             contLocation && contLocation.length > 0
               ? contLocation[1]
               : 'not found';
-          cleanedHTML = DOMPurify.sanitize(mail_object.html);
+          cleanedHTML = DOMPurify.sanitize(mhtmlObject.html);
+
+          document.getElementById(
+            'html-data-sourceurl'
+          ).value = mhtmlObject.contentLocation.trim();
 
           document.getElementById('fileMeta').innerText =
-            'saved on ' + mail_object.headers.date;
+            'saved on ' + mhtmlObject.headers.date;
 
           htmlContent = document.getElementById('documentContent');
           htmlContent.innerHTML = DOMPurify.sanitize(cleanedHTML);
 
-          if (fileDirectory.indexOf('file://') === 0) {
-            fileDirectory = fileDirectory.substring(
-              'file://'.length,
-              fileDirectory.length
-            );
-          }
+          hideLoadingAnimation();
 
-          fixingEmbeddingOfLocalImages(htmlContent, fileDirectory);
+          initReadabilityMode(filePath);
 
           handleLinks(documentContent);
 
-          fixingEmbeddingOfLocalImages(documentContent, fileDirectory);
-
           initFindToolbar();
-
-          // View readability mode
-
-          // try {
-          //   const documentClone = document.cloneNode(true);
-          //   const article = new Readability(
-          //     document.baseURI,
-          //     documentClone
-          //   ).parse();
-          //   readabilityContent = article.content;
-          // } catch (e) {
-          //   console.log('Error handling' + e);
-          //   const msg = {
-          //     command: 'showAlertDialog',
-          //     title: 'Readability Mode',
-          //     message: 'This content can not be loaded.'
-          //   };
-          //   sendMessageToHost(msg);
-          // }
-
-          // if (readabilityContent) {
-          //   updateHTMLContent(
-          //     $('#mhtmlViewer'),
-          //     readabilityContent,
-          //     filePathURI
-          //   );
-          // }
-
-          // mhtmlViewer = document.getElementById('mhtmlViewer');
-          // mhtmlViewer.style.fontSize = fontSize;
-          // mhtmlViewer.style.fontFamily = 'Helvetica, Arial, sans-serif';
-          // mhtmlViewer.style.background = '#ffffff';
-          // mhtmlViewer.style.color = '';
-
-          init(filePathURI, mail_object);
         });
 
         mhtparser.write(content);
         mhtparser.end();
       }
-
-      function init(filePathURI, objectlocation) {
-        let $htmlContent;
-
-        let currentStyleIndex = 0;
-        if (extSettings && extSettings.styleIndex) {
-          currentStyleIndex = extSettings.styleIndex;
-        }
-
-        // Menu: hide readability items
-        $('#toSansSerifFont').show();
-        $('#toSerifFont').show();
-        $('#increasingFontSize').show();
-        $('#decreasingFontSize').show();
-        $('#readabilityOn').hide();
-        $('#changeStyleButton').hide();
-        $('#resetStyleButton').hide();
-
-        $('#openInNewWindowButton').on('click', () => {
-          window.parent.open(filePathURI, '_blank'); // , 'nodeIntegration=0'
-        });
-
-        $('#openURLButton').on('click', () => {
-          const msg = {
-            command: 'openLinkExternally',
-            link: objectlocation.contentLocation.trim()
-          };
-          sendMessageToHost(msg);
-        });
-
-        $('#toSansSerifFont').on('click', e => {
-          e.stopPropagation();
-          $htmlContent[0].style.fontFamily = 'Helvetica, Arial, sans-serif';
-        });
-
-        $('#toSerifFont').on('click', e => {
-          e.stopPropagation();
-          $htmlContent[0].style.fontFamily = 'Georgia, Times New Roman, serif';
-        });
-
-        $('#readabilityOn').off();
-        $('#readabilityOn').on('click', () => {
-          if (readabilityContent) {
-            updateHTMLContent($('#mhtmlViewer'), readabilityContent);
-          }
-          // if ($('#mhtmlViewer').data('clicked', true)) {
-          $('#toSerifFont').show();
-          $('#toSansSerifFont').show();
-          $('#increasingFontSize').show();
-          $('#decreasingFontSize').show();
-          $('#readabilityOff').show();
-          $('#whiteBackgroundColor').show();
-          $('#blackBackgroundColor').show();
-          $('#sepiaBackgroundColor').show();
-          $('#themeStyle').show();
-          $('#readabilityFont').show();
-          $('#readabilityFontSize').show();
-          $('#readabilityOn').hide();
-          $('#changeStyleButton').hide();
-          $('#resetStyleButton').hide();
-          // }
-        });
-
-        $('#readabilityOff').off();
-        $('#readabilityOff').on('click', () => {
-          updateHTMLContent($('#mhtmlViewer'), cleanedHTML);
-          mhtmlViewer.style.fontSize = '';
-          mhtmlViewer.style.fontFamily = '';
-          mhtmlViewer.style.color = '';
-          mhtmlViewer.style.background = '';
-          $('#readabilityOff').hide();
-          $('#toSerifFont').hide();
-          $('#toSansSerifFont').hide();
-          $('#increasingFontSize').hide();
-          $('#decreasingFontSize').hide();
-          $('#whiteBackgroundColor').hide();
-          $('#blackBackgroundColor').hide();
-          $('#sepiaBackgroundColor').hide();
-          $('#themeStyle').hide();
-          $('#readabilityFont').hide();
-          $('#readabilityFontSize').hide();
-          $('#readabilityOn').show();
-          $('#changeStyleButton').show();
-          $('#resetStyleButton').show();
-        });
-      }
     </script>
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
+    <div id="loadingAnimation" style="text-align: center;">
+      <div class="spinner-border m-5" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <div id="documentContent"></div>
+    <div id="readabilityContent" style="display: none;"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
@@ -417,11 +244,55 @@
         </svg>
       </button>
       <ul class="dropdown-menu">
-        <li id="zoomContentMenuItemPlaceholder"></li>
+        <li id="toggleReadabilityModeMenuItemPlaceholder">
+          <a id="toggleReadabilityModeMenuItem" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="m19 1-5 5v11l5-4.5V1zM1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5V6c-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6zm22 13.5V6c-.6-.45-1.25-.75-2-1v13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5v2c1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5v-1.1z"
+              ></path>
+            </svg>
+            <span id="readabilityOnLabel" data-i18n="readabilityOn"></span>
+            <span id="readabilityOffLabel" data-i18n="readabilityOff"></span>
+          </a>
+        </li>
         <li><hr class="dropdown-divider" /></li>
-        <!-- <li id="changeStyleMenuItemPlaceholder"></li>
-        <li id="resetStyleMenuItemPlaceholder"></li> -->
-        <!-- <li><hr class="dropdown-divider" /></li> -->
+        <li id="zoomContentMenuItemPlaceholder"></li>
+        <li id="fontTypeMenutItem" style="display: none;" class="dropdown-item">
+          <svg width="24" height="24" class="bi">
+            <path
+              d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
+            ></path>
+          </svg>
+          <div
+            class="btn-group"
+            role="group"
+            aria-label="Font type"
+            style="width: 160px; border: 1px solid gray;"
+          >
+            <button
+              id="toSansSerifFontButton"
+              type="button"
+              class="btn"
+              data-i18ntitle="toSansSerifFont"
+              style="border-right: 1px solid gray"
+            >
+              <label style="font-family: Helvetica, Arial, sans-serif;"
+                >ABC</label
+              >
+            </button>
+            <button
+              id="toSerifFontButton"
+              type="button"
+              class="btn"
+              data-i18ntitle="toSerifFont"
+            >
+              <label style="font-family: Georgia, Times New Roman, serif"
+                >ABC</label
+              >
+            </button>
+          </div>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
         <li>
           <a id="showWebScrapingDetailsMenuItem" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
@@ -438,43 +309,6 @@
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
-    <!-- <li>
-      <a id="readabilityOn">
-        <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span
-          data-i18n="readabilityOn"
-        ></span>
-      </a>
-    </li>
-    <li>
-      <a id="readabilityOff">
-        <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span
-          data-i18n="readabilityOff"
-        ></span>
-      </a>
-    </li>
-    <li>
-      <div id="readabilityFont">
-        <i class="fa fa-font fa-lg fa-fw"></i>&nbsp;
-        <div class="btn-group" data-toggle="buttons">
-          <a id="toSansSerifFont"
-            ><label
-              id="sanSerifLabel"
-              class="btn btn-secondary"
-              data-i18n="[title]toSansSerifFont"
-              >ABC</label
-            ></a
-          >
-          <a id="toSerifFont"
-            ><label
-              id="serifLabel"
-              class="btn btn-secondary"
-              data-i18n="[title]toSerifFont"
-              >ABC</label
-            ></a
-          >
-        </div>
-      </div>
-    </li>     -->
     <div
       class="modal fade"
       id="webscrapingDetailsModal"
@@ -507,7 +341,7 @@
                 type="text"
                 class="form-control"
                 value="URL of the scraped web page"
-                aria-label="readonly input example"
+                aria-label="data source url"
                 readonly
               />
               <button
