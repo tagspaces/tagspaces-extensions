@@ -345,8 +345,18 @@ function initFindToolbar() {
   document.getElementById('findToolbarPlaceholder').innerHTML = `
   <div id="findToolbar" style="display: none; margin: 10px; width: auto;">
     <div class="input-group">
+      <button
+        id="clearSearch"
+        type="button"
+        class="btn btn-primary"
+        title="ESC"
+      >
+        <svg width="24" height="24" class="bi">
+          <path d="M14.59 8 12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+        </svg>
+      </button>
       <input
-        type="search"
+        type="text"
         class="form-control"
         placeholder="Find in document..."
         id="queryInput"
@@ -378,9 +388,16 @@ function initFindToolbar() {
     if (evt.key === 'Escape') {
       hideFindToolbar();
     }
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'g') {
+      showFindToolbar();
+    }
   });
 
   document.getElementById('startSearch').addEventListener('click', startSearch);
+
+  document
+    .getElementById('clearSearch')
+    .addEventListener('click', hideFindToolbar);
 
   document
     .getElementById('toggleFindMenuItem')
@@ -419,13 +436,13 @@ function toggleFindToolbar() {
 
 function insertToggleFindMenuItem() {
   document.getElementById('toggleFindMenuItemPlaceholder').innerHTML = `
-    <a id="toggleFindMenuItem" class="dropdown-item" href="#">
+    <a id="toggleFindMenuItem" title="CTRL/⌘ + G" class="dropdown-item" href="#">
       <svg width="24" height="24" class="bi">
         <path
           d="M20 19.59V8l-6-6H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c.45 0 .85-.15 1.19-.4l-4.43-4.43c-.8.52-1.74.83-2.76.83-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5c0 1.02-.31 1.96-.83 2.75L20 19.59zM9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"
         ></path>
       </svg>
-      <span data-i18n="findInDocument" />
+      <span data-i18n="findInDocument"></span>
     </a>
   `;
 }
