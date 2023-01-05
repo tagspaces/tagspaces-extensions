@@ -31,6 +31,7 @@
         locale = 'en_US';
       }
       const maxPreviewSize = 1024 * 3 || {}; // 3kb limit for preview
+      let filePreviewModal;
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -43,6 +44,8 @@
           insertZoomContentMenuItem();
 
           initI18N(locale, 'ns.extension.json');
+
+          filePreviewModal = new bootstrap.Modal('#filePreviewModal', {});
 
           JSZipUtils.getBinaryContent(filePath, (err, data) => {
             if (err) {
@@ -108,107 +111,80 @@
       });
 
       function displayDocument(zipFile, filePath) {
-        // DOMPurify.sanitize(htmlstr);
         const documentContent = document.getElementById('documentContent');
         documentContent.innerHTML = '';
 
-        // $zipContent.append(zipFile);
-
-        // documentContent.append('<div/>').css({
-        //   overflow: 'auto',
-        //   padding: '5px',
-        //   fontSize: 12,
-        //   width: '100%',
-        //   height: '100%'
-        // });
-        // $zipContent.append(
-        //   '<p><h5>This archive contains the following files:</h5></p>'
-        // );
-        // const ulFiles = $zipContent.append('<ul/>');
-
-        function showPreviewDialog(event) {
-          event.preventDefault();
-          const containFile = zipFile.files[$(this).text()];
-          containFile.options.compression = 'STORE';
-          containFile.async('text').then(blob => {
-            showContentFilePreviewDialog(blob);
-          });
-        }
+        handleLinks(documentContent);
 
         if (
           !!Object.keys(zipFile.files) &&
           (typeof zipFile !== 'function' || zipFile === null)
         ) {
+          let fileCounter = 0;
+          let tableHTML = `
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" style="min-width: 30px">#</th>
+                <th scope="col" style="width: 100%">Filepath</th>
+              </tr>
+            </thead>
+            <tbody>`;
           for (const fileName in zipFile.files) {
             if (zipFile.files[fileName].dir === true) {
               continue;
             }
-            documentContent.innerHTML += fileName + '<br />';
-            // const linkToFile = $('<a>')
-            //   .attr('href', '#')
-            //   .text(fileName);
-            // linkToFile.click(showPreviewDialog);
-            // const liFile = $('<li/>')
-            //   .css('list-style-type', 'none')
-            //   .append(linkToFile);
-            // ulFiles.append(liFile);
+            fileCounter++;
+            tableHTML += `
+              <tr>
+                <th scope="row">${fileCounter}</th>
+                <td><a href="#" title="${fileName}" data-zipfile="${fileName}">${fileName}</a></td>
+              </tr>
+            `;
           }
+          tableHTML += `</tbody></table>`;
+          documentContent.innerHTML = DOMPurify.sanitize(tableHTML);
         } else {
-          throw new TypeError('Object.keys called on non-object');
+          documentContent.innerHTML = 'ZIP file is empty';
+          // throw new TypeError('Object.keys called on non-object');
         }
 
-        handleLinks(documentContent);
+        function showContentFilePreviewDialog(filePath) {
+          //  showLoadingAnimation();
+          const containFile = zipFile.files[filePath];
+          containFile.options.compression = 'STORE';
+          containFile.async('text').then(blob => {
+            let previewText = blob;
+            if (previewText.length > maxPreviewSize) {
+              previewText = previewText.substring(maxPreviewSize);
+            }
+            document.getElementById(
+              'filePreview'
+            ).innerText = DOMPurify.sanitize(previewText);
+            // hideLoadingAnimation();
+          });
+
+          document.getElementById('filePathInput').value = filePath;
+          filePreviewModal.show();
+        }
+
+        function handleZIPLinks() {
+          const allZIPLinks = document.querySelectorAll('[data-zipfile]');
+          allZIPLinks.forEach(link => {
+            let currentSrc = link.dataset.zipfile;
+            if (currentSrc.length > 0) {
+              link.addEventListener('click', e => {
+                e.preventDefault();
+                showContentFilePreviewDialog(currentSrc);
+              });
+            }
+          });
+        }
+
+        handleZIPLinks();
 
         initFindToolbar();
       }
-
-      // function showContentFilePreviewDialog(containFile) {
-      //   const unitArr = containFile;
-      //   let previewText = '';
-      //   const byteLength =
-      //     unitArr.byteLength > maxPreviewSize
-      //       ? maxPreviewSize
-      //       : unitArr.byteLength;
-
-      //   for (let i = 0; i < byteLength; i++) {
-      //     previewText += String.fromCharCode(unitArr[i]);
-      //   }
-      //   previewText = containFile;
-      //   const fileContent = $('<pre/>').text(previewText);
-
-      //   $.post('previewDialog.html', uiTPL => {
-      //     if ($('#previewDialog').length < 1) {
-      //       const uiTemplate = Handlebars.compile(uiTPL);
-      //       $('body').append(uiTemplate());
-      //     }
-      //     const dialogPreview = $('#previewDialog');
-      //     dialogPreview
-      //       .find('.modal-body')
-      //       .empty()
-      //       .append(fileContent);
-      //     dialogPreview.modal({
-      //       backdrop: 'static',
-      //       show: true
-      //     });
-
-      //     const progressChunk = parseInt(byteLength / 100);
-      //     let currentProgress = 0;
-      //     for (let i = 0; i < byteLength; i++) {
-      //       const check = i % progressChunk === 0;
-      //       if (check) {
-      //         currentProgress++;
-      //         if (currentProgress <= 100) {
-      //           nanobar.go(currentProgress);
-      //         }
-      //       }
-      //       previewText += String.fromCharCode(unitArr[i]);
-      //     }
-      //   }).always(() => {
-      //     window.setTimeout(() => {
-      //       document.getElementById('nanoBar').remove();
-      //     }, 1000);
-      //   });
-      // }
     </script>
   </head>
   <body>
@@ -242,6 +218,58 @@
         <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
+    </div>
+    <div
+      class="modal fade"
+      id="filePreviewModal"
+      tabindex="-1"
+      aria-labelledby="filePreviewModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">
+              <span data-i18n="fileContentPreview" />
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              id="filePathInput"
+              type="text"
+              class="form-control"
+              value="file path in ZIP file"
+              title="file path in ZIP file"
+              aria-label="readonly input"
+              readonly
+            />
+            <!-- <div id="loadingAnimation" style="text-align: center;">
+                <div class="spinner-border m-5" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div> -->
+            <pre
+              id="filePreview"
+              style="white-space: pre-wrap; min-height: 200px; border: 1px solid gray; margin-top: 10px; border-radius: 5px; padding: 10px; overflow: overlay;"
+              title="Showing the first 3kb of the file"
+            ></pre>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              <span data-i18n="ok" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
