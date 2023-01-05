@@ -27,10 +27,16 @@ const backgroundColor = getParameterByName('bgndcolor').replace('%23', '#');
 if (primaryColor) {
   rootEl.style.setProperty('--primary-background-color', primaryColor);
   rootEl.style.setProperty('--primary-color', primaryColor);
+}
+if (backgroundColor) {
   rootEl.style.setProperty('--default-background-color', backgroundColor);
   rootEl.style.setProperty('--background-color', backgroundColor);
+}
+if (textColor) {
   rootEl.style.setProperty('--primary-text-color', textColor);
   rootEl.style.setProperty('--text-color', textColor);
+  rootEl.style.setProperty('--bs-table-color', textColor);
+  rootEl.style.setProperty('--bs-body-color', textColor);
 }
 
 const theme = getParameterByName('theme');
@@ -43,20 +49,12 @@ document.addEventListener('readystatechange', () => {
     if (isCordova) {
       document.getElementById('printMenuItem').style.display = 'none';
     }
-    // } else {
-    //   document.getElementById('printMenuItem').addEventListener('click', () => {
-    //     alert(document.getElementById('printMenuItem').innerHTML);
-    //     setTimeout(() => {
-    //       window.print();
-    //     }, 300);
-    //   });
-    // }
   }
 });
 
 /**  Helper functions */
 function hideLoadingAnimation() {
-  document.getElementById('loadingAnimation').style.visibility = 'hidden';
+  document.getElementById('loadingAnimation').style.display = 'none';
 }
 
 // function insertLoadingAnimation() {
@@ -268,6 +266,57 @@ function hasURLProtocol(url) {
   );
 }
 
+function initReadabilityMode(filePath) {
+  let readabilityContent;
+  try {
+    const documentClone = document.cloneNode(true);
+    const article = new Readability(document.baseURI, documentClone).parse();
+    readabilityContent = article.content;
+  } catch (e) {
+    console.log('Error readability parsing: ' + e);
+  }
+
+  if (readabilityContent) {
+    document
+      .getElementById('toggleReadabilityModeMenuItem')
+      .addEventListener('click', e => {
+        // e.stopPropagation();
+        isReadabilityMode =
+          document.getElementById('readabilityContent').style.display ===
+          'block';
+
+        document.getElementById(
+          'readabilityContent'
+        ).style.display = isReadabilityMode ? 'none' : 'block';
+
+        document.getElementById(
+          'documentContent'
+        ).style.display = isReadabilityMode ? 'block' : 'none';
+
+        document.getElementById(
+          'fontTypeMenutItem'
+        ).style.display = isReadabilityMode ? 'none' : 'block';
+
+        document.getElementById(
+          'readabilityOnLabel'
+        ).style.display = isReadabilityMode ? 'inline' : 'none';
+
+        document.getElementById(
+          'readabilityOffLabel'
+        ).style.display = isReadabilityMode ? 'none' : 'inline';
+      });
+
+    document.getElementById(
+      'readabilityContent'
+    ).innerHTML = readabilityContent;
+    document.getElementById('readabilityOnLabel').style.display = 'none';
+    document.getElementById('readabilityOffLabel').style.display = 'inline';
+    document.getElementById('readabilityContent').style.display = 'block';
+    document.getElementById('documentContent').style.display = 'none';
+    document.getElementById('fontTypeMenutItem').style.display = 'block';
+  }
+}
+
 /* BEGIN: Find in content functionality */
 
 let queryArray = [];
@@ -339,8 +388,8 @@ function initFindToolbar() {
   if (searchQuery) {
     queryArray = searchQuery.split(':');
   }
-  const documentContent = document.getElementById('documentContent');
-  markInstance = new Mark(documentContent);
+  // const documentContent = document.getElementById('documentContent');
+  markInstance = new Mark(document.documentElement);
   if (queryArray && queryArray.length > 0) {
     document.getElementById('queryInput').value = queryArray.join(' ');
     markInText();
