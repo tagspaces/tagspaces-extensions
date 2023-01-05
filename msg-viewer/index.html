@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>MSG Viewer for TagSpaces</title>
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <style>
+      #documentContent {
+        margin: 15px;
+      }
+    </style>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="libs/DataStream.js"></script>
+    <script src="libs/msg.reader.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/mark.js/mark.min.js"></script>
+    <script src="../common/common.js"></script>
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+
+      document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') {
+          getFileContentPromise(filePath, 'arraybuffer').then(content => {
+            setContent(content);
+          });
+          // .catch(e => {
+          //   console.log('Error getting content for: ' + filePath);
+          // });
+
+          insertPrintMenuItem();
+          insertToggleFindMenuItem();
+          insertZoomContentMenuItem();
+
+          insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
+
+          initI18N(locale, 'ns.extension.json');
+
+          // Handling settings
+          let extSettings = loadExtSettings('msgViewerSettings');
+
+          function saveSettings() {
+            saveExtSettings('msgViewerSettings', { zoomLevel });
+          }
+
+          let zoomLevel = 100;
+          if (extSettings && extSettings.zoomLevel) {
+            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
+              zoomLevel = extSettings.zoomLevel;
+            }
+            documentContent.style.zoom = zoomLevel + '%';
+          }
+
+          document
+            .getElementById('zoomInButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel + 10;
+              if (zoomLevel >= 500) {
+                zoomLevel = 500;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomOutButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel - 10;
+              if (zoomLevel < 30) {
+                zoomLevel = 30;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomResetButton')
+            .addEventListener('click', e => {
+              zoomLevel = 100;
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+        }
+      });
+
+      function setContent(buffer) {
+        var msgReader = new MSGReader(buffer);
+        var fileData = msgReader.getFileData();
+
+        if (!fileData.error) {
+          let htmlContent = '';
+          if (fileData.subject) {
+            htmlContent +=
+              '<b>Subject:</b> ' +
+              DOMPurify.sanitize(fileData.subject) +
+              '<br />';
+          }
+          if (fileData.senderName) {
+            htmlContent +=
+              '<b>Sender name:</b> ' +
+              DOMPurify.sanitize(fileData.senderName) +
+              '<br />';
+          }
+          if (fileData.senderEmail) {
+            htmlContent +=
+              '<b>Sender email:</b> ' +
+              DOMPurify.sanitize(fileData.senderEmail) +
+              '<br />';
+          }
+          if (fileData.headers) {
+            htmlContent +=
+              '<b>Sending date:</b> ' +
+              DOMPurify.sanitize(getMsgDate(fileData.headers)) +
+              '<br />';
+          }
+          if (fileData.recipients && fileData.recipients.length > 0) {
+            htmlContent += '<b>Recipients name:</b> ';
+            fileData.recipients.map(recipient => {
+              let recipientHTML = '';
+              if (recipient.name) {
+                recipientHTML += recipient.name;
+              }
+              if (recipient.email) {
+                recipientHTML += ' &lt;' + recipient.email + '&gt;';
+              }
+              htmlContent += DOMPurify.sanitize(recipientHTML) + ';';
+            });
+            htmlContent += '<br />';
+          }
+          if (fileData.bodyHTML) {
+            htmlContent +=
+              '<b>Body HTML:</b><br /> ' +
+              DOMPurify.sanitize(fileData.bodyHTML) +
+              '<br />';
+          }
+          if (fileData.body) {
+            htmlContent +=
+              '<b>Body:</b><br /><pre>' +
+              DOMPurify.sanitize(fileData.body) +
+              '</pre><br />';
+          }
+          // if (fileData.headers) {
+          //   htmlContent +=
+          //     '<b>Headers:</b><br /> ' +
+          //     DOMPurify.sanitize(fileData.headers) +
+          //     '<br />';
+          // }
+          const documentContent = document.getElementById('documentContent');
+          documentContent.innerHTML = htmlContent;
+
+          handleLinks(documentContent);
+
+          initFindToolbar();
+        } else {
+          console.log('Error parsing MSG file');
+        }
+      }
+
+      function formatEmail(data) {
+        return data.name ? data.name + ' [' + data.email + ']' : data.email;
+      }
+
+      function parseHeaders(headers) {
+        var parsedHeaders = {};
+        if (!headers) {
+          return parsedHeaders;
+        }
+        var headerRegEx = /(.*)\: (.*)/g;
+        while ((m = headerRegEx.exec(headers))) {
+          // TODO: Header can be presented many times (e.g. Received).
+          parsedHeaders[m[1]] = m[2];
+        }
+        return parsedHeaders;
+      }
+
+      function getMsgDate(rawHeaders) {
+        // Example for the Date header
+        var headers = parseHeaders(rawHeaders);
+        if (!headers['Date']) {
+          return '-';
+        }
+        return new Date(headers['Date']);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="findToolbarPlaceholder"></div>
+    <div id="documentContent"></div>
+    <div id="aboutDialogPlaceholder"></div>
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
+      <button
+        type="button"
+        class="btn btn-primary  btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <svg
+          class="bi"
+          width="24"
+          height="24"
+          focusable="false"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+          ></path>
+        </svg>
+      </button>
+      <ul class="dropdown-menu">
+        <li id="zoomContentMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="toggleFindMenuItemPlaceholder"></li>
+        <li id="printMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="aboutMenuItemPlaceholder"></li>
+      </ul>
+    </div>
+  </body>
+</html>
