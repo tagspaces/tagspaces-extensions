@@ -128,7 +128,7 @@
               '<br />';
           }
           if (fileData.recipients && fileData.recipients.length > 0) {
-            htmlContent += '<b>Recipients name:</b> ';
+            htmlContent += '<b>Recipient names:</b> ';
             fileData.recipients.map(recipient => {
               let recipientHTML = '';
               if (recipient.name) {
@@ -143,13 +143,13 @@
           }
           if (fileData.bodyHTML) {
             htmlContent +=
-              '<b>Body HTML:</b><br /> ' +
+              '<b>Body (html):</b><br /> ' +
               DOMPurify.sanitize(fileData.bodyHTML) +
               '<br />';
           }
           if (fileData.body) {
             htmlContent +=
-              '<b>Body:</b><br /><pre>' +
+              '<b>Body (text):</b><br /><pre>' +
               DOMPurify.sanitize(fileData.body) +
               '</pre><br />';
           }
