@@ -8,24 +8,25 @@
     <link rel="stylesheet" href="../common/common.css" />
     <link rel="stylesheet" href="extension.css" />
     <style>
-      /* html,
+      .bi {
+        display: inline;
+      }
+      html,
       body {
         overflow: overlay;
         height: 100%;
         width: 100%;
-        background-color: white;
-        color: black;
+        background-color: white !important;
+        color: black !important;
       }
 
       :root.dark {
         --background-color: white;
         --text-color: black;
-        --primary-text-color: #ffffff;
-      } */
+        --primary-text-color: black;
+      }
     </style>
     <script src="../libs/jszip/jszip.min.js"></script>
-    <!-- <script src="../libs/mark.js/mark.min.js"></script> -->
-    <!-- <script src="../libs/dompurify/dist/purify.min.js"></script> -->
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="libs/epubjs/epub.min.js"></script>
@@ -131,7 +132,7 @@
       </button>
       <ul class="dropdown-menu">
         <li id="printMenuItemPlaceholder"></li>
-        <li><hr class="dropdown-divider" /></li>
+        <!-- <li><hr class="dropdown-divider" /></li> -->
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
