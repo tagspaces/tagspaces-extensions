@@ -143,6 +143,12 @@
           documentContent.innerHTML += DOMPurify.sanitize(sheetHTML);
         });
 
+        const allTables = documentContent.querySelectorAll('table');
+        allTables.forEach(table => {
+          // adding some bootstrap classes
+          table.classList = 'table table-striped table-hover';
+        });
+
         handleLinks(documentContent);
 
         initFindToolbar();
