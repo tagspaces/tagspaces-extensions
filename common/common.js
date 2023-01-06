@@ -257,53 +257,57 @@ function hasURLProtocol(url) {
 function initReadabilityMode(filePath) {
   let readabilityContent;
   try {
-    const documentClone = document.cloneNode(true);
-    const article = new Readability(document.baseURI, documentClone).parse();
-    readabilityContent = article.content;
+    const script = document.createElement('script');
+    script.onload = () => {
+      const documentClone = document.cloneNode(true);
+      const article = new Readability(document.baseURI, documentClone).parse();
+      readabilityContent = article.content;
+      if (readabilityContent) {
+        document
+          .getElementById('toggleReadabilityModeMenuItem')
+          .addEventListener('click', e => {
+            // e.stopPropagation();
+            isReadabilityMode =
+              document.getElementById('readabilityContent').style.display ===
+              'block';
+
+            document.getElementById(
+              'readabilityContent'
+            ).style.display = isReadabilityMode ? 'none' : 'block';
+
+            document.getElementById(
+              'documentContent'
+            ).style.display = isReadabilityMode ? 'block' : 'none';
+
+            document.getElementById(
+              'fontTypeMenutItem'
+            ).style.display = isReadabilityMode ? 'none' : 'block';
+
+            document.getElementById(
+              'readabilityOnLabel'
+            ).style.display = isReadabilityMode ? 'inline' : 'none';
+
+            document.getElementById(
+              'readabilityOffLabel'
+            ).style.display = isReadabilityMode ? 'none' : 'inline';
+          });
+
+        const readabilityEl = document.getElementById('readabilityContent');
+        readabilityEl.innerHTML = readabilityContent;
+
+        document.getElementById('readabilityOnLabel').style.display = 'none';
+        document.getElementById('readabilityOffLabel').style.display = 'inline';
+        document.getElementById('readabilityContent').style.display = 'block';
+        document.getElementById('documentContent').style.display = 'none';
+        document.getElementById('fontTypeMenutItem').style.display = 'block';
+
+        handleLinks(readabilityEl);
+      }
+    };
+    script.src = '../libs/readability/Readability.js';
+    document.head.appendChild(script);
   } catch (e) {
     console.log('Error readability parsing: ' + e);
-  }
-
-  if (readabilityContent) {
-    document
-      .getElementById('toggleReadabilityModeMenuItem')
-      .addEventListener('click', e => {
-        // e.stopPropagation();
-        isReadabilityMode =
-          document.getElementById('readabilityContent').style.display ===
-          'block';
-
-        document.getElementById(
-          'readabilityContent'
-        ).style.display = isReadabilityMode ? 'none' : 'block';
-
-        document.getElementById(
-          'documentContent'
-        ).style.display = isReadabilityMode ? 'block' : 'none';
-
-        document.getElementById(
-          'fontTypeMenutItem'
-        ).style.display = isReadabilityMode ? 'none' : 'block';
-
-        document.getElementById(
-          'readabilityOnLabel'
-        ).style.display = isReadabilityMode ? 'inline' : 'none';
-
-        document.getElementById(
-          'readabilityOffLabel'
-        ).style.display = isReadabilityMode ? 'none' : 'inline';
-      });
-
-    const readabilityEl = document.getElementById('readabilityContent');
-    readabilityEl.innerHTML = readabilityContent;
-
-    document.getElementById('readabilityOnLabel').style.display = 'none';
-    document.getElementById('readabilityOffLabel').style.display = 'inline';
-    document.getElementById('readabilityContent').style.display = 'block';
-    document.getElementById('documentContent').style.display = 'none';
-    document.getElementById('fontTypeMenutItem').style.display = 'block';
-
-    handleLinks(readabilityEl);
   }
 }
 
@@ -421,6 +425,8 @@ function toggleFindToolbar() {
 }
 
 /* END: Find in content functionality */
+
+/* BEGIN: Loading animation */
 function hideLoadingAnimation() {
   document.getElementById('loadingAnimation').style.display = 'none';
 }
@@ -438,6 +444,64 @@ function insertLoadingAnimation() {
   </div>
   `;
 }
+/* END: Loading animation */
+
+/* BEGIN: HTML Export */
+function generateHTML(bodyContent) {
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+        <title></title>
+      </head>
+      <body
+        data-createdwith="TagSpaces"
+        data-scrappedon=${new Date().toISOString()} 
+      >${bodyContent}</body>
+    </html>
+  `;
+  return htmlContent;
+}
+
+function insertExportAsHTMLFunctionality() {
+  if (isWeb || isCordova) {
+    return true;
+  }
+  document.getElementById('exportAsHTMLMenuItemPlaceholder').innerHTML = `
+    <a id="exportAsHTML" class="dropdown-item" href="#">
+      <svg width="24" height="24" class="bi">
+        <path
+          d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"
+        ></path>
+      </svg>
+      <span data-i18n="exportAsHTML" />
+    </a>
+  `;
+
+  // Lazy loading of the file-saver library
+  const script = document.createElement('script');
+  script.src = '../libs/file-saver/FileSaver.min.js';
+  document.head.appendChild(script);
+
+  document.getElementById('exportAsHTML').addEventListener('click', e => {
+    let documentContentHTML = document.getElementById('documentContent')
+      .innerHTML;
+    const readabilityContent = document.getElementById('readabilityContent');
+    if (readabilityContent && readabilityContent.style.display === 'block') {
+      documentContentHTML = readabilityContent.innerHTML;
+    }
+    const blob = new Blob([generateHTML(documentContentHTML)], {
+      type: 'text/plain;charset=utf-8'
+    });
+    saveAs(blob, extractFileName(filePath, isWin ? '\\' : '/') + '.html');
+  });
+}
+/* END: HTML Export */
 
 function insertToggleFindMenuItem() {
   document.getElementById('toggleFindMenuItemPlaceholder').innerHTML = `

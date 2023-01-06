@@ -28,7 +28,6 @@
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
-    <script src="../libs/readability/Readability.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
@@ -54,8 +53,7 @@
           insertPrintMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
-          // insertChangeStyleMenuItemMenuItem();
-          // insertResetStyleMenuItemMenuItem();
+          insertExportAsHTMLFunctionality();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -327,7 +325,9 @@
             <span data-i18n="htmlDetails" />
           </a>
         </li>
+        <li><hr class="dropdown-divider" /></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
+        <li id="exportAsHTMLMenuItemPlaceholder"></li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>
@@ -354,7 +354,12 @@
             ></button>
           </div>
           <div class="modal-body">
-            <span data-i18n="sourceURL"></span><br />
+            <label
+              data-i18n="sourceURL"
+              for="html-data-sourceurl"
+              data-i18n="webPageSavedOn"
+              class="form-label"
+            ></label>
             <div class="input-group">
               <input
                 id="html-data-sourceurl"
@@ -379,7 +384,11 @@
               </button>
             </div>
             <br />
-            <span data-i18n="webPageSavedOn"></span><br />
+            <label
+              for="html-data-scrappedon"
+              data-i18n="webPageSavedOn"
+              class="form-label"
+            ></label>
             <input
               id="html-data-scrappedon"
               type="text"
@@ -390,10 +399,10 @@
               readonly
             />
             <br />
-            <span data-i18n="webPageScreenshot"></span><br />
+            <label data-i18n="webPageScreenshot" class="form-label"></label>
             <img
               id="html-data-screenshot"
-              style="display: none; width: 100%;"
+              style="display: none; width: 100%; border: 1px solid gray; border-radius: 5px;"
               src="#"
             />
           </div>

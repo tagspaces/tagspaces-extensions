@@ -26,7 +26,6 @@
         max-width: 100%;
       }
     </style>
-    <script src="../libs/readability/Readability.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="libs/mailparser/mailparser.min.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
@@ -53,6 +52,7 @@
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
+          insertExportAsHTMLFunctionality();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -299,6 +299,8 @@
             <span data-i18n="htmlDetails" />
           </a>
         </li>
+        <li id="exportAsHTMLMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
