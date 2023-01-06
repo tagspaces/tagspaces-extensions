@@ -16,9 +16,9 @@
     "fitToScreen": "符合視窗大小",
     "toggleBlackAndWhiteColor": "切換黑白效果",
     "ok": "好的",
-    "exportPNGImage": "Export in PNG format",
-    "exportJPGImage": "Export in JPG format",
-    "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
-    "exportWEBPImage": "Export in WEBP format",
+    "exportPNGImage": "導出為 PNG",
+    "exportJPGImage": "導出為 JPG",
+    "exportJPGImageTitle": "移除相機元數據, JPEG 品質 90%",
+    "exportWEBPImage": "導出為 WEBP",
     "-": "-"
 }
