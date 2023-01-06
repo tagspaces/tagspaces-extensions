@@ -14,20 +14,12 @@
       body {
         width: 100%;
         height: 100%;
-        overflow: hidden;
-      }
-      /* #documentContent {
         overflow: auto;
-        height: 100%;
-        padding: 15px;
-        font-size: var(--default-text-size);
-        color: var(--default-text-color);
-        background-color: white; /* var(--default-background-color)
-      } */
+        overflow: overlay;
+      }
 
       #documentContent {
         height: 100%;
-        overflow: auto;
         font-size: var(--default-text-size);
         color: var(--text-color);
         background-color: var(--background-color);
@@ -35,6 +27,7 @@
       }
 
       #documentContent table {
+        min-width: 100%;
       }
 
       #documentContent table th {
@@ -44,6 +37,7 @@
       #documentContent table,
       #documentContent table th,
       #documentContent table td {
+        height: 25px;
         border: 1px solid gray;
         padding: 3px;
         color: var(--text-color);
@@ -68,10 +62,10 @@
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/spreadsheet-viewer'
           );
-
           insertPrintMenuItem();
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
+          insertExportAsHTMLFunctionality();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -141,7 +135,12 @@
           const htmlstr = XLSX.utils.sheet_to_html(wb.Sheets[sheetName], {
             editable: false
           });
-          documentContent.innerHTML += DOMPurify.sanitize(htmlstr);
+          let sheetHTML = `
+            <h2>${sheetName}</h2>
+            ${htmlstr}
+            <br />
+          `;
+          documentContent.innerHTML += DOMPurify.sanitize(sheetHTML);
         });
 
         handleLinks(documentContent);
@@ -176,6 +175,7 @@
       <ul class="dropdown-menu">
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
+        <li id="exportAsHTMLMenuItemPlaceholder"></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
