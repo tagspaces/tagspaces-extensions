@@ -50,7 +50,7 @@
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
           );
-
+          insertLoadingAnimation();
           insertPrintMenuItem();
           insertZoomContentMenuItem();
 
@@ -453,11 +453,7 @@
     </script>
   </head>
   <body>
-    <div id="loadingAnimation" style="text-align: center;">
-      <div class="spinner-border m-5" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+    <div id="loadingAnimationPlaceholder"></div>
     <div
       id="imageContainer"
       style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"

@@ -48,7 +48,7 @@
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/mhtml-viewer'
           );
-
+          insertLoadingAnimation();
           insertPrintMenuItem();
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
@@ -216,11 +216,7 @@
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
-    <div id="loadingAnimation" style="text-align: center;">
-      <div class="spinner-border m-5" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+    <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
     <div id="readabilityContent" style="display: none;"></div>
     <div id="aboutDialogPlaceholder"></div>

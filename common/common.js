@@ -27,6 +27,8 @@ const backgroundColor = getParameterByName('bgndcolor').replace('%23', '#');
 if (primaryColor) {
   rootEl.style.setProperty('--primary-background-color', primaryColor);
   rootEl.style.setProperty('--primary-color', primaryColor);
+  rootEl.style.setProperty('--bs-primary', primaryColor);
+  rootEl.style.setProperty('--bs-dropdown-link-active-bg', primaryColor);
 }
 if (backgroundColor) {
   rootEl.style.setProperty('--default-background-color', backgroundColor);
@@ -53,20 +55,6 @@ document.addEventListener('readystatechange', () => {
 });
 
 /**  Helper functions */
-function hideLoadingAnimation() {
-  document.getElementById('loadingAnimation').style.display = 'none';
-}
-
-// function insertLoadingAnimation() {
-//   document.body.innerHTML += `
-//   <div id="loadingAnimation" style="text-align: center;">
-//     <div class="spinner-border m-5" role="status">
-//       <span class="visually-hidden">Loading...</span>
-//     </div>
-//   </div>
-//   `;
-// }
-
 function getParameterByName(paramName) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -433,6 +421,23 @@ function toggleFindToolbar() {
 }
 
 /* END: Find in content functionality */
+function hideLoadingAnimation() {
+  document.getElementById('loadingAnimation').style.display = 'none';
+}
+
+function showLoadingAnimation() {
+  document.getElementById('loadingAnimation').style.display = 'block';
+}
+
+function insertLoadingAnimation() {
+  document.getElementById('loadingAnimationPlaceholder').innerHTML = `
+  <div id="loadingAnimation" style="text-align: center;">
+    <div class="spinner-border m-5" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  `;
+}
 
 function insertToggleFindMenuItem() {
   document.getElementById('toggleFindMenuItemPlaceholder').innerHTML = `
