@@ -217,18 +217,11 @@
         content = marked.parse(DOMPurify.sanitize(content));
         documentContent.innerHTML = content;
 
-        if (fileDirectory.indexOf('file://') === 0) {
-          fileDirectory = fileDirectory.substring(
-            'file://'.length,
-            fileDirectory.length
-          );
-        }
+        initFindToolbar();
 
-        handleLinks(documentContent);
+        handleLinks(documentContent, fileDirectory);
 
         fixingEmbeddingOfLocalImages(documentContent, fileDirectory);
-
-        initFindToolbar();
       }
     </script>
   </head>

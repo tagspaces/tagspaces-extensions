@@ -201,30 +201,40 @@ function sendMessageToHost(message) {
 function fixingEmbeddingOfLocalImages(domElement, fileDirectory) {
   const allImages = domElement.querySelectorAll('img');
   allImages.forEach(image => {
-    const currentSrc = image.src;
-    if (!hasURLProtocol(currentSrc)) {
+    const currentSrc = image.getAttribute('src');
+    if (currentSrc && !hasURLProtocol(currentSrc)) {
       const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+      image.alt = path;
       image.src = path;
     }
   });
 }
 
-function handleLinks(domElement) {
+function handleLinks(domElement, fileDirectory) {
+  // if (fileDirectory.indexOf('file://') === 0) {
+  //   fileDirectory = fileDirectory.substring(
+  //     'file://'.length,
+  //     fileDirectory.length
+  //   );
+  // }
   const allLinks = domElement.querySelectorAll('a');
   allLinks.forEach(link => {
-    let currentSrc = link.href;
+    let currentSrc = link.getAttribute('href');
     let path;
+    if (!currentSrc) {
+      return;
+    }
     if (currentSrc.startsWith('#')) {
       // Leave the default link behaviour by internal links
     } else {
-      // if (!hasURLProtocol(currentSrc)) {
-      //   path =
-      //     (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
-      //   link.href = path;
-      // }
-      isExternal = isExternalLink(currentSrc);
-      link.innerText += ' ⧉';
+      if (!hasURLProtocol(currentSrc) && fileDirectory) {
+        path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+        currentSrc = path;
+      }
       link.title = currentSrc;
+      if (isExternalLink(currentSrc)) {
+        link.innerText += ' ⧉';
+      }
       link.addEventListener('click', e => {
         e.preventDefault();
         // if (path) {
