@@ -232,7 +232,7 @@ function handleLinks(domElement, fileDirectory) {
         currentSrc = path;
       }
       link.title = currentSrc;
-      if (isExternalLink(currentSrc)) {
+      if (isExternalLink(currentSrc) && !link.innerText.endsWith('⧉')) {
         link.innerText += ' ⧉';
       }
       link.addEventListener('click', e => {
