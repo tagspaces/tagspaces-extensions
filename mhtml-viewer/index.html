@@ -44,16 +44,15 @@
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/mhtml-viewer'
-          );
           insertLoadingAnimation();
           insertPrintMenuItem();
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
           insertExportAsHTMLFunctionality();
-
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/mhtml-viewer'
+          );
           initI18N(locale, 'ns.extension.json');
 
           getFileContentPromise(filePath, 'text')
@@ -188,14 +187,52 @@
             contLocation && contLocation.length > 0
               ? contLocation[1]
               : 'not found';
-          cleanedHTML = DOMPurify.sanitize(mhtmlObject.html);
+          cleanedHTML = mhtmlObject.html;
 
           document.getElementById(
             'html-data-sourceurl'
           ).value = mhtmlObject.contentLocation.trim();
 
-          document.getElementById('fileMeta').innerText =
-            'saved on ' + mhtmlObject.headers.date;
+          document.getElementById('html-data-savedon').value =
+            mhtmlObject.headers.date;
+
+          // if (isEmail) {
+          //   let htmlContent = '';
+          //   if (fileData.subject) {
+          //     htmlContent += `<b>Subject: </b>${fileData.subject}<br />`;
+          //   }
+          //   if (fileData.senderName) {
+          //     htmlContent += `<b>Sender name: </b>${fileData.senderName}<br />`;
+          //   }
+          //   if (fileData.senderEmail) {
+          //     htmlContent += `<b>Sender email: </b>${fileData.senderEmail}<br />`;
+          //   }
+          //   if (fileData.headers) {
+          //     htmlContent += `<b>Sending date: </b>${getMsgDate(
+          //       fileData.headers
+          //     )}<br />`;
+          //   }
+          //   if (fileData.recipients && fileData.recipients.length > 0) {
+          //     htmlContent += '<b>Recipient names:</b> ';
+          //     fileData.recipients.map(recipient => {
+          //       let recipientHTML = '';
+          //       if (recipient.name) {
+          //         recipientHTML += recipient.name;
+          //       }
+          //       if (recipient.email) {
+          //         recipientHTML += ' &lt;' + recipient.email + '&gt;';
+          //       }
+          //       htmlContent += recipientHTML + ';';
+          //     });
+          //     htmlContent += '<br />';
+          //   }
+          //   if (fileData.bodyHTML) {
+          //     htmlContent += `<b>Body (html):</b><br />${fileData.bodyHTML}<br />`;
+          //   }
+          //   if (fileData.body) {
+          //     htmlContent += `<b>Body (text):</b><br /><pre>${fileData.body}</pre><br />`;
+          //   }
+          // }
 
           htmlContent = document.getElementById('documentContent');
           htmlContent.innerHTML = DOMPurify.sanitize(cleanedHTML);
@@ -204,7 +241,7 @@
 
           initReadabilityMode(filePath);
 
-          handleLinks(documentContent);
+          handleLinks(htmlContent);
 
           initFindToolbar();
         });
@@ -328,12 +365,12 @@
             ></button>
           </div>
           <div class="modal-body">
+            <label
+              data-i18n="sourceURL"
+              for="html-data-sourceurl"
+              class="form-label"
+            ></label>
             <div class="input-group">
-              <button
-                class="btn btn-secondary btn-sm"
-                disabled
-                data-i18n="sourceURL"
-              ></button>
               <input
                 id="html-data-sourceurl"
                 type="text"
@@ -357,11 +394,20 @@
               </button>
             </div>
             <br />
-            <span data-i18n="webPageSavedOn"></span>:&nbsp;<span
-              id="fileMeta"
-            ></span
-            ><br />
-            <!-- <img id="html-data-screenshot" style="width: 100%;" src="#" /> -->
+            <label
+              for="html-data-sourceurl"
+              data-i18n="webPageSavedOn"
+              class="form-label"
+            ></label>
+            <input
+              id="html-data-savedon"
+              type="text"
+              class="form-control"
+              value=""
+              aria-label="web page saved on"
+              readonly
+            />
+            <br />
           </div>
           <div class="modal-footer">
             <button
