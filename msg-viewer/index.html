@@ -108,10 +108,10 @@
             htmlContent += `<b>Subject: </b>${fileData.subject}<br />`;
           }
           if (fileData.senderName) {
-            htmlContent += `<b>Sender name: </b>${fileData.senderName}<br />`;
+            htmlContent += `<b>From: </b>${fileData.senderName}`;
           }
           if (fileData.senderEmail) {
-            htmlContent += `<b>Sender email: </b>${fileData.senderEmail}<br />`;
+            htmlContent += ` - ${fileData.senderEmail}<br />`;
           }
           if (fileData.headers) {
             htmlContent += `<b>Sending date: </b>${getMsgDate(
@@ -119,7 +119,7 @@
             )}<br />`;
           }
           if (fileData.recipients && fileData.recipients.length > 0) {
-            htmlContent += '<b>Recipient names:</b> ';
+            htmlContent += '<b>To:</b> ';
             fileData.recipients.map(recipient => {
               let recipientHTML = '';
               if (recipient.name) {
