@@ -37,11 +37,11 @@
           //   console.log('Error getting content for: ' + filePath);
           // });
 
+          insertLoadingAnimation();
           insertPrintMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
           insertExportAsHTMLFunctionality();
-
           insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
 
           initI18N(locale, 'ns.extension.json');
@@ -105,28 +105,18 @@
         if (!fileData.error) {
           let htmlContent = '';
           if (fileData.subject) {
-            htmlContent +=
-              '<b>Subject:</b> ' +
-              DOMPurify.sanitize(fileData.subject) +
-              '<br />';
+            htmlContent += `<b>Subject: </b>${fileData.subject}<br />`;
           }
           if (fileData.senderName) {
-            htmlContent +=
-              '<b>Sender name:</b> ' +
-              DOMPurify.sanitize(fileData.senderName) +
-              '<br />';
+            htmlContent += `<b>Sender name: </b>${fileData.senderName}<br />`;
           }
           if (fileData.senderEmail) {
-            htmlContent +=
-              '<b>Sender email:</b> ' +
-              DOMPurify.sanitize(fileData.senderEmail) +
-              '<br />';
+            htmlContent += `<b>Sender email: </b>${fileData.senderEmail}<br />`;
           }
           if (fileData.headers) {
-            htmlContent +=
-              '<b>Sending date:</b> ' +
-              DOMPurify.sanitize(getMsgDate(fileData.headers)) +
-              '<br />';
+            htmlContent += `<b>Sending date: </b>${getMsgDate(
+              fileData.headers
+            )}<br />`;
           }
           if (fileData.recipients && fileData.recipients.length > 0) {
             htmlContent += '<b>Recipient names:</b> ';
@@ -138,32 +128,28 @@
               if (recipient.email) {
                 recipientHTML += ' &lt;' + recipient.email + '&gt;';
               }
-              htmlContent += DOMPurify.sanitize(recipientHTML) + ';';
+              htmlContent += recipientHTML + ';';
             });
             htmlContent += '<br />';
           }
           if (fileData.bodyHTML) {
-            htmlContent +=
-              '<b>Body (html):</b><br /> ' +
-              DOMPurify.sanitize(fileData.bodyHTML) +
-              '<br />';
+            htmlContent += `<b>Body (html):</b><br />${fileData.bodyHTML}<br />`;
           }
           if (fileData.body) {
-            htmlContent +=
-              '<b>Body (text):</b><br /><pre>' +
-              DOMPurify.sanitize(fileData.body) +
-              '</pre><br />';
+            htmlContent += `<b>Body (text):</b><br /><pre>${fileData.body}</pre><br />`;
           }
           // if (fileData.headers) {
           //   htmlContent +=
           //     '<b>Headers:</b><br /> ' +
-          //     DOMPurify.sanitize(fileData.headers) +
+          //     fileData.headers +
           //     '<br />';
           // }
           const documentContent = document.getElementById('documentContent');
-          documentContent.innerHTML = htmlContent;
+          documentContent.innerHTML = DOMPurify.sanitize(htmlContent);
 
           handleLinks(documentContent);
+
+          hideLoadingAnimation();
 
           initFindToolbar();
         } else {
@@ -200,6 +186,7 @@
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
+    <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
