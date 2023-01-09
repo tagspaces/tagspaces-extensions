@@ -112,7 +112,7 @@
             htmlContent += `<b>Subject: </b>${fileData.subject}<br />`;
           }
           if (fileData.senderName) {
-            htmlContent += `<b>From: </b>${fileData.senderName}`;
+            htmlContent += `<b>From: </b>${fileData.senderName}<br />`;
           }
           if (fileData.senderEmail) {
             htmlContent += ` - ${fileData.senderEmail}<br />`;
@@ -135,6 +135,9 @@
               htmlContent += recipientHTML + ';';
             });
             htmlContent += '<br />';
+          }
+          if (fileData.attachments) {
+            htmlContent += `<b>Attachments: </b>${fileData.attachments.length}<br />`;
           }
           if (fileData.bodyHTML) {
             htmlContent += `<b>Body (html):</b><br />${fileData.bodyHTML}<br />`;
