@@ -1,6 +1,6 @@
 # Overview
 
-This repository contains all the viewer and editor extensions delivered by default with TagSpaces products.
+This repository contains the viewer and editor extensions delivered by default with TagSpaces products.
 
 ## Publishing new version
 
@@ -11,5 +11,3 @@ Update the version in package.json of the updated extension if available (e.g. m
 Run the publishing script
 
     npm run pkg-publish
-
-## TODO: Migration to Lerna
