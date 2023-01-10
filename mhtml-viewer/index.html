@@ -24,6 +24,7 @@
       #documentContent img,
       #readabilityContent img {
         max-width: 100%;
+        display: block;
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
@@ -232,6 +233,35 @@
                   recipientHTML += ' &lt;' + recipient.address + '&gt;';
                 }
                 emailHeaderHTML += recipientHTML + ';';
+              });
+              emailHeaderHTML += '<br />';
+            }
+            if (mhtmlObject.cc && mhtmlObject.cc.length > 0) {
+              emailHeaderHTML += '<b>Cc:</b> ';
+              mhtmlObject.to.map(recipient => {
+                let recipientHTML = '';
+                if (recipient.name) {
+                  recipientHTML += recipient.name;
+                }
+                if (recipient.address) {
+                  recipientHTML += ' &lt;' + recipient.address + '&gt;';
+                }
+                emailHeaderHTML += recipientHTML + ';';
+              });
+              emailHeaderHTML += '<br />';
+            }
+            if (mhtmlObject.attachments && mhtmlObject.attachments.length > 0) {
+              emailHeaderHTML += '<b>Attachments:</b> ';
+              mhtmlObject.attachments.map(attachment => {
+                let attachmentHTML = '';
+                if (attachment.fileName) {
+                  attachmentHTML += attachment.fileName;
+                }
+                // content: Uint8Array(127996) transferEncoding: "base64"
+                if (attachment.length) {
+                  attachmentHTML += ' (' + attachment.length + ' bytes )';
+                }
+                emailHeaderHTML += attachmentHTML + '; ';
               });
               emailHeaderHTML += '<br />';
             }
