@@ -56,6 +56,7 @@
         if (document.readyState === 'complete') {
           insertAboutDialog('https://docs.tagspaces.org/extensions/3d-viewer');
           insertPrintMenuItem();
+          insertLoadingAnimation();
 
           initI18N(locale, 'ns.extension.json');
 
@@ -70,6 +71,7 @@
             modelViewer.setAttribute('ar', true);
             modelViewer.src = filePath;
             document.getElementById('viewer3D').appendChild(modelViewer);
+            hideLoadingAnimation();
           } else if (
             filePath.endsWith('stl') ||
             filePath.endsWith('obj') ||
@@ -83,6 +85,7 @@
                     filename: filePath
                   }
                 ],
+                all_loaded_callback: hideLoadingAnimation,
                 jszip_path: '../libs/jszip/jszip.min.js', // needed for 3MF files
                 jszip_utils_path: '../libs/jszip-utils/jszip-utils.min.js'
               }
@@ -146,6 +149,7 @@
     </script>
   </head>
   <body>
+    <div id="loadingAnimationPlaceholder"></div>
     <div id="viewer3D"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
