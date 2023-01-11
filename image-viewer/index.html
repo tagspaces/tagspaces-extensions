@@ -14,6 +14,9 @@
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="libs/exif-js/exif.js"></script>
+    <script src="libs/utif.js/UTIF.js"></script>
+    <script src="libs/tga.js/tga.js"></script>
+    <script src="libs/psd/dist/psd.min.js"></script>
     <style>
       body {
         overflow: overlay;
@@ -93,49 +96,49 @@
             filePath.toLowerCase().endsWith('.tiff') ||
             filePath.toLowerCase().endsWith('.tif')
           ) {
-            const script = document.createElement('script');
-            script.onload = function() {
-              const xhr = new XMLHttpRequest();
-              xhr.responseType = 'arraybuffer';
-              xhr.open('GET', filePath);
-              xhr.onload = () => {
-                const ifds = UTIF.decode(xhr.response);
-                // UTIF.decodeImage(xhr.response, ifds[0]);
-                const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
-                // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
-                // console.log(ifds[0].width, ifds[0].height, ifds[0]);
-                imageContent.setAttribute('src', dataURL);
-              };
-              xhr.send();
+            // const script = document.createElement('script');
+            // script.onload = function() {
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = 'arraybuffer';
+            xhr.open('GET', filePath);
+            xhr.onload = () => {
+              const ifds = UTIF.decode(xhr.response);
+              // UTIF.decodeImage(xhr.response, ifds[0]);
+              const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
+              // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
+              // console.log(ifds[0].width, ifds[0].height, ifds[0]);
+              imageContent.setAttribute('src', dataURL);
             };
-            script.src = 'libs/utif.js/UTIF.js';
-            document.head.appendChild(script);
+            xhr.send();
+            // };
+            // script.src = 'libs/utif.js/UTIF.js';
+            // document.head.appendChild(script);
           } else if (filePath.toLowerCase().endsWith('.psd')) {
-            const script = document.createElement('script');
-            script.onload = function() {
-              const PSD = require('psd');
-              PSD.fromURL(filePath)
-                .then(psd => {
-                  const image = psd.image.toPng();
-                  imageContent.setAttribute('src', image.getAttribute('src'));
-                  return true;
-                })
-                .catch(
-                  e => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
-                );
-            };
-            script.src = 'libs/psd/dist/psd.min.js';
-            document.head.appendChild(script);
+            // const script = document.createElement('script');
+            // script.onload = function() {
+            const PSD = require('psd');
+            PSD.fromURL(filePath)
+              .then(psd => {
+                const image = psd.image.toPng();
+                imageContent.setAttribute('src', image.getAttribute('src'));
+                return true;
+              })
+              .catch(
+                e => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
+              );
+            // };
+            // script.src = 'libs/psd/dist/psd.min.js';
+            // document.head.appendChild(script);
           } else if (filePath.toLowerCase().endsWith('.tga')) {
-            const script = document.createElement('script');
-            script.onload = function() {
-              const tga = new TgaLoader();
-              tga.open(filePath, () => {
-                imageContent.setAttribute('src', tga.getDataURL('image/png'));
-              });
-            };
-            script.src = 'libs/tga.js/tga.js';
-            document.head.appendChild(script);
+            // const script = document.createElement('script');
+            // script.onload = function() {
+            const tga = new TgaLoader();
+            tga.open(filePath, () => {
+              imageContent.setAttribute('src', tga.getDataURL('image/png'));
+            });
+            // };
+            // script.src = 'libs/tga.js/tga.js';
+            // document.head.appendChild(script);
           } else {
             imageContent.setAttribute('src', filePath);
           }

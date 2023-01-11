@@ -30,6 +30,7 @@
         height: 100%;
       }
     </style>
+    <script src="libs/model-viewer/model-viewer.min.js" type="module"></script>
     <script src="libs/viewerstl/webgl_detector.js"></script>
     <script src="libs/viewerstl/three.min.js"></script>
     <script src="libs/viewerstl/CanvasRenderer.js"></script>
@@ -62,21 +63,21 @@
           filePath = isWeb ? filePath : 'file://' + filePath;
 
           if (filePath.endsWith('glb') || filePath.endsWith('gltf')) {
-            const script = document.createElement('script');
-            script.setAttribute('type', 'module');
-            script.onload = function() {
-              const modelViewer = document.createElement('model-viewer');
-              modelViewer.setAttribute('ar', true);
-              modelViewer.setAttribute('shadow-intensity', '1');
-              modelViewer.setAttribute('camera-controls', true);
-              modelViewer.setAttribute('touch-action', 'pan-y');
-              modelViewer.setAttribute('ar', true);
-              modelViewer.src = filePath;
-              document.getElementById('viewer3D').appendChild(modelViewer);
-              hideLoadingAnimation();
-            };
-            script.src = 'libs/model-viewer/model-viewer.min.js';
-            document.head.appendChild(script);
+            // const script = document.createElement('script');
+            // script.setAttribute('type', 'module');
+            // script.onload = function() {
+            const modelViewer = document.createElement('model-viewer');
+            modelViewer.setAttribute('ar', true);
+            modelViewer.setAttribute('shadow-intensity', '1');
+            modelViewer.setAttribute('camera-controls', true);
+            modelViewer.setAttribute('touch-action', 'pan-y');
+            modelViewer.setAttribute('ar', true);
+            modelViewer.src = filePath;
+            document.getElementById('viewer3D').appendChild(modelViewer);
+            hideLoadingAnimation();
+            // };
+            // script.src = 'libs/model-viewer/model-viewer.min.js';
+            // document.head.appendChild(script);
           } else if (
             filePath.endsWith('stl') ||
             filePath.endsWith('obj') ||
