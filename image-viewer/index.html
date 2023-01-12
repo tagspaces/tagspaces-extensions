@@ -122,7 +122,7 @@
           } else if (fileExt === '.psd') {
             const script = document.createElement('script');
             script.onload = function() {
-              const PSD = require('.psd');
+              const PSD = require('psd');
               PSD.fromURL(filePath)
                 .then(psd => {
                   const image = psd.image.toPng();
@@ -144,6 +144,30 @@
               });
             };
             script.src = 'libs/tga.js/tga.js';
+            document.head.appendChild(script);
+          } else if (fileExt === '.heic') {
+            const script = document.createElement('script');
+            script.onload = () => {
+              const xhr = new XMLHttpRequest();
+              xhr.responseType = 'blob';
+              xhr.open('GET', filePath);
+              xhr.onload = () => {
+                heic2any({
+                  blob: xhr.response,
+                  toType: 'image/jpg',
+                  quality: 0.9
+                })
+                  .then(resultBlob => {
+                    const dataURL = URL.createObjectURL(resultBlob);
+                    imageContent.setAttribute('src', dataURL);
+                  })
+                  .catch(err => {
+                    console.log(`Error by converting HEIC file ${err}.`);
+                  });
+              };
+              xhr.send();
+            };
+            script.src = 'libs/heic2any/heic2any.min.js';
             document.head.appendChild(script);
           } else {
             imageContent.setAttribute('src', filePath);
