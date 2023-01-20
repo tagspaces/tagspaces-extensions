@@ -195,6 +195,19 @@
           jsonEditor.setMode('view');
         } else {
           jsonEditor.setMode('tree');
+          document.body.addEventListener('keydown', event => {
+            if (
+              (event.ctrlKey || event.metaKey) &&
+              event.key.toLowerCase() === 's'
+            ) {
+              event.stopPropagation();
+              event.preventDefault();
+              window.parent.postMessage(
+                JSON.stringify({ command: 'saveDocument' }),
+                '*'
+              );
+            }
+          });
         }
       }
     </script>

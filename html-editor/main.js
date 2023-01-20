@@ -111,8 +111,14 @@ function initEditor() {
       onChange: () => {
         sendMessageToHost({ command: 'contentChangedInEditor', filepath: '' });
       },
-      onKeyup: e => {
-        if (e.ctrlKey && e.keyCode === 83 && currentFilePath) {
+      onKeydown: event => {
+        if (
+          (event.ctrlKey || event.metaKey) &&
+          event.key.toLowerCase() === 's' &&
+          currentFilePath
+        ) {
+          event.stopPropagation();
+          event.preventDefault();
           sendMessageToHost({
             command: 'saveDocument',
             filepath: currentFilePath

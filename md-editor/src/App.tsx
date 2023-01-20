@@ -39,6 +39,8 @@ const App: React.FC = () => {
   useEventListener('keydown', event => {
     if (event.ctrlKey || event.metaKey) {
       if (event.key.toLowerCase() === 's') {
+        event.stopPropagation();
+        event.preventDefault();
         if (!readOnly()) {
           window.parent.postMessage(
             JSON.stringify({ command: 'saveDocument' }),
@@ -46,6 +48,8 @@ const App: React.FC = () => {
           );
         }
       } else if (event.key.toLowerCase() === 'p') {
+        event.stopPropagation();
+        event.preventDefault();
         window.print();
         // } else if (event.key.toLowerCase() === 'f') {
         //   setFilterVisible(!isFilterVisible);
