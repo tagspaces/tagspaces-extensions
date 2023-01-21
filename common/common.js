@@ -386,11 +386,13 @@ function initFindToolbar() {
     // }
   });
 
-  document.addEventListener('keyup', evt => {
+  document.addEventListener('keydown', evt => {
     if (evt.key === 'Escape') {
       hideFindToolbar();
     }
-    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'g') {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'f') {
+      evt.preventDefault();
+      evt.stopPropagation();
       showFindToolbar();
     }
   });
