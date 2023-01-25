@@ -20,5 +20,6 @@
     "exportJPGImage": "Exporter au format JPG",
     "exportJPGImageTitle": "Métadonnées photo supprimées, qualité JPEG 90%",
     "exportWEBPImage": "Exporter au format WEBP",
+    "documentation": "Documentation",
     "-": "-"
 }

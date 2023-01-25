@@ -20,5 +20,6 @@
     "exportJPGImage": "導出為 JPG",
     "exportJPGImageTitle": "移除相機元數據, JPEG 品質 90%",
     "exportWEBPImage": "導出為 WEBP",
+    "documentation": "文件",
     "-": "-"
 }

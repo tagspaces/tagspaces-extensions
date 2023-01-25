@@ -20,5 +20,6 @@
     "exportJPGImage": "Export in JPG format",
     "exportJPGImageTitle": "Removed camera metadata, JPEG quality 90%",
     "exportWEBPImage": "Export in WEBP format",
+    "documentation": "Tài liệu hướng dẫn",
     "-": "-"
 }
