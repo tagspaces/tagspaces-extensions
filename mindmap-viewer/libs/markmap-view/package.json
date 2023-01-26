@@ -1,0 +1,55 @@
+{
+  "name": "markmap-view",
+  "version": "0.14.3",
+  "description": "View markmaps in browser",
+  "author": "Gerald <gera2ld@live.com>",
+  "license": "MIT",
+  "keywords": [
+    "markmap",
+    "markdown",
+    "mindmap"
+  ],
+  "homepage": "https://github.com/gera2ld/markmap/packages/markmap-view#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gera2ld/markmap.git"
+  },
+  "scripts": {
+    "dev": "rollup -wc rollup.conf.js",
+    "clean": "del-cli dist types",
+    "build:js": "rollup -c rollup.conf.js",
+    "build:types": "tsc"
+  },
+  "bugs": {
+    "url": "https://github.com/gera2ld/markmap/issues"
+  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.min.js",
+  "jsdelivr": "dist/index.min.js",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "typings": "types/index.d.ts",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@types/d3": "^6.0.0",
+    "d3": "^6.2.0",
+    "d3-flextree": "^2.1.1"
+  },
+  "devDependencies": {
+    "markmap-common": "^0.14.2"
+  },
+  "peerDependencies": {
+    "markmap-common": "*"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "gitHead": "ef956864fe1a6d9927bf2febbf597f6866efe75d"
+}

@@ -25,6 +25,7 @@
     "media-player/package.json",
     "media-player/public/",
     "media-player/src/",
+    "mindmap-viewer/",
     "mhtml-viewer/",
     "msg-viewer/",
     "pdf-viewer/",
@@ -45,9 +46,10 @@
   },
   "devDependencies": {
     "@google/model-viewer": "^2.1.1",
+    "@mozilla/readability": "0.4.2",
     "bootstrap5": "npm:bootstrap@5.2.3",
-    "epubjs": "0.3.93",
     "dompurify": "~2.4.1",
+    "epubjs": "0.3.93",
     "file-saver": "^2.0.5",
     "i18next": "~10.2.2",
     "jquery": "~3.6.0",
@@ -56,16 +58,18 @@
     "jszip-utils": "0.1.0",
     "mark.js": "^8.11.1",
     "marked": "4.2.5",
+    "markmap-lib": "^0.14.3",
+    "markmap-view": "^0.14.3",
     "psd": "3.4.0",
-    "tga-js": "1.1.1",
-    "@mozilla/readability": "0.4.2",
     "shelljs": "^0.8.5",
     "summernote": "~0.8.20",
+    "tga-js": "1.1.1",
     "viewerjs": "1.11.1"
   },
   "license": "MIT",
   "engines": {
     "yarn": "please-use-npm",
     "npm": ">= 6.14.15"
-  }
+  },
+  "dependencies": {}
 }

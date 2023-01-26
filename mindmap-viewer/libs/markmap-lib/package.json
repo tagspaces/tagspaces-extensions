@@ -1,0 +1,62 @@
+{
+  "name": "markmap-lib",
+  "version": "0.14.3",
+  "description": "Visualize your Markdown as mindmaps with Markmap",
+  "author": "Gerald <gera2ld@live.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "dev": "rollup -wc rollup.conf.js",
+    "clean": "del-cli dist types",
+    "build:types": "tsc",
+    "build:js": "rollup -c rollup.conf.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/browser/index.min.js",
+  "jsdelivr": "dist/browser/index.min.js",
+  "exports": {
+    ".": {
+      "browser": "./dist/browser/index.js",
+      "node": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typings": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "keywords": [
+    "markdown",
+    "markmap",
+    "mindmap"
+  ],
+  "repository": "git@github.com:gera2ld/markmap.git",
+  "devDependencies": {
+    "@types/remarkable": "^2.0.3",
+    "markmap-common": "^0.14.2",
+    "markmap-view": "^0.14.3",
+    "webfontloader": "^1.6.28"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.18.9",
+    "js-yaml": "^4.1.0",
+    "katex": "^0.16.0",
+    "prismjs": "^1.28.0",
+    "remarkable": "^2.0.1",
+    "remarkable-katex": "^1.2.1"
+  },
+  "peerDependencies": {
+    "markmap-common": "*"
+  },
+  "gitHead": "ef956864fe1a6d9927bf2febbf597f6866efe75d"
+}
