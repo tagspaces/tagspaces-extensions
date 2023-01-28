@@ -11,7 +11,7 @@ const isWeb =
   (document.URL.startsWith('http') &&
     !document.URL.startsWith('http://localhost:1212/')) ||
   pathToFile.startsWith('http');
-const isWin = navigator.appVersion.includes('Win');
+const isWin = navigator.userAgent.includes('Win');
 const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
 
 /** Handle theming */
@@ -258,6 +258,7 @@ function hasURLProtocol(url) {
     url.startsWith('http://') ||
     url.startsWith('https://') ||
     url.startsWith('file://') ||
+    url.startsWith('tel://') ||
     url.startsWith('data:') ||
     url.startsWith('ts://?ts') ||
     url.startsWith('ts:?ts')
@@ -407,9 +408,9 @@ function initFindToolbar() {
     .getElementById('toggleFindMenuItem')
     .addEventListener('click', toggleFindToolbar);
 
-  const searchQuery = getParameterByName('query'); // 'help:file';
+  const searchQuery = getParameterByName('query');
   if (searchQuery) {
-    queryArray = searchQuery.split(':');
+    queryArray = searchQuery.split(' ');
   }
   // const documentContent = document.getElementById('documentContent');
   markInstance = new Mark(document.documentElement);
