@@ -33,6 +33,7 @@
     "cancel": "取消",
     "ok": "好的",
     "save": "儲存",
-    "exportAsHTML": "Export as HTML",
+    "exportAsHTML": "匯出為 HTML",
+    "close": "關閉",
     "-": "-"
 }

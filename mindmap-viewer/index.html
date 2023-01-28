@@ -159,7 +159,6 @@
         const { root, features } = transformer.transform(
           DOMPurify.sanitize(content)
         );
-        // '# title \n ## title 2 \n - dasd \n - dasda2\n - dasda2\n - dasda2\n - *dasda2*\n - dasda2\n - dasda2'
 
         // either get assets required by used features
         const { styles, scripts } = transformer.getUsedAssets(features);
@@ -179,8 +178,6 @@
           },
           root
         );
-
-        // documentContent.innerHTML = content;
 
         initFindToolbar();
 
