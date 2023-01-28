@@ -1,14 +1,14 @@
 import i18n from 'i18next';
 import HttpApi from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import enUs from './locales/en_US/ns.editorMD.json';
+import enUs from './locales/en_US/ns.extension.json';
 
 let defaultLanguage = enUs;
 
 function loadLocales(options: any, url: string, payload: any, callback: any) {
   switch (url) {
     case 'bg': {
-      import('./locales/bg/ns.editorMD.json')
+      import('./locales/bg/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -19,7 +19,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'ca': {
-      import('./locales/ca/ns.editorMD.json')
+      import('./locales/ca/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -30,7 +30,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'cs': {
-      import('./locales/cs/ns.editorMD.json')
+      import('./locales/cs/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -41,7 +41,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'da_DK': {
-      import('./locales/da_DK/ns.editorMD.json')
+      import('./locales/da_DK/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -52,7 +52,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'de_DE': {
-      import('./locales/de_DE/ns.editorMD.json')
+      import('./locales/de_DE/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -63,7 +63,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'el': {
-      import('./locales/el/ns.editorMD.json')
+      import('./locales/el/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -74,7 +74,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'eo': {
-      import('./locales/eo/ns.editorMD.json')
+      import('./locales/eo/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -85,7 +85,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'es': {
-      import('./locales/es/ns.editorMD.json')
+      import('./locales/es/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -96,7 +96,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'fa': {
-      import('./locales/fa/ns.editorMD.json')
+      import('./locales/fa/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -107,7 +107,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'fr': {
-      import('./locales/fr/ns.editorMD.json')
+      import('./locales/fr/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -118,7 +118,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'hu': {
-      import('./locales/hu/ns.editorMD.json')
+      import('./locales/hu/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -129,7 +129,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'hy': {
-      import('./locales/hy/ns.editorMD.json')
+      import('./locales/hy/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -140,7 +140,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'id_ID': {
-      import('./locales/id_ID/ns.editorMD.json')
+      import('./locales/id_ID/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -151,7 +151,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'it': {
-      import('./locales/it/ns.editorMD.json')
+      import('./locales/it/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -162,7 +162,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'ja': {
-      import('./locales/ja/ns.editorMD.json')
+      import('./locales/ja/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -173,7 +173,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'ko': {
-      import('./locales/ko/ns.editorMD.json')
+      import('./locales/ko/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -184,7 +184,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'mt': {
-      import('./locales/mt/ns.editorMD.json')
+      import('./locales/mt/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -195,7 +195,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'nl_NL': {
-      import('./locales/nl_NL/ns.editorMD.json')
+      import('./locales/nl_NL/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -206,7 +206,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'pl': {
-      import('./locales/pl/ns.editorMD.json')
+      import('./locales/pl/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -217,7 +217,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'pt_BR': {
-      import('./locales/pt_BR/ns.editorMD.json')
+      import('./locales/pt_BR/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -228,7 +228,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'pt_PT': {
-      import('./locales/pt_PT/ns.editorMD.json')
+      import('./locales/pt_PT/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -239,7 +239,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'ru': {
-      import('./locales/ru/ns.editorMD.json')
+      import('./locales/ru/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -250,7 +250,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'sk_SK': {
-      import('./locales/sk_SK/ns.editorMD.json')
+      import('./locales/sk_SK/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -261,7 +261,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'sv': {
-      import('./locales/sv/ns.editorMD.json')
+      import('./locales/sv/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -272,7 +272,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'tr': {
-      import('./locales/tr/ns.editorMD.json')
+      import('./locales/tr/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -283,7 +283,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'uk': {
-      import('./locales/uk/ns.editorMD.json')
+      import('./locales/uk/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -294,7 +294,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'vi': {
-      import('./locales/vi/ns.editorMD.json')
+      import('./locales/vi/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -305,7 +305,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'zh_CN': {
-      import('./locales/zh_CN/ns.editorMD.json')
+      import('./locales/zh_CN/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -316,7 +316,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'zh_TW': {
-      import('./locales/zh_TW/ns.editorMD.json')
+      import('./locales/zh_TW/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -327,7 +327,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'zh_HK': {
-      import('./locales/zh_HK/ns.editorMD.json')
+      import('./locales/zh_HK/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -338,7 +338,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'nb': {
-      import('./locales/nb/ns.editorMD.json')
+      import('./locales/nb/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
@@ -349,7 +349,7 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
       break;
     }
     case 'fr_CA': {
-      import('./locales/fr_CA/ns.editorMD.json')
+      import('./locales/fr_CA/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;
