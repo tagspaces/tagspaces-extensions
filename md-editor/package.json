@@ -33,6 +33,9 @@
     "@tagspaces/tagspaces-md": "2.1.6",
     "i18next": "^22.4.6",
     "mark.js": "^8.11.1",
+    "markmap-common": "^0.14.2",
+    "markmap-lib": "^0.14.3",
+    "markmap-view": "^0.14.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.1"

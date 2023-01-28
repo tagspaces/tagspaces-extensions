@@ -13,20 +13,32 @@ import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
 import SearchIcon from '@mui/icons-material/FindInPage';
+import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import MindMapViewer from './MindMapViewer';
+import DialogCloseButton from './DialogCloseButton';
 import i18n from './i18n';
 
 const MainMenu: React.FC<{
   toggleViewSource: () => void;
   isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
+  mdContent: string;
   mode: string;
-}> = ({ toggleViewSource, isFilterVisible, setFilterVisible, mode }) => {
+}> = ({
+  toggleViewSource,
+  isFilterVisible,
+  setFilterVisible,
+  mdContent,
+  mode
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
+  const [isMindMapDialogOpened, setMindMapDialogOpened] =
+    useState<boolean>(false);
 
   const handleFabClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -49,6 +61,14 @@ const MainMenu: React.FC<{
     //     setFilterVisible(!isFilterVisible);
     //   }
     // },
+    {
+      icon: <TreeIcon />,
+      name: i18n.t('View as Mind Map'),
+      action: () => {
+        setAnchorEl(null);
+        setMindMapDialogOpened(true);
+      }
+    },
     {
       icon: <PrintIcon />,
       name: i18n.t('print'),
@@ -139,7 +159,10 @@ const MainMenu: React.FC<{
         }}
         aria-labelledby="dialog-title"
       >
-        <DialogTitle id="dialog-title">{i18n.t('aboutTitle')}</DialogTitle>
+        <DialogTitle id="dialog-title">
+          {i18n.t('aboutTitle')}
+          <DialogCloseButton onClick={() => setAboutDialogOpened(false)} />
+        </DialogTitle>
         <DialogContent>
           Please visit the dedicated&nbsp;
           <Link
@@ -163,6 +186,32 @@ const MainMenu: React.FC<{
         <DialogActions>
           <Button onClick={() => setAboutDialogOpened(false)} color="primary">
             Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={isMindMapDialogOpened}
+        onClose={() => {
+          setMindMapDialogOpened(false);
+        }}
+        fullWidth={true}
+        maxWidth={false}
+        aria-labelledby="dialog-title"
+        PaperProps={{ style: { height: '100%' } }}
+      >
+        <DialogTitle id="dialog-title">
+          {i18n.t('Mind Map View')}
+          <DialogCloseButton onClick={() => setMindMapDialogOpened(false)} />
+        </DialogTitle>
+        <DialogContent style={{ height: '100%' }}>
+          <MindMapViewer mdContent={mdContent} />
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
+            Export as SVG
+          </Button> */}
+          <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

@@ -147,6 +147,7 @@ const App: React.FC = () => {
     } else {
       setMode('CodeMirror');
     }
+    console.log(JSON.stringify(milkdownRef.current));
   };
 
   const milkdownStyle =
@@ -199,6 +200,7 @@ const App: React.FC = () => {
         toggleViewSource={toggleViewSource}
         isFilterVisible={isFilterVisible}
         setFilterVisible={setFilterVisible}
+        mdContent={getContent()}
         mode={mode}
       />
     </div>
