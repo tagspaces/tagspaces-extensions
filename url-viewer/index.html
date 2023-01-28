@@ -37,6 +37,18 @@
               console.log('Error getting content for: ' + filePath);
             });
 
+          document.getElementById('copyURL').addEventListener('click', e => {
+            e.stopPropagation();
+            const promise = navigator.clipboard.writeText(
+              document.getElementById('urlInput').value
+            );
+            sendMessageToHost({
+              command: 'showAlertDialog',
+              title: 'Success',
+              message: 'URL copied to clipboard'
+            });
+          });
+
           insertPrintMenuItem();
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/url-viewer');
@@ -86,6 +98,13 @@
     <div id="aboutDialogPlaceholder"></div>
     <div style="margin: 10px;">
       <div class="input-group">
+        <button id="copyURL" type="button" class="btn btn-primary" title="Copy">
+          <svg width="24" height="24" class="bi">
+            <path
+              d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+            ></path>
+          </svg>
+        </button>
         <input
           id="urlInput"
           type="text"
