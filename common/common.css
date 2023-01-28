@@ -1,12 +1,12 @@
 :root,
 :root.light {
   --default-background-color: #f5f5f5;
-  --default-text-color: #111111;
+  --default-text-color: #757575;
   --default-text-size: 14px;
   --background-color: #f7f7f7;
-  --text-color: #111111;
+  --text-color: #757575;
   --primary-background-color: #1dd19f;
-  --primary-text-color: #ffffff;
+  --primary-text-color: #757575;
 }
 
 :root.dark {
@@ -60,6 +60,7 @@ img {
 
 .bi {
   margin-right: 5px;
+  fill: #757575;
 }
 
 #extFabMenu {
