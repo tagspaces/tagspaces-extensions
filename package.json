@@ -30,6 +30,7 @@
     "msg-viewer/",
     "pdf-viewer/",
     "rtf-viewer/",
+    "slides-viewer/",
     "spreadsheet-viewer/",
     "text-editor/",
     "text-viewer/",
