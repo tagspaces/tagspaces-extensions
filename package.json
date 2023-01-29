@@ -61,6 +61,7 @@
     "markmap-lib": "^0.14.3",
     "markmap-view": "^0.14.3",
     "psd": "3.4.0",
+    "reveal.js": "^4.4.0",
     "shelljs": "^0.8.5",
     "summernote": "~0.8.20",
     "tga-js": "1.1.1",

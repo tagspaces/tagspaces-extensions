@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>HTML Viewer for TagSpaces</title>
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <style>
+      html,
+      body {
+        overflow: overlay;
+      }
+
+      #documentContent,
+      #readabilityContent {
+        color: var(--text-color);
+        background-color: var(--default-background-color);
+        margin: 15px;
+      }
+
+      #documentContent img,
+      #readabilityContent img {
+        max-width: 100%;
+      }
+    </style>
+    <link rel="stylesheet" href="libs/reveal.js/reset.css" />
+    <link rel="stylesheet" href="libs/reveal.js/reveal.css" />
+    <link rel="stylesheet" href="libs/reveal.js/theme/white.css" id="theme" />
+    <!-- <link rel="stylesheet" href="libs/reveal.js/theme/black.css" id="theme" /> -->
+    <script src="libs/reveal.js/reveal.js"></script>
+    <script src="libs/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="libs/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="libs/reveal.js/plugin/notes/notes.js"></script>
+    <script src="libs/reveal.js/plugin/math/math.js"></script>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <!-- <script src="../libs/mark.js/mark.min.js"></script> -->
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../common/common.js"></script>
+    <script>
+      const filePath = getParameterByName('file');
+      let locale = getParameterByName('locale');
+      if (locale === 'en') {
+        locale = 'en_US';
+      }
+
+      let htmlContent;
+      let sourceURL;
+      let screenshot;
+      let scrappedon;
+
+      document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') {
+          insertAboutDialog(
+            'https://docs.tagspaces.org/extensions/slides-viewer'
+          );
+          insertLoadingAnimation();
+          insertPrintMenuItem();
+          insertToggleFindMenuItem();
+          insertZoomContentMenuItem();
+          insertExportAsHTMLFunctionality();
+
+          initI18N(locale, 'ns.extension.json');
+
+          sendMessageToHost({ command: 'loadDefaultTextContent' });
+
+          document.body.addEventListener('dblclick', () => {
+            sendMessageToHost({ command: 'editDocument' });
+          });
+
+          documentContent = document.getElementById('documentContent');
+
+          // Handling settings
+          let extSettings = loadExtSettings('viewerHTMLSettings');
+
+          function saveSettings() {
+            saveExtSettings('viewerHTMLSettings', { styleIndex, zoomLevel });
+          }
+
+          let zoomLevel = 100;
+          if (extSettings && extSettings.zoomLevel) {
+            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
+              zoomLevel = extSettings.zoomLevel;
+            }
+            documentContent.style.zoom = zoomLevel + '%';
+          }
+
+          let styleIndex = 0;
+          // if (extSettings && extSettings.styleIndex) {
+          //   styleIndex = extSettings.styleIndex;
+          // }
+
+          // documentContent.classList.value = 'markdown ' + styles[styleIndex];
+          saveSettings();
+
+          document
+            .getElementById('zoomInButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel + 10;
+              if (zoomLevel >= 500) {
+                zoomLevel = 500;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomOutButton')
+            .addEventListener('click', e => {
+              e.stopPropagation();
+              zoomLevel = zoomLevel - 10;
+              if (zoomLevel < 30) {
+                zoomLevel = 30;
+              }
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('zoomResetButton')
+            .addEventListener('click', e => {
+              zoomLevel = 100;
+              saveSettings();
+              document.getElementById('documentContent').style.zoom =
+                zoomLevel + '%';
+            });
+
+          document
+            .getElementById('toSansSerifFontButton')
+            .addEventListener('click', e => {
+              document.getElementById('readabilityContent').style.fontFamily =
+                'Helvetica, Arial, sans-serif';
+              e.stopPropagation();
+            });
+
+          document
+            .getElementById('toSerifFontButton')
+            .addEventListener('click', e => {
+              document.getElementById('readabilityContent').style.fontFamily =
+                'Georgia, Times New Roman, serif';
+              e.stopPropagation();
+            });
+        }
+      });
+
+      function setContent(content, fileDirectory) {
+        const bodyRegex = /\<body[^>]*\>([^]*)\<\/body/m; // jshint ignore:line
+        let bodyContent;
+
+        try {
+          bodyContent = content.match(bodyRegex)[1];
+        } catch (e) {
+          console.log('Error parsing the body of the HTML document. ' + e);
+          bodyContent = content;
+        }
+
+        // removing all scripts from the document
+        const cleanedBodyContent = bodyContent.replace(
+          /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+          ''
+        );
+
+        // htmlContent = document.getElementById('documentContent');
+        // TODO: sanitize prevents loading local images with relative path
+        // htmlContent.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
+
+        document.body.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
+
+        Reveal.initialize({
+          controls: true,
+          progress: true,
+          center: true,
+          hash: true,
+          plugins: [
+            // RevealZoom,
+            RevealNotes,
+            // RevealSearch,
+            RevealMarkdown,
+            RevealHighlight
+          ]
+        });
+
+        hideLoadingAnimation();
+
+        document.getElementById('readabilityOffLabel').style.display = 'none';
+
+        // initFindToolbar();
+
+        handleLinks(document.documentElement, fileDirectory);
+
+        fixingEmbeddingOfLocalImages(htmlContent, fileDirectory);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="findToolbarPlaceholder"></div>
+    <div id="loadingAnimationPlaceholder"></div>
+    <div id="documentContent"></div>
+    <div id="readabilityContent" style="margin: 15px; display: none;"></div>
+    <div id="aboutDialogPlaceholder"></div>
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <svg
+          class="bi"
+          width="24"
+          height="24"
+          focusable="false"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+          ></path>
+        </svg>
+      </button>
+      <ul class="dropdown-menu">
+        <li id="toggleReadabilityModeMenuItemPlaceholder">
+          <a id="toggleReadabilityModeMenuItem" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="m19 1-5 5v11l5-4.5V1zM1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5V6c-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6zm22 13.5V6c-.6-.45-1.25-.75-2-1v13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5v2c1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5v-1.1z"
+              ></path>
+            </svg>
+            <span id="readabilityOnLabel" data-i18n="readabilityOn"></span>
+            <span id="readabilityOffLabel" data-i18n="readabilityOff"></span>
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="zoomContentMenuItemPlaceholder"></li>
+        <li id="changeStyleMenuItemPlaceholder"></li>
+        <li id="fontTypeMenutItem" style="display: none;" class="dropdown-item">
+          <svg width="24" height="24" class="bi">
+            <path
+              d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
+            ></path>
+          </svg>
+          <div
+            class="btn-group"
+            role="group"
+            aria-label="Font type"
+            style="width: 160px; border: 1px solid gray;"
+          >
+            <button
+              id="toSansSerifFontButton"
+              type="button"
+              class="btn"
+              data-i18ntitle="toSansSerifFont"
+              style="border-right: 1px solid gray"
+            >
+              <label style="font-family: Helvetica, Arial, sans-serif;"
+                >ABC</label
+              >
+            </button>
+            <button
+              id="toSerifFontButton"
+              type="button"
+              class="btn"
+              data-i18ntitle="toSerifFont"
+            >
+              <label style="font-family: Georgia, Times New Roman, serif"
+                >ABC</label
+              >
+            </button>
+          </div>
+        </li>
+        <li id="resetStyleMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a id="showWebScrapingDetailsMenuItem" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 16H5V7h14v12zm-2-7H7v-2h10v2zm-4 4H7v-2h6v2z"
+              ></path>
+            </svg>
+            <span data-i18n="htmlDetails" />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="toggleFindMenuItemPlaceholder"></li>
+        <li id="exportAsHTMLMenuItemPlaceholder"></li>
+        <li id="printMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="aboutMenuItemPlaceholder"></li>
+      </ul>
+    </div>
+  </body>
+</html>
