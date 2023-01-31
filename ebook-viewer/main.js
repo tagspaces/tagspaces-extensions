@@ -4,8 +4,7 @@ var params =
 var currentSectionIndex =
   params && params.get('loc') ? params.get('loc') : undefined;
 
-// Load the opf
-var book = ePub(filePath);
+var book = ePub(isWeb ? filePath : 'file://' + filePath);
 var rendition = book.renderTo('viewer', {
   width: '100%',
   height: '100%',
