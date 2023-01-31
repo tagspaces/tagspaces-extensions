@@ -76,6 +76,9 @@
             saveExtSettings('viewerMHTMLSettings', { zoomLevel });
           }
 
+          // TODO make it configurable
+          let openInReadabilityMode = true;
+
           let zoomLevel = 100;
           if (extSettings && extSettings.zoomLevel) {
             if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
