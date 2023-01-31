@@ -59,26 +59,26 @@
             'https://docs.tagspaces.org/extensions/slides-viewer'
           );
           insertLoadingAnimation();
-          insertPrintMenuItem();
-          insertToggleFindMenuItem();
-          insertZoomContentMenuItem();
-          insertExportAsHTMLFunctionality();
+          // insertPrintMenuItem();
+          // insertToggleFindMenuItem();
+          // insertZoomContentMenuItem();
+          // insertExportAsHTMLFunctionality();
 
           initI18N(locale, 'ns.extension.json');
 
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-          document.body.addEventListener('dblclick', () => {
-            sendMessageToHost({ command: 'editDocument' });
-          });
+          // document.body.addEventListener('dblclick', () => {
+          //   sendMessageToHost({ command: 'editDocument' });
+          // });
 
           documentContent = document.getElementById('documentContent');
 
           // Handling settings
-          let extSettings = loadExtSettings('viewerHTMLSettings');
+          let extSettings = loadExtSettings('slidesViewerSettings');
 
           function saveSettings() {
-            saveExtSettings('viewerHTMLSettings', { styleIndex, zoomLevel });
+            saveExtSettings('slidesViewerSettings', { styleIndex, zoomLevel });
           }
 
           let zoomLevel = 100;
@@ -97,56 +97,56 @@
           // documentContent.classList.value = 'markdown ' + styles[styleIndex];
           saveSettings();
 
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', e => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
+          // document
+          //   .getElementById('zoomInButton')
+          //   .addEventListener('click', e => {
+          //     e.stopPropagation();
+          //     zoomLevel = zoomLevel + 10;
+          //     if (zoomLevel >= 500) {
+          //       zoomLevel = 500;
+          //     }
+          //     saveSettings();
+          //     document.getElementById('documentContent').style.zoom =
+          //       zoomLevel + '%';
+          //   });
 
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
+          // document
+          //   .getElementById('zoomOutButton')
+          //   .addEventListener('click', e => {
+          //     e.stopPropagation();
+          //     zoomLevel = zoomLevel - 10;
+          //     if (zoomLevel < 30) {
+          //       zoomLevel = 30;
+          //     }
+          //     saveSettings();
+          //     document.getElementById('documentContent').style.zoom =
+          //       zoomLevel + '%';
+          //   });
 
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
-              zoomLevel = 100;
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
+          // document
+          //   .getElementById('zoomResetButton')
+          //   .addEventListener('click', e => {
+          //     zoomLevel = 100;
+          //     saveSettings();
+          //     document.getElementById('documentContent').style.zoom =
+          //       zoomLevel + '%';
+          //   });
 
-          document
-            .getElementById('toSansSerifFontButton')
-            .addEventListener('click', e => {
-              document.getElementById('readabilityContent').style.fontFamily =
-                'Helvetica, Arial, sans-serif';
-              e.stopPropagation();
-            });
+          // document
+          //   .getElementById('toSansSerifFontButton')
+          //   .addEventListener('click', e => {
+          //     document.getElementById('readabilityContent').style.fontFamily =
+          //       'Helvetica, Arial, sans-serif';
+          //     e.stopPropagation();
+          //   });
 
-          document
-            .getElementById('toSerifFontButton')
-            .addEventListener('click', e => {
-              document.getElementById('readabilityContent').style.fontFamily =
-                'Georgia, Times New Roman, serif';
-              e.stopPropagation();
-            });
+          // document
+          //   .getElementById('toSerifFontButton')
+          //   .addEventListener('click', e => {
+          //     document.getElementById('readabilityContent').style.fontFamily =
+          //       'Georgia, Times New Roman, serif';
+          //     e.stopPropagation();
+          //   });
         }
       });
 
@@ -239,41 +239,6 @@
         <li><hr class="dropdown-divider" /></li>
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li id="changeStyleMenuItemPlaceholder"></li>
-        <li id="fontTypeMenutItem" style="display: none;" class="dropdown-item">
-          <svg width="24" height="24" class="bi">
-            <path
-              d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
-            ></path>
-          </svg>
-          <div
-            class="btn-group"
-            role="group"
-            aria-label="Font type"
-            style="width: 160px; border: 1px solid gray;"
-          >
-            <button
-              id="toSansSerifFontButton"
-              type="button"
-              class="btn"
-              data-i18ntitle="toSansSerifFont"
-              style="border-right: 1px solid gray"
-            >
-              <label style="font-family: Helvetica, Arial, sans-serif;"
-                >ABC</label
-              >
-            </button>
-            <button
-              id="toSerifFontButton"
-              type="button"
-              class="btn"
-              data-i18ntitle="toSerifFont"
-            >
-              <label style="font-family: Georgia, Times New Roman, serif"
-                >ABC</label
-              >
-            </button>
-          </div>
-        </li>
         <li id="resetStyleMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li>
