@@ -11,6 +11,9 @@
       function exitFullscreen() {
         window.dispatchEvent(new Event('exitfullscreen'));
       }
+      function togglePlay() {
+        window.dispatchEvent(new Event('togglePlayPause'));
+      }
 
       function getParameterByName(paramName) {
         const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

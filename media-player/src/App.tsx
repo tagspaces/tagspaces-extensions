@@ -133,6 +133,13 @@ const App: React.FC = () => {
     api.plyr.toggleControls(true);
   });
 
+  useEventListener('togglePlayPause', () => {
+    const { current } = ref as React.MutableRefObject<APITypes>;
+    const api = current as { plyr: PlyrInstance };
+    isControlsHidden.current = false;
+    api.plyr.playing ? api.plyr.pause() : api.plyr.play();
+  });
+
   /*function urlExists(url) {
     return new Promise(resolve => {
       const urlParsed = parse(url);
