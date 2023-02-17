@@ -34,8 +34,7 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           sendMessageToHost({
-            command: 'loadDefaultTextContent',
-            preview: true
+            command: 'loadDefaultTextContent'
           });
 
           insertAboutDialog(
