@@ -124,6 +124,12 @@ function initEditor() {
             filepath: currentFilePath
           });
         }
+      },
+      // https://github.com/summernote/summernote/issues/4170#issuecomment-1131462798
+      onInit: function () {
+        $("button[data-toggle='dropdown']").each(function (index) {
+          $(this).removeAttr('data-toggle').attr('data-bs-toggle', 'dropdown');
+        });
       }
     }
   });
