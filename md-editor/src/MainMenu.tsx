@@ -20,6 +20,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MindMapViewer from './MindMapViewer';
 import DialogCloseButton from './DialogCloseButton';
 import i18n from './i18n';
+import { sendMessageToHost } from './utils';
 
 const MainMenu: React.FC<{
   toggleViewSource: () => void;
@@ -170,13 +171,10 @@ const MainMenu: React.FC<{
             variant="body2"
             onClick={(event: React.SyntheticEvent) => {
               event.preventDefault();
-              window.parent.postMessage(
-                JSON.stringify({
+              sendMessageToHost({
                   command: 'openLinkExternally',
                   link: 'https://docs.tagspaces.org/extensions/md-editor/'
-                }),
-                '*'
-              );
+                });
             }}
           >
             project page

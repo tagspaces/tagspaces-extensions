@@ -34,6 +34,7 @@
       const textColor = getParameterByName('textcolor').replace('%23', '#');
       primaryColor && rootEl.style.setProperty('--primary-color', primaryColor);
       textColor && rootEl.style.setProperty('--primary-text-color', textColor);
+      window.eventID = getParameterByName('eventID');
     </script>
   </head>
   <body>

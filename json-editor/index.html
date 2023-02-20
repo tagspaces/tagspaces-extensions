@@ -202,10 +202,7 @@
             ) {
               event.stopPropagation();
               event.preventDefault();
-              window.parent.postMessage(
-                JSON.stringify({ command: 'saveDocument' }),
-                '*'
-              );
+              sendMessageToHost({ command: 'saveDocument' });
             }
           });
         }

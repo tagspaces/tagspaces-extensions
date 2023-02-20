@@ -42,10 +42,10 @@
         if (document.readyState === 'complete') {
           // isWeb ? filePath : 'file://' + filePath
           getFileContentPromise(filePath, 'arraybuffer')
-            .then(content => {
+            .then((content) => {
               setContent(content);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log('Error getting content for: ' + filePath);
             });
 
@@ -88,7 +88,7 @@
         var rendition = book.renderTo('viewer', {
           width: '100%',
           height: '100%',
-          minSpreadWidth: 1000
+          minSpreadWidth: 1000,
           // spread: 'true'
         });
 
@@ -99,7 +99,7 @@
 
           next.addEventListener(
             'click',
-            function(e) {
+            function (e) {
               book.package.metadata.direction === 'rtl'
                 ? rendition.prev()
                 : rendition.next();
@@ -111,7 +111,7 @@
           var prev = document.getElementById('prev');
           prev.addEventListener(
             'click',
-            function(e) {
+            function (e) {
               book.package.metadata.direction === 'rtl'
                 ? rendition.next()
                 : rendition.prev();
@@ -120,7 +120,7 @@
             false
           );
 
-          var keyListener = function(e) {
+          var keyListener = function (e) {
             // Left Key
             if ((e.keyCode || e.which) == 37) {
               book.package.metadata.direction === 'rtl'
@@ -142,7 +142,7 @@
 
         var title = document.getElementById('title');
 
-        rendition.on('rendered', function(section) {
+        rendition.on('rendered', function (section) {
           var current = book.navigation && book.navigation.get(section.href);
 
           if (current) {
@@ -162,7 +162,7 @@
           }
         });
 
-        rendition.on('relocated', function(location) {
+        rendition.on('relocated', function (location) {
           console.log(location);
 
           var next =
@@ -187,7 +187,7 @@
           }
         });
 
-        rendition.on('layout', function(layout) {
+        rendition.on('layout', function (layout) {
           let viewer = document.getElementById('viewer');
 
           if (layout.spread) {
@@ -197,9 +197,11 @@
           }
         });
 
-        window.addEventListener('unload', function() {
+        window.addEventListener('unload', function () {
           console.log('unloading');
-          this.book.destroy();
+          if (this.book) {
+            this.book.destroy();
+          }
         });
 
         // book.loaded.navigation.then(function(toc){

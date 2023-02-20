@@ -15,6 +15,7 @@ import { MediaType } from 'plyr';
 import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
 import { HideProvider, useHide } from './HideContext';
 import useEventListener from './useEventListener';
+import { sendMessageToHost } from './utils';
 
 interface Props extends PlyrProps {
   filePath: string;
@@ -25,10 +26,6 @@ const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
   const { source, options = null, getLoopMode, filePath } = props;
   const raptorRef = usePlyr(ref, { options, source });
   const { dispatch } = useHide();
-
-  function sendMessageToHost(message: any) {
-    window.parent.postMessage(JSON.stringify(message), '*');
-  }
 
   // Do all api access here, it is guaranteed to be called with the latest plyr instance
   React.useEffect(() => {

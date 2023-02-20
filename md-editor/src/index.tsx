@@ -3,10 +3,8 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import App from './App';
+import { sendMessageToHost } from './utils';
 
-function sendMessageToHost(message: any) {
-  window.parent.postMessage(JSON.stringify(message), '*');
-}
 // mdContent is not received without this message.
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 

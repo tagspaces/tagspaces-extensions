@@ -191,10 +191,11 @@ function getBase64Image(imgURL) {
 }
 
 function sendMessageToHost(message) {
+  const eventID = getParameterByName('eventID');
   if (typeof sendToParent === 'function') {
-    sendToParent(message);
+    sendToParent({ ...message, eventID: eventID });
   } else {
-    window.parent.postMessage(JSON.stringify(message), '*');
+    window.parent.postMessage(JSON.stringify({ ...message, eventID: eventID }), '*');
   }
 }
 
@@ -474,7 +475,7 @@ function generateHTML(bodyContent) {
       </head>
       <body
         data-createdwith="TagSpaces"
-        data-scrappedon=${new Date().toISOString()} 
+        data-scrappedon=${new Date().toISOString()}
       >${bodyContent}</body>
     </html>
   `;
@@ -538,7 +539,7 @@ function insertChangeStyleMenuItemMenuItem() {
         ></path>
       </svg>
       <span data-i18n="changeTheme" />
-    </a>  
+    </a>
   `;
 }
 
@@ -687,7 +688,7 @@ function insertAboutDialog(helpURL) {
           </button>
         </div>
       </div>
-    </div>  
+    </div>
   `;
   const aboutModal = new bootstrap.Modal('#aboutModal', {});
 

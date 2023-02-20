@@ -19,6 +19,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Divider } from '@mui/material';
 import { useHide } from './HideContext';
+import { sendMessageToHost } from './utils';
 // https://medium.com/@danfyfe/using-react-context-with-functional-components-153cbd9ba214
 // import MenuVisibilityContext from "./MenuVisibilityContext";
 
@@ -221,13 +222,10 @@ const MainMenu: React.FC<{
             variant="body2"
             onClick={(event: React.SyntheticEvent) => {
               event.preventDefault();
-              window.parent.postMessage(
-                JSON.stringify({
-                  command: 'openLinkExternally',
-                  link: 'https://docs.tagspaces.org/extensions/media-player'
-                }),
-                '*'
-              );
+              sendMessageToHost({
+                command: 'openLinkExternally',
+                link: 'https://docs.tagspaces.org/extensions/media-player'
+              });
             }}
           >
             project page

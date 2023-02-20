@@ -13,6 +13,7 @@ import {
   CodeMirror,
   CodeMirrorRef
 } from '@tagspaces/tagspaces-md';
+import { sendMessageToHost } from './utils';
 
 const App: React.FC = () => {
   const focusCode = React.useRef(false);
@@ -42,10 +43,7 @@ const App: React.FC = () => {
         event.stopPropagation();
         event.preventDefault();
         if (!readOnly()) {
-          window.parent.postMessage(
-            JSON.stringify({ command: 'saveDocument' }),
-            '*'
-          );
+          sendMessageToHost({ command: 'saveDocument' });
         }
       } else if (event.key.toLowerCase() === 'p') {
         event.stopPropagation();
@@ -63,10 +61,7 @@ const App: React.FC = () => {
   // @ts-ignore
   useEventListener('dblclick', event => {
     if (readOnly()) {
-      window.parent.postMessage(
-        JSON.stringify({ command: 'editDocument' }),
-        '*'
-      );
+      sendMessageToHost({ command: 'editDocument' });
     }
   });
 
@@ -131,13 +126,10 @@ const App: React.FC = () => {
           JSON.stringify({ command: 'editDocument' }),
           '*'
       );*/
-      window.parent.postMessage(
-        JSON.stringify({
-          command: 'contentChangedInEditor'
-          // filepath: filePath
-        }),
-        '*'
-      );
+      sendMessageToHost({
+        command: 'contentChangedInEditor'
+        // filepath: filePath
+      });
     }
   };
 

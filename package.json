@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.71",
+  "version": "1.0.72",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "@google/model-viewer": "^2.1.1",
     "@mozilla/readability": "0.4.2",
-    "bootstrap5": "npm:bootstrap@5.2.3",
+    "bootstrap5": "npm:bootstra p@5.2.3",
     "dompurify": "~2.4.1",
     "epubjs": "0.3.93",
     "file-saver": "^2.0.5",
