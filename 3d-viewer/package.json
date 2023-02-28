@@ -10,5 +10,17 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "tsextension": {
+    "name": "3D Viewer",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": [
+      "glb",
+      "gltf",
+      "stl",
+      "obj"
+    ]
+  }
 }

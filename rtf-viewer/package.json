@@ -12,5 +12,14 @@
   "license": "MIT",
   "dependencies": {
     "rtf": "git+https://github.com/tbluemel/rtf.js"
+  },
+  "tsextension": {
+    "name": "RTF Viewer",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": [
+      "rtf"
+    ]
   }
 }

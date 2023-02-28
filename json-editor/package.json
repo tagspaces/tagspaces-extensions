@@ -12,5 +12,15 @@
   "license": "MIT",
   "dependencies": {
     "jsoneditor": "~5.5.2"
+  },
+  "tsextension": {
+    "name": "JSON Viewer and Editor",
+    "types": [
+      "viewer",
+      "editor"
+    ],
+    "fileTypes": [
+      "json"
+    ]
   }
 }

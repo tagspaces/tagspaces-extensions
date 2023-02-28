@@ -12,5 +12,15 @@
   "dependencies": {
     "summernote": "~0.8.11"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "tsextension": {
+    "name": "HTML Editor",
+    "types": [
+      "editor"
+    ],
+    "fileTypes": [
+      "htm",
+      "html"
+    ]
+  }
 }

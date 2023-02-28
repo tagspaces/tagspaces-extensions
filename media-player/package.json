@@ -59,5 +59,33 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "tsextension": {
+    "name": "Media Player",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": [
+      "flac",
+      "mov",
+      "acc",
+      "mkv",
+      "aac",
+      "3g2",
+      "3gp",
+      "mp3",
+      "lrv",
+      "mp4",
+      "m4a",
+      "oga",
+      "ogg",
+      "ogv",
+      "ogx",
+      "opus",
+      "spx",
+      "wav",
+      "wave",
+      "webm"
+    ]
   }
 }

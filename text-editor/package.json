@@ -16,5 +16,37 @@
   },
   "scripts": {
     "postinstall": "node scripts/update-libs.js"
+  },
+  "tsextension": {
+    "name": "Text Editor",
+    "types": [
+      "viewer",
+      "editor"
+    ],
+    "fileTypes": [
+      "c",
+      "cpp",
+      "cs",
+      "css",
+      "h",
+      "java",
+      "js",
+      "jsm",
+      "less",
+      "ml",
+      "php",
+      "pl",
+      "py",
+      "rb",
+      "sh",
+      "sql",
+      "txt",
+      "xml"
+    ],
+    "fileTypesEdit": [
+      "mdx",
+      "svg",
+      "xhtml"
+    ]
   }
 }

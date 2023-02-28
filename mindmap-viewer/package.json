@@ -10,5 +10,12 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "tsextension": {
+    "name": "Mindmap Viewer (beta)",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": []
+  }
 }

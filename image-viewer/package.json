@@ -16,5 +16,33 @@
     "tiff.js": "https://github.com/seikichi/tiff.js.git",
     "psd": "~3.2.0",
     "exif-js": "2.3.0"
+  },
+  "tsextension": {
+    "name": "Image Viewer",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": [
+      "avif",
+      "bmp",
+      "gif",
+      "ico",
+      "jpeg",
+      "jpg",
+      "jif",
+      "jfif",
+      "png",
+      "tga",
+      "psd",
+      "nef",
+      "cr2",
+      "dng",
+      "tif",
+      "tiff",
+      "webp"
+    ],
+    "fileTypesView": [
+      "svg"
+    ]
   }
 }

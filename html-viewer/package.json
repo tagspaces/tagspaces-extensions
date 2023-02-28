@@ -10,5 +10,18 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "tsextension": {
+    "name": "HTML Viewer",
+    "types": [
+      "viewer"
+    ],
+    "fileTypes": [
+      "htm",
+      "html"
+    ],
+    "fileTypesView": [
+      "xhtml"
+    ]
+  }
 }
