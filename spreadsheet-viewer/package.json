@@ -16,11 +16,20 @@
     "types": [
       "viewer"
     ],
+    "color": "#b2f30e",
     "fileTypes": [
-      "xlsx",
-      "xls",
-      "csv",
-      "ods"
+      {
+        "ext": "xlsx"
+      },
+      {
+        "ext": "xls"
+      },
+      {
+        "ext": "csv"
+      },
+      {
+        "ext": "ods"
+      }
     ]
   }
 }

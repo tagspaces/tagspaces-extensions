@@ -69,16 +69,23 @@
     "url": "https://github.com/tagspaces/tagspaces-extensions/issues"
   },
   "tsextension": {
+    "id": "@tagspaces/extensions/md-editor",
     "name": "MD Editor",
     "types": [
       "viewer",
       "editor"
     ],
+    "color": "#beefed",
     "fileTypes": [
-      "md"
-    ],
-    "fileTypesView": [
-      "mdx"
+      {
+        "ext": "md"
+      },
+      {
+        "ext": "mdx",
+        "types": [
+          "viewer"
+        ]
+      }
     ],
     "buildFolder": "build"
   }

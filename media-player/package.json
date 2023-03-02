@@ -65,27 +65,68 @@
     "types": [
       "viewer"
     ],
+    "color": "#c5e4f9",
     "fileTypes": [
-      "flac",
-      "mov",
-      "acc",
-      "mkv",
-      "aac",
-      "3g2",
-      "3gp",
-      "mp3",
-      "lrv",
-      "mp4",
-      "m4a",
-      "oga",
-      "ogg",
-      "ogv",
-      "ogx",
-      "opus",
-      "spx",
-      "wav",
-      "wave",
-      "webm"
+      {
+        "ext": "flac"
+      },
+      {
+        "ext": "mov"
+      },
+      {
+        "ext": "acc"
+      },
+      {
+        "ext": "mkv"
+      },
+      {
+        "ext": "aac"
+      },
+      {
+        "ext": "3g2"
+      },
+      {
+        "ext": "3gp"
+      },
+      {
+        "ext": "mp3"
+      },
+      {
+        "ext": "lrv"
+      },
+      {
+        "ext": "mp4"
+      },
+      {
+        "ext": "m4a"
+      },
+      {
+        "ext": "oga"
+      },
+      {
+        "ext": "ogg"
+      },
+      {
+        "ext": "ogv"
+      },
+      {
+        "ext": "ogx"
+      },
+      {
+        "ext": "opus"
+      },
+      {
+        "ext": "spx"
+      },
+      {
+        "ext": "wav"
+      },
+      {
+        "ext": "wave"
+      },
+      {
+        "ext": "webm"
+      }
     ]
   }
 }

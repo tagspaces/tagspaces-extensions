@@ -17,10 +17,22 @@
       "viewer"
     ],
     "fileTypes": [
-      "glb",
-      "gltf",
-      "stl",
-      "obj"
+      {
+        "ext": "glb",
+        "color": "#ac21f3"
+      },
+      {
+        "ext": "gltf",
+        "color": "#ac21f3"
+      },
+      {
+        "ext": "stl",
+        "color": "#ac21f3"
+      },
+      {
+        "ext": "obj",
+        "color": "#ac21f3"
+      }
     ]
   }
 }

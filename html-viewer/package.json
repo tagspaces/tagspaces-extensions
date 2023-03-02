@@ -17,11 +17,18 @@
       "viewer"
     ],
     "fileTypes": [
-      "htm",
-      "html"
-    ],
-    "fileTypesView": [
-      "xhtml"
+      {
+        "ext": "htm",
+        "color": ""
+      },
+      {
+        "ext": "html",
+        "color": ""
+      },
+      {
+        "ext": "xhtml",
+        "color": ""
+      }
     ]
   }
 }

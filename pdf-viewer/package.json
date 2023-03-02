@@ -18,8 +18,11 @@
     "types": [
       "viewer"
     ],
+    "color": "#f5897f",
     "fileTypes": [
-      "pdf"
+      {
+        "ext": "pdf"
+      }
     ]
   }
 }

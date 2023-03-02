@@ -18,8 +18,11 @@
     "types": [
       "viewer"
     ],
+    "color": "",
     "fileTypes": [
-      "rtf"
+      {
+        "ext": "rtf"
+      }
     ]
   }
 }

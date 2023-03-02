@@ -21,7 +21,10 @@
       "viewer"
     ],
     "fileTypes": [
-      "zip"
+      {
+        "ext": "zip",
+        "color": "#ffe766"
+      }
     ]
   }
 }

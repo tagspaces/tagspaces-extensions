@@ -16,7 +16,10 @@
       "viewer"
     ],
     "fileTypes": [
-      "epub"
+      {
+        "ext": "epub",
+        "color": ""
+      }
     ]
   }
 }

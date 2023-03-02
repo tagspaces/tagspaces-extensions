@@ -22,27 +22,62 @@
     "types": [
       "viewer"
     ],
+    "color": "#9fd5ba",
     "fileTypes": [
-      "avif",
-      "bmp",
-      "gif",
-      "ico",
-      "jpeg",
-      "jpg",
-      "jif",
-      "jfif",
-      "png",
-      "tga",
-      "psd",
-      "nef",
-      "cr2",
-      "dng",
-      "tif",
-      "tiff",
-      "webp"
-    ],
-    "fileTypesView": [
-      "svg"
+      {
+        "ext": "avif"
+      },
+      {
+        "ext": "bmp"
+      },
+      {
+        "ext": "gif"
+      },
+      {
+        "ext": "ico"
+      },
+      {
+        "ext": "jpeg"
+      },
+      {
+        "ext": "jpg"
+      },
+      {
+        "ext": "jif"
+      },
+      {
+        "ext": "jfif"
+      },
+      {
+        "ext": "png"
+      },
+      {
+        "ext": "tga"
+      },
+      {
+        "ext": "psd"
+      },
+      {
+        "ext": "nef"
+      },
+      {
+        "ext": "cr2"
+      },
+      {
+        "ext": "dng"
+      },
+      {
+        "ext": "tif"
+      },
+      {
+        "ext": "tiff"
+      },
+      {
+        "ext": "webp"
+      },
+      {
+        "ext": "svg"
+      }
     ]
   }
 }

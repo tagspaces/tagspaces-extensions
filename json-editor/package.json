@@ -19,8 +19,11 @@
       "viewer",
       "editor"
     ],
+    "color": "",
     "fileTypes": [
-      "json"
+      {
+        "ext": "json"
+      }
     ]
   }
 }

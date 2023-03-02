@@ -23,30 +23,83 @@
       "viewer",
       "editor"
     ],
+    "color": "",
     "fileTypes": [
-      "c",
-      "cpp",
-      "cs",
-      "css",
-      "h",
-      "java",
-      "js",
-      "jsm",
-      "less",
-      "ml",
-      "php",
-      "pl",
-      "py",
-      "rb",
-      "sh",
-      "sql",
-      "txt",
-      "xml"
-    ],
-    "fileTypesEdit": [
-      "mdx",
-      "svg",
-      "xhtml"
+      {
+        "ext": "c"
+      },
+      {
+        "ext": "cpp"
+      },
+      {
+        "ext": "cs"
+      },
+      {
+        "ext": "css"
+      },
+      {
+        "ext": "h"
+      },
+      {
+        "ext": "java"
+      },
+      {
+        "ext": "js"
+      },
+      {
+        "ext": "jsm"
+      },
+      {
+        "ext": "less"
+      },
+      {
+        "ext": "ml"
+      },
+      {
+        "ext": "php"
+      },
+      {
+        "ext": "pl"
+      },
+      {
+        "ext": "py"
+      },
+      {
+        "ext": "rb"
+      },
+      {
+        "ext": "sh"
+      },
+      {
+        "ext": "sql"
+      },
+      {
+        "ext": "txt"
+      },
+      {
+        "ext": "xml"
+      },
+      {
+        "ext": "mdx",
+        "types": [
+          "editor"
+        ],
+        "color": "#beefed"
+      },
+      {
+        "ext": "svg",
+        "types": [
+          "editor"
+        ],
+        "color": "#9fd5ba"
+      },
+      {
+        "ext": "xhtml",
+        "types": [
+          "editor"
+        ],
+        "color": ""
+      }
     ]
   }
 }

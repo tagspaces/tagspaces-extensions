@@ -19,8 +19,14 @@
       "editor"
     ],
     "fileTypes": [
-      "htm",
-      "html"
+      {
+        "ext": "htm",
+        "color": ""
+      },
+      {
+        "ext": "html",
+        "color": ""
+      }
     ]
   }
 }

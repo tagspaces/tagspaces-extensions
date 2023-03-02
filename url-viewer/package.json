@@ -16,10 +16,17 @@
     "types": [
       "viewer"
     ],
+    "color": "",
     "fileTypes": [
-      "desktop",
-      "url",
-      "website"
+      {
+        "ext": "desktop"
+      },
+      {
+        "ext": "url"
+      },
+      {
+        "ext": "website"
+      }
     ]
   }
 }
