@@ -14,7 +14,7 @@
     "jsoneditor": "~5.5.2"
   },
   "tsextension": {
-    "name": "JSON Viewer and Editor",
+    "name": "JSON Editor",
     "types": [
       "viewer",
       "editor"
