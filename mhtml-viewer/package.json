@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/mhtml-viewer",
-  "version": "1.0.0",
+  "version": "1.0.75",
   "description": "A TagSpaces extension allowing you to open MHTML and EML files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
