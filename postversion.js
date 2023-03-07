@@ -16,7 +16,8 @@ fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
     (file) =>
       file.isDirectory() &&
       !file.name.startsWith('.') &&
-      file.name !== 'node_modules'
+      file.name !== 'node_modules' &&
+      file.name !== 'tagspacespro'
   );
 
   subDirectories.map((dir) => {
