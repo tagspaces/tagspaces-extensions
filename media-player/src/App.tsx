@@ -176,7 +176,7 @@ const App: React.FC = () => {
     title: 'TagSpaces',
     sources: [
       {
-        src: filePath
+        src: encodeURIComponent(filePath).replace(/%2F/g, '/')
       }
     ],
     poster: fileThumb, //'/path/to/poster.jpg',
