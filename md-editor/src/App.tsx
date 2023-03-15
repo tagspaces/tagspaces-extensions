@@ -4,6 +4,8 @@ import useEventListener from './useEventListener';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import MoreIcon from '@mui/icons-material/MoreVert';
+// @ts-ignore
+import EasySpeech from 'easy-speech';
 import './extension.css';
 import i18n from './i18n';
 import MainMenu from './MainMenu';
@@ -16,6 +18,7 @@ import {
 import { sendMessageToHost } from './utils';
 
 const App: React.FC = () => {
+  const voices = React.useRef<SpeechSynthesisVoice[] | null>(null);
   const focusCode = React.useRef(false);
   const focus = React.useRef(false);
   const contentRef = React.useRef(null);
@@ -72,6 +75,27 @@ const App: React.FC = () => {
   useEventListener('contentLoaded', () => {
     forceUpdate();
   });
+
+  useEffect(() => {
+    EasySpeech.init()
+      .then((success: boolean) => {
+        if (success) {
+          const allVoices: SpeechSynthesisVoice[] = EasySpeech.voices();
+          if (allVoices) {
+            const langVoices: SpeechSynthesisVoice[] = allVoices.filter(v =>
+              v.lang.startsWith(i18n.language + '-')
+            );
+
+            if (langVoices) {
+              voices.current = langVoices;
+            } else {
+              voices.current = allVoices;
+            }
+          }
+        }
+      })
+      .catch((e: Error) => console.error(e));
+  }, []);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(event.target.value);
@@ -142,6 +166,23 @@ const App: React.FC = () => {
     console.log(JSON.stringify(milkdownRef.current));
   };
 
+  function speak(text: string) {
+    return new Promise<boolean>(resolve => {
+      EasySpeech.cancel();
+      EasySpeech.speak({
+        text: text,
+        pitch: 1.0, //0.9,
+        rate: 0.9, //1.2,
+        volume: 1.0,
+        lang: i18n.language,
+        voice: voices.current ? voices.current[0] : undefined,
+        // there are more events, see the API for supported events
+        end: () => resolve(true)
+        //boundary: (e) => console.debug("boundary reached"),
+      });
+    });
+  }
+
   const milkdownStyle =
     mode === 'Milkdown'
       ? { width: '100%', height: '100%' }
@@ -189,6 +230,8 @@ const App: React.FC = () => {
         />
       )} */}
       <MainMenu
+        readText={() => speak(getContent())}
+        cancelRead={() => EasySpeech.cancel()}
         toggleViewSource={toggleViewSource}
         isFilterVisible={isFilterVisible}
         setFilterVisible={setFilterVisible}

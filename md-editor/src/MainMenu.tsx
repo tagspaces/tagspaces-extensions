@@ -12,7 +12,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
-import SearchIcon from '@mui/icons-material/FindInPage';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import CancelIcon from '@mui/icons-material/Cancel';
 import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
@@ -24,19 +25,23 @@ import { sendMessageToHost } from './utils';
 
 const MainMenu: React.FC<{
   toggleViewSource: () => void;
+  readText: () => Promise<boolean>;
+  cancelRead: () => void;
   isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
   mdContent: string;
   mode: string;
 }> = ({
   toggleViewSource,
+  readText,
+  cancelRead,
   isFilterVisible,
   setFilterVisible,
   mdContent,
   mode
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const isSpeaking = React.useRef<boolean>(false);
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
   const [isMindMapDialogOpened, setMindMapDialogOpened] =
     useState<boolean>(false);
@@ -76,6 +81,19 @@ const MainMenu: React.FC<{
       action: () => {
         setAnchorEl(null);
         window.print();
+      }
+    },
+    {
+      icon: isSpeaking.current ? <CancelIcon /> : <RecordVoiceOverIcon />,
+      name: i18n.t(isSpeaking.current ? 'cancel' : 'read'),
+      action: () => {
+        setAnchorEl(null);
+        if (isSpeaking.current) {
+          cancelRead();
+        } else {
+          isSpeaking.current = true;
+          readText().then(() => (isSpeaking.current = false));
+        }
       }
     },
     {
@@ -172,9 +190,9 @@ const MainMenu: React.FC<{
             onClick={(event: React.SyntheticEvent) => {
               event.preventDefault();
               sendMessageToHost({
-                  command: 'openLinkExternally',
-                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
-                });
+                command: 'openLinkExternally',
+                link: 'https://docs.tagspaces.org/extensions/md-editor/'
+              });
             }}
           >
             project page
