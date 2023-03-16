@@ -27,13 +27,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import TextField from '@mui/material/TextField';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
 import DialogCloseButton from './DialogCloseButton';
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  handleSpeedChange: (speed: string) => void;
+  handleSpeedChange: (speed: number) => void;
   handleVoiceChange: (voice: string) => void;
   voice: SpeechSynthesisVoice | null;
   voices: SpeechSynthesisVoice[] | null;
@@ -42,6 +43,10 @@ interface Props {
 
 function SettingsDialog(props: Props) {
   const { open, onClose } = props;
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    props.handleSpeedChange(newValue as number);
+  };
 
   return (
     <Dialog
@@ -54,17 +59,17 @@ function SettingsDialog(props: Props) {
         <DialogCloseButton onClick={onClose} />
       </DialogTitle>
       <DialogContent>
-        <TextField
-          fullWidth={true}
-          margin="dense"
-          autoFocus
-          label={i18n.t('speechSpeed')}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            props.handleSpeedChange(e.target.value)
-          }}
-          defaultValue={props.speed}
-          data-tid="speechSpeedTID"
-        />
+        <Typography gutterBottom>{i18n.t('speechSpeed')}</Typography>
+        <div style={{ marginTop: 40 }}>
+          <Slider
+            defaultValue={props.speed}
+            onChange={handleChange}
+            step={0.05}
+            min={0.05}
+            max={10}
+            valueLabelDisplay="on"
+          />
+        </div>
         <InputLabel shrink htmlFor="voices">
           {i18n.t('voices')}
         </InputLabel>

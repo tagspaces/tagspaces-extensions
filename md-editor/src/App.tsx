@@ -277,7 +277,7 @@ const App: React.FC = () => {
         open={isSettingsDialogOpened}
         onClose={() => setSettingsDialogOpened(false)}
         handleSpeedChange={speed => {
-          rate.current = parseFloat(speed);
+          rate.current = speed; //parseFloat(speed);
         }}
         handleVoiceChange={handleVoiceChange}
         voices={voices.current}
