@@ -12,6 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TreeIcon from '@mui/icons-material/AccountTree';
@@ -27,6 +28,7 @@ const MainMenu: React.FC<{
   toggleViewSource: () => void;
   readText: () => Promise<boolean>;
   cancelRead: () => void;
+  setSettingsDialogOpened: (open: boolean) => void;
   isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
   mdContent: string;
@@ -35,6 +37,7 @@ const MainMenu: React.FC<{
   toggleViewSource,
   readText,
   cancelRead,
+  setSettingsDialogOpened,
   isFilterVisible,
   setFilterVisible,
   mdContent,
@@ -90,10 +93,21 @@ const MainMenu: React.FC<{
         setAnchorEl(null);
         if (isSpeaking.current) {
           cancelRead();
+          isSpeaking.current = false;
         } else {
           isSpeaking.current = true;
-          readText().then(() => (isSpeaking.current = false));
+          readText().then(() => {
+            isSpeaking.current = false;
+          });
         }
+      }
+    },
+    {
+      icon: <SettingsIcon />,
+      name: i18n.t('settings'),
+      action: () => {
+        setAnchorEl(null);
+        setSettingsDialogOpened(true);
       }
     },
     {

@@ -35,5 +35,8 @@
     "save": "Save",
     "exportAsHTML": "Export as HTML",
     "close": "Close",
+    "settingsTitle": "Settings",
+    "speechSpeed": "Speech speed",
+    "voices": "Voices",
     "-": "-"
 }

@@ -16,9 +16,14 @@ import {
   CodeMirrorRef
 } from '@tagspaces/tagspaces-md';
 import { sendMessageToHost } from './utils';
+import SettingsDialog from './SettingsDialog';
 
 const App: React.FC = () => {
+  const [isSettingsDialogOpened, setSettingsDialogOpened] =
+    useState<boolean>(false);
   const voices = React.useRef<SpeechSynthesisVoice[] | null>(null);
+  const voice = React.useRef<SpeechSynthesisVoice | null>(null);
+  const rate = React.useRef<number>(0.9);
   const focusCode = React.useRef(false);
   const focus = React.useRef(false);
   const contentRef = React.useRef(null);
@@ -81,15 +86,23 @@ const App: React.FC = () => {
       .then((success: boolean) => {
         if (success) {
           const allVoices: SpeechSynthesisVoice[] = EasySpeech.voices();
-          if (allVoices) {
-            const langVoices: SpeechSynthesisVoice[] = allVoices.filter(v =>
-              v.lang.startsWith(i18n.language + '-')
-            );
+          if (allVoices && allVoices.length > 0) {
+            const langVoices = allVoices.filter(v => v.lang === i18n.language);
 
-            if (langVoices) {
+            if (langVoices.length > 0) {
               voices.current = langVoices;
             } else {
-              voices.current = allVoices;
+              const lVoices: SpeechSynthesisVoice[] = allVoices.filter(v =>
+                v.lang.startsWith(i18n.language)
+              );
+              if (lVoices.length > 0) {
+                voices.current = lVoices;
+              } else {
+                voices.current = allVoices;
+              }
+            }
+            if (!voice.current) {
+              voice.current = voices.current[0];
             }
           }
         }
@@ -166,21 +179,42 @@ const App: React.FC = () => {
     console.log(JSON.stringify(milkdownRef.current));
   };
 
-  function speak(text: string) {
+  function speak(text: string | null) {
+    if (!text) return Promise.resolve(false);
     return new Promise<boolean>(resolve => {
       EasySpeech.cancel();
       EasySpeech.speak({
         text: text,
         pitch: 1.0, //0.9,
-        rate: 0.9, //1.2,
+        rate: rate.current, //0.9, //1.2,
         volume: 1.0,
         lang: i18n.language,
-        voice: voices.current ? voices.current[0] : undefined,
+        voice: voice.current,
         // there are more events, see the API for supported events
         end: () => resolve(true)
         //boundary: (e) => console.debug("boundary reached"),
       });
     });
+  }
+
+  function handleVoiceChange(voiceChosen: string) {
+    if (voices.current) {
+      const v: SpeechSynthesisVoice | undefined = voices.current.find(
+        v => v.name === voiceChosen
+      );
+      if (v) {
+        voice.current = v;
+        forceUpdate();
+      }
+    }
+  }
+
+  /**
+   * todo return: #Hellocheck_box_outline_blankoption 1One of the earliest societies was the Neolithic Karanovo cultureAPPLYAPPLYchevron_leftchevron_rightexpand_lessexpand_moreformat_align_leftformat_align_centerformat_align_rightdeleteformat_boldformat_italicstrikethrough_scodelinkdrag_indicatortitleTextlooks_oneHeading 1looks_twoHeading 2looks_3Heading 3format_list_bulletedBullet listformat_list_numberedOrdered listchecklistTask listformat_quoteBlockquotecodeCode
+   */
+  function getMarkdownTxt() {
+    const elements = document.getElementsByClassName('milkdown');
+    return elements[0]?.textContent;
   }
 
   const milkdownStyle =
@@ -230,13 +264,25 @@ const App: React.FC = () => {
         />
       )} */}
       <MainMenu
-        readText={() => speak(getContent())}
+        readText={() => speak(getMarkdownTxt())} //getContent())}
         cancelRead={() => EasySpeech.cancel()}
         toggleViewSource={toggleViewSource}
         isFilterVisible={isFilterVisible}
         setFilterVisible={setFilterVisible}
         mdContent={getContent()}
         mode={mode}
+        setSettingsDialogOpened={setSettingsDialogOpened}
+      />
+      <SettingsDialog
+        open={isSettingsDialogOpened}
+        onClose={() => setSettingsDialogOpened(false)}
+        handleSpeedChange={speed => {
+          rate.current = parseFloat(speed);
+        }}
+        handleVoiceChange={handleVoiceChange}
+        voices={voices.current}
+        voice={voice.current}
+        speed={rate.current}
       />
     </div>
   );
