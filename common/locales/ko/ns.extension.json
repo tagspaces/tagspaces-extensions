@@ -35,5 +35,16 @@
     "save": "저장",
     "exportAsHTML": "Export as HTML",
     "close": "닫기",
+    "settings": "설정",
+    "speechSpeed": "Speech speed",
+    "voices": "Voices",
+    "languages": "Languages",
+    "read": "Read",
+    "continueReading": "Continue reading",
+    "pauseReading": "Pause reading",
+    "stopReading": "Stop reading",
+    "viewMarkdown": "Open Markdown editor",
+    "viewEditor": "Open text editor",
+    "viewAsMindMap": "View as mind map",
     "-": "-"
 }

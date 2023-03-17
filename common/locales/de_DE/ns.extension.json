@@ -35,5 +35,16 @@
     "save": "Speichern",
     "exportAsHTML": "Als HTML exportieren",
     "close": "Schließen",
+    "settings": "Einstellungen",
+    "speechSpeed": "Lesegeschwindigkeit",
+    "voices": "Stimmen",
+    "languages": "Sprachen",
+    "read": "Vorlesen starten",
+    "continueReading": "Vorlesen fortsetzen",
+    "pauseReading": "Vorlesen pausieren",
+    "stopReading": "Vorlesen stoppen",
+    "viewMarkdown": "Markdown Editor öffnen",
+    "viewEditor": "Text Editor öffnen",
+    "viewAsMindMap": "Als Mind-map darstellen",
     "-": "-"
 }

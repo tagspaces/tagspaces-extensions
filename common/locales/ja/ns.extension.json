@@ -35,5 +35,16 @@
     "save": "保存",
     "exportAsHTML": "HTMLとしてエクスポート",
     "close": "閉じる",
+    "settings": "設定",
+    "speechSpeed": "Speech speed",
+    "voices": "Voices",
+    "languages": "Languages",
+    "read": "Read",
+    "continueReading": "Continue reading",
+    "pauseReading": "Pause reading",
+    "stopReading": "Stop reading",
+    "viewMarkdown": "Open Markdown editor",
+    "viewEditor": "Open text editor",
+    "viewAsMindMap": "View as mind map",
     "-": "-"
 }
