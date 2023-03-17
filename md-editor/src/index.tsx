@@ -8,6 +8,9 @@ import { sendMessageToHost } from './utils';
 // mdContent is not received without this message.
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
+// @ts-ignore
+i18n.changeLanguage(window.locale);
+
 ReactDOM.render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>

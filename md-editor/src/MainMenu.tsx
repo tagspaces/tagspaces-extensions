@@ -12,7 +12,11 @@ import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
-import SearchIcon from '@mui/icons-material/FindInPage';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import StopIcon from '@mui/icons-material/Stop';
 import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
@@ -24,19 +28,32 @@ import { sendMessageToHost } from './utils';
 
 const MainMenu: React.FC<{
   toggleViewSource: () => void;
+  readText: () => Promise<boolean>;
+  cancelRead: () => void;
+  pauseRead: () => void;
+  resumeRead: () => void;
+  setSettingsDialogOpened: (open: boolean) => void;
   isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
   mdContent: string;
   mode: string;
+  haveSpeakSupport: boolean;
 }> = ({
   toggleViewSource,
+  readText,
+  cancelRead,
+  pauseRead,
+  resumeRead,
+  setSettingsDialogOpened,
   isFilterVisible,
   setFilterVisible,
   mdContent,
-  mode
+  mode,
+  haveSpeakSupport
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const isSpeaking = React.useRef<boolean>(false);
+  const isPaused = React.useRef<boolean>(false);
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
   const [isMindMapDialogOpened, setMindMapDialogOpened] =
     useState<boolean>(false);
@@ -45,10 +62,42 @@ const MainMenu: React.FC<{
     setAnchorEl(event.currentTarget);
   };
 
+  const speakButton = {
+    icon: isSpeaking.current ? <StopIcon /> : <RecordVoiceOverIcon />,
+    name: i18n.t(isSpeaking.current ? 'stopReading' : 'read'),
+    action: () => {
+      setAnchorEl(null);
+      if (isSpeaking.current) {
+        cancelRead();
+        isSpeaking.current = false;
+      } else {
+        isSpeaking.current = true;
+        readText().then(() => {
+          isSpeaking.current = false;
+        });
+      }
+    }
+  };
+
+  const pauseButton = {
+    icon: isPaused.current ? <PlayArrowIcon /> : <PauseIcon />,
+    name: i18n.t(isPaused.current ? 'continueReading' : 'pauseReading'),
+    action: () => {
+      setAnchorEl(null);
+      if (isPaused.current) {
+        resumeRead();
+        isPaused.current = false;
+      } else {
+        pauseRead();
+        isPaused.current = true;
+      }
+    }
+  };
+
   const actions = [
     {
       icon: <CodeIcon />,
-      name: mode === 'Milkdown' ? 'View Markdown' : 'View Editor',
+      name: mode === 'Milkdown' ? 'viewMarkdown' : 'viewEditor',
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
@@ -64,18 +113,28 @@ const MainMenu: React.FC<{
     // },
     {
       icon: <TreeIcon />,
-      name: i18n.t('View as Mind Map'),
+      name: i18n.t('viewAsMindMap'),
       action: () => {
         setAnchorEl(null);
         setMindMapDialogOpened(true);
       }
     },
+    ...(haveSpeakSupport ? [speakButton] : []),
+    ...(haveSpeakSupport && isSpeaking.current ? [pauseButton] : []),
     {
       icon: <PrintIcon />,
       name: i18n.t('print'),
       action: () => {
         setAnchorEl(null);
         window.print();
+      }
+    },    
+    {
+      icon: <SettingsIcon />,
+      name: i18n.t('settings'),
+      action: () => {
+        setAnchorEl(null);
+        setSettingsDialogOpened(true);
       }
     },
     {
@@ -172,9 +231,9 @@ const MainMenu: React.FC<{
             onClick={(event: React.SyntheticEvent) => {
               event.preventDefault();
               sendMessageToHost({
-                  command: 'openLinkExternally',
-                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
-                });
+                command: 'openLinkExternally',
+                link: 'https://docs.tagspaces.org/extensions/md-editor/'
+              });
             }}
           >
             project page
