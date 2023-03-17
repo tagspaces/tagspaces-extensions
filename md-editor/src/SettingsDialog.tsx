@@ -1,21 +1,3 @@
-/**
- * TagSpaces - universal file and folder organizer
- * Copyright (C) 2017-present TagSpaces UG (haftungsbeschraenkt)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License (version 3) as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- */
-
 import React from 'react';
 import i18n from './i18n';
 import Button from '@mui/material/Button';
@@ -76,7 +58,9 @@ function SettingsDialog(props: Props) {
           minWidth: 400
         }}
       >
-        <Typography gutterBottom>{i18n.t('speechSpeed')}</Typography>
+        <InputLabel shrink htmlFor="languages">
+          {i18n.t('speechSpeed')}
+        </InputLabel>
         <div style={{ marginTop: 40 }}>
           <Slider
             defaultValue={props.speed}
@@ -92,7 +76,7 @@ function SettingsDialog(props: Props) {
         </InputLabel>
         <Select
           onChange={handleLanguageChange}
-          input={<OutlinedInput id="languages" label={i18n.t('languages')} />}
+          input={<OutlinedInput id="languages" />}
           displayEmpty
           fullWidth
           value={props.language}
@@ -106,13 +90,12 @@ function SettingsDialog(props: Props) {
             </MenuItem>
           ))}
         </Select>
-
-        <InputLabel shrink htmlFor="voices">
+        <InputLabel style={{ marginTop: 15}} shrink htmlFor="voices">
           {i18n.t('voices')}
         </InputLabel>
         <Select
           onChange={handleVoiceChange}
-          input={<OutlinedInput id="voices" label={i18n.t('voices')} />}
+          input={<OutlinedInput id="voices" />}
           displayEmpty
           fullWidth
           value={props.voice}
@@ -129,7 +112,7 @@ function SettingsDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          Ok
+          {i18n.t('ok')}
         </Button>
       </DialogActions>
     </Dialog>

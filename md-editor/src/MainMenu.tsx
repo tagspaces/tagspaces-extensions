@@ -16,7 +16,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import CancelIcon from '@mui/icons-material/Cancel';
+import StopIcon from '@mui/icons-material/Stop';
 import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
 import PrintIcon from '@mui/icons-material/Print';
@@ -63,8 +63,8 @@ const MainMenu: React.FC<{
   };
 
   const speakButton = {
-    icon: isSpeaking.current ? <CancelIcon /> : <RecordVoiceOverIcon />,
-    name: i18n.t(isSpeaking.current ? 'stop' : 'read'),
+    icon: isSpeaking.current ? <StopIcon /> : <RecordVoiceOverIcon />,
+    name: i18n.t(isSpeaking.current ? 'stopReading' : 'read'),
     action: () => {
       setAnchorEl(null);
       if (isSpeaking.current) {
@@ -81,7 +81,7 @@ const MainMenu: React.FC<{
 
   const pauseButton = {
     icon: isPaused.current ? <PlayArrowIcon /> : <PauseIcon />,
-    name: i18n.t(isPaused.current ? 'play' : 'pause'),
+    name: i18n.t(isPaused.current ? 'continueReading' : 'pauseReading'),
     action: () => {
       setAnchorEl(null);
       if (isPaused.current) {
@@ -97,7 +97,7 @@ const MainMenu: React.FC<{
   const actions = [
     {
       icon: <CodeIcon />,
-      name: mode === 'Milkdown' ? 'View Markdown' : 'View Editor',
+      name: mode === 'Milkdown' ? 'viewMarkdown' : 'viewEditor',
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
@@ -113,12 +113,14 @@ const MainMenu: React.FC<{
     // },
     {
       icon: <TreeIcon />,
-      name: i18n.t('View as Mind Map'),
+      name: i18n.t('viewAsMindMap'),
       action: () => {
         setAnchorEl(null);
         setMindMapDialogOpened(true);
       }
     },
+    ...(haveSpeakSupport ? [speakButton] : []),
+    ...(haveSpeakSupport && isSpeaking.current ? [pauseButton] : []),
     {
       icon: <PrintIcon />,
       name: i18n.t('print'),
@@ -126,9 +128,7 @@ const MainMenu: React.FC<{
         setAnchorEl(null);
         window.print();
       }
-    },
-    ...(haveSpeakSupport ? [speakButton] : []),
-    ...(haveSpeakSupport && isSpeaking.current ? [pauseButton] : []),
+    },    
     {
       icon: <SettingsIcon />,
       name: i18n.t('settings'),
