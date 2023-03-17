@@ -21,9 +21,15 @@ import SettingsDialog from './SettingsDialog';
 const App: React.FC = () => {
   const [isSettingsDialogOpened, setSettingsDialogOpened] =
     useState<boolean>(false);
+
+  const languages = React.useRef<string[] | null>(null);
+  const language = React.useRef<string>(
+    getSettings('speechLanguage') || i18n.language
+  );
+  const allVoices = React.useRef<SpeechSynthesisVoice[] | null>(null);
   const voices = React.useRef<SpeechSynthesisVoice[] | null>(null);
-  const voice = React.useRef<SpeechSynthesisVoice | null>(null);
-  const rate = React.useRef<number>(0.9);
+  const voice = React.useRef<string>(getSettings('speechVoice'));
+  const rate = React.useRef<number>(getDefaultRate());
   const focusCode = React.useRef(false);
   const focus = React.useRef(false);
   const contentRef = React.useRef(null);
@@ -40,9 +46,6 @@ const App: React.FC = () => {
   const readOnly = () => !window.editMode;
   // @ts-ignore
   const getContent = () => window.mdContent;
-
-  // @ts-ignore
-  i18n.changeLanguage(window.locale);
 
   // @ts-ignore
   useEventListener('keydown', event => {
@@ -85,30 +88,39 @@ const App: React.FC = () => {
     EasySpeech.init()
       .then((success: boolean) => {
         if (success) {
-          const allVoices: SpeechSynthesisVoice[] = EasySpeech.voices();
-          if (allVoices && allVoices.length > 0) {
-            const langVoices = allVoices.filter(v => v.lang === i18n.language);
-
-            if (langVoices.length > 0) {
-              voices.current = langVoices;
-            } else {
-              const lVoices: SpeechSynthesisVoice[] = allVoices.filter(v =>
-                v.lang.startsWith(i18n.language)
-              );
-              if (lVoices.length > 0) {
-                voices.current = lVoices;
-              } else {
-                voices.current = allVoices;
-              }
-            }
-            if (!voice.current) {
-              voice.current = voices.current[0];
-            }
-          }
+          allVoices.current = EasySpeech.voices();
+          setVoices();
         }
       })
       .catch((e: Error) => console.error(e));
   }, []);
+
+  function setVoices(chooseFirst = false) {
+    if (allVoices.current && allVoices.current.length > 0) {
+      languages.current = [
+        ...new Set(allVoices.current.map(v => v.lang))
+      ].sort();
+      const langVoices = allVoices.current.filter(
+        v => v.lang === language.current
+      );
+
+      if (langVoices.length > 0) {
+        voices.current = langVoices;
+      } else {
+        const lVoices: SpeechSynthesisVoice[] = allVoices.current.filter(v =>
+          v.lang.startsWith(language.current)
+        );
+        if (lVoices.length > 0) {
+          voices.current = lVoices;
+        } else {
+          voices.current = allVoices.current;
+        }
+      }
+      if (!voice.current || chooseFirst) {
+        voice.current = voices.current[0].name;
+      }
+    }
+  }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(event.target.value);
@@ -188,8 +200,8 @@ const App: React.FC = () => {
         pitch: 1.0, //0.9,
         rate: rate.current, //0.9, //1.2,
         volume: 1.0,
-        lang: i18n.language,
-        voice: voice.current,
+        lang: language.current,
+        voice: getVoiceByName(voice.current),
         // there are more events, see the API for supported events
         end: () => resolve(true)
         //boundary: (e) => console.debug("boundary reached"),
@@ -198,15 +210,54 @@ const App: React.FC = () => {
   }
 
   function handleVoiceChange(voiceChosen: string) {
-    if (voices.current) {
-      const v: SpeechSynthesisVoice | undefined = voices.current.find(
-        v => v.name === voiceChosen
-      );
-      if (v) {
-        voice.current = v;
-        forceUpdate();
-      }
+    if (voiceChosen) {
+      voice.current = voiceChosen;
+      saveSettings();
+      forceUpdate();
     }
+  }
+
+  function handleLanguageChange(lang: string) {
+    if (lang) {
+      language.current = lang;
+      setVoices(true);
+      saveSettings();
+      forceUpdate();
+    }
+  }
+
+  function getVoiceByName(voiceName: string): SpeechSynthesisVoice | undefined {
+    if (voices.current) {
+      return voices.current.find(v => v.name === voiceName);
+    }
+    return undefined;
+  }
+
+  // const settingsKey = 'speechSettings';
+  function saveSettings() {
+    const speech = {
+      speechRate: rate.current,
+      speechLanguage: language.current,
+      speechVoice: voice.current
+    };
+    localStorage.setItem('mdEditorSettings', JSON.stringify(speech));
+  }
+
+  function getSettings(key: string) {
+    const item = localStorage.getItem('mdEditorSettings');
+    if (item) {
+      const settings = JSON.parse(item);
+      return settings[key];
+    }
+    return undefined;
+  }
+
+  function getDefaultRate(): number {
+    const settingsRate = getSettings('speechRate');
+    if (settingsRate) {
+      return parseFloat(settingsRate);
+    }
+    return 0.9;
   }
 
   /**
@@ -266,20 +317,27 @@ const App: React.FC = () => {
       <MainMenu
         readText={() => speak(getMarkdownTxt())} //getContent())}
         cancelRead={() => EasySpeech.cancel()}
+        pauseRead={() => EasySpeech.pause()}
+        resumeRead={() => EasySpeech.resume()}
         toggleViewSource={toggleViewSource}
         isFilterVisible={isFilterVisible}
         setFilterVisible={setFilterVisible}
         mdContent={getContent()}
         mode={mode}
         setSettingsDialogOpened={setSettingsDialogOpened}
+        haveSpeakSupport={voices.current !== null}
       />
       <SettingsDialog
         open={isSettingsDialogOpened}
         onClose={() => setSettingsDialogOpened(false)}
         handleSpeedChange={speed => {
           rate.current = speed; //parseFloat(speed);
+          saveSettings();
         }}
         handleVoiceChange={handleVoiceChange}
+        handleLanguageChange={handleLanguageChange}
+        languages={languages.current}
+        language={language.current}
         voices={voices.current}
         voice={voice.current}
         speed={rate.current}

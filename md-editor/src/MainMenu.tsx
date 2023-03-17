@@ -13,6 +13,8 @@ import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TreeIcon from '@mui/icons-material/AccountTree';
@@ -28,29 +30,68 @@ const MainMenu: React.FC<{
   toggleViewSource: () => void;
   readText: () => Promise<boolean>;
   cancelRead: () => void;
+  pauseRead: () => void;
+  resumeRead: () => void;
   setSettingsDialogOpened: (open: boolean) => void;
   isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
   mdContent: string;
   mode: string;
+  haveSpeakSupport: boolean;
 }> = ({
   toggleViewSource,
   readText,
   cancelRead,
+  pauseRead,
+  resumeRead,
   setSettingsDialogOpened,
   isFilterVisible,
   setFilterVisible,
   mdContent,
-  mode
+  mode,
+  haveSpeakSupport
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isSpeaking = React.useRef<boolean>(false);
+  const isPaused = React.useRef<boolean>(false);
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
   const [isMindMapDialogOpened, setMindMapDialogOpened] =
     useState<boolean>(false);
 
   const handleFabClick = (event: any) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const speakButton = {
+    icon: isSpeaking.current ? <CancelIcon /> : <RecordVoiceOverIcon />,
+    name: i18n.t(isSpeaking.current ? 'stop' : 'read'),
+    action: () => {
+      setAnchorEl(null);
+      if (isSpeaking.current) {
+        cancelRead();
+        isSpeaking.current = false;
+      } else {
+        isSpeaking.current = true;
+        readText().then(() => {
+          isSpeaking.current = false;
+        });
+      }
+    }
+  };
+
+  const pauseButton = {
+    icon: isPaused.current ? <PlayArrowIcon /> : <PauseIcon />,
+    name: i18n.t(isPaused.current ? 'play' : 'pause'),
+    action: () => {
+      setAnchorEl(null);
+      if (isPaused.current) {
+        resumeRead();
+        isPaused.current = false;
+      } else {
+        pauseRead();
+        isPaused.current = true;
+      }
+    }
   };
 
   const actions = [
@@ -86,22 +127,8 @@ const MainMenu: React.FC<{
         window.print();
       }
     },
-    {
-      icon: isSpeaking.current ? <CancelIcon /> : <RecordVoiceOverIcon />,
-      name: i18n.t(isSpeaking.current ? 'cancel' : 'read'),
-      action: () => {
-        setAnchorEl(null);
-        if (isSpeaking.current) {
-          cancelRead();
-          isSpeaking.current = false;
-        } else {
-          isSpeaking.current = true;
-          readText().then(() => {
-            isSpeaking.current = false;
-          });
-        }
-      }
-    },
+    ...(haveSpeakSupport ? [speakButton] : []),
+    ...(haveSpeakSupport && isSpeaking.current ? [pauseButton] : []),
     {
       icon: <SettingsIcon />,
       name: i18n.t('settings'),

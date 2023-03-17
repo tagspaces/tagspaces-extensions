@@ -36,17 +36,30 @@ interface Props {
   onClose: () => void;
   handleSpeedChange: (speed: number) => void;
   handleVoiceChange: (voice: string) => void;
-  voice: SpeechSynthesisVoice | null;
+  handleLanguageChange: (lang: string) => void;
+  voice: string;
   voices: SpeechSynthesisVoice[] | null;
+  languages: string[] | null;
+  language: string;
   speed: number;
 }
 
 function SettingsDialog(props: Props) {
   const { open, onClose } = props;
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleSpeedChange = (event: Event, newValue: number | number[]) => {
     props.handleSpeedChange(newValue as number);
   };
+
+  const handleVoiceChange = (event: SelectChangeEvent) => {
+    props.handleVoiceChange(event.target.value as string);
+  };
+
+  const handleLanguageChange = (event: SelectChangeEvent) => {
+    props.handleLanguageChange(event.target.value as string);
+  };
+
+  const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
 
   return (
     <Dialog
@@ -58,35 +71,51 @@ function SettingsDialog(props: Props) {
         {i18n.t('settingsTitle')}
         <DialogCloseButton onClick={onClose} />
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        style={{
+          minWidth: 400
+        }}
+      >
         <Typography gutterBottom>{i18n.t('speechSpeed')}</Typography>
         <div style={{ marginTop: 40 }}>
           <Slider
             defaultValue={props.speed}
-            onChange={handleChange}
+            onChange={handleSpeedChange}
             step={0.05}
             min={0.05}
             max={10}
             valueLabelDisplay="on"
           />
         </div>
+        <InputLabel shrink htmlFor="languages">
+          {i18n.t('languages')}
+        </InputLabel>
+        <Select
+          onChange={handleLanguageChange}
+          input={<OutlinedInput id="languages" label={i18n.t('languages')} />}
+          displayEmpty
+          fullWidth
+          value={props.language}
+        >
+          <MenuItem value={''} style={{ display: 'none' }} />
+          {props.languages?.map(lang => (
+            <MenuItem key={lang} value={lang}>
+              <span style={{ width: '100%' }}>
+                {lang} - {displayNames.of(lang)}
+              </span>
+            </MenuItem>
+          ))}
+        </Select>
+
         <InputLabel shrink htmlFor="voices">
           {i18n.t('voices')}
         </InputLabel>
         <Select
-          onChange={(event: SelectChangeEvent) =>
-            props.handleVoiceChange(event.target.value as string)
-          }
-          input={
-            <OutlinedInput
-              name="savedSearch"
-              id="voices"
-              label={i18n.t('voices')}
-            />
-          }
+          onChange={handleVoiceChange}
+          input={<OutlinedInput id="voices" label={i18n.t('voices')} />}
           displayEmpty
           fullWidth
-          value={props.voice?.name}
+          value={props.voice}
         >
           <MenuItem value={''} style={{ display: 'none' }} />
           {props.voices?.map(voice => (
@@ -97,13 +126,6 @@ function SettingsDialog(props: Props) {
             </MenuItem>
           ))}
         </Select>
-        {/*<select onChange={e => props.handleVoiceChange(e.target.value)}>
-          {props.voices?.map(voice => (
-            <option key={voice.name} value={voice.name}>
-              {voice.name} {voice.lang}
-            </option>
-          ))}
-        </select>*/}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
