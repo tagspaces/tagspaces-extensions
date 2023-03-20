@@ -27,6 +27,7 @@
     "build": "react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
+    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/media-player && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/media-player",
     "test": "react-scripts test --env=jsdom",
     "code-format": "npx prettier --write ."
   },
