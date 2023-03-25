@@ -97,7 +97,7 @@ const MainMenu: React.FC<{
   const actions = [
     {
       icon: <CodeIcon />,
-      name: mode === 'Milkdown' ? 'viewMarkdown' : 'viewEditor',
+      name: mode === 'Milkdown' ? i18n.t('viewMarkdown') : i18n.t('viewEditor'),
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
@@ -128,7 +128,7 @@ const MainMenu: React.FC<{
         setAnchorEl(null);
         window.print();
       }
-    },    
+    },
     {
       icon: <SettingsIcon />,
       name: i18n.t('settings'),
