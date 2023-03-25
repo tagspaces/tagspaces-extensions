@@ -49,8 +49,8 @@ function SettingsDialog(props: Props) {
       onClose={onClose}
       aria-labelledby="settings-dialog-title"
     >
-      <DialogTitle id="settings-dialog-title">
-        {i18n.t('settingsTitle')}
+      <DialogTitle id="md-editor-settings-title">
+        {i18n.t('settings')}
         <DialogCloseButton onClick={onClose} />
       </DialogTitle>
       <DialogContent
@@ -90,7 +90,7 @@ function SettingsDialog(props: Props) {
             </MenuItem>
           ))}
         </Select>
-        <InputLabel style={{ marginTop: 15}} shrink htmlFor="voices">
+        <InputLabel style={{ marginTop: 15 }} shrink htmlFor="voices">
           {i18n.t('voices')}
         </InputLabel>
         <Select
