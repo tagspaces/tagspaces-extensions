@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/url-viewer",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "description": "A TagSpaces extension allowing you to open url files created from web-browsers or bookmark manangers.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
