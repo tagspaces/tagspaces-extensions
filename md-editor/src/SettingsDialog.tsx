@@ -46,6 +46,7 @@ function SettingsDialog(props: Props) {
   return (
     <Dialog
       open={open}
+      fullScreen={true}
       onClose={onClose}
       aria-labelledby="settings-dialog-title"
     >

@@ -63,41 +63,45 @@ const MainMenu: React.FC<{
   };
 
   const speakButton = {
-    icon: isSpeaking.current ? <StopIcon /> : <RecordVoiceOverIcon />,
+    icon: isSpeaking.current ? <StopIcon /> : <PlayArrowIcon />,
     name: i18n.t(isSpeaking.current ? 'stopReading' : 'read'),
     action: () => {
       setAnchorEl(null);
       if (isSpeaking.current) {
         cancelRead();
         isSpeaking.current = false;
+        isPaused.current = false;
       } else {
-        isSpeaking.current = true;
-        readText().then(() => {
-          isSpeaking.current = false;
-        });
+        if (isPaused.current === true) {
+          isSpeaking.current = true;
+          isPaused.current = false;
+          resumeRead();
+        } else {
+          isSpeaking.current = true;
+          isPaused.current = false;
+          readText().then(() => {
+            isSpeaking.current = false;
+          });
+        }
       }
     }
   };
 
   const pauseButton = {
-    icon: isPaused.current ? <PlayArrowIcon /> : <PauseIcon />,
-    name: i18n.t(isPaused.current ? 'continueReading' : 'pauseReading'),
+    icon: <PauseIcon />,
+    name: i18n.t('pauseReading'),
     action: () => {
       setAnchorEl(null);
-      if (isPaused.current) {
-        resumeRead();
-        isPaused.current = false;
-      } else {
-        pauseRead();
-        isPaused.current = true;
-      }
+      pauseRead();
+      isSpeaking.current = false;
+      isPaused.current = true;
     }
   };
 
   const actions = [
     {
       icon: <CodeIcon />,
-      name: mode === 'Milkdown' ? i18n.t('viewMarkdown') : i18n.t('viewEditor'),
+      name: mode === 'Milkdown' ? i18n.t('viewEditor') : i18n.t('viewMarkdown'),
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
@@ -120,7 +124,7 @@ const MainMenu: React.FC<{
       }
     },
     ...(haveSpeakSupport ? [speakButton] : []),
-    ...(haveSpeakSupport && isSpeaking.current ? [pauseButton] : []),
+    ...(haveSpeakSupport && isSpeaking.current === true ? [pauseButton] : []),
     {
       icon: <PrintIcon />,
       name: i18n.t('print'),

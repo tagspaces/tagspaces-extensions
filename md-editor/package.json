@@ -2,12 +2,34 @@
   "name": "@tagspaces/md-editor",
   "version": "1.0.77",
   "description": "TagSpaces extension for editing notes in markdown format",
+  "tsextension": {
+    "id": "@tagspaces/extensions/md-editor",
+    "name": "MD Editor",
+    "types": [
+      "viewer",
+      "editor"
+    ],
+    "color": "#beefed",
+    "fileTypes": [
+      {
+        "ext": "md"
+      },
+      {
+        "ext": "mdx",
+        "types": [
+          "viewer"
+        ]
+      }
+    ],
+    "buildFolder": "build"
+  },
   "homepage": "./",
   "main": "build/index.js",
   "files": [
     "build/"
   ],
   "scripts": {
+    "skipsourcemap": "GENERATE_SOURCEMAP=false",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:dev": "react-app-rewired build",
@@ -69,26 +91,5 @@
   },
   "bugs": {
     "url": "https://github.com/tagspaces/tagspaces-extensions/issues"
-  },
-  "tsextension": {
-    "id": "@tagspaces/extensions/md-editor",
-    "name": "MD Editor",
-    "types": [
-      "viewer",
-      "editor"
-    ],
-    "color": "#beefed",
-    "fileTypes": [
-      {
-        "ext": "md"
-      },
-      {
-        "ext": "mdx",
-        "types": [
-          "viewer"
-        ]
-      }
-    ],
-    "buildFolder": "build"
   }
 }
