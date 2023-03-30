@@ -56,7 +56,7 @@ function SettingsDialog(props: Props) {
       </DialogTitle>
       <DialogContent
         style={{
-          minWidth: 400
+          minWidth: 250
         }}
       >
         <InputLabel shrink htmlFor="languages">
