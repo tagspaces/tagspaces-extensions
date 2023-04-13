@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/text-editor",
-  "version": "1.0.79",
+  "version": "1.0.82",
   "description": "A TagSpaces extension allowing editing of text based documents.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
