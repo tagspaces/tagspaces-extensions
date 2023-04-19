@@ -12,7 +12,7 @@ import {
 import 'plyr-react/plyr.css';
 import MainMenu from './MainMenu';
 import { MediaType } from 'plyr';
-import { getThumbFileLocationForFile } from '@tagspaces/tagspaces-common/paths';
+import { getThumbFileLocationForFile, extractFileName } from '@tagspaces/tagspaces-common/paths';
 import { HideProvider, useHide } from './HideContext';
 import useEventListener from './useEventListener';
 import { sendMessageToHost } from './utils';
@@ -108,7 +108,7 @@ const App: React.FC = () => {
   if (searchParam && searchParam.has('file')) {
     filePath = searchParam.get('file') || '';
   }
-  const fileName = filePath.split('/').pop();
+  const fileName = extractFileName(filePath);
   const fileThumb = getThumbFileLocationForFile(filePath);
 
   const audio: MediaType = 'audio';
@@ -178,7 +178,7 @@ const App: React.FC = () => {
       {
         src: /^https?:\/\//.test(filePath)
           ? filePath
-          : encodeURIComponent(filePath).replace(/%2F/g, '/')
+          : encodeURIComponent(filePath).replace(/%2F/g, '/').replace(/%5C/g, '\\').replace(/%3A/g, ':')
       }
     ],
     poster: fileThumb, //'/path/to/poster.jpg',
