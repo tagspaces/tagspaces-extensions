@@ -10,7 +10,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
 import DialogCloseButton from './DialogCloseButton';
 
 interface Props {
@@ -112,7 +111,7 @@ function SettingsDialog(props: Props) {
         </Select>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button data-tid="settingsOkTID" onClick={onClose} color="primary">
           {i18n.t('ok')}
         </Button>
       </DialogActions>

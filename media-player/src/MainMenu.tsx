@@ -180,6 +180,7 @@ const MainMenu: React.FC<{
         </MenuItem>
         <Divider />
         <MenuItem
+          data-tid="mediaPlayerAboutTID"
           onClick={() => {
             setAnchorEl(null);
             setAboutDialogOpened(true);
@@ -193,6 +194,7 @@ const MainMenu: React.FC<{
       </Menu>
       {!state.hide && (
         <Fab
+          data-tid="mediaPlayerMenuTID"
           color="primary"
           aria-label="open extension menu"
           style={{
@@ -208,6 +210,7 @@ const MainMenu: React.FC<{
         </Fab>
       )}
       <Dialog
+        data-tid="AboutDialogTID"
         open={isAboutDialogOpened}
         onClose={() => {
           setAboutDialogOpened(false);
@@ -233,7 +236,11 @@ const MainMenu: React.FC<{
           &nbsp; in the TagSpaces' documentation for more details.
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAboutDialogOpened(false)} color="primary">
+          <Button
+            data-tid="AboutDialogOkTID"
+            onClick={() => setAboutDialogOpened(false)}
+            color="primary"
+          >
             Ok
           </Button>
         </DialogActions>
