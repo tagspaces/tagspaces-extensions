@@ -65,6 +65,7 @@ const MainMenu: React.FC<{
   const speakButton = {
     icon: isSpeaking.current ? <StopIcon /> : <PlayArrowIcon />,
     name: i18n.t(isSpeaking.current ? 'stopReading' : 'read'),
+    dataTID: 'speakTID',
     action: () => {
       setAnchorEl(null);
       if (isSpeaking.current) {
@@ -90,6 +91,7 @@ const MainMenu: React.FC<{
   const pauseButton = {
     icon: <PauseIcon />,
     name: i18n.t('pauseReading'),
+    dataTID: 'pauseTID',
     action: () => {
       setAnchorEl(null);
       pauseRead();
@@ -102,6 +104,7 @@ const MainMenu: React.FC<{
     {
       icon: <CodeIcon />,
       name: mode === 'Milkdown' ? i18n.t('viewEditor') : i18n.t('viewMarkdown'),
+      dataTID: 'switchEditorTID',
       action: () => {
         setAnchorEl(null);
         toggleViewSource();
@@ -118,6 +121,7 @@ const MainMenu: React.FC<{
     {
       icon: <TreeIcon />,
       name: i18n.t('viewAsMindMap'),
+      dataTID: 'viewAsMindMapTID',
       action: () => {
         setAnchorEl(null);
         setMindMapDialogOpened(true);
@@ -128,6 +132,7 @@ const MainMenu: React.FC<{
     {
       icon: <PrintIcon />,
       name: i18n.t('print'),
+      dataTID: 'printTID',
       action: () => {
         setAnchorEl(null);
         window.print();
@@ -136,6 +141,7 @@ const MainMenu: React.FC<{
     {
       icon: <SettingsIcon />,
       name: i18n.t('settings'),
+      dataTID: 'settingsTID',
       action: () => {
         setAnchorEl(null);
         setSettingsDialogOpened(true);
@@ -144,6 +150,7 @@ const MainMenu: React.FC<{
     {
       icon: <AboutIcon />,
       name: i18n.t('about'),
+      dataTID: 'aboutTID',
       action: () => {
         setAnchorEl(null);
         setAboutDialogOpened(true);
@@ -195,7 +202,7 @@ const MainMenu: React.FC<{
           onClose={() => setAnchorEl(null)}
         >
           {actions.map(action => (
-            <MenuItem key={action.name} onClick={action.action}>
+            <MenuItem data-tid={action.dataTID} key={action.name} onClick={action.action}>
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
             </MenuItem>
@@ -203,6 +210,7 @@ const MainMenu: React.FC<{
         </Menu>
       )}
       <Fab
+        data-tid="mdEditorMenuTID"
         color="primary"
         aria-label="open extension menu"
         style={{

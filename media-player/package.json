@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/media-player",
-  "version": "1.0.82",
+  "version": "1.0.84",
   "description": "A TagSpaces extension allowing playing of audio and video files.",
   "homepage": "./",
   "main": "build/index.js",
@@ -36,7 +36,7 @@
     "@emotion/styled": "11.10.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
-    "@tagspaces/tagspaces-common": "2.0.10",
+    "@tagspaces/tagspaces-common": "^2.1.29",
     "plyr-react": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
