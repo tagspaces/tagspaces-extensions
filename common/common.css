@@ -67,6 +67,7 @@ img {
   position: fixed; 
   right: 20px; 
   bottom: 20px;
+  user-select: none; 
 }
 
 #extFabMenu > button {
