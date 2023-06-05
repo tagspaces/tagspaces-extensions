@@ -51,9 +51,7 @@
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.2",
-    "@tagspaces/tagspaces-md": "2.1.6",
+    "@tagspaces/tagspaces-md": "3.0.0",
     "i18next": "^22.4.6",
     "mark.js": "^8.11.1",
     "markmap-common": "^0.14.2",
