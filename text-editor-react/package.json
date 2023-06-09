@@ -1,0 +1,154 @@
+{
+  "name": "@tagspaces/text-editor-react",
+  "version": "2.0.0",
+  "description": "TagSpaces extension for editing notes in markdown format",
+  "tsextension": {
+    "id": "@tagspaces/extensions/@tagspacestext-editor-react_2.0.0",
+    "name": "Text Editor",
+    "types": [
+      "viewer",
+      "editor"
+    ],
+    "color": "",
+    "fileTypes": [
+      {
+        "ext": "c"
+      },
+      {
+        "ext": "cpp"
+      },
+      {
+        "ext": "cs"
+      },
+      {
+        "ext": "css"
+      },
+      {
+        "ext": "h"
+      },
+      {
+        "ext": "java"
+      },
+      {
+        "ext": "js"
+      },
+      {
+        "ext": "jsm"
+      },
+      {
+        "ext": "less"
+      },
+      {
+        "ext": "ml"
+      },
+      {
+        "ext": "php"
+      },
+      {
+        "ext": "pl"
+      },
+      {
+        "ext": "py"
+      },
+      {
+        "ext": "rb"
+      },
+      {
+        "ext": "sh"
+      },
+      {
+        "ext": "sql"
+      },
+      {
+        "ext": "txt"
+      },
+      {
+        "ext": "xml"
+      },
+      {
+        "ext": "mdx",
+        "types": [
+          "editor"
+        ],
+        "color": "#beefed"
+      },
+      {
+        "ext": "svg",
+        "types": [
+          "editor"
+        ],
+        "color": "#9fd5ba"
+      },
+      {
+        "ext": "xhtml",
+        "types": [
+          "editor"
+        ],
+        "color": ""
+      }
+    ],
+    "buildFolder": "build"
+  },
+  "homepage": "./",
+  "main": "build/index.js",
+  "files": [
+    "build/"
+  ],
+  "scripts": {
+    "skipsourcemap": "GENERATE_SOURCEMAP=false",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:dev": "react-app-rewired build",
+    "build:env": "npx env-cmd -f .env.development react-scripts build",
+    "zip": "npm run build && npx npm-build-zip --source=.",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "code-format": "npx prettier --write .",
+    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/text-editor-react/build && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/text-editor-react",
+    "build:pack": "npm run build && npm run npmpack",
+    "pkg-publish": "npm publish --access public"
+  },
+  "keywords": [
+    "txt",
+    "text",
+    "editor",
+    "tagspaces"
+  ],
+  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
+  "license": "MIT",
+  "dependencies": {
+    "@tagspaces/tagspaces-codemirror": "2.1.44",
+    "i18next": "^22.4.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.1.1"
+  },
+  "devDependencies": {
+    "@types/mark.js": "^8.11.8",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "prettier": "^2.7.1",
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.7.4"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tagspaces/tagspaces-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tagspaces/tagspaces-extensions/issues"
+  }
+}
