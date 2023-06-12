@@ -1,13 +1,8 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import React from 'react';
 import useEventListener from './useEventListener';
-// @ts-ignore
-import EasySpeech from 'easy-speech';
 import './extension.css';
-// import MainMenu from './MainMenu';
-import {
-  CodeMirror,
-  CodeMirrorRef
-} from '@tagspaces/tagspaces-codemirror';
+import { MainMenu } from '@tagspaces/tagspaces-extension-ui';
+import { CodeMirror, CodeMirrorRef } from '@tagspaces/tagspaces-codemirror';
 import { sendMessageToHost } from './utils';
 
 const App: React.FC = () => {
@@ -16,8 +11,8 @@ const App: React.FC = () => {
   const focus = React.useRef(false);
   const contentRef = React.useRef(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
- //const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
+  const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+  //const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
 
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
@@ -25,6 +20,8 @@ const App: React.FC = () => {
   const readOnly = () => !window.editMode;
   // @ts-ignore
   const getContent = () => window.mdContent;
+  // @ts-ignore
+  const fileExt = window.fileExt;
 
   // @ts-ignore
   useEventListener('keydown', event => {
@@ -99,11 +96,21 @@ const App: React.FC = () => {
               dark={isDarkMode}
               editable={!readOnly()}
               lock={focusCode}
+              fileExtension={fileExt}
             />
           </div>
         </div>
       )}
-      {/*<MainMenu />*/}
+      <MainMenu
+        print="Print"
+        about="About"
+        aboutLink={() => {
+          sendMessageToHost({
+            command: 'openLinkExternally',
+            link: 'https://docs.tagspaces.org/extensions/md-editor/'
+          });
+        }}
+      />
     </div>
   );
 };

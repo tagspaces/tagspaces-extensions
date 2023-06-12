@@ -97,10 +97,11 @@
   "scripts": {
     "skipsourcemap": "GENERATE_SOURCEMAP=false",
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:dev": "react-app-rewired build",
-    "build:env": "npx env-cmd -f .env.development react-scripts build",
-    "zip": "npm run build && npx npm-build-zip --source=.",
+    "postinstall": "npx patch-package",
+    "build": "npx cross-env NODE_ENV=production react-scripts build",
+    "build:dev": "npx cross-env NODE_ENV=development react-scripts build",
+    "fix-index.html": "npx replace-in-file 'src=\"/static/js/bundle.js\"' 'src=\"./static/js/bundle.js\"' build/index.html",
+    "zip": "npm run build:dev && npm run fix-index.html && npx npm-build-zip --source=.",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "code-format": "npx prettier --write .",
@@ -117,20 +118,23 @@
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@tagspaces/tagspaces-codemirror": "2.1.44",
-    "i18next": "^22.4.6",
+    "@emotion/react": "11.10.5",
+    "@emotion/styled": "11.10.5",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.9.2",
+    "@tagspaces/tagspaces-codemirror": "2.1.46",
+    "@tagspaces/tagspaces-extension-ui": "2.1.47",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-i18next": "^12.1.1"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/mark.js": "^8.11.8",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "prettier": "^2.7.1",
-    "react-app-rewired": "^2.2.1",
     "react-scripts": "^5.0.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.9.5"
   },
   "browserslist": {
     "production": [

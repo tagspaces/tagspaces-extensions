@@ -3,7 +3,6 @@
   <head>
     <title>CodeMirror Editor for TagSpaces</title>
     <meta charset="UTF-8" />
-    <link href="../../commom/common.css" rel="stylesheet" />
     <script>
       function setContent(content, fileDirectory, editMode) {
         console.log('Content updated, event triggered');
@@ -45,6 +44,9 @@
       textColor && rootEl.style.setProperty('--primary-text-color', textColor);
 
       const pathToFile = getParameterByName('file');
+      window.fileExt = pathToFile
+        .substring(pathToFile.lastIndexOf('.') + 1, pathToFile.length)
+        .toLowerCase();
       window.isWeb =
         (document.URL.startsWith('http') &&
           !document.URL.startsWith('http://localhost:1212/')) ||
