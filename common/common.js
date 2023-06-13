@@ -49,7 +49,10 @@ if (theme) {
 document.addEventListener('readystatechange', () => {
   if (document.readyState === 'complete') {
     if (isCordova) {
-      document.getElementById('printMenuItem').style.display = 'none';
+      const item = document.getElementById('printMenuItem');
+      if (item) {
+        item.style.display = 'none';
+      }
     }
   }
 });
@@ -106,7 +109,7 @@ function toDataURL(src, callback, format) {
   }
   const image = new Image();
   image.crossOrigin = 'Anonymous';
-  image.onload = function() {
+  image.onload = function () {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     canvas.height = this.naturalHeight;
@@ -133,49 +136,51 @@ function extractFileName(filePath, dirSeparator = '/') {
 function initI18N(locale, filename, localePath) {
   lPath = localePath || '../common/locales';
   getFileContentPromise(lPath + '/en_US/' + filename, 'text') // loading fallback lng
-    .then(enLocale => {
+    .then((enLocale) => {
       const i18noptions = {
         lng: locale,
         // debug: true,
         resources: {},
-        fallbackLng: 'en_US'
+        fallbackLng: 'en_US',
       };
       i18noptions.resources.en_US = {};
       i18noptions.resources.en_US.translation = JSON.parse(enLocale);
       getFileContentPromise(lPath + '/' + locale + '/' + filename, 'text')
-        .then(content => {
+        .then((content) => {
           i18noptions.resources[locale] = {};
           i18noptions.resources[locale].translation = JSON.parse(content);
           i18next.init(i18noptions, () => {
             // console.log(i18next.t('startSearch'));
             const el4i18n = document.querySelectorAll('[data-i18n]');
-            el4i18n.forEach(el => {
+            el4i18n.forEach((el) => {
               el.textContent = i18next.t(el.dataset.i18n);
             });
             const elTit4i18n = document.querySelectorAll('[data-i18ntitle]');
-            elTit4i18n.forEach(el => {
+            elTit4i18n.forEach((el) => {
               el.setAttribute('title', i18next.t(el.dataset.i18ntitle));
             });
           });
           return true;
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('Error getting specific i18n locale: ' + error);
           i18next.init(i18noptions, () => {
             // console.log('Fallback ' + i18next.t('startSearch'));
             const el4i18n = document.querySelectorAll('[data-i18n]');
-            el4i18n.forEach(el => {
+            el4i18n.forEach((el) => {
               el.textContent = i18next.t(el.dataset.i18n);
             });
             const elTit4i18n = document.querySelectorAll('[data-i18ntitle]');
-            elTit4i18n.forEach(el => {
+            elTit4i18n.forEach((el) => {
               el.setAttribute('title', i18next.t(el.dataset.i18ntitle));
             });
           });
         });
       return true;
     })
-    .catch(error => console.log('Error getting default i18n locale: ' + error));
+    .catch((error) =>
+      console.log('Error getting default i18n locale: ' + error)
+    );
 }
 
 function getBase64Image(imgURL) {
@@ -195,13 +200,16 @@ function sendMessageToHost(message) {
   if (typeof sendToParent === 'function') {
     sendToParent({ ...message, eventID: eventID });
   } else {
-    window.parent.postMessage(JSON.stringify({ ...message, eventID: eventID }), '*');
+    window.parent.postMessage(
+      JSON.stringify({ ...message, eventID: eventID }),
+      '*'
+    );
   }
 }
 
 function fixingEmbeddingOfLocalImages(domElement, fileDirectory) {
   const allImages = domElement.querySelectorAll('img');
-  allImages.forEach(image => {
+  allImages.forEach((image) => {
     const currentSrc = image.getAttribute('src');
     if (currentSrc && !hasURLProtocol(currentSrc)) {
       const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
@@ -219,7 +227,7 @@ function handleLinks(domElement, fileDirectory) {
   //   );
   // }
   const allLinks = domElement.querySelectorAll('a');
-  allLinks.forEach(link => {
+  allLinks.forEach((link) => {
     let currentSrc = link.getAttribute('href');
     let path;
     if (!currentSrc) {
@@ -236,14 +244,14 @@ function handleLinks(domElement, fileDirectory) {
       if (isExternalLink(currentSrc) && !link.innerText.endsWith('⧉')) {
         link.innerText += ' ⧉';
       }
-      link.addEventListener('click', e => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
         // if (path) {
         //   currentSrc = encodeURIComponent(path);
         // }
         sendMessageToHost({
           command: 'openLinkExternally',
-          link: currentSrc
+          link: currentSrc,
         });
       });
     }
@@ -277,31 +285,26 @@ function initReadabilityMode(filePath) {
       if (readabilityContent) {
         document
           .getElementById('toggleReadabilityModeMenuItem')
-          .addEventListener('click', e => {
+          .addEventListener('click', (e) => {
             // e.stopPropagation();
             isReadabilityMode =
               document.getElementById('readabilityContent').style.display ===
               'block';
 
-            document.getElementById(
-              'readabilityContent'
-            ).style.display = isReadabilityMode ? 'none' : 'block';
+            document.getElementById('readabilityContent').style.display =
+              isReadabilityMode ? 'none' : 'block';
 
-            document.getElementById(
-              'documentContent'
-            ).style.display = isReadabilityMode ? 'block' : 'none';
+            document.getElementById('documentContent').style.display =
+              isReadabilityMode ? 'block' : 'none';
 
-            document.getElementById(
-              'fontTypeMenutItem'
-            ).style.display = isReadabilityMode ? 'none' : 'block';
+            document.getElementById('fontTypeMenutItem').style.display =
+              isReadabilityMode ? 'none' : 'block';
 
-            document.getElementById(
-              'readabilityOnLabel'
-            ).style.display = isReadabilityMode ? 'inline' : 'none';
+            document.getElementById('readabilityOnLabel').style.display =
+              isReadabilityMode ? 'inline' : 'none';
 
-            document.getElementById(
-              'readabilityOffLabel'
-            ).style.display = isReadabilityMode ? 'none' : 'inline';
+            document.getElementById('readabilityOffLabel').style.display =
+              isReadabilityMode ? 'none' : 'inline';
           });
 
         const readabilityEl = document.getElementById('readabilityContent');
@@ -332,9 +335,9 @@ function markInText() {
   showFindToolbar();
   if (markInstance && queryArray.length > 0) {
     markInstance.unmark({
-      done: function() {
+      done: function () {
         markInstance.mark(queryArray, {});
-      }
+      },
     });
   }
 }
@@ -382,13 +385,13 @@ function initFindToolbar() {
   </div>
   `;
 
-  document.getElementById('queryInput').addEventListener('keyup', evt => {
+  document.getElementById('queryInput').addEventListener('keyup', (evt) => {
     // if (evt.key === 'Enter') {
     startSearch();
     // }
   });
 
-  document.addEventListener('keydown', evt => {
+  document.addEventListener('keydown', (evt) => {
     if (evt.key === 'Escape') {
       hideFindToolbar();
     }
@@ -502,15 +505,15 @@ function insertExportAsHTMLFunctionality() {
   script.src = '../libs/file-saver/FileSaver.min.js';
   document.head.appendChild(script);
 
-  document.getElementById('exportAsHTML').addEventListener('click', e => {
-    let documentContentHTML = document.getElementById('documentContent')
-      .innerHTML;
+  document.getElementById('exportAsHTML').addEventListener('click', (e) => {
+    let documentContentHTML =
+      document.getElementById('documentContent').innerHTML;
     const readabilityContent = document.getElementById('readabilityContent');
     if (readabilityContent && readabilityContent.style.display === 'block') {
       documentContentHTML = readabilityContent.innerHTML;
     }
     const blob = new Blob([generateHTML(documentContentHTML)], {
-      type: 'text/plain;charset=utf-8'
+      type: 'text/plain;charset=utf-8',
     });
     saveAs(blob, extractFileName(filePath, isWin ? '\\' : '/') + '.html');
   });
@@ -695,16 +698,16 @@ function insertAboutDialog(helpURL) {
   handleLinks(document.getElementById('aboutModal'));
 
   getFileContentPromise('../package.json', 'text')
-    .then(content => {
+    .then((content) => {
       const extVersion = JSON.parse(content).version;
       document.getElementById('aboutModalLabel').title =
         'Extension package version: ' + extVersion;
     })
-    .catch(e => {
+    .catch((e) => {
       console.log('Error getting extension version');
     });
 
-  document.getElementById('helpButton').addEventListener('click', e => {
+  document.getElementById('helpButton').addEventListener('click', (e) => {
     // e.preventDefault();
     const msg = { command: 'openLinkExternally', link: helpURL };
     sendMessageToHost(msg);
