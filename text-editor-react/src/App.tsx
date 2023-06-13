@@ -2,6 +2,7 @@ import React from 'react';
 import useEventListener from './useEventListener';
 import './extension.css';
 import { MainMenu } from '@tagspaces/tagspaces-extension-ui';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { CodeMirror, CodeMirrorRef } from '@tagspaces/tagspaces-codemirror';
 import { sendMessageToHost } from './utils';
 
@@ -110,6 +111,16 @@ const App: React.FC = () => {
             link: 'https://docs.tagspaces.org/extensions/md-editor/'
           });
         }}
+        menuItems={[
+          {
+            icon: <FormatListNumberedIcon />,
+            name: 'Toggle Line Numbers',
+            dataTID: 'lineNumbersTID',
+            action: () => {
+              codeMirrorRef.current?.toggleLineNumbers();
+            }
+          }
+        ]}
       />
     </div>
   );
