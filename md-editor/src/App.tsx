@@ -9,12 +9,8 @@ import EasySpeech from 'easy-speech';
 import './extension.css';
 import i18n from './i18n';
 import MainMenu from './MainMenu';
-import {
-  MilkdownEditor,
-  MilkdownRef,
-  CodeMirror,
-  CodeMirrorRef
-} from '@tagspaces/tagspaces-md';
+import { MilkdownEditor, MilkdownRef } from '@tagspaces/tagspaces-md';
+import { CodeMirror, CodeMirrorRef } from '@tagspaces/tagspaces-codemirror';
 import { sendMessageToHost } from './utils';
 import SettingsDialog from './SettingsDialog';
 
