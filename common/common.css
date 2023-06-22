@@ -111,13 +111,13 @@ mark{
   background: none;
 }
 
-:hover::-webkit-scrollbar-thumb {
+/* :hover::-webkit-scrollbar-thumb {
   background-color: #787f8b;
-}
+} */
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: transparent;
+  background-color: #787f8b;
   border: none;
   box-shadow: none !important;
 }
