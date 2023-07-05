@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/extensions",
-  "version": "1.0.86",
+  "version": "1.0.87",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
