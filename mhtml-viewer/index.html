@@ -180,6 +180,12 @@
             });
           });
 
+          document
+            .getElementById('toggleReadabilityModeMenuItem')
+            .addEventListener('click', e => {
+              initReadabilityMode(filePath);
+            });
+
           const webscrapingDetailsModal = new bootstrap.Modal(
             '#webscrapingDetailsModal',
             {}
@@ -291,7 +297,7 @@
 
           hideLoadingAnimation();
 
-          initReadabilityMode(filePath);
+          // initReadabilityMode(filePath);
 
           handleLinks(documentContent);
 
