@@ -101,7 +101,7 @@ mark{
 
 ::-webkit-scrollbar {
   width: 8px;
-  height: 0;
+  height: 8px;
   -webkit-transform: scaleX(10);
   background-color: transparent;
 }
@@ -111,9 +111,9 @@ mark{
   background: none;
 }
 
-/* :hover::-webkit-scrollbar-thumb {
+:hover::-webkit-scrollbar-thumb {
   background-color: #787f8b;
-} */
+} 
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
