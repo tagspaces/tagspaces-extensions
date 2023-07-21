@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/ebook-viewer",
-  "version": "1.0.87",
+  "version": "1.0.88",
   "description": "A TagSpaces extension allowing to open files in ebook.",
   "homepage": "https://www.tagspaces.org",
   "author": {

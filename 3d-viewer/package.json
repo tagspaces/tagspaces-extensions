@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/3d-viewer",
-  "version": "1.0.87",
+  "version": "1.0.88",
   "description": "A TagSpaces extension allowing you to preview in 3D of GLB and  files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
