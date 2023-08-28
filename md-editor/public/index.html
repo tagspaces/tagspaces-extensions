@@ -5,24 +5,29 @@
     <meta charset="UTF-8" />
     <!--link href="../../commom/common.css" rel="stylesheet" /-->
     <script>
-      function setContent(content, fileDirectory, editMode) {
+      function setContent(content, fileDirectory, editMode, theme) {
         console.log('Content updated, event triggered');
         window.mdContent = content;
         window.editMode = !editMode;
         window.fileDirectory = fileDirectory;
         window.dispatchEvent(new Event('contentLoaded'));
+        if (theme) {
+          window.theme = theme;
+          window.dispatchEvent(new Event('themeChanged'));
+        }
       }
 
       function getContent() {
         return window.mdContent;
       }
 
-      function setTheme(theme) {
-        document.documentElement.className = theme;
-        document.documentElement.setAttribute('data-theme', theme);
+      /*function setTheme(theme) {
+        console.log('setTheme: ' + theme + ' event triggered');
+        //document.documentElement.className = theme;
+        //document.documentElement.setAttribute('data-theme', theme);
         window.theme = theme;
         window.dispatchEvent(new Event('themeChanged'));
-      }
+      }*/
 
       function getParameterByName(paramName) {
         const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
