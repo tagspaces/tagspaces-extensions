@@ -41,4 +41,6 @@ copy build/generic pdf-viewer/generic
 
 ### Latest integrated version
 
+v3.8.162 - 20230719
+
 v3.2.146
