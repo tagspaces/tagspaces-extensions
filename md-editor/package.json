@@ -34,6 +34,7 @@
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "zip": "npm run build && npx npm-build-zip --source=.",
+    "zip:dev": "npm run build:dev && npx npm-build-zip --source=.",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "code-format": "npx prettier --write .",
@@ -50,8 +51,9 @@
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@tagspaces/tagspaces-md": "3.0.3",
+    "@tagspaces/tagspaces-md": "3.0.13",
     "@tagspaces/tagspaces-codemirror": "3.0.1",
+    "@tagspaces/tagspaces-extension-ui": "^3.0.3",
     "i18next": "^22.4.6",
     "i18next-http-backend": "^2.2.1",
     "i18next-browser-languagedetector": "^7.0.2",

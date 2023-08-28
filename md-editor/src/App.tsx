@@ -4,6 +4,8 @@ import useEventListener from './useEventListener';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 import MoreIcon from '@mui/icons-material/MoreVert';
+
+import { ColorModeContext } from '@tagspaces/tagspaces-extension-ui';
 // @ts-ignore
 import EasySpeech from 'easy-speech';
 import './extension.css';
@@ -35,13 +37,14 @@ const App: React.FC = () => {
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
   const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const colorMode = React.useContext(ColorModeContext);
 
-  // @ts-ignore
-  const isDarkMode = window.theme && window.theme === 'dark';
   // @ts-ignore
   const readOnly = () => !window.editMode;
   // @ts-ignore
   const getContent = () => window.mdContent;
+  // @ts-ignore
+  const isDarkMode = window.theme && window.theme === 'dark';
 
   // @ts-ignore
   useEventListener('keydown', event => {
@@ -73,12 +76,26 @@ const App: React.FC = () => {
   });
 
   useEventListener('themeChanged', () => {
-    forceUpdate();
+    console.log('themeChanged: event triggered');
+    //forceUpdate();
+    if (milkdownRef.current) {
+      // @ts-ignore
+      console.log('themeChanged: ' + window.theme + ' event triggered');
+      colorMode.toggleColorMode();
+      // @ts-ignore
+      milkdownRef.current.setDarkMode(window.theme && window.theme === 'dark');
+    }
   });
 
   useEventListener('contentLoaded', () => {
     forceUpdate();
   });
+
+  /*useEffect(() => {
+    if (milkdownRef.current) {
+      milkdownRef.current.setDarkMode(isDarkMode);
+    }
+  }, [isDarkMode]);*/
 
   useEffect(() => {
     EasySpeech.init()
@@ -285,7 +302,8 @@ const App: React.FC = () => {
                 focus.current = true;
               }}
               readOnly={readOnly()}
-              dark={isDarkMode}
+              excludePlugins={readOnly() ? ['menu', 'upload'] : []}
+              //dark={isDarkMode}
             />
           </div>
           <div style={codeMirrorStyle}>
