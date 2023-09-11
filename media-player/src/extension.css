@@ -18,6 +18,10 @@ body {
   background-color: black;
 }
 
+.plyr--full-ui {
+  width: 100%;
+}
+
 .plyr__controls {
   padding-right: 70px !important;
 }
