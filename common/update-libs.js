@@ -15,7 +15,7 @@ sh.mkdir('libs/bootstrap5');
 sh.cp('node_modules/bootstrap5/LICENSE', 'libs/bootstrap5');
 sh.cp(
   'node_modules/bootstrap5/dist/js/bootstrap.bundle.min.js',
-  'libs/bootstrap5'
+  'libs/bootstrap5',
 );
 sh.cp('node_modules/bootstrap5/dist/css/bootstrap.min.css', 'libs/bootstrap5');
 
@@ -96,11 +96,11 @@ sh.mkdir('3d-viewer/libs');
 sh.mkdir('3d-viewer/libs/model-viewer');
 sh.cp(
   'node_modules/@google/model-viewer/dist/model-viewer.min.js',
-  '3d-viewer/libs/model-viewer'
+  '3d-viewer/libs/model-viewer',
 );
 sh.cp(
   'node_modules/@google/model-viewer/LICENSE',
-  '3d-viewer/libs/model-viewer'
+  '3d-viewer/libs/model-viewer',
 );
 
 sh.rm('-rf', 'ebook-viewer/libs');
@@ -115,19 +115,19 @@ sh.mkdir('json-editor/libs/jsoneditor');
 sh.mkdir('json-editor/libs/jsoneditor/img');
 sh.cp(
   'node_modules/jsoneditor/dist/jsoneditor-minimalist.min.js',
-  'json-editor/libs/jsoneditor'
+  'json-editor/libs/jsoneditor',
 );
 sh.cp(
   'node_modules/jsoneditor/dist/jsoneditor.min.css',
-  'json-editor/libs/jsoneditor'
+  'json-editor/libs/jsoneditor',
 );
 sh.cp(
   'node_modules/jsoneditor/dist/img/jsoneditor-icons.svg',
-  'json-editor/libs/jsoneditor/img'
+  'json-editor/libs/jsoneditor/img',
 );
 sh.cp(
   'node_modules/jsoneditor/docs/shortcut_keys.md',
-  'json-editor/libs/jsoneditor'
+  'json-editor/libs/jsoneditor',
 );
 sh.cp('node_modules/jsoneditor/LICENSE', 'json-editor/libs/jsoneditor');
 

@@ -202,7 +202,11 @@ const MainMenu: React.FC<{
           onClose={() => setAnchorEl(null)}
         >
           {actions.map(action => (
-            <MenuItem data-tid={action.dataTID} key={action.name} onClick={action.action}>
+            <MenuItem
+              data-tid={action.dataTID}
+              key={action.name}
+              onClick={action.action}
+            >
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
             </MenuItem>

@@ -17,7 +17,7 @@ fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
       file.isDirectory() &&
       !file.name.startsWith('.') &&
       file.name !== 'node_modules' &&
-      file.name !== 'tagspacespro'
+      file.name !== 'tagspacespro',
   );
 
   subDirectories.map((dir) => {
@@ -33,14 +33,14 @@ fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
           'utf8',
           () => {
             console.log(
-              'Successfully update version:' + packageJsonObj.version
+              'Successfully update version:' + packageJsonObj.version,
             );
-          }
+          },
         );
       }
     } catch (ex) {
       console.debug(
-        'Update package.json version: ' + dir.name + ' error:' + ex.message
+        'Update package.json version: ' + dir.name + ' error:' + ex.message,
       );
     }
   });
