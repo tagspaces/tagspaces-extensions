@@ -77,9 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //   fileSource = $('<audio controls id="player">');
     // }
     fileSource.append('<source>').attr('src', filePath);
-    $(document)
-      .find('.js-plyr')
-      .append(fileSource);
+    $(document).find('.js-plyr').append(fileSource);
 
     if (enableVideoOutput) {
       $(document)
@@ -234,9 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#loopOne .fa')
         .removeClass('fa-check-circle-o')
         .addClass('fa-circle-o');
-      $('#noLoop .fa')
-        .removeClass('fa-check-circle-o')
-        .addClass('fa-circle-o');
+      $('#noLoop .fa').removeClass('fa-check-circle-o').addClass('fa-circle-o');
       loop = 'loopAll';
       saveExtSettings();
     });
@@ -250,9 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#loopOne .fa')
         .removeClass('fa-circle-o')
         .addClass('fa-check-circle-o');
-      $('#noLoop .fa')
-        .removeClass('fa-check-circle-o')
-        .addClass('fa-circle-o');
+      $('#noLoop .fa').removeClass('fa-check-circle-o').addClass('fa-circle-o');
       loop = 'loopOne';
       saveExtSettings();
     });
@@ -266,9 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#loopOne .fa')
         .removeClass('fa-check-circle-o')
         .addClass('fa-circle-o');
-      $('#noLoop .fa')
-        .removeClass('fa-circle-o')
-        .addClass('fa-check-circle-o');
+      $('#noLoop .fa').removeClass('fa-circle-o').addClass('fa-check-circle-o');
       loop = 'noLoop';
       saveExtSettings();
     });

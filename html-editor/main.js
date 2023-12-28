@@ -20,7 +20,7 @@ function initEditor() {
     ['table', ['table']],
     ['insert', ['link', 'picture', 'hr']], // 'video',
     ['view', ['codeview']], // 'fullscreen',
-    ['help', ['help']]
+    ['help', ['help']],
   ];
 
   if (isCordova) {
@@ -34,7 +34,7 @@ function initEditor() {
       ['fontsize', ['fontsize']],
       // ['height', ['height']],
       ['insert', ['picture', 'link', 'hr']],
-      ['table', ['table']]
+      ['table', ['table']],
       // ['view', ['codeview']]
     ];
   }
@@ -67,7 +67,7 @@ function initEditor() {
       'CTRL+NUM5': 'formatH5',
       'CTRL+NUM6': 'formatH6',
       'CTRL+ENTER': 'insertHorizontalRule',
-      'CTRL+K': 'linkDialog.show'
+      'CTRL+K': 'linkDialog.show',
     },
 
     mac: {
@@ -97,8 +97,8 @@ function initEditor() {
       'CMD+NUM5': 'formatH5',
       'CMD+NUM6': 'formatH6',
       'CMD+ENTER': 'insertHorizontalRule',
-      'CMD+K': 'linkDialog.show'
-    }
+      'CMD+K': 'linkDialog.show',
+    },
   };
 
   htmlEditor.summernote({
@@ -111,7 +111,7 @@ function initEditor() {
       onChange: () => {
         sendMessageToHost({ command: 'contentChangedInEditor', filepath: '' });
       },
-      onKeydown: event => {
+      onKeydown: (event) => {
         if (
           (event.ctrlKey || event.metaKey) &&
           event.key.toLowerCase() === 's' &&
@@ -121,7 +121,7 @@ function initEditor() {
           event.preventDefault();
           sendMessageToHost({
             command: 'saveDocument',
-            filepath: currentFilePath
+            filepath: currentFilePath,
           });
         }
       },
@@ -130,8 +130,8 @@ function initEditor() {
         $("button[data-toggle='dropdown']").each(function (index) {
           $(this).removeAttr('data-toggle').attr('data-bs-toggle', 'dropdown');
         });
-      }
-    }
+      },
+    },
   });
 
   // Hiding the statusbar
@@ -166,7 +166,7 @@ function getContent() {
   // removing all scripts from the document
   let cleanedContent = content.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ''
+    '',
   );
 
   // saving all images as png in base64 format
@@ -185,7 +185,7 @@ function getContent() {
     }
   }
 
-  urls.forEach(dataURLObject => {
+  urls.forEach((dataURLObject) => {
     if (dataURLObject[1].length > 7) {
       cleanedContent = cleanedContent
         .split(dataURLObject[0])
@@ -213,7 +213,7 @@ function getContent() {
   if (indexOfBody >= 0 && currentContent.indexOf('</body>') > indexOfBody) {
     htmlContent = currentContent.replace(
       /\<body[^>]*\>([^]*)\<\/body>/m,
-      cleanedContent
+      cleanedContent,
     ); // jshint ignore:line
   } else {
     htmlContent = cleanedContent;
@@ -244,7 +244,7 @@ function setContent(content, filePath) {
       scrappedOn = content.match(scrappedOnRegex)[1];
     } catch (e) {
       console.log(
-        'Error parsing the scrapping date from the HTML document. ' + e
+        'Error parsing the scrapping date from the HTML document. ' + e,
       );
     }
 
@@ -276,7 +276,7 @@ function setContent(content, filePath) {
   }
   cleanedContent = bodyContent.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ''
+    '',
   );
 
   // saving all images as png in base64 format
@@ -295,7 +295,7 @@ function setContent(content, filePath) {
     }
   }
 
-  urls.forEach(dataURLObject => {
+  urls.forEach((dataURLObject) => {
     if (dataURLObject[1].length > 7) {
       cleanedContent = cleanedContent
         .split(dataURLObject[0])
