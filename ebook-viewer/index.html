@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -38,19 +38,31 @@
         locale = 'en_US';
       }
 
+      let showPagination = false;
+
+      function showNavigation() {
+        document.getElementById('next').style.display = 'block';
+        document.getElementById('prev').style.display = 'block';
+      }
+
+      function hideNavigation() {
+        document.getElementById('next').style.display = 'none';
+        document.getElementById('prev').style.display = 'none';
+      }
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           // isWeb ? filePath : 'file://' + filePath
           getFileContentPromise(filePath, 'arraybuffer')
-            .then(content => {
+            .then((content) => {
               setContent(content);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log('Error getting content for: ' + filePath);
             });
 
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/ebook-viewer'
+            'https://docs.tagspaces.org/extensions/ebook-viewer',
           );
 
           initI18N(locale, 'ns.extension.json');
@@ -62,7 +74,10 @@
           let extSettings = loadExtSettings('ebookViewerSettings');
 
           function saveSettings() {
-            saveExtSettings('ebookViewerSettings', { zoomLevel });
+            saveExtSettings('ebookViewerSettings', {
+              zoomLevel,
+              showPagination,
+            });
           }
 
           let zoomLevel = 100;
@@ -72,7 +87,23 @@
             }
             documentContent.style.zoom = zoomLevel + '%';
           }
+
+          if (extSettings && extSettings.showPagination !== 'undefined') {
+            showPagination = extSettings.showPagination;
+            showPagination ? showNavigation() : hideNavigation();
+          }
+
           saveSettings();
+
+          document
+            .getElementById('togglePaginationMenuItem')
+            .addEventListener('click', (e) => {
+              showPagination = !showPagination;
+              // showPagination ? showNavigation() : hideNavigation();
+              saveSettings();
+              document.location.href = document.location.href;
+              //              location.href.reload();
+            });
         }
       });
 
@@ -88,7 +119,9 @@
         var rendition = book.renderTo('viewer', {
           width: '100%',
           height: '100%',
-          minSpreadWidth: 1000
+          // minSpreadWidth: 1000,
+          flow: showPagination ? 'paginated' : 'scrolled',
+          method: showPagination ? 'default' : 'continuous',
           // spread: 'true'
         });
 
@@ -99,28 +132,28 @@
 
           next.addEventListener(
             'click',
-            function(e) {
+            function (e) {
               book.package.metadata.direction === 'rtl'
                 ? rendition.prev()
                 : rendition.next();
               e.preventDefault();
             },
-            false
+            false,
           );
 
           var prev = document.getElementById('prev');
           prev.addEventListener(
             'click',
-            function(e) {
+            function (e) {
               book.package.metadata.direction === 'rtl'
                 ? rendition.next()
                 : rendition.prev();
               e.preventDefault();
             },
-            false
+            false,
           );
 
-          var keyListener = function(e) {
+          var keyListener = function (e) {
             // Left Key
             if ((e.keyCode || e.which) == 37) {
               book.package.metadata.direction === 'rtl'
@@ -142,7 +175,7 @@
 
         var title = document.getElementById('title');
 
-        rendition.on('rendered', function(section) {
+        rendition.on('rendered', function (section) {
           var current = book.navigation && book.navigation.get(section.href);
 
           if (current) {
@@ -162,7 +195,7 @@
           }
         });
 
-        rendition.on('relocated', function(location) {
+        rendition.on('relocated', function (location) {
           console.log(location);
 
           var next =
@@ -187,7 +220,7 @@
           }
         });
 
-        rendition.on('layout', function(layout) {
+        rendition.on('layout', function (layout) {
           let viewer = document.getElementById('viewer');
 
           if (layout.spread) {
@@ -197,7 +230,7 @@
           }
         });
 
-        window.addEventListener('unload', function() {
+        window.addEventListener('unload', function () {
           console.log('unloading');
           if (this.book) {
             this.book.destroy();
@@ -256,8 +289,17 @@
         </svg>
       </button>
       <ul class="dropdown-menu">
-        <li id="printMenuItemPlaceholder"></li>
-        <!-- <li><hr class="dropdown-divider" /></li> -->
+        <li>
+          <a id="togglePaginationMenuItem" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="m19 1-5 5v11l5-4.5zM1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5V6c-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6m22 13.5V6c-.6-.45-1.25-.75-2-1v13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5v2c1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5z"
+              ></path>
+            </svg>
+            <span data-i18n="togglePagination" />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
