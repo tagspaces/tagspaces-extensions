@@ -91,18 +91,6 @@ sh.cp('node_modules/@mozilla/readability/Readability.js', 'libs/readability');
 //   'html-editor/libs/summernote/dist/'
 // );
 
-sh.rm('-rf', '3d-viewer/libs/');
-sh.mkdir('3d-viewer/libs');
-sh.mkdir('3d-viewer/libs/model-viewer');
-sh.cp(
-  'node_modules/@google/model-viewer/dist/model-viewer.min.js',
-  '3d-viewer/libs/model-viewer',
-);
-sh.cp(
-  'node_modules/@google/model-viewer/LICENSE',
-  '3d-viewer/libs/model-viewer',
-);
-
 sh.rm('-rf', 'ebook-viewer/libs');
 sh.mkdir('ebook-viewer/libs/');
 sh.mkdir('ebook-viewer/libs/epubjs');

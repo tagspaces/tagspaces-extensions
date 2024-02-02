@@ -5,7 +5,6 @@
   "homepage": "https://www.tagspaces.org",
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "files": [
-    "3d-viewer/",
     "archive-viewer/",
     "common/",
     "document-viewer/",
@@ -38,7 +37,7 @@
   ],
   "scripts": {
     "updatelibs": "node common/update-libs.js",
-    "link4dev": "cd .. && export CDIR=$PWD && ln -sf $CDIR/extensions $CDIR/tagspaces/release/app/node_modules/@tagspaces/extensions",
+    "link4dev": "cd .. && export CDIR=$PWD && ln -sf $CDIR/extensions $CDIR/tagspaces/release/app/node_modules/@tagspaces",
     "build": "node postversion.js && npm run build-media-player && npm run build-md-editor",
     "build-media-player": "cd media-player && npm install && npm run build && cd ..",
     "build-md-editor": "cd md-editor && npm install && npm run build && cd ..",
