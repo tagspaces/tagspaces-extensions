@@ -46,5 +46,6 @@
   "viewMarkdown": "打開 Markdown 編輯器",
   "viewEditor": "打開文本編輯器",
   "viewAsMindMap": "以心智圖方式檢視",
+  "togglePagination": "Toggle Pagination",
   "-": "-"
 }
