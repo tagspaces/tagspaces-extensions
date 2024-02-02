@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -50,6 +50,40 @@
         document.getElementById('prev').style.display = 'none';
       }
 
+      // function insertCustomPrintMenuItem() {
+      //   if (isCordova) {
+      //     // Printing is not supported on Android
+      //     return true;
+      //   }
+      //   document.getElementById('printMenuItemPlaceholder').innerHTML = `
+      //     <a id="printMenuItem" class="dropdown-item" href="#">
+      //       <svg width="24" height="24" class="bi">
+      //         <path
+      //           d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
+      //         ></path>
+      //       </svg>
+      //       <span data-i18n="print" />
+      //     </a>
+      //   `;
+      //   document
+      //     .getElementById('printMenuItem')
+      //     .addEventListener('click', () => {
+      //       setTimeout(() => {
+      //         const epubIFrame = document.getElementsByTagName('iframe')[0];
+      //         const sandboxAttr = epubIFrame.getAttribute('sandbox');
+      //         console.log(sandboxAttr);
+      //         if (!sandboxAttr.includes('allow-modals')) {
+      //           epubIFrame.setAttribute(
+      //             'sandbox',
+      //             sandboxAttr + ' allow-modals'
+      //           );
+      //           console.log(epubIFrame.getAttribute('sandbox'));
+      //         }
+      //         epubIFrame.contentWindow.print();
+      //       }, 300);
+      //     });
+      // }
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           // isWeb ? filePath : 'file://' + filePath
@@ -62,9 +96,9 @@
             });
 
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/ebook-viewer',
+            'https://docs.tagspaces.org/extensions/ebook-viewer'
           );
-
+          insertPrintMenuItem();
           initI18N(locale, 'ns.extension.json');
 
           const documentContent = document.getElementById('viewer');
@@ -120,9 +154,9 @@
           width: '100%',
           height: '100%',
           // minSpreadWidth: 1000,
-          flow: showPagination ? 'paginated' : 'scrolled',
+          flow: showPagination ? 'paginated' : 'scrolled-doc',
           method: showPagination ? 'default' : 'continuous',
-          // spread: 'true'
+          spread: showPagination ? 'both' : 'none',
         });
 
         rendition.display(currentSectionIndex);
@@ -138,7 +172,7 @@
                 : rendition.next();
               e.preventDefault();
             },
-            false,
+            false
           );
 
           var prev = document.getElementById('prev');
@@ -150,7 +184,7 @@
                 : rendition.prev();
               e.preventDefault();
             },
-            false,
+            false
           );
 
           var keyListener = function (e) {
@@ -299,6 +333,7 @@
             <span data-i18n="togglePagination" />
           </a>
         </li>
+        <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
