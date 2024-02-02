@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.90",
+  "version": "1.0.91",
   "description": "TagSpaces extension for editing notes in markdown format",
   "tsextension": {
     "id": "@tagspaces/extensions/md-editor",
@@ -54,15 +54,17 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
     "@tagspaces/tagspaces-md": "2.1.6",
+    "easy-speech": "^1.2.1",
     "i18next": "^22.4.6",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "i18next-http-backend": "2.1.0",
     "mark.js": "^8.11.1",
     "markmap-common": "^0.14.2",
     "markmap-lib": "^0.14.3",
     "markmap-view": "^0.14.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^12.1.1",
-    "easy-speech": "^1.2.1"
+    "react-i18next": "^12.1.1"
   },
   "devDependencies": {
     "@types/mark.js": "^8.11.8",
