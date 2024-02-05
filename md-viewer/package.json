@@ -10,5 +10,21 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "tsextension": {
+    "id": "@tagspaces/extensions/md-viewer",
+    "name": "MD Editor",
+    "types": [
+      "viewer"
+    ],
+    "color": "#beefed",
+    "fileTypes": [
+      {
+        "ext": "md"
+      },
+      {
+        "ext": "mdx"
+      }
+    ]
+  }
 }

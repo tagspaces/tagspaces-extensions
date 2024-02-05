@@ -13,15 +13,6 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "tagspaces": {
-    "extensionType": "viewer",
-    "supportedFileTypes": [
-      "ogv",
-      "mp4",
-      "m4a",
-      "mp3"
-    ]
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
