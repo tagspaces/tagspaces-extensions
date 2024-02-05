@@ -19,3 +19,4 @@ libs/**/tests/
 libs/**/*.slim.js
 libs/**/*.slim.min.js
 libs/**/*.slim.min.map
+!md-editor/build/
