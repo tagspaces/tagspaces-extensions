@@ -47,7 +47,11 @@
     "editor",
     "tagspaces"
   ],
-  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
+  "author": {
+    "name": "TagSpaces GmbH",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
   "license": "MIT",
   "dependencies": {
     "@mui/icons-material": "^5.8.4",

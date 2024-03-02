@@ -3,7 +3,11 @@
   "version": "1.0.96",
   "description": "Providing support for legacy TagSpaces extensions",
   "homepage": "https://www.tagspaces.org",
-  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
+  "author": {
+    "name": "TagSpaces GmbH",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
   "files": [
     "archive-viewer/",
     "common/",
