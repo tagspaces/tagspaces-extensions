@@ -71,7 +71,7 @@
     "reveal.js": "^4.4.0",
     "summernote": "~0.8.20",
     "tga-js": "1.1.1",
-    "viewerjs": "1.11.1"
+    "viewerjs": "1.11.6"
   },
   "license": "MIT",
   "engines": {

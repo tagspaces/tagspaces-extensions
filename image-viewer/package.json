@@ -11,10 +11,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "viewerjs": "1.10.1",
-    "nanobar": "~0.4.2",
-    "tiff.js": "https://github.com/seikichi/tiff.js.git",
-    "psd": "~3.2.0",
+    "heic2any": "0.0.4",
+    "psd": "~3.4.0",
+    "utif": "github:photopea/UTIF.js",
     "exif-js": "2.3.0"
   },
   "tsextension": {
