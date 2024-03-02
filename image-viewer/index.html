@@ -14,9 +14,6 @@
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="libs/exif-js/exif.js"></script>
-    <!-- <script src="libs/utif.js/UTIF.js"></script>
-    <script src="libs/tga.js/tga.js"></script>
-    <script src="libs/psd/dist/psd.min.js"></script> -->
     <style>
       body {
         overflow: auto;
@@ -103,7 +100,7 @@
             fileExt === '.tif'
           ) {
             const script = document.createElement('script');
-            script.onload = function() {
+            script.onload = function () {
               const xhr = new XMLHttpRequest();
               xhr.responseType = 'arraybuffer';
               xhr.open('GET', filePath);
@@ -121,23 +118,23 @@
             document.head.appendChild(script);
           } else if (fileExt === '.psd') {
             const script = document.createElement('script');
-            script.onload = function() {
+            script.onload = function () {
               const PSD = require('psd');
               PSD.fromURL(filePath)
-                .then(psd => {
+                .then((psd) => {
                   const image = psd.image.toPng();
                   imageContent.setAttribute('src', image.getAttribute('src'));
                   return true;
                 })
                 .catch(
-                  e => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
+                  (e) => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
                 );
             };
             script.src = 'libs/psd/dist/psd.min.js';
             document.head.appendChild(script);
           } else if (fileExt === '.tga') {
             const script = document.createElement('script');
-            script.onload = function() {
+            script.onload = function () {
               const tga = new TgaLoader();
               tga.open(filePath, () => {
                 imageContent.setAttribute('src', tga.getDataURL('image/png'));
@@ -155,13 +152,13 @@
                 heic2any({
                   blob: xhr.response,
                   toType: 'image/jpg',
-                  quality: 0.9
+                  quality: 0.9,
                 })
-                  .then(resultBlob => {
+                  .then((resultBlob) => {
                     const dataURL = URL.createObjectURL(resultBlob);
                     imageContent.setAttribute('src', dataURL);
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     console.log(`Error by converting HEIC file ${err}.`);
                   });
               };
@@ -175,7 +172,7 @@
 
           let imageViewerContainer;
 
-          imageContent.addEventListener('load', e => {
+          imageContent.addEventListener('load', (e) => {
             const eTarget = event.target;
             viewer = new Viewer(document.getElementById('imageContent'), {
               movable: true,
@@ -186,15 +183,14 @@
               fullscreen: true,
               inline: 'inline',
               // fading: true,
-              hide: e => {
+              hide: (e) => {
                 console.log(e.type);
               },
               viewed: () => {
                 hideLoadingAnimation();
 
-                imageViewerContainer = document.getElementsByClassName(
-                  'viewer-container'
-                );
+                imageViewerContainer =
+                  document.getElementsByClassName('viewer-container');
                 imageViewerContainer[0].style.background = 'transparent';
                 exifObj = {};
                 exifObj['Width'] = eTarget.naturalWidth;
@@ -257,7 +253,7 @@
                       'GPSLatitude',
                       'GPSLatitudeRef',
                       'GPSLongitude',
-                      'GPSLongitudeRef'
+                      'GPSLongitudeRef',
                     ];
                     for (let tag in tags) {
                       const prop = tags[tag];
@@ -275,7 +271,7 @@
                 const script = document.createElement('script');
                 script.src = '../libs/file-saver/FileSaver.min.js';
                 document.head.appendChild(script);
-              }
+              },
             });
             setTimeout(() => {
               viewer.full();
@@ -286,11 +282,11 @@
 
           document
             .getElementById('exportJPGImage')
-            .addEventListener('click', e => {
-              toDataURL(imageContent.src, dataURL => {
+            .addEventListener('click', (e) => {
+              toDataURL(imageContent.src, (dataURL) => {
                 fetch(dataURL)
-                  .then(res => res.blob())
-                  .then(blob => {
+                  .then((res) => res.blob())
+                  .then((blob) => {
                     saveAs(
                       blob,
                       extractFileName(filePath, isWin ? '\\' : '/') + '.jpg'
@@ -301,13 +297,13 @@
 
           document
             .getElementById('exportPNGImage')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               toDataURL(
                 imageContent.src,
-                dataURL => {
+                (dataURL) => {
                   fetch(dataURL)
-                    .then(res => res.blob())
-                    .then(blob => {
+                    .then((res) => res.blob())
+                    .then((blob) => {
                       saveAs(
                         blob,
                         extractFileName(filePath, isWin ? '\\' : '/') + '.png'
@@ -320,13 +316,13 @@
 
           document
             .getElementById('exportWEBPImage')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               toDataURL(
                 imageContent.src,
-                dataURL => {
+                (dataURL) => {
                   fetch(dataURL)
-                    .then(res => res.blob())
-                    .then(blob => {
+                    .then((res) => res.blob())
+                    .then((blob) => {
                       saveAs(
                         blob,
                         extractFileName(filePath, isWin ? '\\' : '/') + '.webp'
@@ -349,40 +345,40 @@
           const offset = 0;
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               viewer.zoom(offset + 1);
             });
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               viewer.zoom(offset - 1);
             });
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               viewer.reset();
             });
 
           document
             .getElementById('fitToScreen')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               viewer.zoomTo(1);
             });
 
           document
             .getElementById('rotateLeftButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               viewer.rotate(-90);
             });
 
           document
             .getElementById('rotateRightButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               viewer.rotate(90);
             });
@@ -393,7 +389,7 @@
           let flipColor;
           document
             .getElementById('flipHorizontal')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               if (flipHorizontal === true) {
                 flipHorizontal = false;
@@ -406,7 +402,7 @@
 
           document
             .getElementById('flipVertical')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               if (flipVertical === true) {
                 flipVertical = false;
@@ -419,7 +415,7 @@
 
           document
             .getElementById('whiteBackgroundColor')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               document.body.style.background = '#ffffff';
               imageViewerContainer[0].style.background = '#ffffff';
@@ -429,7 +425,7 @@
 
           document
             .getElementById('blackBackgroundColor')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               document.body.style.background = '#000000';
               imageViewerContainer[0].style.background = '#000000';
@@ -439,7 +435,7 @@
 
           document
             .getElementById('sepiaBackgroundColor')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               document.body.style.background = '#f4ecd8';
               imageViewerContainer[0].style.background = '#f4ecd8';
@@ -449,7 +445,7 @@
 
           document
             .getElementById('resetBackgroundColor')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               document.body.style.background = 'transparent';
               imageViewerContainer[0].style.background = 'transparent';
@@ -459,7 +455,7 @@
 
           document
             .getElementById('flipBlackAndWhiteColor')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               if (flipColor) {
                 flipColor = false;
@@ -499,11 +495,23 @@
     <div id="loadingAnimationPlaceholder"></div>
     <div
       id="imageContainer"
-      style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"
+      style="
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin: auto;
+        object-fit: contain;
+      "
     >
       <img
         id="imageContent"
-        style="width: 100%; height: 100%; display: block; margin: auto; object-fit: contain;"
+        style="
+          width: 100%;
+          height: 100%;
+          display: block;
+          margin: auto;
+          object-fit: contain;
+        "
       />
     </div>
     <div id="aboutDialogPlaceholder"></div>
@@ -530,7 +538,7 @@
           <div class="modal-body">
             <table
               class="table table-striped table-sm"
-              style="font-size: smaller;"
+              style="font-size: smaller"
             >
               <thead>
                 <!--tr><th>Key</th><th>Value</th></tr-->
@@ -601,7 +609,7 @@
             <div
               class="btn-group"
               data-toggle="buttons"
-              style="width: 150px; border: 1px solid gray;"
+              style="width: 150px; border: 1px solid gray"
             >
               <button
                 id="rotateRightButton"
@@ -639,7 +647,7 @@
             <div
               class="btn-group"
               data-toggle="buttons"
-              style="width: 150px; border: 1px solid gray;"
+              style="width: 150px; border: 1px solid gray"
             >
               <button
                 id="flipHorizontal"
@@ -661,7 +669,7 @@
                 <svg
                   width="24"
                   height="24"
-                  style="transform: rotate(90deg);"
+                  style="transform: rotate(90deg)"
                   class="bi"
                 >
                   <path
@@ -683,33 +691,33 @@
             <div
               class="btn-group"
               data-toggle="buttons"
-              style="width: 180px; border: 1px solid gray;"
+              style="width: 180px; border: 1px solid gray"
             >
               <a
                 id="whiteBackgroundColor"
                 class="btn"
-                style="width: 45px; background-color: #ffffff; color: #282a36;"
+                style="width: 45px; background-color: #ffffff; color: #282a36"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
               <a
                 id="blackBackgroundColor"
                 class="btn"
-                style="width: 45px; background-color: #282a36; color: #ffffff;"
+                style="width: 45px; background-color: #282a36; color: #ffffff"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
               <a
                 id="sepiaBackgroundColor"
                 class="btn"
-                style="width: 45px; background-color: #f4ecd8; color: #5b4636;"
+                style="width: 45px; background-color: #f4ecd8; color: #5b4636"
                 data-i18ntitle="changeBackgroundColor"
                 >&nbsp;</a
               >
               <a
                 id="resetBackgroundColor"
                 class="btn"
-                style="width: 45px; background-color: #ffffff; color: #050505;"
+                style="width: 45px; background-color: #ffffff; color: #050505"
                 data-i18ntitle="resetBackgroundColor"
               >
                 <svg width="24" height="24" class="bi">
