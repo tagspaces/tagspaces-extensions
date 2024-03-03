@@ -55,7 +55,7 @@
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
           );
-          insertLoadingAnimation();
+          // insertLoadingAnimation();
           insertPrintMenuItem();
           insertZoomContentMenuItem();
 
@@ -182,12 +182,11 @@
               transition: false,
               fullscreen: true,
               inline: 'inline',
-              // fading: true,
-              hide: (e) => {
-                console.log(e.type);
+              ready: () => {
+                viewer.full();
               },
               viewed: () => {
-                hideLoadingAnimation();
+                // hideLoadingAnimation();
 
                 imageViewerContainer =
                   document.getElementsByClassName('viewer-container');
@@ -273,9 +272,6 @@
                 document.head.appendChild(script);
               },
             });
-            setTimeout(() => {
-              viewer.full();
-            }, 10); // fix for issue making first loaded image invisible by incorrect margin-top
           });
 
           imageContent.style['visibility'] = 'hidden';
@@ -492,7 +488,7 @@
     </script>
   </head>
   <body>
-    <div id="loadingAnimationPlaceholder"></div>
+    <!-- <div id="loadingAnimationPlaceholder"></div> -->
     <div
       id="imageContainer"
       style="
