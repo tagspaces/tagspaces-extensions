@@ -8,14 +8,17 @@ body {
   overflow: hidden;
 }
 
+#viewer {
+  padding-bottom: 30px;
+  margin: auto;
+}
+
 #viewer.spreads {
   width: 99%;
   height: 99%;
-  /* box-shadow: 0 0 4px #ccc; */
   border-radius: 5px;
   padding: 0;
   position: relative;
-  margin: 10px auto;
   background: url('ajax-loader.gif') center center no-repeat;
 }
 
@@ -26,7 +29,6 @@ body {
 #viewer.scrolled {
   overflow: hidden;
   width: 800px;
-  margin: 0 auto;
   position: relative;
   background: url('ajax-loader.gif') center center no-repeat;
   box-shadow: 0 0 4px #ccc;
