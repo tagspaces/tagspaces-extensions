@@ -25,6 +25,7 @@
       #documentContent img,
       #readabilityContent img {
         max-width: 100%;
+        height: auto;
       }
     </style>
     <link rel="stylesheet" href="libs/reveal.js/reset.css" />
@@ -183,8 +184,8 @@
             RevealNotes,
             // RevealSearch,
             RevealMarkdown,
-            RevealHighlight
-          ]
+            RevealHighlight,
+          ],
         });
 
         hideLoadingAnimation();
@@ -203,7 +204,7 @@
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
-    <div id="readabilityContent" style="margin: 15px; display: none;"></div>
+    <div id="readabilityContent" style="margin: 15px; display: none"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button

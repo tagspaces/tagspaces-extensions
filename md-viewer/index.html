@@ -29,6 +29,7 @@
 
       #documentContent img {
         max-width: 100%;
+        height: auto;
       }
 
       /* Readability */
@@ -74,7 +75,7 @@
         'github',
         'metro-vibes',
         'clearness',
-        'clearness-dark'
+        'clearness-dark',
       ];
 
       marked.setOptions({
@@ -85,7 +86,7 @@
         // sanitize: true, deprecated
         smartLists: true,
         smartypants: false,
-        xhtml: true
+        xhtml: true,
       });
 
       document.addEventListener('readystatechange', () => {
@@ -115,7 +116,7 @@
           function saveSettings() {
             saveExtSettings('viewerMDSettings', {
               styleIndex,
-              zoomLevel
+              zoomLevel,
             });
           }
 
@@ -137,7 +138,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -150,7 +151,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -163,7 +164,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =

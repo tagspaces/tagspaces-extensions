@@ -25,6 +25,7 @@
       #documentContent img,
       #readabilityContent img {
         max-width: 100%;
+        height: auto;
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
@@ -90,7 +91,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -103,7 +104,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -116,7 +117,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =
@@ -125,7 +126,7 @@
 
           document
             .getElementById('toSansSerifFontButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               document.getElementById('readabilityContent').style.fontFamily =
                 'Helvetica, Arial, sans-serif';
               e.stopPropagation();
@@ -133,13 +134,13 @@
 
           document
             .getElementById('toSerifFontButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               document.getElementById('readabilityContent').style.fontFamily =
                 'Georgia, Times New Roman, serif';
               e.stopPropagation();
             });
 
-          document.getElementById('copyURL').addEventListener('click', e => {
+          document.getElementById('copyURL').addEventListener('click', (e) => {
             e.stopPropagation();
             const promise = navigator.clipboard.writeText(
               document.getElementById('html-data-sourceurl').value
@@ -147,23 +148,23 @@
             sendMessageToHost({
               command: 'showAlertDialog',
               title: 'Success',
-              message: 'URL copied to clipboard'
+              message: 'URL copied to clipboard',
             });
           });
 
           document
             .getElementById('openSourceURL')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               if (sourceURL && sourceURL.length > 0) {
                 sendMessageToHost({
                   command: 'openLinkExternally',
-                  link: sourceURL
+                  link: sourceURL,
                 });
               } else {
                 sendMessageToHost({
                   command: 'showAlertDialog',
                   title: 'Error',
-                  message: 'No source URL found in this file!'
+                  message: 'No source URL found in this file!',
                 });
               }
             });
@@ -180,7 +181,7 @@
 
           document
             .getElementById('toggleReadabilityModeMenuItem')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               initReadabilityMode(filePath);
             });
         }
@@ -245,7 +246,7 @@
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
-    <div id="readabilityContent" style="margin: 15px; display: none;"></div>
+    <div id="readabilityContent" style="margin: 15px; display: none"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
@@ -281,7 +282,7 @@
         <li><hr class="dropdown-divider" /></li>
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li id="changeStyleMenuItemPlaceholder"></li>
-        <li id="fontTypeMenutItem" style="display: none;" class="dropdown-item">
+        <li id="fontTypeMenutItem" style="display: none" class="dropdown-item">
           <svg width="24" height="24" class="bi">
             <path
               d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
@@ -291,7 +292,7 @@
             class="btn-group"
             role="group"
             aria-label="Font type"
-            style="width: 160px; border: 1px solid gray;"
+            style="width: 160px; border: 1px solid gray"
           >
             <button
               id="toSansSerifFontButton"
@@ -300,7 +301,7 @@
               data-i18ntitle="toSansSerifFont"
               style="border-right: 1px solid gray"
             >
-              <label style="font-family: Helvetica, Arial, sans-serif;"
+              <label style="font-family: Helvetica, Arial, sans-serif"
                 >ABC</label
               >
             </button>
@@ -417,7 +418,12 @@
             <label data-i18n="webPageScreenshot" class="form-label"></label>
             <img
               id="html-data-screenshot"
-              style="display: none; width: 100%; border: 1px solid gray; border-radius: 5px;"
+              style="
+                display: none;
+                width: 100%;
+                border: 1px solid gray;
+                border-radius: 5px;
+              "
               src="#"
             />
           </div>
