@@ -13,14 +13,14 @@
   "dependencies": {},
   "tsextension": {
     "id": "@tagspaces/extensions/md-viewer",
-    "name": "MD Editor",
+    "name": "MD Viewer (classic)",
     "types": [
       "viewer"
     ],
     "color": "#beefed",
     "fileTypes": [
       {
-        "ext": "md"
+        "ext": "mdown"
       },
       {
         "ext": "mdx"
