@@ -55,7 +55,7 @@
     "@google/model-viewer": "^2.1.1",
     "@mozilla/readability": "0.4.2",
     "bootstrap5": "npm:bootstrap@5.2.3",
-    "dompurify": "~2.4.1",
+    "dompurify": "~3.0.11",
     "epubjs": "0.3.93",
     "file-saver": "^2.0.5",
     "i18next": "~10.2.2",
