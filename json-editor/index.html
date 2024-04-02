@@ -75,7 +75,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -88,7 +88,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -101,44 +101,19 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =
                 zoomLevel + '%';
             });
-
-          // $('#markdownHelpModal').off();
-          // $('#markdownHelpModal').on('show.bs.modal', () => {
-          //   $.ajax({
-          //     url: 'libs/jsoneditor/docs/shortcut_keys.md',
-          //     type: 'GET'
-          //   })
-          //     .done(jsonData => {
-          //       if (marked) {
-          //         const modalBody = $('#markdownHelpModal .modal-body');
-          //         modalBody.html(marked.parsed(jsonData, { sanitize: true }));
-          //         handleLinks(modalBody);
-          //       } else {
-          //         console.log('markdown to html transformer not found');
-          //       }
-          //     })
-          //     .fail(data => {
-          //       console.warn('Loading file failed ' + data);
-          //     });
-          // });
-
-          // $('#jsonHelpButton').off();
-          // $('#jsonHelpButton').on('click', () => {
-          //   $('#markdownHelpModal').modal({ show: true });
-          // });
         }
       });
 
       function contentChanged() {
         sendMessageToHost({
           command: 'contentChangedInEditor',
-          filepath: filePath
+          filepath: filePath,
         });
       }
 
@@ -168,10 +143,10 @@
           history: true,
           mode: isViewer ? 'view' : 'tree',
           // modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
-          onError: err => {
+          onError: (err) => {
             console.warn(err.toString());
           },
-          onChange: contentChanged
+          onChange: contentChanged,
         };
 
         const container = document.getElementById('documentContent');
@@ -195,7 +170,7 @@
           jsonEditor.setMode('view');
         } else {
           jsonEditor.setMode('tree');
-          document.body.addEventListener('keydown', event => {
+          document.body.addEventListener('keydown', (event) => {
             if (
               (event.ctrlKey || event.metaKey) &&
               event.key.toLowerCase() === 's'
@@ -224,7 +199,7 @@
     ></div> -->
     <div
       id="documentContent"
-      style="border-width: 0 !important; width: 100%; height: 100%; "
+      style="border-width: 0 !important; width: 100%; height: 100%"
     ></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">

@@ -44,11 +44,11 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           getFileContentPromise(filePath, 'text')
-            .then(content => {
+            .then((content) => {
               displayRtfFile(stringToBinaryArray(content));
               initFindToolbar();
             })
-            .catch(e => {
+            .catch((e) => {
               console.log('Error getting content for: ' + filePath);
             });
 
@@ -81,7 +81,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -93,7 +93,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -105,7 +105,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               documentContent.style.zoom = zoomLevel + '%';
@@ -135,7 +135,7 @@
           const showPicBorder = $('#showpicborder').prop('checked');
           const warnHttpLinks = $('#warnhttplink').prop('checked');
           const settings = {
-            onPicture: create => {
+            onPicture: (create) => {
               const elem = create().attr('class', 'rtfpict'); // WHY does addClass not work on <svg>?!
               return setPictBorder(elem, showPicBorder);
             },
@@ -143,27 +143,25 @@
               const url = hyperlink.url();
               const lnk = create();
               const span = setUnsafeLink(
-                $('<span>')
-                  .addClass('unsafelink')
-                  .append(lnk),
+                $('<span>').addClass('unsafelink').append(lnk),
                 warnHttpLinks
               );
-              span.click(evt => {
+              span.click((evt) => {
                 evt.preventDefault();
                 sendMessageToHost({ command: 'openLinkExternally', link: url });
               });
               return {
                 content: lnk,
-                element: span
+                element: span,
               };
-            }
+            },
           };
           const doc = new RTFJS.Document(blob, settings);
           let haveMeta = false;
           const meta = doc.metadata();
           for (let prop in meta) {
             console.log(meta);
-            $('#documentContent').append(
+            $('#havemeta').append(
               $('<div>')
                 .append($('<span>').text(prop + ': '))
                 .append($('<span>').text(meta[prop].toString()))
@@ -174,13 +172,12 @@
             $('#havemeta').show();
           }
 
-          // const convertedRTF = doc.render();
-          // documentContent.innerHTML = convertedRTF;
-          // // documentContent.innerHTML = DOMPurify.sanitize(convertedRTF);
+          const convertedRTF = doc.render();
 
-          $('#documentContent')
-            .empty()
-            .append(doc.render());
+          $('#documentContent').empty().append(convertedRTF);
+          // $('#documentContent')
+          //   .empty()
+          //   .append(sanitizeContent($('#documentContent').html()));
           $('#closebutton').show();
           $('#tools').show();
 
@@ -200,6 +197,8 @@
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="documentContent"></div>
+    <hr />
+    <div id="havemeta"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button

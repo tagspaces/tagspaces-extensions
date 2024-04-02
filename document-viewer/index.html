@@ -56,17 +56,17 @@
           initI18N(locale, 'ns.extension.json');
 
           const options = {
-            convertImage: mammoth.images.imgElement(image => {
-              return image.read('base64').then(imageBuffer => {
+            convertImage: mammoth.images.imgElement((image) => {
+              return image.read('base64').then((imageBuffer) => {
                 return {
-                  src: 'data:' + image.contentType + ';base64,' + imageBuffer
+                  src: 'data:' + image.contentType + ';base64,' + imageBuffer,
                 };
               });
             }),
             styleMap: [
               "p[style-name='Section Title'] => h1:fresh",
-              "p[style-name='Subsection Title'] => h2:fresh"
-            ]
+              "p[style-name='Subsection Title'] => h2:fresh",
+            ],
           };
 
           JSZipUtils.getBinaryContent(filePath, (err, data) => {
@@ -75,7 +75,7 @@
             }
             mammoth
               .convertToHtml({ arrayBuffer: data }, options)
-              .then(result => {
+              .then((result) => {
                 // console.log(result);
                 // const html = result.value; // The generated HTML
                 // const messages = result.messages; // Any messages, such as warnings during conversion
@@ -104,7 +104,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -116,7 +116,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -128,7 +128,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               documentContent.style.zoom = zoomLevel + '%';
@@ -140,7 +140,7 @@
         const content = result.value;
         // const warrningMessage = result.message;
         const documentContent = document.getElementById('documentContent');
-        documentContent.innerHTML = DOMPurify.sanitize(content);
+        documentContent.innerHTML = sanitizeContent(content);
 
         handleLinks(documentContent);
 

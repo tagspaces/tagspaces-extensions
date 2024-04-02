@@ -294,7 +294,7 @@
             mhtmlBodyHTML = emailHeaderHTML + mhtmlBodyHTML;
           }
           documentContent = document.getElementById('documentContent');
-          documentContent.innerHTML = DOMPurify.sanitize(mhtmlBodyHTML);
+          documentContent.innerHTML = sanitizeContent(mhtmlBodyHTML);
 
           hideLoadingAnimation();
 

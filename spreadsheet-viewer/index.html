@@ -68,7 +68,7 @@
 
           initI18N(locale, 'ns.extension.json');
 
-          getFileContentPromise(filePath, 'arraybuffer').then(response => {
+          getFileContentPromise(filePath, 'arraybuffer').then((response) => {
             const byteArray = new Uint8Array(response);
             displayDocument(XLSX.read(byteArray, { type: 'array' }));
           });
@@ -92,7 +92,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -105,7 +105,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -118,7 +118,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =
@@ -130,20 +130,20 @@
       function displayDocument(wb) {
         const documentContent = document.getElementById('documentContent');
         documentContent.innerHTML = '';
-        wb.SheetNames.forEach(sheetName => {
+        wb.SheetNames.forEach((sheetName) => {
           const htmlstr = XLSX.utils.sheet_to_html(wb.Sheets[sheetName], {
-            editable: false
+            editable: false,
           });
           let sheetHTML = `
             <h2>${sheetName}</h2>
             ${htmlstr}
             <br />
           `;
-          documentContent.innerHTML += DOMPurify.sanitize(sheetHTML);
+          documentContent.innerHTML += sanitizeContent(sheetHTML);
         });
 
         const allTables = documentContent.querySelectorAll('table');
-        allTables.forEach(table => {
+        allTables.forEach((table) => {
           // adding some bootstrap classes
           table.classList = 'table table-striped table-hover';
         });

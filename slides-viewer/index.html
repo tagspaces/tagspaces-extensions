@@ -168,11 +168,7 @@
           ''
         );
 
-        // htmlContent = document.getElementById('documentContent');
-        // TODO: sanitize prevents loading local images with relative path
-        // htmlContent.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
-
-        document.body.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
+        document.body.innerHTML = sanitizeContent(cleanedBodyContent);
 
         Reveal.initialize({
           controls: true,

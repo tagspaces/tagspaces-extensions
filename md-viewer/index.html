@@ -83,7 +83,6 @@
         gfm: true,
         tables: true,
         breaks: true,
-        // sanitize: true, deprecated
         smartLists: true,
         smartypants: false,
         xhtml: true,
@@ -215,7 +214,7 @@
           content = content.substr(1);
         }
 
-        content = marked.parse(DOMPurify.sanitize(content));
+        content = marked.parse(sanitizeContent(content));
         documentContent.innerHTML = content;
 
         initFindToolbar();

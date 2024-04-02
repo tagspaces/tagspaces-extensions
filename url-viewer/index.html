@@ -30,14 +30,14 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           getFileContentPromise(filePath, 'text')
-            .then(content => {
+            .then((content) => {
               setContent(content);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log('Error getting content for: ' + filePath);
             });
 
-          document.getElementById('copyURL').addEventListener('click', e => {
+          document.getElementById('copyURL').addEventListener('click', (e) => {
             e.stopPropagation();
             const promise = navigator.clipboard.writeText(
               document.getElementById('urlInput').value
@@ -45,7 +45,7 @@
             sendMessageToHost({
               command: 'showAlertDialog',
               title: 'Success',
-              message: 'URL copied to clipboard'
+              message: 'URL copied to clipboard',
             });
           });
 
@@ -58,7 +58,7 @@
       });
 
       function setContent(content) {
-        const cleanedContent = DOMPurify.sanitize(content);
+        const cleanedContent = sanitizeContent(content);
 
         const urlBegin = 'URL=';
         let url = cleanedContent.substring(
@@ -77,7 +77,7 @@
         url = url.substring(0, url.indexOf('\n'));
 
         const openURLButton = document.getElementById('openURLButton');
-        openURLButton.addEventListener('click', e => {
+        openURLButton.addEventListener('click', (e) => {
           e.preventDefault();
           const msg = { command: 'openLinkExternally', link: url };
           sendMessageToHost(msg);
@@ -96,7 +96,7 @@
   </head>
   <body>
     <div id="aboutDialogPlaceholder"></div>
-    <div style="margin: 10px;">
+    <div style="margin: 10px">
       <div class="input-group">
         <button id="copyURL" type="button" class="btn btn-primary" title="Copy">
           <svg width="24" height="24" class="bi">
@@ -130,13 +130,19 @@
       <img
         id="screenshotImg"
         title="Screenshot of the original web page"
-        style="margin-top: 10px; width: 100%; display: none; border-radius: 5px; border: 1px solid gray;"
+        style="
+          margin-top: 10px;
+          width: 100%;
+          display: none;
+          border-radius: 5px;
+          border: 1px solid gray;
+        "
       />
     </div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
-        class="btn btn-primary  btn-lg"
+        class="btn btn-primary btn-lg"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >

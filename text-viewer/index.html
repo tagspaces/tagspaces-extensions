@@ -35,7 +35,7 @@
         if (document.readyState === 'complete') {
           sendMessageToHost({
             preview: true,
-            command: 'loadDefaultTextContent'
+            command: 'loadDefaultTextContent',
           });
 
           insertAboutDialog(
@@ -61,26 +61,41 @@
           cleanedContent = cleanedContent.substring(0, previewSize);
         }
 
-        document.getElementById(
-          'textContentArea'
-        ).textContent = DOMPurify.sanitize(cleanedContent);
+        document.getElementById('textContentArea').textContent =
+          sanitizeContent(cleanedContent);
       }
     </script>
   </head>
   <body>
     <div
-      style="padding: 5px; background-color: transparent; width: 100%; height: 100%;"
+      style="
+        padding: 5px;
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+      "
       class="flexLayoutVertical"
       id="mainLayout"
     >
       <div
-        style="margin-left: auto; margin-right: auto; font-size: 14px;"
+        style="margin-left: auto; margin-right: auto; font-size: 14px"
         data-i18n="fileContentPreview"
       ></div>
       <textarea
         id="textContentArea"
         readonly="readonly"
-        style="background-color: transparent; color: gray; padding: 5px; overflow: auto; height: 97%; width: 100%; font-size: 13px; margin: 0px;  border: gray solid 1px; border-radius: 4px;"
+        style="
+          background-color: transparent;
+          color: gray;
+          padding: 5px;
+          overflow: auto;
+          height: 97%;
+          width: 100%;
+          font-size: 13px;
+          margin: 0px;
+          border: gray solid 1px;
+          border-radius: 4px;
+        "
         class="flexMaxHeight"
       ></textarea>
     </div>

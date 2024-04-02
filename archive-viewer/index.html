@@ -55,7 +55,7 @@
             if (err) {
               throw err; // or handle err
             }
-            JSZip.loadAsync(data).then(data => {
+            JSZip.loadAsync(data).then((data) => {
               displayDocument(data, filePath);
             });
           });
@@ -79,7 +79,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -92,7 +92,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -105,7 +105,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =
@@ -159,14 +159,13 @@
           showLoadingAnimation();
           const containFile = zipFile.files[filePath];
           containFile.options.compression = 'STORE';
-          containFile.async('text').then(blob => {
+          containFile.async('text').then((blob) => {
             let previewText = blob;
             if (previewText.length > maxPreviewSize) {
               previewText = previewText.substring(maxPreviewSize);
             }
-            document.getElementById(
-              'filePreview'
-            ).innerText = DOMPurify.sanitize(previewText);
+            document.getElementById('filePreview').innerText =
+              sanitizeContent(previewText);
             hideLoadingAnimation();
           });
 
@@ -176,10 +175,10 @@
 
         function handleZIPLinks() {
           const allZIPLinks = document.querySelectorAll('[data-zipfile]');
-          allZIPLinks.forEach(link => {
+          allZIPLinks.forEach((link) => {
             let currentSrc = link.dataset.zipfile;
             if (currentSrc.length > 0) {
-              link.addEventListener('click', e => {
+              link.addEventListener('click', (e) => {
                 e.preventDefault();
                 showContentFilePreviewDialog(currentSrc);
               });
@@ -258,7 +257,16 @@
             />
             <pre
               id="filePreview"
-              style="white-space: pre-wrap; min-height: 200px; max-height: 500px; border: 1px solid gray; margin-top: 10px; border-radius: 5px; padding: 10px; overflow: auto;"
+              style="
+                white-space: pre-wrap;
+                min-height: 200px;
+                max-height: 500px;
+                border: 1px solid gray;
+                margin-top: 10px;
+                border-radius: 5px;
+                padding: 10px;
+                overflow: auto;
+              "
               title="Showing the first 3kb of the file"
             ></pre>
           </div>

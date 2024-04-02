@@ -91,7 +91,7 @@
 
           function saveSettings() {
             saveExtSettings('viewerMDSettings', {
-              zoomLevel
+              zoomLevel,
             });
           }
 
@@ -107,7 +107,7 @@
 
           document
             .getElementById('zoomInButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel + 10;
               if (zoomLevel >= 500) {
@@ -120,7 +120,7 @@
 
           document
             .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               e.stopPropagation();
               zoomLevel = zoomLevel - 10;
               if (zoomLevel < 30) {
@@ -133,7 +133,7 @@
 
           document
             .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
+            .addEventListener('click', (e) => {
               zoomLevel = 100;
               saveSettings();
               document.getElementById('documentContent').style.zoom =
@@ -157,7 +157,7 @@
 
         // transform markdown
         const { root, features } = transformer.transform(
-          DOMPurify.sanitize(content)
+          sanitizeContent(content)
         );
 
         // either get assets required by used features
@@ -174,7 +174,7 @@
           {
             // color: ['blue', 'red'],
             // colorFreezeLevel: 1,
-            initialExpandLevel: 2
+            initialExpandLevel: 2,
           },
           root
         );

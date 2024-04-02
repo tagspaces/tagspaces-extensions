@@ -225,10 +225,8 @@
           /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
           ''
         );
-
         htmlContent = document.getElementById('documentContent');
-        // TODO: sanitize prevents loading local images with relative path
-        htmlContent.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
+        htmlContent.innerHTML = sanitizeContent(cleanedBodyContent);
 
         hideLoadingAnimation();
 
