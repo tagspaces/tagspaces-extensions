@@ -277,6 +277,23 @@
           imageContent.style['visibility'] = 'hidden';
 
           document
+            .getElementById('copyToClipboard')
+            .addEventListener('click', (e) => {
+              toDataURL(
+                imageContent.src,
+                (dataURL) => {
+                  fetch(dataURL)
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                      const data = [new ClipboardItem({ [blob.type]: blob })];
+                      navigator.clipboard.write(data);
+                    });
+                },
+                'png'
+              );
+            });
+
+          document
             .getElementById('exportJPGImage')
             .addEventListener('click', (e) => {
               toDataURL(imageContent.src, (dataURL) => {
@@ -758,6 +775,19 @@
           </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a id="copyToClipboard" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2m0 16H8V7h11z"
+              ></path>
+            </svg>
+            <span
+              data-i18n="copyToClipboard"
+              data-i18ntitle="copyToClipboardTitle"
+            />
+          </a>
+        </li>
         <li>
           <a
             id="exifButton"
