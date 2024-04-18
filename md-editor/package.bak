@@ -1,0 +1,77 @@
+{
+  "name": "@tagspaces/md-editor-next",
+  "version": "1.0.102",
+  "description": "TagSpaces extension for editing notes in markdown format",
+  "tsextension": {
+    "name": "MD Editor (MilkdownV5)",
+    "types": [
+      "viewer",
+      "editor"
+    ],
+    "color": "#beefed",
+    "fileTypes": [
+      {
+        "ext": "md"
+      },
+      {
+        "ext": "mdx",
+        "types": [
+          "viewer"
+        ]
+      }
+    ],
+    "buildFolder": "build"
+  },
+  "homepage": "./",
+  "main": "build/index.js",
+  "files": [
+    "build/"
+  ],
+  "scripts": {
+    "skipsourcemap": "GENERATE_SOURCEMAP=false",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:dev": "react-app-rewired build",
+    "build:env": "npx env-cmd -f .env.development react-scripts build",
+    "zip": "npm run build && npx npm-build-zip --source=.",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "code-format": "npx prettier --write .",
+    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/md-editor-next/build && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/md-editor-next",
+    "build:pack": "npm run build && npm run npmpack",
+    "pkg-publish": "npm publish --access public"
+  },
+  "keywords": [
+    "md",
+    "markdown",
+    "editor",
+    "tagspaces"
+  ],
+  "author": {
+    "name": "TagSpaces GmbH",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tagspaces/tagspaces-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tagspaces/tagspaces-extensions/issues"
+  }
+}
