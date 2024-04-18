@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/text-viewer",
-  "version": "1.0.102",
+  "version": "1.0.103",
   "description": "A TagSpaces extension allowing you to open plain text files",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
