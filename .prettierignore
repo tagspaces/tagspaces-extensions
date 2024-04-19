@@ -17,5 +17,5 @@ image-viewer/libs/*
 media-player/build/*
 pdf-viewer/generic/build/*
 pdf-viewer/generic/web/*
-text-editor-react/build/*
+md-editor-next/build/*
 md-editor/build/*

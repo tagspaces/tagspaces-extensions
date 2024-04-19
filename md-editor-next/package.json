@@ -1,6 +1,6 @@
 {
-  "name": "@tagspaces/md-editor-next",
-  "version": "1.0.103",
+  "name": "@tagspaces/md-editor",
+  "version": "2.0.0",
   "description": "TagSpaces extension for editing notes in markdown format",
   "tsextension": {
     "name": "MD Editor (beta)",
@@ -28,16 +28,16 @@
     "build/"
   ],
   "scripts": {
-    "skipsourcemap": "GENERATE_SOURCEMAP=false",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npx cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "zip": "npm run build && npx npm-build-zip --source=.",
+    "zip:dev": "npm run build:dev && npx npm-build-zip --source=.",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "code-format": "npx prettier --write .",
-    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/md-editor-next/build && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/md-editor-next",
+    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/md-editor/build && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/md-editor",
     "build:pack": "npm run build && npm run npmpack",
     "pkg-publish": "npm publish --access public"
   },
@@ -47,27 +47,23 @@
     "editor",
     "tagspaces"
   ],
-  "author": {
-    "name": "TagSpaces GmbH",
-    "email": "info@tagspaces.org",
-    "url": "https://www.tagspaces.org"
-  },
+  "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.2",
-    "@tagspaces/tagspaces-md": "2.1.6",
-    "easy-speech": "^1.2.1",
+    "@tagspaces/tagspaces-md": "4.1.14",
+    "@tagspaces/tagspaces-codemirror": "4.0.2",
+    "@tagspaces/tagspaces-extension-ui": "^4.0.2",
     "i18next": "^22.4.6",
-    "i18next-browser-languagedetector": "^7.2.0",
-    "i18next-http-backend": "2.1.0",
+    "i18next-http-backend": "^2.2.1",
+    "i18next-browser-languagedetector": "^7.0.2",
     "mark.js": "^8.11.1",
     "markmap-common": "^0.14.2",
     "markmap-lib": "^0.14.3",
     "markmap-view": "^0.14.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^12.1.1"
+    "react-i18next": "^12.1.1",
+    "easy-speech": "^1.2.1"
   },
   "devDependencies": {
     "@types/mark.js": "^8.11.8",
