@@ -30,7 +30,7 @@
   "scripts": {
     "skipsourcemap": "GENERATE_SOURCEMAP=false",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-back": "react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "zip": "npm run build && npx npm-build-zip --source=.",
