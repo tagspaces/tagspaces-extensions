@@ -91,6 +91,12 @@ const App: React.FC = () => {
     forceUpdate();
   });
 
+  useEffect(() => {
+    if (milkdownRef.current) {
+      milkdownRef.current.setDarkMode(isDarkMode);
+    }
+  }, [isDarkMode, milkdownRef.current]);
+
   /*useEffect(() => {
     if (milkdownRef.current) {
       milkdownRef.current.setDarkMode(isDarkMode);
