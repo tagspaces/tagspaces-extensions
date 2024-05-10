@@ -157,6 +157,7 @@ const App: React.FC = () => {
   const milkdownListener = React.useCallback((markdown: string) => {
     const lock = focusCode.current;
     if (lock) return;
+    focus.current = true; // fix initial checkbox click not updated
 
     //if (markdown !== prevMarkdown.current) {
     // prevMarkdown.current !== null &&
