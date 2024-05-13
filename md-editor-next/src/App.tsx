@@ -1,9 +1,5 @@
 import React, { useReducer, useState, useEffect } from 'react';
-import Mark from 'mark.js';
 import useEventListener from './useEventListener';
-import Fab from '@mui/material/Fab';
-import TextField from '@mui/material/TextField';
-import MoreIcon from '@mui/icons-material/MoreVert';
 
 import { ColorModeContext } from '@tagspaces/tagspaces-extension-ui';
 // @ts-ignore
@@ -90,12 +86,6 @@ const App: React.FC = () => {
   useEventListener('contentLoaded', () => {
     forceUpdate();
   });
-
-  useEffect(() => {
-    if (milkdownRef.current) {
-      milkdownRef.current.setDarkMode(isDarkMode);
-    }
-  }, [isDarkMode, milkdownRef.current]);
 
   /*useEffect(() => {
     if (milkdownRef.current) {

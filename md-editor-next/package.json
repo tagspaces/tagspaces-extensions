@@ -50,8 +50,8 @@
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@tagspaces/tagspaces-md": "4.1.14",
-    "@tagspaces/tagspaces-codemirror": "4.0.2",
+    "@tagspaces/tagspaces-md": "4.3.5",
+    "@tagspaces/tagspaces-codemirror": "4.3.4",
     "@tagspaces/tagspaces-extension-ui": "^4.0.2",
     "i18next": "^22.4.6",
     "i18next-http-backend": "^2.2.1",
@@ -60,19 +60,19 @@
     "markmap-common": "^0.14.2",
     "markmap-lib": "^0.14.3",
     "markmap-view": "^0.14.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-i18next": "^12.1.1",
     "easy-speech": "^1.2.1"
   },
   "devDependencies": {
-    "@types/mark.js": "^8.11.8",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
+    "@types/mark.js": "^8.11.12",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
     "prettier": "^2.7.1",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "^5.0.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.9.5"
   },
   "browserslist": {
     "production": [
