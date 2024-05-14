@@ -17,6 +17,5 @@
     "jsx": "react-jsx",
     "downlevelIteration": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "lib", "lib-esm"]
+  "include": ["src"]
 }

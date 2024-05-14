@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/image-viewer",
-  "version": "1.0.105",
+  "version": "1.0.106",
   "description": "A TagSpaces extension allowing opening of image files, such as JPG, PNG, BMP, GIF and WEBP.",
   "homepage": "https://www.tagspaces.org",
   "main": "index.html",

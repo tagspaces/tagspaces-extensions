@@ -42,18 +42,37 @@ const App: React.FC = () => {
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
 
-  // @ts-ignore
-  useEventListener('keydown', event => {
-    if (event.ctrlKey || event.metaKey) {
-      if (event.key.toLowerCase() === 's') {
-        event.stopPropagation();
-        event.preventDefault();
+  useEventListener('contentLoaded', () => {
+    console.log('contentLoaded: event triggered');
+    forceUpdate();
+  });
+
+  useEventListener('themeChanged', () => {
+    console.log('themeChanged: event triggered');
+    //forceUpdate();
+    if (milkdownRef.current) {
+      // @ts-ignore
+      console.log('themeChanged: ' + window.theme + ' event triggered');
+      // @ts-ignore
+      colorMode.setMode(window.theme === 'dark' ? 'dark' : 'light');
+      // @ts-ignore
+      milkdownRef.current.setDarkMode(window.theme && window.theme === 'dark');
+    }
+  });
+
+  useEventListener('keydown', (event: Event) => {
+    // Type assertion to tell TypeScript that it's a KeyboardEvent
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+      if (keyboardEvent.key.toLowerCase() === 's') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
         if (!readOnly()) {
           sendMessageToHost({ command: 'saveDocument' });
         }
-      } else if (event.key.toLowerCase() === 'p') {
-        event.stopPropagation();
-        event.preventDefault();
+      } else if (keyboardEvent.key.toLowerCase() === 'p') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
         window.print();
         // } else if (event.key.toLowerCase() === 'f') {
         //   setFilterVisible(!isFilterVisible);
@@ -64,34 +83,11 @@ const App: React.FC = () => {
     // }
   });
 
-  // @ts-ignore
-  useEventListener('dblclick', event => {
+  useEventListener('dblclick', () => {
     if (readOnly()) {
       sendMessageToHost({ command: 'editDocument' });
     }
   });
-
-  useEventListener('themeChanged', () => {
-    console.log('themeChanged: event triggered');
-    //forceUpdate();
-    if (milkdownRef.current) {
-      // @ts-ignore
-      console.log('themeChanged: ' + window.theme + ' event triggered');
-      colorMode.toggleColorMode();
-      // @ts-ignore
-      milkdownRef.current.setDarkMode(window.theme && window.theme === 'dark');
-    }
-  });
-
-  useEventListener('contentLoaded', () => {
-    forceUpdate();
-  });
-
-  /*useEffect(() => {
-    if (milkdownRef.current) {
-      milkdownRef.current.setDarkMode(isDarkMode);
-    }
-  }, [isDarkMode]);*/
 
   useEffect(() => {
     EasySpeech.init()
@@ -174,7 +170,7 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
-    if (focus.current || focusCode.current) {
+    if (!readOnly() && focus.current || focusCode.current) {
       // @ts-ignore
       window.mdContent = content;
       // console.log('content changed:' + content);
@@ -278,6 +274,19 @@ const App: React.FC = () => {
     return elements[0]?.textContent;
   }
 
+  const handleEditorClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if(readOnly()) {
+      // Prevent default behavior (e.g., checking a checkbox)
+      event.preventDefault();
+
+      // Optionally stop propagation to prevent the event from bubbling up
+      event.stopPropagation();
+
+      // Your custom logic here
+      console.log('Clicked on the component but prevented default behavior.');
+    }
+  };
+
   const milkdownStyle =
     mode === 'Milkdown'
       ? { width: '100%', height: '100%' }
@@ -289,7 +298,7 @@ const App: React.FC = () => {
   return (
     <div>
       {getContent() !== undefined && (
-        <div ref={contentRef}>
+        <div ref={contentRef} onClick={handleEditorClick}>
           <div style={milkdownStyle}>
             <MilkdownEditor
               ref={milkdownRef}

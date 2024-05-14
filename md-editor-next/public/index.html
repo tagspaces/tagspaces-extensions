@@ -11,23 +11,20 @@
         window.editMode = !editMode;
         window.fileDirectory = fileDirectory;
         window.dispatchEvent(new Event('contentLoaded'));
-        if (theme) {
-          window.theme = theme;
-          window.dispatchEvent(new Event('themeChanged'));
-        }
+        setTheme(theme);
       }
 
       function getContent() {
         return window.mdContent;
       }
 
-      /*function setTheme(theme) {
-        console.log('setTheme: ' + theme + ' event triggered');
-        //document.documentElement.className = theme;
-        //document.documentElement.setAttribute('data-theme', theme);
-        window.theme = theme;
-        window.dispatchEvent(new Event('themeChanged'));
-      }*/
+      function setTheme(theme) {
+        if (theme) {
+          console.log('setTheme: ' + theme + ' event triggered');
+          window.theme = theme;
+          window.dispatchEvent(new Event('themeChanged'));
+        }
+      }
 
       function getParameterByName(paramName) {
         const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
