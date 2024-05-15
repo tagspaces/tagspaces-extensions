@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/json-editor",
-  "version": "1.0.108",
+  "version": "1.0.109",
   "description": "A TagSpaces extension allowing viewing and editing of JSON documents.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
