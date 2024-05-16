@@ -9,7 +9,7 @@ body {
   margin: 0;
   overflow: hidden;
   background-color: transparent;
-  font-family: Ubuntu, Geneva, Arial, Helvetica, sans-serif;
+  /*font-family: Ubuntu, Geneva, Arial, Helvetica, sans-serif;*/
 }
 
 #root {
