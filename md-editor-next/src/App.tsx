@@ -296,9 +296,9 @@ const App: React.FC = () => {
       ? { width: 0, height: 0, overflow: 'hidden' }
       : { width: '100%', height: '100%' };
   return (
-    <div>
+    <div style={{height:'100%'}}>
       {getContent() !== undefined && (
-        <div ref={contentRef} onClick={handleEditorClick}>
+        <div style={{height:'100%'}} ref={contentRef} onClick={handleEditorClick}>
           <div style={milkdownStyle}>
             <MilkdownEditor
               ref={milkdownRef}
