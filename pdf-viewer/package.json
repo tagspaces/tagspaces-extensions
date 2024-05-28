@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "pdfjs-dist": "4.0.379"
+    "pdfjs-dist": "4.2.67"
   },
   "tsextension": {
     "name": "PDF Viewer",

@@ -304,6 +304,12 @@ pdfjs-editor-stamp-button-label = Lisää tai muokkaa kuvia
 pdfjs-editor-highlight-button =
     .title = Korostus
 pdfjs-editor-highlight-button-label = Korostus
+pdfjs-highlight-floating-button =
+    .title = Korostus
+pdfjs-highlight-floating-button1 =
+    .title = Korostus
+    .aria-label = Korostus
+pdfjs-highlight-floating-button-label = Korostus
 
 ## Remove button for the various kind of editor.
 
@@ -387,3 +393,10 @@ pdfjs-editor-colorpicker-pink =
     .title = Pinkki
 pdfjs-editor-colorpicker-red =
     .title = Punainen
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Näytä kaikki
+pdfjs-editor-highlight-show-all-button =
+    .title = Näytä kaikki

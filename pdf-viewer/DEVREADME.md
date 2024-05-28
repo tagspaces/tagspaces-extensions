@@ -33,13 +33,15 @@ Commenting lines 2105 +3 in app.js
 
 ### Build
 
-    gulp generic
+    gulp generic-legacy
 
 ### Update the files for the extensions
 
-copy build/generic pdf-viewer/generic
+copy build/generic-legacy pdf-viewer/generic
 
 ### Latest integrated version
+
+v4.2.67 - 20240528
 
 v3.8.162 - 20230719
 

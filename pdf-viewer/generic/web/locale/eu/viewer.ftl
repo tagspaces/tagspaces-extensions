@@ -301,11 +301,15 @@ pdfjs-editor-ink-button-label = Marrazkia
 pdfjs-editor-stamp-button =
     .title = Gehitu edo editatu irudiak
 pdfjs-editor-stamp-button-label = Gehitu edo editatu irudiak
-pdfjs-editor-remove-button =
-    .title = Kendu
 pdfjs-editor-highlight-button =
     .title = Nabarmendu
 pdfjs-editor-highlight-button-label = Nabarmendu
+pdfjs-highlight-floating-button =
+    .title = Nabarmendu
+pdfjs-highlight-floating-button1 =
+    .title = Nabarmendu
+    .aria-label = Nabarmendu
+pdfjs-highlight-floating-button-label = Nabarmendu
 
 ## Remove button for the various kind of editor.
 
@@ -329,6 +333,10 @@ pdfjs-editor-ink-opacity-input = Opakutasuna
 pdfjs-editor-stamp-add-image-button =
     .title = Gehitu irudia
 pdfjs-editor-stamp-add-image-button-label = Gehitu irudia
+# This refers to the thickness of the line used for free highlighting (not bound to text)
+pdfjs-editor-free-highlight-thickness-input = Loditasuna
+pdfjs-editor-free-highlight-thickness-title =
+    .title = Aldatu loditasuna testua ez beste elementuak nabarmentzean
 pdfjs-free-text =
     .aria-label = Testu-editorea
 pdfjs-free-text-default-content = Hasi idazten…
@@ -385,3 +393,10 @@ pdfjs-editor-colorpicker-pink =
     .title = Arrosa
 pdfjs-editor-colorpicker-red =
     .title = Gorria
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Erakutsi denak
+pdfjs-editor-highlight-show-all-button =
+    .title = Erakutsi denak

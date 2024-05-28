@@ -51,12 +51,6 @@ pdfjs-download-button-label = Завантажити
 pdfjs-bookmark-button =
     .title = Поточна сторінка (перегляд URL-адреси з поточної сторінки)
 pdfjs-bookmark-button-label = Поточна сторінка
-# Used in Firefox for Android.
-pdfjs-open-in-app-button =
-    .title = Відкрити у програмі
-# Used in Firefox for Android.
-# Length of the translation matters since we are in a mobile context, with limited screen estate.
-pdfjs-open-in-app-button-label = Відкрити у програмі
 
 ##  Secondary toolbar and context menu
 
@@ -108,16 +102,16 @@ pdfjs-spread-even-button-label = Парні сторінки зліва
 pdfjs-document-properties-button =
     .title = Властивості документа…
 pdfjs-document-properties-button-label = Властивості документа…
-pdfjs-document-properties-file-name = Назва файла:
-pdfjs-document-properties-file-size = Розмір файла:
+pdfjs-document-properties-file-name = Назва файлу:
+pdfjs-document-properties-file-size = Розмір файлу:
 # Variables:
 #   $size_kb (Number) - the PDF file size in kilobytes
 #   $size_b (Number) - the PDF file size in bytes
-pdfjs-document-properties-kb = { $size_kb } КБ ({ $size_b } bytes)
+pdfjs-document-properties-kb = { $size_kb } КБ ({ $size_b } байтів)
 # Variables:
 #   $size_mb (Number) - the PDF file size in megabytes
 #   $size_b (Number) - the PDF file size in bytes
-pdfjs-document-properties-mb = { $size_mb } МБ ({ $size_b } bytes)
+pdfjs-document-properties-mb = { $size_mb } МБ ({ $size_b } байтів)
 pdfjs-document-properties-title = Заголовок:
 pdfjs-document-properties-author = Автор:
 pdfjs-document-properties-subject = Тема:
@@ -182,14 +176,14 @@ pdfjs-document-outline-button =
     .title = Показати схему документу (подвійний клік для розгортання/згортання елементів)
 pdfjs-document-outline-button-label = Схема документа
 pdfjs-attachments-button =
-    .title = Показати прикріплення
-pdfjs-attachments-button-label = Прикріплення
+    .title = Показати вкладення
+pdfjs-attachments-button-label = Вкладення
 pdfjs-layers-button =
     .title = Показати шари (двічі клацніть, щоб скинути всі шари до типового стану)
 pdfjs-layers-button-label = Шари
 pdfjs-thumbs-button =
-    .title = Показувати ескізи
-pdfjs-thumbs-button-label = Ескізи
+    .title = Показати мініатюри
+pdfjs-thumbs-button-label = Мініатюри
 pdfjs-current-outline-item-button =
     .title = Знайти поточний елемент змісту
 pdfjs-current-outline-item-button-label = Поточний елемент змісту
@@ -286,9 +280,9 @@ pdfjs-text-annotation-type =
 
 ## Password
 
-pdfjs-password-label = Введіть пароль для відкриття цього PDF-файла.
-pdfjs-password-invalid = Невірний пароль. Спробуйте ще.
-pdfjs-password-ok-button = Гаразд
+pdfjs-password-label = Введіть пароль для відкриття цього PDF-файлу.
+pdfjs-password-invalid = Неправильний пароль. Спробуйте ще раз.
+pdfjs-password-ok-button = OK
 pdfjs-password-cancel-button = Скасувати
 pdfjs-web-fonts-disabled = Веб-шрифти вимкнено: неможливо використати вбудовані у PDF шрифти.
 
@@ -306,6 +300,12 @@ pdfjs-editor-stamp-button-label = Додати чи редагувати зоб�
 pdfjs-editor-highlight-button =
     .title = Підсвітити
 pdfjs-editor-highlight-button-label = Підсвітити
+pdfjs-highlight-floating-button =
+    .title = Підсвітити
+pdfjs-highlight-floating-button1 =
+    .title = Підсвітити
+    .aria-label = Підсвітити
+pdfjs-highlight-floating-button-label = Підсвітити
 
 ## Remove button for the various kind of editor.
 
@@ -389,3 +389,10 @@ pdfjs-editor-colorpicker-pink =
     .title = Рожевий
 pdfjs-editor-colorpicker-red =
     .title = Червоний
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Показати все
+pdfjs-editor-highlight-show-all-button =
+    .title = Показати все

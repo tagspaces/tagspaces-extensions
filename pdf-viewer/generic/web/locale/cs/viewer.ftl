@@ -308,6 +308,12 @@ pdfjs-editor-stamp-button-label = Přidání či úprava obrázků
 pdfjs-editor-highlight-button =
     .title = Zvýraznění
 pdfjs-editor-highlight-button-label = Zvýraznění
+pdfjs-highlight-floating-button =
+    .title = Zvýraznit
+pdfjs-highlight-floating-button1 =
+    .title = Zvýraznit
+    .aria-label = Zvýraznit
+pdfjs-highlight-floating-button-label = Zvýraznit
 
 ## Remove button for the various kind of editor.
 
@@ -391,3 +397,10 @@ pdfjs-editor-colorpicker-pink =
     .title = Růžová
 pdfjs-editor-colorpicker-red =
     .title = Červená
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Zobrazit vše
+pdfjs-editor-highlight-show-all-button =
+    .title = Zobrazit vše

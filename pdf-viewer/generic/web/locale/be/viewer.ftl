@@ -306,6 +306,12 @@ pdfjs-editor-stamp-button-label = Дадаць або змяніць выявы
 pdfjs-editor-highlight-button =
     .title = Вылучэнне
 pdfjs-editor-highlight-button-label = Вылучэнне
+pdfjs-highlight-floating-button =
+    .title = Вылучэнне
+pdfjs-highlight-floating-button1 =
+    .title = Падфарбаваць
+    .aria-label = Падфарбаваць
+pdfjs-highlight-floating-button-label = Падфарбаваць
 
 ## Remove button for the various kind of editor.
 
@@ -389,3 +395,10 @@ pdfjs-editor-colorpicker-pink =
     .title = Ружовы
 pdfjs-editor-colorpicker-red =
     .title = Чырвоны
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Паказаць усе
+pdfjs-editor-highlight-show-all-button =
+    .title = Паказаць усе
