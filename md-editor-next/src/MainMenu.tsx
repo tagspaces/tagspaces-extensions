@@ -174,8 +174,8 @@ const MainMenu: React.FC<{
   const tsTheme = createTheme({
     palette: {
       primary: {
-        main: primaryBackgroundColor,
-        contrastText: primaryTextColor
+        main: primaryBackgroundColor || '#FFFFFF',
+        contrastText: primaryTextColor || '#000000'
       },
       secondary: {
         main: '#11cb5f',
@@ -202,7 +202,11 @@ const MainMenu: React.FC<{
           onClose={() => setAnchorEl(null)}
         >
           {actions.map(action => (
-            <MenuItem data-tid={action.dataTID} key={action.name} onClick={action.action}>
+            <MenuItem
+              data-tid={action.dataTID}
+              key={action.name}
+              onClick={action.action}
+            >
               <ListItemIcon>{action.icon}</ListItemIcon>
               <ListItemText>{action.name}</ListItemText>
             </MenuItem>
