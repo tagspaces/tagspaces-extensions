@@ -21,3 +21,13 @@ body {
 .ͼc {
   color: var(--primary-background-color) !important;
 }
+
+@media print {
+  header.MuiToolbar-root {
+    display: none;
+  }
+  .MuiList-root, .MuiFab-root {
+    display: none;
+  }
+}
+
