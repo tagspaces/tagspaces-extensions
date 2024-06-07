@@ -26,7 +26,7 @@ body {
   header.MuiToolbar-root {
     display: none;
   }
-  .MuiList-root, .MuiFab-root {
+  .MuiMenu-paper, .MuiFab-root {
     display: none;
   }
 }
