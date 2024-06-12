@@ -1,0 +1,23 @@
+@import './scrollbars.css';
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background-color: transparent;
+  font-family: Ubuntu, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#root {
+  height: 100%;
+  overflow-y: auto;
+  overflow-y: overlay;
+}
+
+/* Fix for the color of markdown links in codemirror */
+.ͼc {
+  color: var(--primary-background-color) !important;
+}
