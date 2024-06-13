@@ -308,7 +308,7 @@ const App: React.FC = () => {
                 focus.current = true;
               }}
               readOnly={readOnly()}
-              excludePlugins={readOnly() ? ['menu', 'upload'] : []}
+              excludePlugins={readOnly() ? ['menu', 'upload', 'slash'] : []}
               //dark={isDarkMode}
             />
           </div>
