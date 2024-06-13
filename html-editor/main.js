@@ -168,7 +168,7 @@ function getContent() {
   // removing all scripts from the document
   let cleanedContent = content.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ''
+    '',
   );
 
   // saving all images as png in base64 format
@@ -215,7 +215,7 @@ function getContent() {
   if (indexOfBody >= 0 && currentContent.indexOf('</body>') > indexOfBody) {
     htmlContent = currentContent.replace(
       /\<body[^>]*\>([^]*)\<\/body>/m,
-      cleanedContent
+      cleanedContent,
     ); // jshint ignore:line
   } else {
     htmlContent = cleanedContent;
@@ -246,7 +246,7 @@ function setContent(content, filePath) {
       scrappedOn = content.match(scrappedOnRegex)[1];
     } catch (e) {
       console.log(
-        'Error parsing the scrapping date from the HTML document. ' + e
+        'Error parsing the scrapping date from the HTML document. ' + e,
       );
     }
 
@@ -269,7 +269,7 @@ function setContent(content, filePath) {
       createdWith = content.match(createdWithRegex)[1];
     } catch (e) {
       console.log(
-        'Error parsing the created with from the HTML document. ' + e
+        'Error parsing the created with from the HTML document. ' + e,
       );
     }
 
@@ -294,7 +294,7 @@ function setContent(content, filePath) {
   }
   cleanedContent = bodyContent.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ''
+    '',
   );
 
   // saving all images as png in base64 format

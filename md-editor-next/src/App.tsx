@@ -170,7 +170,7 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
-    if (!readOnly() && focus.current || focusCode.current) {
+    if ((!readOnly() && focus.current) || focusCode.current) {
       // @ts-ignore
       window.mdContent = content;
       // console.log('content changed:' + content);
@@ -275,7 +275,7 @@ const App: React.FC = () => {
   }
 
   const handleEditorClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if(readOnly()) {
+    if (readOnly()) {
       // Prevent default behavior (e.g., checking a checkbox)
       event.preventDefault();
 
@@ -296,9 +296,13 @@ const App: React.FC = () => {
       ? { width: 0, height: 0, overflow: 'hidden' }
       : { width: '100%', height: '100%' };
   return (
-    <div style={{height:'100%'}}>
+    <div style={{ height: '100%' }}>
       {getContent() !== undefined && (
-        <div style={{height:'100%'}} ref={contentRef} onClick={handleEditorClick}>
+        <div
+          style={{ height: '100%' }}
+          ref={contentRef}
+          onClick={handleEditorClick}
+        >
           <div style={milkdownStyle}>
             <MilkdownEditor
               ref={milkdownRef}
