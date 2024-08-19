@@ -41,6 +41,8 @@ const App: React.FC = () => {
   const getContent = () => window.mdContent;
   // @ts-ignore
   const isDarkMode = window.theme && window.theme === 'dark';
+  // @ts-ignore
+  const query = window.query;
 
   useEventListener('contentLoaded', () => {
     console.log('contentLoaded: event triggered');
@@ -314,6 +316,7 @@ const App: React.FC = () => {
               readOnly={readOnly()}
               excludePlugins={readOnly() ? ['menu', 'upload', 'slash'] : ['slash']}
               //dark={isDarkMode}
+              query={query}
             />
           </div>
           <div style={codeMirrorStyle}>
