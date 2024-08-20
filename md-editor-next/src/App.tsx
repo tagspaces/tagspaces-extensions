@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
-  const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
+  //const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const colorMode = React.useContext(ColorModeContext);
 
@@ -76,8 +76,6 @@ const App: React.FC = () => {
         keyboardEvent.stopPropagation();
         keyboardEvent.preventDefault();
         window.print();
-        // } else if (event.key.toLowerCase() === 'f') {
-        //   setFilterVisible(!isFilterVisible);
       }
     }
     // if (event.key.toLowerCase() === 'escape') {
@@ -199,7 +197,7 @@ const App: React.FC = () => {
     console.log(JSON.stringify(milkdownRef.current));
   };
 
-  function speak(text: string | null) {
+  function speak(text: string | null | undefined) {
     if (!text) return Promise.resolve(false);
     return new Promise<boolean>(resolve => {
       EasySpeech.cancel();
@@ -331,24 +329,16 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-      {/* {isFilterVisible && (
-        <TextField
-          style={{ position: 'absolute', right: 80, bottom: 20 }}
-          label="Search in text"
-          autoFocus
-          size="small"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-      )} */}
       <MainMenu
         readText={() => speak(getMarkdownTxt())} //getContent())}
         cancelRead={() => EasySpeech.cancel()}
         pauseRead={() => EasySpeech.pause()}
         resumeRead={() => EasySpeech.resume()}
         toggleViewSource={toggleViewSource}
-        isFilterVisible={isFilterVisible}
-        setFilterVisible={setFilterVisible}
+        setFilterVisible={() => {
+          if (!milkdownRef.current) return;
+          milkdownRef.current.openSearchDialog();
+        }}
         mdContent={getContent()}
         mode={mode}
         setSettingsDialogOpened={setSettingsDialogOpened}

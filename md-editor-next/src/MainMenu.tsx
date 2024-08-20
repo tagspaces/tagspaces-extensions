@@ -13,6 +13,7 @@ import Fab from '@mui/material/Fab';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SearchIcon from '@mui/icons-material/Search';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
@@ -33,7 +34,6 @@ const MainMenu: React.FC<{
   pauseRead: () => void;
   resumeRead: () => void;
   setSettingsDialogOpened: (open: boolean) => void;
-  isFilterVisible: boolean;
   setFilterVisible: (isFilterVisible: boolean) => void;
   mdContent: string;
   mode: string;
@@ -45,7 +45,6 @@ const MainMenu: React.FC<{
   pauseRead,
   resumeRead,
   setSettingsDialogOpened,
-  isFilterVisible,
   setFilterVisible,
   mdContent,
   mode,
@@ -110,14 +109,14 @@ const MainMenu: React.FC<{
         toggleViewSource();
       }
     },
-    // {
-    //   icon: <SearchIcon />,
-    //   name: 'Toggle search filter',
-    //   action: () => {
-    //     setAnchorEl(null);
-    //     setFilterVisible(!isFilterVisible);
-    //   }
-    // },
+    {
+      icon: <SearchIcon />,
+      name: 'Toggle search filter',
+      action: () => {
+        setAnchorEl(null);
+        setFilterVisible(true);
+      }
+    },
     {
       icon: <TreeIcon />,
       name: i18n.t('viewAsMindMap'),
