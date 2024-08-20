@@ -112,6 +112,7 @@ const MainMenu: React.FC<{
     {
       icon: <SearchIcon />,
       name: 'Toggle search filter',
+      dataTID: 'searchEditorTID',
       action: () => {
         setAnchorEl(null);
         setFilterVisible(true);
