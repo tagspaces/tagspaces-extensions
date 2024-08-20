@@ -111,7 +111,7 @@ const MainMenu: React.FC<{
     },
     {
       icon: <SearchIcon />,
-      name: 'Toggle search filter',
+      name: i18n.t('findInDocument'),
       dataTID: 'searchEditorTID',
       action: () => {
         setAnchorEl(null);
