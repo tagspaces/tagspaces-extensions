@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-viewer",
-  "version": "1.0.128",
+  "version": "1.0.129",
   "description": "A TagSpaces extension allowing opening of MD files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
