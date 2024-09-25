@@ -40,7 +40,15 @@ function SettingsDialog(props: Props) {
     props.handleLanguageChange(event.target.value as string);
   };
 
-  const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
+  function getDisplayName(lang){
+    try {
+      const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
+      return '- ' + displayNames.of(lang)
+    } catch (error) {
+      console.error('Invalid argument for Intl.DisplayNames:', error);
+    }
+    return '';
+  }
 
   return (
     <Dialog
@@ -85,7 +93,7 @@ function SettingsDialog(props: Props) {
           {props.languages?.map(lang => (
             <MenuItem key={lang} value={lang}>
               <span style={{ width: '100%' }}>
-                {lang} - {displayNames.of(lang)}
+                {lang} {getDisplayName(lang)}
               </span>
             </MenuItem>
           ))}
