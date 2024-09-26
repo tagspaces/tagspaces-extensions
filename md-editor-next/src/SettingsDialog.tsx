@@ -40,10 +40,10 @@ function SettingsDialog(props: Props) {
     props.handleLanguageChange(event.target.value as string);
   };
 
-  function getDisplayName(lang){
+  function getDisplayName(lang) {
     try {
       const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
-      return '- ' + displayNames.of(lang)
+      return '- ' + displayNames.of(lang);
     } catch (error) {
       console.error('Invalid argument for Intl.DisplayNames:', error);
     }

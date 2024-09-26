@@ -312,7 +312,9 @@ const App: React.FC = () => {
                 focus.current = true;
               }}
               readOnly={readOnly()}
-              excludePlugins={readOnly() ? ['menu', 'upload', 'slash'] : ['slash']}
+              excludePlugins={
+                readOnly() ? ['menu', 'upload', 'slash'] : ['slash']
+              }
               //dark={isDarkMode}
               query={query}
             />
