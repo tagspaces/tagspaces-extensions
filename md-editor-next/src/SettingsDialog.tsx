@@ -40,7 +40,7 @@ function SettingsDialog(props: Props) {
     props.handleLanguageChange(event.target.value as string);
   };
 
-  function getDisplayName(lang) {
+  function getDisplayName(lang: string) {
     try {
       const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
       return '- ' + displayNames.of(lang);
