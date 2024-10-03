@@ -33,6 +33,8 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
+
       const maxPreviewSize = 1024 * 3 || {}; // 3kb limit for preview
       let filePreviewModal;
 
@@ -42,7 +44,6 @@
             'https://docs.tagspaces.org/extensions/archive-viewer'
           );
 
-          insertLoadingAnimation();
           insertPrintMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
@@ -51,14 +52,19 @@
 
           filePreviewModal = new bootstrap.Modal('#filePreviewModal', {});
 
-          JSZipUtils.getBinaryContent(filePath, (err, data) => {
-            if (err) {
-              throw err; // or handle err
-            }
-            JSZip.loadAsync(data).then((data) => {
-              displayDocument(data, filePath);
+          if (encrypted) {
+            document.getElementById('encyptedMessage').style.display = 'block';
+          } else {
+            insertLoadingAnimation();
+            JSZipUtils.getBinaryContent(filePath, (err, data) => {
+              if (err) {
+                throw err; // or handle err
+              }
+              JSZip.loadAsync(data).then((data) => {
+                displayDocument(data, filePath);
+              });
             });
-          });
+          }
 
           // Handling settings
           let extSettings = loadExtSettings('archiveViewerSettings');
@@ -195,6 +201,11 @@
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">

@@ -30,23 +30,23 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
-
+      const encrypted = getParameterByName('encrypted');
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          getFileContentPromise(filePath, 'arraybuffer').then((content) => {
-            setContent(content);
-          });
-          // .catch(e => {
-          //   console.log('Error getting content for: ' + filePath);
-          // });
-
-          insertLoadingAnimation();
+          if (encrypted) {
+            document.getElementById('encyptedMessage').style.display = 'block';
+            // sendMessageToHost({ command: 'loadDefaultTextContent' });
+          } else {
+            getFileContentPromise(filePath, 'arraybuffer').then((content) => {
+              setContent(content);
+            });
+            insertLoadingAnimation();
+            insertToggleFindMenuItem();
+            insertZoomContentMenuItem();
+            insertExportAsHTMLFunctionality();
+          }
           insertPrintMenuItem();
-          insertToggleFindMenuItem();
-          insertZoomContentMenuItem();
-          insertExportAsHTMLFunctionality();
           insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
-
           initI18N(locale, 'ns.extension.json');
 
           // Handling settings
@@ -194,6 +194,11 @@
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button

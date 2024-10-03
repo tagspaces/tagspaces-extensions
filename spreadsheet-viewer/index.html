@@ -55,6 +55,7 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -68,10 +69,15 @@
 
           initI18N(locale, 'ns.extension.json');
 
-          getFileContentPromise(filePath, 'arraybuffer').then((response) => {
-            const byteArray = new Uint8Array(response);
-            displayDocument(XLSX.read(byteArray, { type: 'array' }));
-          });
+          if (encrypted) {
+            document.getElementById('encyptedMessage').style.display = 'block';
+            // sendMessageToHost({ command: 'loadDefaultTextContent' });
+          } else {
+            getFileContentPromise(filePath, 'arraybuffer').then((response) => {
+              const byteArray = new Uint8Array(response);
+              displayDocument(XLSX.read(byteArray, { type: 'array' }));
+            });
+          }
 
           // Handling settings
           let extSettings = loadExtSettings('spreadsheetViewerSettings');
@@ -156,6 +162,11 @@
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
