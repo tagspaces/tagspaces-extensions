@@ -43,7 +43,7 @@
   ],
   "scripts": {
     "updatelibs": "node common/update-libs.js",
-    "link4dev": "cd .. && export CDIR=$PWD && npx rimraf $CDIR/release/app/node_modules/@tagspaces/extensions && ln -sf $CDIR/extensions $CDIR/release/app/node_modules/@tagspaces",
+    "link4dev": "cd .. && export CDIR=$PWD && npx rimraf $CDIR/tagspaces/release/app/node_modules/@tagspaces/extensions && ln -sf $CDIR/extensions $CDIR/tagspaces/release/app/node_modules/@tagspaces",
     "build": "node postversion.js && npm run build-media-player && npm run build-md-editor",
     "build-media-player": "cd media-player && npm install && npm run build && cd ..",
     "build-md-editor": "cd md-editor-next && npm install && npm run build && cd ..",
