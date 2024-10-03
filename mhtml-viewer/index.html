@@ -40,6 +40,7 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       let readabilityContent;
 
@@ -56,13 +57,17 @@
           );
           initI18N(locale, 'ns.extension.json');
 
-          getFileContentPromise(filePath, 'text')
-            .then((content) => {
-              setContent(content);
-            })
-            .catch((e) => {
-              console.log('Error getting content for: ' + filePath);
-            });
+          if (encrypted) {
+            sendMessageToHost({ command: 'loadDefaultTextContent' });
+          } else {
+            getFileContentPromise(filePath, 'text')
+              .then((content) => {
+                setContent(content);
+              })
+              .catch((e) => {
+                console.log('Error getting content for: ' + filePath);
+              });
+          }
 
           document.body.addEventListener('dblclick', () => {
             sendMessageToHost({ command: 'editDocument' });

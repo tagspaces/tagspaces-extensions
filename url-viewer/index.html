@@ -26,17 +26,21 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          getFileContentPromise(filePath, 'text')
-            .then((content) => {
-              setContent(content);
-            })
-            .catch((e) => {
-              console.log('Error getting content for: ' + filePath);
-            });
-
+          if (encrypted) {
+            sendMessageToHost({ command: 'loadDefaultTextContent' });
+          } else {
+            getFileContentPromise(filePath, 'text')
+              .then((content) => {
+                setContent(content);
+              })
+              .catch((e) => {
+                console.log('Error getting content for: ' + filePath);
+              });
+          }
           document.getElementById('copyURL').addEventListener('click', (e) => {
             e.stopPropagation();
             const promise = navigator.clipboard.writeText(

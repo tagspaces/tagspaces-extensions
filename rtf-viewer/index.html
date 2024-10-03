@@ -40,17 +40,21 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          getFileContentPromise(filePath, 'text')
-            .then((content) => {
-              displayRtfFile(stringToBinaryArray(content));
-              initFindToolbar();
-            })
-            .catch((e) => {
-              console.log('Error getting content for: ' + filePath);
-            });
+          if (encrypted) {
+            sendMessageToHost({ command: 'loadDefaultTextContent' });
+          } else {
+            getFileContentPromise(filePath, 'text')
+              .then((content) => {
+                setContent(content);
+              })
+              .catch((e) => {
+                console.log('Error getting content for: ' + filePath);
+              });
+          }
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/rtf-viewer');
 
@@ -112,6 +116,11 @@
             });
         }
       });
+
+      function setContent(content) {
+        displayRtfFile(stringToBinaryArray(content));
+        initFindToolbar();
+      }
 
       function stringToBinaryArray(string) {
         const buffer = new ArrayBuffer(string.length);

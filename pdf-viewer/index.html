@@ -17,14 +17,19 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           const pdfViewer = document.getElementById('pdfviewer');
-          pdfViewer.setAttribute(
-            'src',
-            'generic/web/viewer.html?file=' + encodeURIComponent(filePath)
-          );
-
+          if (encrypted) {
+            pdfViewer.style.display = 'none';
+            document.getElementById('encyptedMessage').style.display = 'block';
+          } else {
+            pdfViewer.setAttribute(
+              'src',
+              'generic/web/viewer.html?file=' + encodeURIComponent(filePath)
+            );
+          }
           insertAboutDialog('https://docs.tagspaces.org/extensions/pdf-viewer');
 
           initI18N(locale, 'ns.extension.json');
@@ -34,10 +39,13 @@
   </head>
 
   <body style="margin: 0; padding: 0; height: 100%; overflow: hidden">
-    <iframe
-      id="pdfviewer"
-      style="width: 100%; border: 0; height: 100%"
-    ></iframe>
+    <iframe id="pdfviewer" style="width: 100%; border: 0; height: 100%">
+    </iframe>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
