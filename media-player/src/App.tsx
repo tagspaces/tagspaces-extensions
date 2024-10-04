@@ -107,9 +107,13 @@ const App: React.FC = () => {
   const ref = React.useRef<APITypes>(null);
 
   const searchParam = new URLSearchParams(window.location.search);
-  let filePath = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
+  let filePath = '';
   if (searchParam && searchParam.has('file')) {
     filePath = searchParam.get('file') || '';
+  }
+  let encrypted = false;
+  if (searchParam && searchParam.has('encrypted')) {
+    encrypted = searchParam.get('encrypted') === 'true';
   }
   const fileName = extractFileName(filePath);
   const fileThumb = getThumbFileLocationForFile(filePath);
@@ -264,7 +268,13 @@ const App: React.FC = () => {
   return (
     <HideProvider>
       <div id="container">
-        {filePath && (
+        {encrypted && (
+          <div style={{ textAlign: 'center', padding: 10 }}>
+            Document encrypted, please use the download functionality to get its
+            content.
+          </div>
+        )}
+        {!encrypted && filePath && (
           <CustomPlyrInstance
             ref={ref}
             source={videoSource}
