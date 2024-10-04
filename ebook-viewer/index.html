@@ -37,6 +37,7 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       let showPagination = true;
 
@@ -87,13 +88,20 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           // isWeb ? filePath : 'file://' + filePath
-          getFileContentPromise(filePath, 'arraybuffer')
-            .then((content) => {
-              setContent(content);
-            })
-            .catch((e) => {
-              console.log('Error getting content for: ' + filePath);
-            });
+
+          if (encrypted) {
+            document.getElementById('encyptedMessage').style.display = 'block';
+            document.getElementById('toc').style.display = 'none';
+            document.getElementById('viewer').style.display = 'none';
+          } else {
+            getFileContentPromise(filePath, 'arraybuffer')
+              .then((content) => {
+                setContent(content);
+              })
+              .catch((e) => {
+                console.log('Error getting content for: ' + filePath);
+              });
+          }
 
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/ebook-viewer'
@@ -299,6 +307,11 @@
     </script>
   </head>
   <body>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <select id="toc"></select>
     <div id="viewer" class="spreads"></div>
     <a id="prev" href="#prev" class="arrow">‹</a>

@@ -41,6 +41,7 @@
       if (locale === 'en') {
         locale = 'en_US';
       }
+      const encrypted = getParameterByName('encrypted');
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -69,20 +70,24 @@
             ],
           };
 
-          JSZipUtils.getBinaryContent(filePath, (err, data) => {
-            if (err) {
-              throw err; // or handle err
-            }
-            mammoth
-              .convertToHtml({ arrayBuffer: data }, options)
-              .then((result) => {
-                // console.log(result);
-                // const html = result.value; // The generated HTML
-                // const messages = result.messages; // Any messages, such as warnings during conversion
-                displayDocument(result);
-              })
-              .done();
-          });
+          if (encrypted) {
+            document.getElementById('encyptedMessage').style.display = 'block';
+          } else {
+            JSZipUtils.getBinaryContent(filePath, (err, data) => {
+              if (err) {
+                throw err; // or handle err
+              }
+              mammoth
+                .convertToHtml({ arrayBuffer: data }, options)
+                .then((result) => {
+                  // console.log(result);
+                  // const html = result.value; // The generated HTML
+                  // const messages = result.messages; // Any messages, such as warnings during conversion
+                  displayDocument(result);
+                })
+                .done();
+            });
+          }
 
           const documentContent = document.getElementById('documentContent');
 
@@ -150,6 +155,11 @@
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
+    <div
+      id="encyptedMessage"
+      data-i18n="encryptedFileUseDownload"
+      style="display: none; text-align: center; padding: 20px"
+    ></div>
     <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
