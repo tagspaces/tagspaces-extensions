@@ -269,9 +269,16 @@ const App: React.FC = () => {
     <HideProvider>
       <div id="container">
         {encrypted && (
-          <div style={{ textAlign: 'center', padding: 10 }}>
-            Document encrypted, please use the download functionality to get its
-            content.
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 10,
+              color: 'white',
+              fontFamily: 'sans-serif'
+            }}
+          >
+            Document encrypted and can not be streamed. Please use the download
+            functionality to get its content.
           </div>
         )}
         {!encrypted && filePath && (
