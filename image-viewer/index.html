@@ -51,6 +51,56 @@
       }
       const encrypted = getParameterByName('encrypted');
 
+      function arrayBufferToDataURL(arrayBuffer, mime) {
+        return new Promise((resolve) => {
+          const blob = new Blob([arrayBuffer], { type: mime });
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const dataUrl = event.target?.result;
+            resolve(dataUrl);
+          };
+
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      let imageContent;
+      let fileExt;
+
+      function setContent(content) {
+        if (!imageContent) {
+          return;
+        }
+        let mimeType = '';
+        if (
+          fileExt === '.jpg' ||
+          fileExt === '.jpeg' ||
+          fileExt === '.jfif' ||
+          fileExt === '.pjpeg' ||
+          fileExt === '.pjp'
+        ) {
+          mimeType = 'image/jpeg';
+        } else if (fileExt === '.png') {
+          mimeType = 'image/png';
+        } else if (fileExt === '.avif') {
+          mimeType = 'image/avif';
+        } else if (fileExt === '.gif') {
+          mimeType = 'image/gif';
+        } else if (fileExt === '.svg') {
+          mimeType = 'image/svg+xml';
+        } else if (fileExt === '.webp') {
+          mimeType = 'image/webp';
+        }
+        if (mimeType) {
+          arrayBufferToDataURL(content, mimeType).then((dataURL) => {
+            imageContent.setAttribute('src', dataURL);
+          });
+        } else {
+          document.getElementById('encyptedMessage').style.display = 'block';
+        }
+      }
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
@@ -63,13 +113,12 @@
           initI18N(locale, 'ns.viewerImage.json', 'locales');
 
           if (encrypted) {
-            document.getElementById('encyptedMessage').style.display = 'block';
-            return;
+            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
+            // document.getElementById('encyptedMessage').style.display = 'block';
+            // return;
           }
 
-          let fileExt = filePath
-            .substring(filePath.lastIndexOf('.'))
-            .toLowerCase();
+          fileExt = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
           if (fileExt.includes('?')) {
             fileExt = fileExt.split('?')[0];
           }
@@ -96,7 +145,7 @@
 
           let orientation;
           let viewer;
-          const imageContent = document.getElementById('imageContent');
+          imageContent = document.getElementById('imageContent');
 
           if (
             fileExt === '.cr2' ||
@@ -172,7 +221,7 @@
             };
             script.src = 'libs/heic2any/heic2any.min.js';
             document.head.appendChild(script);
-          } else {
+          } else if (!encrypted) {
             imageContent.src = filePath;
           }
 
@@ -190,11 +239,11 @@
               fullscreen: true,
               inline: 'inline',
               ready: () => {
+                console.log('das');
                 viewer.full();
               },
               viewed: () => {
                 // hideLoadingAnimation();
-
                 imageViewerContainer =
                   document.getElementsByClassName('viewer-container');
                 imageViewerContainer[0].style.background = 'transparent';

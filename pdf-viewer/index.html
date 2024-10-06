@@ -18,12 +18,42 @@
         locale = 'en_US';
       }
       const encrypted = getParameterByName('encrypted');
+      let pdfViewer;
+
+      function arrayBufferToDataURL(arrayBuffer, mime) {
+        return new Promise((resolve) => {
+          const blob = new Blob([arrayBuffer], { type: mime });
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const dataUrl = event.target?.result;
+            resolve(dataUrl);
+          };
+
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      function setContent(content) {
+        if (!pdfViewer) {
+          document.getElementById('encyptedMessage').style.display = 'block';
+          return;
+        }
+        arrayBufferToDataURL(content, 'application/pdf').then((dataURL) => {
+          pdfViewer.setAttribute(
+            'src',
+            'generic/web/viewer.html?file=' + encodeURIComponent(dataURL)
+          );
+        });
+      }
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
-          const pdfViewer = document.getElementById('pdfviewer');
+          pdfViewer = document.getElementById('pdfviewer');
           if (encrypted) {
-            pdfViewer.style.display = 'none';
-            document.getElementById('encyptedMessage').style.display = 'block';
+            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
+            // pdfViewer.style.display = 'none';
+            // document.getElementById('encyptedMessage').style.display = 'block';
           } else {
             pdfViewer.setAttribute(
               'src',

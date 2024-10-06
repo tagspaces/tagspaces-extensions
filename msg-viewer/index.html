@@ -34,17 +34,16 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           if (encrypted) {
-            document.getElementById('encyptedMessage').style.display = 'block';
-            // sendMessageToHost({ command: 'loadDefaultTextContent' });
+            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
           } else {
             getFileContentPromise(filePath, 'arraybuffer').then((content) => {
               setContent(content);
             });
-            insertLoadingAnimation();
-            insertToggleFindMenuItem();
-            insertZoomContentMenuItem();
-            insertExportAsHTMLFunctionality();
           }
+          insertLoadingAnimation();
+          insertToggleFindMenuItem();
+          insertZoomContentMenuItem();
+          insertExportAsHTMLFunctionality();
           insertPrintMenuItem();
           insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
           initI18N(locale, 'ns.extension.json');
