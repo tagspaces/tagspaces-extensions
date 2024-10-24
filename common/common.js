@@ -140,7 +140,7 @@ function extractFileName(filePath, dirSeparator = '/') {
   return filePath
     ? filePath.substring(
         filePath.lastIndexOf(dirSeparator) + 1,
-        filePath.length,
+        filePath.length
       )
     : filePath;
 }
@@ -191,7 +191,7 @@ function initI18N(locale, filename, localePath) {
       return true;
     })
     .catch((error) =>
-      console.log('Error getting default i18n locale: ' + error),
+      console.log('Error getting default i18n locale: ' + error)
     );
 }
 
@@ -214,7 +214,7 @@ function sendMessageToHost(message) {
   } else {
     window.parent.postMessage(
       JSON.stringify({ ...message, eventID: eventID }),
-      '*',
+      '*'
     );
   }
 }
@@ -643,7 +643,14 @@ function insertPrintMenuItem() {
   });
 }
 
-function insertAboutDialog(helpURL) {
+function insertAboutDialog(helpURL, pro) {
+  let description = `This extension is license under the permissive MIT license. The source code can be found in this git repository
+  <a href="https://github.com/tagspaces/tagspaces-extensions">github.com/tagspaces/tagspaces-extensions</a
+  >.`;
+  if (pro) {
+    description = `This extension belongs to the package with TagSpaces Pro extensions.`;
+  }
+
   document.getElementById('aboutMenuItemPlaceholder').innerHTML = `
     <a
       class="dropdown-item"
@@ -681,11 +688,7 @@ function insertAboutDialog(helpURL) {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
-          This extension is license under the permissive MIT license. The source code can be found in this git repository
-          <a href="https://github.com/tagspaces/tagspaces-extensions">github.com/tagspaces/tagspaces-extensions</a
-          >.
-        </div>
+        <div class="modal-body">${description}</div>
         <div class="modal-footer" style="justify-content: space-between;">
           <button
             type="button"
