@@ -1,93 +1,18 @@
 import React from 'react';
-//import http from 'http';
-//import { parse, URL } from 'url';
 import './extension.css';
-import {
-  APITypes,
-  PlyrInstance,
-  PlyrProps,
-  PlyrSource,
-  usePlyr
-} from 'plyr-react';
-import 'plyr-react/plyr.css';
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
 import MainMenu from './MainMenu';
-import { MediaType } from 'plyr';
 import {
   getThumbFileLocationForFile,
   extractFileName
 } from '@tagspaces/tagspaces-common/paths';
-import { HideProvider, useHide } from './HideContext';
-import useEventListener from './useEventListener';
-import { sendMessageToHost } from './utils';
+import { HideProvider } from './HideContext';
+import { MediaPlayer, MediaProvider } from '@vidstack/react';
+import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 
-interface Props extends PlyrProps {
-  filePath: string;
-  getLoopMode: () => string;
-}
 
-const CustomPlyrInstance = React.forwardRef<APITypes, Props>((props, ref) => {
-  const { source, options = null, getLoopMode, filePath } = props;
-  const raptorRef = usePlyr(ref, { options, source });
-  const { dispatch } = useHide();
 
-  // Do all api access here, it is guaranteed to be called with the latest plyr instance
-  React.useEffect(() => {
-    /**
-     * Fool react for using forward ref as normal ref
-     * NOTE: in a case you don't need the forward mechanism and handle everything via props
-     * you can create the ref inside the component by yourself
-     */
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    if (current.plyr.source === null) return;
-
-    const api = current as { plyr: PlyrInstance };
-    api.plyr.on('ready', () => {
-      console.log('Plyr is ready');
-      // api.plyr.play();
-    });
-    api.plyr.on('canplay', () => {
-      // NOTE: browser may pause you from doing so:  https://goo.gl/xX8pDD
-      //api.plyr.play();
-      console.log('duration of audio is', api.plyr.duration);
-    });
-    api.plyr.on('ended', () => {
-      if (getLoopMode() === 'loopOne') {
-        api.plyr.play();
-      } else if (getLoopMode() === 'noLoop') {
-        // player.stop();
-      } else {
-        sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
-      }
-    });
-    api.plyr.on('controlshidden', () => {
-      dispatch({ type: 'hide' });
-    });
-    api.plyr.on('controlsshown', () => {
-      dispatch({ type: 'show' });
-    });
-    /*api.plyr.on('enterfullscreen', () => {
-      api.plyr.toggleControls(true);
-    });
-    api.plyr.on('exitfullscreen', () => {
-      api.plyr.toggleControls(true);
-    });*/
-  });
-
-  React.useEffect(() => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    if (source !== null) {
-      current.plyr.source = source;
-    }
-  }, [source]);
-
-  return (
-    <video
-      id="player"
-      ref={raptorRef as React.MutableRefObject<HTMLVideoElement>}
-      className="plyr-react plyr"
-    />
-  );
-});
 
 const App: React.FC = () => {
   const items = localStorage.getItem('viewerAudioVideoSettings');
@@ -100,71 +25,24 @@ const App: React.FC = () => {
     defaultVideoOutput = extSettings.enableVideoOutput;
     defaultLoop = extSettings.loop;
   }
-  const isControlsHidden = React.useRef<boolean>(false);
-  const autoPlay = React.useRef<boolean>(defaultAutoPlay);
-  const enableVideoOutput = React.useRef<boolean>(defaultVideoOutput);
-  const loop = React.useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
-  const ref = React.useRef<APITypes>(null);
+  const isControlsHidden = React.useRef(false);
+  const autoPlay = React.useRef(defaultAutoPlay);
+  const enableVideoOutput = React.useRef(defaultVideoOutput);
+  const loop = React.useRef<string>(defaultLoop);
 
   const searchParam = new URLSearchParams(window.location.search);
-  let filePath = '';
-  if (searchParam && searchParam.has('file')) {
-    filePath = searchParam.get('file') || '';
-  }
-  let encrypted = false;
-  if (searchParam && searchParam.has('encrypted')) {
-    encrypted = searchParam.get('encrypted') === 'true';
-  }
+  const filePath = searchParam.get('file') || '';
+  const encrypted = searchParam.get('encrypted') === 'true';
   const fileName = extractFileName(filePath);
   const fileThumb = getThumbFileLocationForFile(filePath);
-
-  const audio: MediaType = 'audio';
-  const video: MediaType = 'video';
-
   const isAudioType = /\.(mp3|wav)$/i.test(filePath);
 
-  useEventListener('enterfullscreen', () => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    const api = current as { plyr: PlyrInstance };
-    isControlsHidden.current = true;
-    api.plyr.toggleControls(false);
-  });
-
-  useEventListener('exitfullscreen', () => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    const api = current as { plyr: PlyrInstance };
-    isControlsHidden.current = false;
-    api.plyr.toggleControls(true);
-  });
-
-  useEventListener('togglePlayPause', () => {
-    const { current } = ref as React.MutableRefObject<APITypes>;
-    const api = current as { plyr: PlyrInstance };
-    isControlsHidden.current = false;
-    api.plyr.playing ? api.plyr.pause() : api.plyr.play();
-  });
-
-  /*function urlExists(url) {
-    return new Promise(resolve => {
-      const urlParsed = parse(url);
-      const options = {
-        method: 'HEAD',
-        host: urlParsed.host,
-        path: urlParsed.pathname,
-        port: urlParsed.port
-      };
-
-      const req = http.request(options, res => {
-        if (res.statusCode !== undefined) {
-          resolve(res.statusCode < 400 || res.statusCode >= 500);
-        } else {
-          resolve(false);
-        }
+  const [mediaSource, setMediaSource] = React.useState({
+    src: filePath,
+    type: isAudioType ? 'audio' : enableVideoOutput.current ? 'video' : 'audio',
+    title: fileName,
+    poster: fileThumb
       });
-
-      req.end();
-    });
-  }*/
 
   function saveExtSettings() {
     const extSettings = {
@@ -172,46 +50,8 @@ const App: React.FC = () => {
       enableVideoOutput: enableVideoOutput.current,
       loop: loop.current
     };
-    localStorage.setItem(
-      'viewerAudioVideoSettings',
-      JSON.stringify(extSettings)
-    );
-  }
-
-  const [videoSource, setVideoSource] = React.useState<PlyrSource>({
-    type: isAudioType ? audio : enableVideoOutput.current ? video : audio,
-    title: 'TagSpaces',
-    sources: [
-      {
-        src: /^https?:\/\//.test(filePath)
-          ? filePath
-          : encodeURIComponent(filePath)
-              .replace(/%2F/g, '/')
-              .replace(/%5C/g, '\\')
-              .replace(/%3A/g, ':')
+    localStorage.setItem('viewerAudioVideoSettings', JSON.stringify(extSettings));
       }
-    ],
-    poster: fileThumb, //'/path/to/poster.jpg',
-    previewThumbnails: {
-      src: fileThumb //'/path/to/thumbnails.vtt',
-    }
-    /*
-  tracks: [
-    {
-      kind: 'captions',
-      label: 'English',
-      srclang: 'en',
-      src: '/path/to/captions.en.vtt',
-      default: true,
-    },
-    {
-      kind: 'captions',
-      label: 'French',
-      srclang: 'fr',
-      src: '/path/to/captions.fr.vtt',
-    },
-  ],*/
-  });
 
   function setAutoPlay(value: boolean) {
     autoPlay.current = value;
@@ -219,7 +59,7 @@ const App: React.FC = () => {
   }
   function setVideoOutput(value: boolean) {
     enableVideoOutput.current = value;
-    setVideoSource({ ...videoSource, type: value ? video : audio });
+    setMediaSource({ ...mediaSource, type: value ? 'video' : 'audio' });
     saveExtSettings();
   }
   function setLoop(value: string) {
@@ -227,48 +67,21 @@ const App: React.FC = () => {
     saveExtSettings();
   }
 
-  // const hideControls = fscreen.fullscreenEnabled && fscreen.fullscreenElement !== null; //typeof window !== undefined && window.innerHeight === window.screen.height
-  const videoOptions = {
-    controls: [
-      'play-large', // The large play button in the center
-      'restart', // Restart playback
-      'rewind', // Rewind by the seek time (default 10 seconds)
-      'play', // Play/pause playback
-      'fast-forward', // Fast forward by the seek time (default 10 seconds)
-      'progress', // The progress bar and scrubber for playback and buffering
-      'current-time', // The current time of playback
-      // 'duration', // The full duration of the media
-      'mute', // Toggle mute
-      'volume', // Volume control
-      // 'captions', // Toggle captions
-      // 'settings', // Settings menu
-      'pip' // Picture-in-picture (currently Safari only)
-      // 'airplay', // Airplay (currently Safari only)
-      // 'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-      // 'fullscreen', // Toggle fullscreen
-    ],
-    // title: 'TagSpaces',
-    // tooltips: {
-    //  controls: true
-    // },
-    displayDuration: true,
-    autoplay: autoPlay.current,
-    mediaMetadata: {
-      title: fileName,
-      artwork: [fileThumb]
-    },
-    /*captions: {
-    defaultActive: true
-  },*/
-    hideControls: isControlsHidden.current, // false,
-    keyboard: { focused: true, global: true },
-    fullscreen: { enabled: false }
+  const handleEnded = () => {
+    /*const loopMode = getLoopMode();
+    if (loopMode === 'loopOne') {
+      player.play();
+    } else if (loopMode === 'noLoop') {
+      // player.stop(); // No-op, as Vidstack does not stop media this way
+    } else {
+      sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
+    }*/
   };
 
   return (
     <HideProvider>
       <div id="container">
-        {encrypted && (
+        {encrypted ? (
           <div
             style={{
               textAlign: 'center',
@@ -280,19 +93,19 @@ const App: React.FC = () => {
             Document encrypted and can not be streamed. Please use the download
             functionality to get its content.
           </div>
-        )}
-        {!encrypted && filePath && (
-          <CustomPlyrInstance
-            ref={ref}
-            source={videoSource}
-            options={videoOptions}
-            getLoopMode={() => loop.current}
-            filePath={filePath}
-            // setHiddenMainMenu={setHiddenMainMenu}
-          />
+        ) : (
+          <MediaPlayer
+            src={mediaSource.src}
+            onEnded={handleEnded}
+            autoplay={autoPlay.current}
+            title={fileName}
+            loop={loop.current === 'loopAll'}
+          >
+            <MediaProvider />
+            <DefaultVideoLayout thumbnails={getThumbFileLocationForFile(filePath)} icons={defaultLayoutIcons} />
+          </MediaPlayer>
         )}
         <MainMenu
-          // isHidden={isHiddenMainMenu.current}
           isAudioType={isAudioType}
           autoPlay={autoPlay.current}
           setAutoPlay={setAutoPlay}

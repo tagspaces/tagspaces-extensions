@@ -18,7 +18,7 @@
     "build": "react-scripts build",
     "build:dev": "react-app-rewired build",
     "build:env": "npx env-cmd -f .env.development react-scripts build",
-    "npmpack": "npx shx cp -rL build/** ../../app/node_modules/@tagspaces/extensions/media-player && npx shx cp package.json ../../app/node_modules/@tagspaces/extensions/media-player",
+    "npmpack": "npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/media-player && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/media-player",
     "test": "react-scripts test --env=jsdom",
     "code-format": "npx prettier --write ."
   },
@@ -28,7 +28,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.2",
     "@tagspaces/tagspaces-common": "^2.1.29",
-    "plyr-react": "^5.1.0",
+    "@vidstack/react": "^1.12.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
