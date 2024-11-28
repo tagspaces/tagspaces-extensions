@@ -20,6 +20,7 @@
     "build:env": "npx env-cmd -f .env.development react-scripts build",
     "npmpack": "npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/media-player && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/media-player",
     "test": "react-scripts test --env=jsdom",
+    "test-file": "react-scripts start http://localhost:3000/?file=https%3A%2F%2Fs3.eu-central-1.wasabisys.com%2Fdemots%2Fdemo%2FDigital-Asset-Management%2FOrganize%2520-%2520Videos%2FPexels%2520Videos%25202155942%255B5star%255D.mp4",
     "code-format": "npx prettier --write ."
   },
   "dependencies": {

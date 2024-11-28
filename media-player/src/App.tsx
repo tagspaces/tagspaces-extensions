@@ -102,7 +102,7 @@ const App: React.FC = () => {
             loop={loop.current === 'loopAll'}
           >
             <MediaProvider />
-            <DefaultVideoLayout thumbnails={getThumbFileLocationForFile(filePath)} icons={defaultLayoutIcons} />
+            {/*<DefaultVideoLayout icons={defaultLayoutIcons} />*/} {/*thumbnails={getThumbFileLocationForFile(filePath)}*/}
           </MediaPlayer>
         )}
         <MainMenu
