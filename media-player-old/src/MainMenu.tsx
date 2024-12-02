@@ -75,8 +75,8 @@ const MainMenu: React.FC<{
   const tsTheme = createTheme({
     palette: {
       primary: {
-        main: primaryBackgroundColor || '#222222',
-        contrastText: primaryTextColor || '#ffffff'
+        main: primaryBackgroundColor,
+        contrastText: primaryTextColor
       },
       secondary: {
         main: '#11cb5f',

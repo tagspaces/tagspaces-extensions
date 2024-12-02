@@ -1,5 +1,5 @@
 import React from 'react';
-import { hideReducer, type State, type Dispatch } from './hideReducer';
+import { Dispatch, hideReducer, State } from './hideReducer';
 
 type HideProviderProps = { children: React.ReactNode };
 
