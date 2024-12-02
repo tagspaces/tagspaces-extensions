@@ -47,9 +47,7 @@
     "build": "node postversion.js && npm run build-media-player && npm run build-md-editor",
     "build-media-player": "cd media-player && npm install && npm run build && cd ..",
     "build-md-editor": "cd md-editor-next && npm install && npm run build && cd ..",
-    "copy-build": "shx cp -rL media-player/build/static media-player && shx cp media-player/build/index.html media-player",
-    "drop-build": "npx rimraf media-player/index.html media-player/static",
-    "pkg-publish": "npm version patch && npm run build && npm run copy-build && npm publish --access public && npm run drop-build",
+    "pkg-publish": "npm version patch && npm run build && npm publish --access public",
     "prettier-check": "npx prettier --check --ignore-path=.prettierignore \"**/*.{js,jsx,json,ts,tsx,yml}\"",
     "prettier-format": "npx prettier --ignore-path=.prettierignore --write \"**/*.{js,jsx,json,ts,tsx,yml}\"",
     "update-i18n": "./tx pull -a -f"
