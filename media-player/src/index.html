@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Media Player for TagSpaces</title>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./src/document.css" />
+  <script src="./src/main.tsx" type="module"></script>
+  <script>
+    function enterFullscreen() {
+      window.dispatchEvent(new Event('enterfullscreen'));
+    }
+    function exitFullscreen() {
+      window.dispatchEvent(new Event('exitfullscreen'));
+    }
+    function togglePlay() {
+      window.dispatchEvent(new Event('togglePlayPause'));
+    }
+
+    function getParameterByName(paramName) {
+      const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      let param =
+        results === null
+          ? ''
+          : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      if (param.includes('#')) {
+        param = param.split('#').join('%23');
+      }
+      return param;
+    }
+
+    const rootEl = document.querySelector(':root');
+    const primaryColor = getParameterByName('primecolor').replace('%23', '#');
+    const textColor = getParameterByName('textcolor').replace('%23', '#');
+    primaryColor && rootEl.style.setProperty('--primary-color', primaryColor);
+    textColor && rootEl.style.setProperty('--primary-text-color', textColor);
+    window.eventID = getParameterByName('eventID');
+  </script>
+</head>
+<body>
+<main>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</main>
+</body>
+</html>
