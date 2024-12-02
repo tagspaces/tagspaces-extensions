@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.140",
+  "version": "1.0.141",
   "description": "TagSpaces extension for editing notes in markdown format",
   "tsextension": {
     "name": "MD Editor (legacy)",
