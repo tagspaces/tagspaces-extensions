@@ -176,7 +176,7 @@ export function Player() {
           <DefaultAudioLayout icons={defaultLayoutIcons} />
           <DefaultVideoLayout
             icons={defaultLayoutIcons}
-            thumbnails="https://files.vidstack.io/sprite-fight/thumbnails.vtt"
+            // thumbnails="https://files.vidstack.io/sprite-fight/thumbnails.vtt"
           />
         </MediaPlayer>
       )}
