@@ -1,5 +1,5 @@
 declare module '@tagspaces/tagspaces-common/AppConfig' {
- export const mediaProtocol: string;
+  export const mediaProtocol: string;
 }
 
 declare module '@tagspaces/tagspaces-common/paths' {

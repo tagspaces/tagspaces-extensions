@@ -20,6 +20,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Divider } from '@mui/material';
 import { useHide } from './HideContext';
 import { sendMessageToHost } from './utils';
+import useEventListener from './useEventListener';
+import { useMediaRemote } from '@vidstack/react';
 // https://medium.com/@danfyfe/using-react-context-with-functional-components-153cbd9ba214
 // import MenuVisibilityContext from "./MenuVisibilityContext";
 
@@ -38,24 +40,40 @@ const MainMenu: React.FC<{
   loop,
   setLoop,
   enableVideoOutput,
-  setVideoOutput
+  setVideoOutput,
 }) => {
-  const { state } = useHide();
+  const { state, dispatch } = useHide();
+  // Returns a `MediaRemoteControl` class instance.
+  const remote = useMediaRemote();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
 
-  const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+  const [ignored, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
   const autoPlayRef = React.useRef<boolean>(autoPlay);
   const loopRef = React.useRef<string>(loop);
 
-  // const isHidden = useContext(MenuVisibilityContext)
+  useEventListener('enterfullscreen', () => {
+    dispatch({ type: 'hide' });
+    remote.enterFullscreen();
+  });
 
-  /*React.useEffect(() => {
-    forceUpdate();
-  }, [isHidden]);*/
+  useEventListener('exitfullscreen', () => {
+    dispatch({ type: 'show' });
+    remote.exitFullscreen();
+  });
+
+  useEventListener('togglePlayPause', () => {
+    /*if(playerRef.current) {
+      if (playerRef.current.paused) {
+        remote.play();
+      } else {
+        remote.pause();
+      }
+    }*/
+  });
 
   const handleFabClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -76,13 +94,13 @@ const MainMenu: React.FC<{
     palette: {
       primary: {
         main: primaryBackgroundColor || '#222222',
-        contrastText: primaryTextColor || '#ffffff'
+        contrastText: primaryTextColor || '#ffffff',
       },
       secondary: {
         main: '#11cb5f',
-        contrastText: '#ffffff'
-      }
-    }
+        contrastText: '#ffffff',
+      },
+    },
   });
 
   return (
@@ -92,11 +110,11 @@ const MainMenu: React.FC<{
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'left'
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'bottom',
-          horizontal: 'center'
+          horizontal: 'center',
         }}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
@@ -115,20 +133,18 @@ const MainMenu: React.FC<{
             {'Auto-Play ' + (autoPlayRef.current ? 'Enabled' : 'Disabled')}
           </ListItemText>
         </MenuItem>
-        {!isAudioType && (
-          <MenuItem
-            onClick={() => {
-              setVideoOutput(!enableVideoOutput);
-            }}
-          >
-            <ListItemIcon>
-              {enableVideoOutput ? <CheckBox /> : <CheckBoxOutlineBlank />}
-            </ListItemIcon>
-            <ListItemText>
-              {'Video Output ' + (enableVideoOutput ? 'Enabled' : 'Disabled')}
-            </ListItemText>
-          </MenuItem>
-        )}
+        <MenuItem
+          onClick={() => {
+            setVideoOutput(!enableVideoOutput);
+          }}
+        >
+          <ListItemIcon>
+            {enableVideoOutput ? <CheckBox /> : <CheckBoxOutlineBlank />}
+          </ListItemIcon>
+          <ListItemText>
+            {'Video Output ' + (enableVideoOutput ? 'Enabled' : 'Disabled')}
+          </ListItemText>
+        </MenuItem>
         <Divider />
         <MenuItem
           onClick={() => {
@@ -202,7 +218,7 @@ const MainMenu: React.FC<{
             right: 20,
             bottom: 20,
             width: 50,
-            height: 50
+            height: 50,
           }}
           onClick={handleFabClick}
         >
@@ -227,7 +243,7 @@ const MainMenu: React.FC<{
               event.preventDefault();
               sendMessageToHost({
                 command: 'openLinkExternally',
-                link: 'https://docs.tagspaces.org/extensions/media-player'
+                link: 'https://docs.tagspaces.org/extensions/media-player',
               });
             }}
           >
