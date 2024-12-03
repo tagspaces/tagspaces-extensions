@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/html-editor",
-  "version": "1.0.141",
+  "version": "1.0.142",
   "description": "A TagSpaces extension allowing editing of HTML documents.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
