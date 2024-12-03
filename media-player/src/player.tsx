@@ -1,23 +1,22 @@
 import './player.css';
 
-import { useEffect, useRef, useState } from 'react';
+import { useReducer, useRef, type SyntheticEvent } from 'react';
 
 import {
   extractFileName,
   getThumbFileLocationForFile,
 } from '@tagspaces/tagspaces-common/paths';
-import {mediaProtocol} from '@tagspaces/tagspaces-common/AppConfig';
+import { mediaProtocol } from '@tagspaces/tagspaces-common/AppConfig';
 import {
-  isHLSProvider,
   MediaPlayer,
   MediaProvider,
   Poster,
-  Track,
   type MediaCanPlayDetail,
   type MediaCanPlayEvent,
   type MediaPlayerInstance,
   type MediaProviderAdapter,
   type MediaProviderChangeEvent,
+  type MediaEndEvent,
 } from '@vidstack/react';
 import {
   DefaultAudioLayout,
@@ -25,9 +24,9 @@ import {
   DefaultVideoLayout,
 } from '@vidstack/react/player/layouts/default';
 import MainMenu from './MainMenu';
-import { HideProvider } from './HideContext';
-
-// import { MediaType } from '@vidstack/react';
+import { HideProvider, useHide } from './HideContext';
+import { sendMessageToHost } from './utils';
+import { Box } from '@mui/material';
 
 export function Player() {
   const items = localStorage.getItem('viewerAudioVideoSettings');
@@ -44,9 +43,9 @@ export function Player() {
   const autoPlay = useRef<boolean>(defaultAutoPlay);
   const enableVideoOutput = useRef<boolean>(defaultVideoOutput || true);
   const loop = useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
+  const playerRef = useRef<MediaPlayerInstance>(null);
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  let player = useRef<MediaPlayerInstance>(null);
-  // [src, setSrc] = useState('');
   const searchParam = new URLSearchParams(window.location.search);
 
   let encrypted = false;
@@ -55,45 +54,44 @@ export function Player() {
   }
   const filePath = getFilePath();
 
-  /*const audio: MediaType = 'audio';
-  const video: MediaType = 'video';*/
-
   function getFilePath(): string {
     if (searchParam && searchParam.has('file')) {
       const file = searchParam.get('file');
       if (file) {
         if (!/^https?:\/\//.test(file)) {
           //local path
-          return mediaProtocol + '://' +
+          return (
+            mediaProtocol +
+            '://' +
             encodeURIComponent(file)
               .replace(/%2F/g, '/')
               .replace(/%5C/g, '\\')
-              .replace(/%3A/g, ':');
+              .replace(/%3A/g, ':')
+          );
         }
         return file;
-        //fileName = extractFileName(filePath);
-        //fileThumb = getThumbFileLocationForFile(filePath);
       }
     }
     return '';
   }
 
   function isAudioType(): boolean {
-         if(enableVideoOutput.current && filePath){
-              return /\.(mp3|wav)$/i.test(filePath);
-         }
-         return true;
+    if (enableVideoOutput.current && filePath) {
+      return /\.(mp3|wav)$/i.test(filePath);
+    }
+    return true;
   }
   function saveExtSettings() {
     const extSettings = {
       autoPlay: autoPlay.current,
       enableVideoOutput: enableVideoOutput.current,
-      loop: loop.current
+      loop: loop.current,
     };
     localStorage.setItem(
       'viewerAudioVideoSettings',
       JSON.stringify(extSettings)
     );
+    forceUpdate();
   }
 
   function setAutoPlay(value: boolean) {
@@ -109,67 +107,52 @@ export function Player() {
     saveExtSettings();
   }
 
-  /*useEffect(() => {
-    // Initialize src.
-    changeSource('audio');
-
-    // Subscribe to state updates.
-    return player.current!.subscribe(({ paused, viewType }) => {
-      // console.log('is paused?', '->', paused);
-      // console.log('is audio view?', '->', viewType === 'audio');
-    });
-  }, []);*/
-
-  function onProviderChange(
-    provider: MediaProviderAdapter | null,
-    nativeEvent: MediaProviderChangeEvent
-  ) {
-    // We can configure provider's here.
-    if (isHLSProvider(provider)) {
-      provider.config = {};
+  function onEnded(nativeEvent: MediaEndEvent) {
+    if (loop.current === 'loopAll') {
+      sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
     }
-  }
-
-  // We can listen for the `can-play` event to be notified when the player is ready.
-  function onCanPlay(
-    detail: MediaCanPlayDetail,
-    nativeEvent: MediaCanPlayEvent
-  ) {
-    // ...
   }
 
   return (
     <HideProvider>
       {encrypted && (
-        <div
+        <Box
           style={{
             textAlign: 'center',
             padding: 10,
             color: 'white',
-            fontFamily: 'sans-serif'
+            fontFamily: 'sans-serif',
           }}
         >
           Document encrypted and can not be streamed. Please use the download
           functionality to get its content.
-        </div>
+        </Box>
       )}
       {!encrypted && filePath && (
         <MediaPlayer
+          viewType={isAudioType() ? 'audio' : 'video'}
+          autoPlay={autoPlay.current}
+          loop={loop.current === 'loopOne'}
           className="player"
-          title="TagSpaces"
+          title={extractFileName(filePath)}
           src={filePath}
           crossOrigin
           playsInline
-          onProviderChange={onProviderChange}
-          onCanPlay={onCanPlay}
-          ref={player}
+          onEnded={onEnded}
+          ref={playerRef}
         >
           <MediaProvider>
-            {/*<Poster
-            className="vds-poster"
-            src={fileThumb}
-            alt={fileName}
-          />*/}
+            <Poster
+              className="vds-poster"
+              src={
+               getThumbFileLocationForFile(filePath)
+              }
+              onError={(i: SyntheticEvent<EventTarget>) => {
+                const target = i.target as HTMLImageElement;
+                target.style.display = 'none'
+              }}
+              alt={filePath}
+            />
           </MediaProvider>
 
           {/* Layouts */}
