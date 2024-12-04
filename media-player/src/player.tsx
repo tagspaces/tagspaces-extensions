@@ -5,17 +5,20 @@ import { useReducer, useRef, type SyntheticEvent } from 'react';
 import {
   extractFileName,
   getThumbFileLocationForFile,
+  extractContainingDirectoryPath,
+  getMetaDirectoryPath,
 } from '@tagspaces/tagspaces-common/paths';
-import { mediaProtocol } from '@tagspaces/tagspaces-common/AppConfig';
+import {
+  mediaProtocol,
+  isWeb,
+  dirSeparator,
+} from '@tagspaces/tagspaces-common/AppConfig';
 import {
   MediaPlayer,
   MediaProvider,
   Poster,
-  type MediaCanPlayDetail,
-  type MediaCanPlayEvent,
+  Track,
   type MediaPlayerInstance,
-  type MediaProviderAdapter,
-  type MediaProviderChangeEvent,
   type MediaEndEvent,
 } from '@vidstack/react';
 import {
@@ -24,7 +27,7 @@ import {
   DefaultVideoLayout,
 } from '@vidstack/react/player/layouts/default';
 import MainMenu from './MainMenu';
-import { HideProvider, useHide } from './HideContext';
+import { HideProvider } from './HideContext';
 import { sendMessageToHost } from './utils';
 import { Box } from '@mui/material';
 
@@ -41,10 +44,10 @@ export function Player() {
   }
   //const isControlsHidden = useRef<boolean>(false);
   const autoPlay = useRef<boolean>(defaultAutoPlay);
-  const enableVideoOutput = useRef<boolean>(defaultVideoOutput || true);
+  const enableVideoOutput = useRef<boolean>(defaultVideoOutput);
   const loop = useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
   const playerRef = useRef<MediaPlayerInstance>(null);
-  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0, undefined);
 
   const searchParam = new URLSearchParams(window.location.search);
 
@@ -53,6 +56,7 @@ export function Player() {
     encrypted = searchParam.get('encrypted') === 'true';
   }
   const filePath = getFilePath();
+  const fileName = decodeURIComponent(extractFileName(filePath));
 
   function getFilePath(): string {
     if (searchParam && searchParam.has('file')) {
@@ -112,6 +116,29 @@ export function Player() {
       sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
     }
   }
+  const videoSlots = isWeb ? {} : { googleCastButton: null };
+  const viewType = isAudioType() ? 'audio' : 'video';
+
+  const textTracks = [
+    // Subtitles
+    /*{
+      src: 'https://files.vidstack.io/sprite-fight/subs/spanish.vtt',
+      label: 'Spanish',
+      language: 'es-ES',
+      kind: 'subtitles',
+    },*/
+    // Chapters
+    {
+      src:
+        getMetaDirectoryPath(extractContainingDirectoryPath(filePath)) +
+        dirSeparator +
+        fileName +
+        '.chapters.vtt',
+      kind: 'chapters',
+      language: 'en-US',
+      default: true,
+    },
+  ] as const;
 
   return (
     <HideProvider>
@@ -130,11 +157,11 @@ export function Player() {
       )}
       {!encrypted && filePath && (
         <MediaPlayer
-          viewType={isAudioType() ? 'audio' : 'video'}
+          viewType={viewType}
           autoPlay={autoPlay.current}
           loop={loop.current === 'loopOne'}
           className="player"
-          title={extractFileName(filePath)}
+          title={fileName}
           src={filePath}
           crossOrigin
           playsInline
@@ -142,23 +169,28 @@ export function Player() {
           ref={playerRef}
         >
           <MediaProvider>
-            <Poster
-              className="vds-poster"
-              src={
-               getThumbFileLocationForFile(filePath)
-              }
-              onError={(i: SyntheticEvent<EventTarget>) => {
-                const target = i.target as HTMLImageElement;
-                target.style.display = 'none'
-              }}
-              alt={filePath}
-            />
+            {viewType === 'video' && (
+              <Poster
+                className="vds-poster"
+                src={getThumbFileLocationForFile(filePath)}
+                onError={(i: SyntheticEvent<EventTarget>) => {
+                  const target = i.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+                alt={filePath}
+              />
+            )}
+            {textTracks.map((track) => (
+              <Track {...track} key={track.src} />
+            ))}
           </MediaProvider>
 
           {/* Layouts */}
-          <DefaultAudioLayout icons={defaultLayoutIcons} />
+          <DefaultAudioLayout icons={defaultLayoutIcons} colorScheme="dark" />
           <DefaultVideoLayout
             icons={defaultLayoutIcons}
+            slots={videoSlots}
+            colorScheme="system"
             // thumbnails="https://files.vidstack.io/sprite-fight/thumbnails.vtt"
           />
         </MediaPlayer>
