@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/document-viewer",
-  "version": "1.0.143",
+  "version": "1.0.144",
   "description": "A TagSpaces extension allowing to open files in docx.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
