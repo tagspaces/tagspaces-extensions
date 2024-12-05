@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
@@ -18,15 +18,9 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Divider } from '@mui/material';
-import { useHide } from './HideContext';
 import { sendMessageToHost } from './utils';
-import useEventListener from './useEventListener';
-import { useMediaRemote } from '@vidstack/react';
-// https://medium.com/@danfyfe/using-react-context-with-functional-components-153cbd9ba214
-// import MenuVisibilityContext from "./MenuVisibilityContext";
 
 const MainMenu: React.FC<{
-  isAudioType: boolean;
   autoPlay: boolean;
   setAutoPlay: (autoPlay: boolean) => void;
   loop: string;
@@ -34,7 +28,6 @@ const MainMenu: React.FC<{
   enableVideoOutput: boolean;
   setVideoOutput: (video: boolean) => void;
 }> = ({
-  isAudioType,
   autoPlay,
   setAutoPlay,
   loop,
@@ -42,10 +35,6 @@ const MainMenu: React.FC<{
   enableVideoOutput,
   setVideoOutput,
 }) => {
-  const { state, dispatch } = useHide();
-  // Returns a `MediaRemoteControl` class instance.
-  const remote = useMediaRemote();
-
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [isAboutDialogOpened, setAboutDialogOpened] = useState<boolean>(false);
@@ -54,26 +43,6 @@ const MainMenu: React.FC<{
 
   const autoPlayRef = React.useRef<boolean>(autoPlay);
   const loopRef = React.useRef<string>(loop);
-
-  useEventListener('enterfullscreen', () => {
-    dispatch({ type: 'hide' });
-    remote.enterFullscreen();
-  });
-
-  useEventListener('exitfullscreen', () => {
-    dispatch({ type: 'show' });
-    remote.exitFullscreen();
-  });
-
-  useEventListener('togglePlayPause', () => {
-    /*if(playerRef.current) {
-      if (playerRef.current.paused) {
-        remote.play();
-      } else {
-        remote.pause();
-      }
-    }*/
-  });
 
   const handleFabClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -208,23 +177,21 @@ const MainMenu: React.FC<{
           <ListItemText>About</ListItemText>
         </MenuItem>
       </Menu>
-      {!state.hide && (
-        <Fab
-          data-tid="mediaPlayerMenuTID"
-          color="primary"
-          aria-label="open extension menu"
-          style={{
-            position: 'absolute',
-            right: 20,
-            bottom: 20,
-            width: 50,
-            height: 50,
-          }}
-          onClick={handleFabClick}
-        >
-          <MoreIcon />
-        </Fab>
-      )}
+      <Fab
+        data-tid="mediaPlayerMenuTID"
+        color="primary"
+        aria-label="open extension menu"
+        style={{
+          position: 'absolute',
+          right: 20,
+          bottom: 20,
+          width: 50,
+          height: 50,
+        }}
+        onClick={handleFabClick}
+      >
+        <MoreIcon />
+      </Fab>
       <Dialog
         data-tid="AboutDialogTID"
         open={isAboutDialogOpened}

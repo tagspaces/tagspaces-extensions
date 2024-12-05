@@ -18,6 +18,7 @@ import {
   MediaProvider,
   Poster,
   Track,
+  useMediaState,
   type MediaPlayerInstance,
   type MediaEndEvent,
 } from '@vidstack/react';
@@ -27,9 +28,9 @@ import {
   DefaultVideoLayout,
 } from '@vidstack/react/player/layouts/default';
 import MainMenu from './MainMenu';
-import { HideProvider } from './HideContext';
 import { sendMessageToHost } from './utils';
 import { Box } from '@mui/material';
+import useEventListener from './useEventListener';
 
 export function Player() {
   const items = localStorage.getItem('viewerAudioVideoSettings');
@@ -47,6 +48,7 @@ export function Player() {
   const enableVideoOutput = useRef<boolean>(defaultVideoOutput);
   const loop = useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
   const playerRef = useRef<MediaPlayerInstance>(null);
+  const paused = useMediaState('paused', playerRef);
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0, undefined);
 
   const searchParam = new URLSearchParams(window.location.search);
@@ -57,6 +59,28 @@ export function Player() {
   }
   const filePath = getFilePath();
   const fileName = decodeURIComponent(extractFileName(filePath));
+
+  useEventListener('togglePlayPause', (triggerEvent: Event) => {
+    if (playerRef.current) {
+      if (paused) {
+        playerRef.current.play(triggerEvent);
+      } else {
+        playerRef.current.pause(triggerEvent);
+      }
+    }
+  });
+
+  useEventListener('enterfullscreen', () => {
+    if (playerRef.current) {
+      playerRef.current.enterFullscreen();
+    }
+  });
+
+  useEventListener('exitfullscreen', () => {
+    if (playerRef.current) {
+      playerRef.current.exitFullscreen();
+    }
+  });
 
   function getFilePath(): string {
     if (searchParam && searchParam.has('file')) {
@@ -141,7 +165,7 @@ export function Player() {
   ] as const;
 
   return (
-    <HideProvider>
+    <>
       {encrypted && (
         <Box
           style={{
@@ -196,8 +220,6 @@ export function Player() {
         </MediaPlayer>
       )}
       <MainMenu
-        // isHidden={isHiddenMainMenu.current}
-        isAudioType={isAudioType()}
         autoPlay={autoPlay.current}
         setAutoPlay={setAutoPlay}
         loop={loop.current}
@@ -205,6 +227,6 @@ export function Player() {
         enableVideoOutput={enableVideoOutput.current}
         setVideoOutput={setVideoOutput}
       />
-    </HideProvider>
+    </>
   );
 }
