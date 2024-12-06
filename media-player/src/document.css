@@ -1,0 +1,31 @@
+/*************************************************************************************************
+ * Document
+ *************************************************************************************************/
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  width: 100%;
+}
+
+.player {
+  border: none;
+}
