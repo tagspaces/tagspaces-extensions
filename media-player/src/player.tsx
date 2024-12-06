@@ -91,6 +91,7 @@ export function Player() {
           return (
             mediaProtocol +
             '://' +
+            (file.startsWith('/') ? '' : '/') +
             encodeURIComponent(file)
               .replace(/%2F/g, '/')
               .replace(/%5C/g, '\\')
