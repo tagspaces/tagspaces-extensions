@@ -3,49 +3,19 @@
   "version": "1.0.145",
   "description": "A TagSpaces extension allowing editing of text based documents.",
   "homepage": "https://www.tagspaces.org",
-  "files": [
-    "build/"
-  ],
+  "main": "main.js",
   "author": {
     "name": "TagSpaces GmbH",
     "email": "info@tagspaces.org",
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "scripts": {
-    "dev": "vite dev --host",
-    "build": "tsc && vite build",
-    "build-dev": "tsc && vite build --mode development",
-    "preview": "vite preview",
-    "code-format": "npx prettier --write .",
-    "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/text-editor && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/text-editor",
-    "simpleserver": "node ../node_modules/yaserver/bin/yaserver --root ./dist --port 9999"
-  },
   "dependencies": {
-    "@tagspaces/tagspaces-extension-ui": "^4.5.44",
-    "monaco-editor": "^0.52.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "codemirror": "5.65.11",
+    "shelljs": "^0.8.5"
   },
-  "devDependencies": {
-    "@types/react": "^18.2.18",
-    "@types/react-dom": "^18.2.7",
-    "prettier": "^2.7.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.3"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "scripts": {
+    "postinstall": "node scripts/update-libs.js"
   },
   "tsextension": {
     "name": "Text Editor",
