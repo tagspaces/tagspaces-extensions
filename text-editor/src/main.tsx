@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Editor } from './components/Editor';
 import { MUIThemeProvider } from '@tagspaces/tagspaces-extension-ui';
+import './userWorker';
 
 import { sendMessageToHost } from './utils';
 
