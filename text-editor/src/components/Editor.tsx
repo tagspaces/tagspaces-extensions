@@ -5,6 +5,9 @@ import {
   MainMenu,
   useEventListener,
 } from '@tagspaces/tagspaces-extension-ui';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { sendMessageToHost } from '../utils';
 
@@ -12,6 +15,7 @@ export const Editor: React.FC = () => {
   const [editor, setEditor] =
     useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoEl = useRef<HTMLDivElement | null>(null);
+  const changeListener = useRef<monaco.IDisposable | null>(null);
   //const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   //const modelRef = useRef<monaco.editor.ITextModel | null>(null);
   const colorMode = useContext(ColorModeContext);
@@ -121,7 +125,7 @@ export const Editor: React.FC = () => {
           // model: modelRef.current,
           ...editorOption,
         });
-        monacoEditor.onDidChangeModelContent(() => {
+        changeListener.current = monacoEditor.onDidChangeModelContent(() => {
           const model = monacoEditor.getModel();
           if (model) {
             const fileContent = model.getValue();
@@ -145,9 +149,55 @@ export const Editor: React.FC = () => {
     // Cleanup on component unmount
     return () => {
       editor?.dispose();
+      //changeListener.current?.dispose();
       //modelRef.current?.dispose();
     };
   }, [monacoEl.current]);
+
+  const toggleLineNumbers = () => {
+    if (editor) {
+      const areLineNumbersVisible = editor
+        .getOptions()
+        .get(monaco.editor.EditorOption.lineNumbers);
+
+      // Determine whether line numbers are visible
+      const isLineNumbersOn =
+        areLineNumbersVisible.renderType ===
+        monaco.editor.RenderLineNumbersType.On;
+
+      editor.updateOptions({
+        lineNumbers: isLineNumbersOn ? 'off' : 'on',
+      });
+    }
+  };
+
+  const openFindWidget = () => {
+    if (editor) {
+      editor.trigger('keyboard', 'actions.find', null);
+    }
+  };
+
+  const zoomIn = () => {
+    if (editor) {
+      const fontSize = editor
+        .getOptions()
+        .get(monaco.editor.EditorOption.fontSize);
+      editor.updateOptions({
+        fontSize: fontSize + 1,
+      });
+    }
+  };
+
+  const zoomOut = () => {
+    if (editor) {
+      const fontSize = editor
+        .getOptions()
+        .get(monaco.editor.EditorOption.fontSize);
+      editor.updateOptions({
+        fontSize: fontSize - 1,
+      });
+    }
+  };
 
   return (
     <>
@@ -167,13 +217,29 @@ export const Editor: React.FC = () => {
           { id: 'print', name: 'Print', action: () => {} },
           { id: 'about', name: 'About', action: () => {} },
           {
+            id: 'findId',
+            icon: <FindInPageIcon />,
+            name: 'Find in document',
+            action: openFindWidget,
+          },
+          {
             id: 'lineNumbersID',
             icon: <FormatListNumberedIcon />,
             name: 'Toggle Line Numbers',
             //dataTID: 'lineNumbersTID',
-            action: () => {
-              //codeMirrorRef.current?.toggleLineNumbers();
-            },
+            action: toggleLineNumbers,
+          },
+          {
+            id: 'zoomInID',
+            icon: <ZoomInIcon />,
+            name: 'Zoom In',
+            action: zoomIn,
+          },
+          {
+            id: 'zoomOutID',
+            icon: <ZoomOutIcon />,
+            name: 'Zoom Out',
+            action: zoomOut,
           },
         ]}
       />
