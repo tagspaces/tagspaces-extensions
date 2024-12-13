@@ -177,6 +177,18 @@ export const Editor: React.FC = () => {
     }
   };
 
+  const toggleWordWrap = () => {
+    if (editor) {
+      const currentWordWrap = editor
+        .getOptions()
+        .get(monaco.editor.EditorOption.wordWrap);
+
+      editor.updateOptions({
+        wordWrap: currentWordWrap === 'off' ? 'on' : 'off',
+      });
+    }
+  };
+
   const zoomIn = () => {
     if (editor) {
       const fontSize = editor
@@ -240,6 +252,12 @@ export const Editor: React.FC = () => {
             icon: <ZoomOutIcon />,
             name: 'Zoom Out',
             action: zoomOut,
+          },
+          {
+            id: 'wordWrapId',
+            icon: <ZoomOutIcon />,
+            name: 'Toggle Word Wrap',
+            action: toggleWordWrap,
           },
         ]}
       />
