@@ -72,6 +72,9 @@
         "ext": "css"
       },
       {
+        "ext": "scss"
+      },
+      {
         "ext": "h"
       },
       {
@@ -79,6 +82,15 @@
       },
       {
         "ext": "js"
+      },
+      {
+        "ext": "jsx"
+      },
+      {
+        "ext": "ts"
+      },
+      {
+        "ext": "tsx"
       },
       {
         "ext": "jsm"
@@ -115,24 +127,17 @@
       },
       {
         "ext": "mdx",
-        "types": [
-          "editor"
-        ],
         "color": "#beefed"
       },
       {
         "ext": "svg",
-        "types": [
-          "editor"
-        ],
         "color": "#9fd5ba"
       },
       {
-        "ext": "xhtml",
-        "types": [
-          "editor"
-        ],
-        "color": ""
+        "ext": "html"
+      },
+      {
+        "ext": "xhtml"
       }
     ]
   }

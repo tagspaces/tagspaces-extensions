@@ -68,8 +68,26 @@ export const Editor: React.FC = () => {
   }*/
 
   function getLanguage() {
-    if (filePath.endsWith('.js')) {
+    if (
+      filePath.endsWith('.js') ||
+      filePath.endsWith('.jsx') ||
+      filePath.endsWith('.ts') ||
+      filePath.endsWith('.tsx')
+    ) {
       return 'javascript';
+    } else if (
+      filePath.endsWith('.css') ||
+      filePath.endsWith('.scss') ||
+      filePath.endsWith('.less')
+    ) {
+      return 'css';
+    } else if (
+      filePath.endsWith('.html') ||
+      filePath.endsWith('.xhtml') ||
+      filePath.endsWith('.handlebars') ||
+      filePath.endsWith('.razor')
+    ) {
+      return 'html';
     } else if (filePath.endsWith('.json')) {
       return 'json';
     }
