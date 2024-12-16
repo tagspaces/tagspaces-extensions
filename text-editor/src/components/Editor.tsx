@@ -73,7 +73,7 @@ export const Editor: React.FC = () => {
     }
   });
 
-  function saveSettings(key, value) {
+  function saveSettings(key: any, value: any) {
     const settings = {
       [key]: value,
     };
@@ -273,7 +273,7 @@ export const Editor: React.FC = () => {
         aboutLink={() => {
           sendMessageToHost({
             command: 'openLinkExternally',
-            link: 'https://docs.tagspaces.org/extensions/md-editor/',
+            link: 'https://docs.tagspaces.org/extensions/text-editor/',
           });
         }}
         menuItems={[
