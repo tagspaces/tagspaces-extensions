@@ -46,6 +46,33 @@ export const Editor: React.FC = () => {
     }
   });
 
+  useEventListener('keydown', (event: Event) => {
+    // Type assertion to tell TypeScript that it's a KeyboardEvent
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+      if (keyboardEvent.key.toLowerCase() === 's') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
+        if (!readOnly()) {
+          sendMessageToHost({ command: 'saveDocument' });
+        }
+      } else if (keyboardEvent.key.toLowerCase() === 'p') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
+        window.print();
+      }
+    }
+    // if (event.key.toLowerCase() === 'escape') {
+    //   setFilterVisible(false);
+    // }
+  });
+
+  useEventListener('dblclick', () => {
+    if (readOnly()) {
+      sendMessageToHost({ command: 'editDocument' });
+    }
+  });
+
   function initEditor() {
     if (editor) {
       setReadOnly();
