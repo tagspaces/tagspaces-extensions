@@ -1,19 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './i18n';
+import App from './components/App';
 import { Editor } from './components/Editor';
-import { MUIThemeProvider } from '@tagspaces/tagspaces-extension-ui';
 import './userWorker';
-
-import { sendMessageToHost } from './utils';
-
-// mdContent is not received without this message.
-sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 const root = document.getElementById('root')!;
 ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <MUIThemeProvider>
+  <App>
+    <React.StrictMode>
       <Editor />
-    </MUIThemeProvider>
-  </React.StrictMode>
+    </React.StrictMode>
+  </App>
 );

@@ -10,9 +10,10 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { sendMessageToHost } from '../utils';
-import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 export const Editor: React.FC = () => {
+  const { t } = useTranslation();
   const [editor, setEditor] =
     useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoEl = useRef<HTMLDivElement | null>(null);
@@ -73,7 +74,7 @@ export const Editor: React.FC = () => {
     }
   });
 
-  function saveSettings(key, value) {
+  function saveSettings(key: string, value: any) {
     const settings = {
       [key]: value,
     };
@@ -277,37 +278,37 @@ export const Editor: React.FC = () => {
           });
         }}
         menuItems={[
-          { id: 'print', name: i18n.t('print'), action: () => {} },
-          { id: 'about', name: i18n.t('about'), action: () => {} },
+          { id: 'print', name: t('print'), action: () => {} },
+          { id: 'about', name: t('about'), action: () => {} },
           {
             id: 'findId',
             icon: <FindInPageIcon />,
-            name: i18n.t('findInDocument'),
+            name: t('findInDocument'),
             action: openFindWidget,
           },
           {
             id: 'lineNumbersID',
             icon: <FormatListNumberedIcon />,
-            name: i18n.t('toggleLineNumbers'),
+            name: t('toggleLineNumbers'),
             //dataTID: 'lineNumbersTID',
             action: toggleLineNumbers,
           },
           {
             id: 'zoomInID',
             icon: <ZoomInIcon />,
-            name: i18n.t('zoomIn'),
+            name: t('zoomIn'),
             action: zoomIn,
           },
           {
             id: 'zoomOutID',
             icon: <ZoomOutIcon />,
-            name: i18n.t('zoomOut'),
+            name: t('zoomOut'),
             action: zoomOut,
           },
           {
             id: 'wordWrapId',
             icon: <ZoomOutIcon />,
-            name: i18n.t('toggleWordWrap'),
+            name: t('toggleWordWrap'),
             action: toggleWordWrap,
           },
         ]}

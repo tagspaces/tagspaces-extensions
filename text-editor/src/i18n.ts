@@ -1,30 +1,61 @@
+import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
-import HttpApi from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import enUs from './locales/en/ns.extension.json';
+//import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
 
-let defaultLanguage = enUs;
+import en from '../assets/locales/en.json';
+import bg from '../assets/locales/bg.json';
 
-interface LoadLocalesOptions {
-  url: string;
-  payload?: Record<string, any>;
-  callback: (error: any, data: { status: string; data: any }) => void;
-}
+export const resources = {
+  en: { translation: en },
+  bg: { translation: bg },
+};
 
-async function loadLocales(
-  _: LoadLocalesOptions,
-  url: string,
-  payload: any,
-  callback: any
-) {
+export const defaultNS = 'translation';
+
+//@ts-ignore
+const lng = window.locale;
+
+i18n
+  // load translation using http -> see /assets/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/assets/locales)
+  // learn more: https://github.com/i18next/i18next-http-backend
+  // want your translations to be loaded from a professional CDN? => https://github.com/locize/react-tutorial#step-2---use-the-locize-cdn
+  .use(Backend)
+  // detect user language
+  // learn more: https://github.com/i18next/i18next-browser-languageDetector
+  //.use(LanguageDetector)
+  // pass the i18n instance to react-i18next.
+  .use(initReactI18next)
+  // init i18next
+  // for all options read: https://www.i18next.com/overview/configuration-options
+  .init({
+    returnNull: false,
+    fallbackLng: 'en',
+    debug: true,
+    supportedLngs: ['en', 'bg'],
+    ns: ['translation'],
+    defaultNS,
+    load: 'languageOnly',
+    nonExplicitSupportedLngs: true,
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+    resources,
+    ...(lng && { lng: lng }),
+    //request: loadLocales,
+  });
+
+export default i18n;
+
+/*async function loadLocales(_: any, url: string, payload: any, callback: any) {
   const loadLocale = async (path: string) => {
     try {
       return await import(
-        /* @vite-ignore */ './locales/' + path + '/ns.extension.json'
-      );
+        /!* @vite-ignore *!/ '/locales/' + path + '/core.json'
+        );
     } catch (error) {
       console.error(
-        `Error loading locale file at './locales/${path}/ns.extension.json':`,
+        `Error loading locale file at '/locales/${path}/core.json':`,
         error
       );
       return null;
@@ -48,34 +79,10 @@ async function loadLocales(
           url.split('-')[0]
         }) locales.`
       );
-      callback(null, { status: '200', data: defaultLanguage });
+      callback(null, { status: '200', data: loadLocale('en') });
     }
   } catch (error) {
     console.error('Unexpected error in loadLocales:', error);
-    callback(null, { status: '500', data: defaultLanguage });
+    callback(null, { status: '500', data:  loadLocale('en') });
   }
-}
-
-const options = {
-  fallbackLng: 'en',
-  // load: 'all', // ['en', 'de'], // we only provide en, de -> no region specific locals like en-US, de-DE
-  // ns: ['core'],
-  // defaultNS: 'core',
-  attributes: ['t', 'i18n'],
-  backend: {
-    loadPath: '{{lng}}',
-    parse: (data: any) => data, // comment to have working i18n switch
-    request: loadLocales, // comment to have working i18n switch
-  },
-};
-
-i18n.use(HttpApi).use(LanguageDetector);
-if (!i18n.isInitialized) {
-  i18n.init(options, (err, t) => {
-    if (err) {
-      return console.log('something went wrong loading', err);
-    }
-  });
-}
-
-export default i18n;
+}*/

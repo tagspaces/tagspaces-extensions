@@ -27,18 +27,18 @@
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
     "@tagspaces/tagspaces-extension-ui": "^4.5.45",
-    "i18next": "^22.4.6",
-    "i18next-http-backend": "^2.2.1",
-    "i18next-browser-languagedetector": "^7.0.2",
+    "i18next": "^24.1.0",
+    "i18next-http-backend": "^3.0.1",
     "monaco-editor": "^0.52.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-i18next": "^15.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",
-    "prettier": "^2.7.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "prettier": "^2.7.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.3"
   },
