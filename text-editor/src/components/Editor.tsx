@@ -10,6 +10,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { sendMessageToHost } from '../utils';
+import i18n from '../i18n';
 
 export const Editor: React.FC = () => {
   const [editor, setEditor] =
@@ -226,37 +227,37 @@ export const Editor: React.FC = () => {
           });
         }}
         menuItems={[
-          { id: 'print', name: 'Print', action: () => {} },
-          { id: 'about', name: 'About', action: () => {} },
+          { id: 'print', name: i18n.t('print'), action: () => {} },
+          { id: 'about', name: i18n.t('about'), action: () => {} },
           {
             id: 'findId',
             icon: <FindInPageIcon />,
-            name: 'Find in document',
+            name: i18n.t('findInDocument'),
             action: openFindWidget,
           },
           {
             id: 'lineNumbersID',
             icon: <FormatListNumberedIcon />,
-            name: 'Toggle Line Numbers',
+            name: i18n.t('toggleLineNumbers'),
             //dataTID: 'lineNumbersTID',
             action: toggleLineNumbers,
           },
           {
             id: 'zoomInID',
             icon: <ZoomInIcon />,
-            name: 'Zoom In',
+            name: i18n.t('zoomIn'),
             action: zoomIn,
           },
           {
             id: 'zoomOutID',
             icon: <ZoomOutIcon />,
-            name: 'Zoom Out',
+            name: i18n.t('zoomOut'),
             action: zoomOut,
           },
           {
             id: 'wordWrapId',
             icon: <ZoomOutIcon />,
-            name: 'Toggle Word Wrap',
+            name: i18n.t('toggleWordWrap'),
             action: toggleWordWrap,
           },
         ]}
