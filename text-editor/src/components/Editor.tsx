@@ -73,6 +73,22 @@ export const Editor: React.FC = () => {
     }
   });
 
+  function saveSettings(key, value) {
+    const settings = {
+      [key]: value,
+    };
+    localStorage.setItem(key, JSON.stringify(settings));
+  }
+
+  function getSettings(key: string) {
+    const item = localStorage.getItem(key);
+    if (item) {
+      const settings = JSON.parse(item);
+      return settings[key];
+    }
+    return undefined;
+  }
+
   function initEditor() {
     if (editor) {
       setReadOnly();
@@ -136,6 +152,9 @@ export const Editor: React.FC = () => {
       enabled: false,
     },
     readOnly: readOnly(),
+    lineNumbers: getSettings('lineNumbers'),
+    fontSize: getSettings('fontSize'),
+    wordWrap: getSettings('wordWrap'),
   } as monaco.editor.IEditorConstructionOptions;
 
   useEffect(() => {
@@ -193,6 +212,8 @@ export const Editor: React.FC = () => {
         areLineNumbersVisible.renderType ===
         monaco.editor.RenderLineNumbersType.On;
 
+      saveSettings('lineNumbers', isLineNumbersOn ? 'off' : 'on');
+
       editor.updateOptions({
         lineNumbers: isLineNumbersOn ? 'off' : 'on',
       });
@@ -210,7 +231,7 @@ export const Editor: React.FC = () => {
       const currentWordWrap = editor
         .getOptions()
         .get(monaco.editor.EditorOption.wordWrap);
-
+      saveSettings('wordWrap', currentWordWrap);
       editor.updateOptions({
         wordWrap: currentWordWrap === 'off' ? 'on' : 'off',
       });
@@ -222,6 +243,7 @@ export const Editor: React.FC = () => {
       const fontSize = editor
         .getOptions()
         .get(monaco.editor.EditorOption.fontSize);
+      saveSettings('fontSize', fontSize);
       editor.updateOptions({
         fontSize: fontSize + 1,
       });
@@ -233,6 +255,7 @@ export const Editor: React.FC = () => {
       const fontSize = editor
         .getOptions()
         .get(monaco.editor.EditorOption.fontSize);
+      saveSettings('fontSize', fontSize);
       editor.updateOptions({
         fontSize: fontSize - 1,
       });
