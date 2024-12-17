@@ -26,7 +26,7 @@
     "@emotion/styled": "11.14.0",
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
-    "@tagspaces/tagspaces-extension-ui": "^4.5.45",
+    "@tagspaces/tagspaces-extension-ui": "^4.5.46",
     "i18next": "^24.1.0",
     "i18next-http-backend": "^3.0.1",
     "monaco-editor": "^0.52.2",

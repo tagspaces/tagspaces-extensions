@@ -273,6 +273,44 @@ export const Editor: React.FC = () => {
     }
   };
 
+  function printMonacoEditorContent(content: string) {
+    // Step 2: Create an iframe for printing
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    // Step 3: Write content into the iframe document
+    const iframeDoc = iframe.contentWindow?.document;
+    if (iframeDoc) {
+      iframeDoc.open();
+      iframeDoc.write(`
+        <html>
+            <head>
+                <title>Print Monaco Editor Content</title>
+                <style>
+                    /* Add styling here to format the printed text */
+                    body {
+                        font-family: monospace;
+                        white-space: pre-wrap; /* Keeps formatting like line breaks */
+                        margin: 20px;
+                    }
+                </style>
+            </head>
+            <body>${content.replace(/\n/g, '<br>')}</body>
+        </html>
+    `);
+      iframeDoc.close();
+    }
+
+    // Step 4: Trigger the print and clean up the iframe
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+    document.body.removeChild(iframe);
+  }
+
   return (
     <>
       <div
@@ -288,7 +326,13 @@ export const Editor: React.FC = () => {
           });
         }}
         menuItems={[
-          { id: 'print', name: t('print'), action: () => {} },
+          {
+            id: 'print',
+            name: t('print'),
+            action: () => {
+              printMonacoEditorContent(getContent());
+            },
+          },
           { id: 'about', name: t('about'), action: () => {} },
           {
             id: 'findId',
