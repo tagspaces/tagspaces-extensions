@@ -25,10 +25,10 @@ source_file = text-editor/src/locales/en/ns.extension.json
 source_lang = en
 type        = KEYVALUEJSON
 
-; [o:tagspaces:p:tagspaces:r:nsextensionjson]
-; file_filter = common/locales/<lang>/ns.extension.json
-; source_file = common/locales/en/ns.extension.json
-; source_lang = en
-; type        = KEYVALUEJSON
+[o:tagspaces:p:tagspaces:r:nsextensionjson]
+file_filter = common/locales/<lang>/ns.extension.json
+source_file = common/locales/en/ns.extension.json
+source_lang = en
+type        = KEYVALUEJSON
 
 
