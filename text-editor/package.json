@@ -19,6 +19,7 @@
     "preview": "vite preview",
     "code-format": "npx prettier --write .",
     "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/text-editor && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/text-editor",
+    "npmpack2": "npm run build-dev && npx shx cp -rL build/** ../../tagspaces/release/app/node_modules/@tagspaces/extensions/text-editor && npx shx cp package.json ../../tagspaces/release/app/node_modules/@tagspaces/extensions/text-editor",
     "simpleserver": "node ../node_modules/yaserver/bin/yaserver --root ./dist --port 9999"
   },
   "dependencies": {

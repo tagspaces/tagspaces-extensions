@@ -8,7 +8,8 @@ import {
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
+import WrapTextIcon from '@mui/icons-material/WrapText';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { sendMessageToHost } from '../utils';
 import { useTranslation } from 'react-i18next';
@@ -289,9 +290,8 @@ export const Editor: React.FC = () => {
       iframeDoc.write(`
         <html>
             <head>
-                <title>Print Monaco Editor Content</title>
+                <title>TagSpaces Editor Content</title>
                 <style>
-                    /* Add styling here to format the printed text */
                     body {
                         font-family: monospace;
                         white-space: pre-wrap; /* Keeps formatting like line breaks */
@@ -327,14 +327,6 @@ export const Editor: React.FC = () => {
         }}
         menuItems={[
           {
-            id: 'print',
-            name: t('print'),
-            action: () => {
-              printMonacoEditorContent(getContent());
-            },
-          },
-          { id: 'about', name: t('about'), action: () => {} },
-          {
             id: 'findId',
             icon: <FindInPageIcon />,
             name: t('findInDocument'),
@@ -361,16 +353,24 @@ export const Editor: React.FC = () => {
           },
           {
             id: 'resetZoomID',
-            icon: <RestartAltIcon />,
+            icon: <CenterFocusStrongIcon />,
             name: t('resetZoom'),
             action: resetZoom,
           },
           {
             id: 'wordWrapId',
-            icon: <ZoomOutIcon />,
+            icon: <WrapTextIcon />,
             name: t('toggleWordWrap'),
             action: toggleWordWrap,
           },
+          {
+            id: 'print',
+            name: t('print'),
+            action: () => {
+              printMonacoEditorContent(getContent());
+            },
+          },
+          { id: 'about', name: t('about'), action: () => {} },
         ]}
       />
     </>
