@@ -354,7 +354,7 @@ export const Editor: React.FC = () => {
           {
             id: 'resetZoomID',
             icon: <CenterFocusStrongIcon />,
-            name: t('resetZoom'),
+            name: t('zoomReset'),
             action: resetZoom,
           },
           {
