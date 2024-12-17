@@ -8,6 +8,7 @@ import {
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { sendMessageToHost } from '../utils';
 import { useTranslation } from 'react-i18next';
@@ -177,8 +178,8 @@ export const Editor: React.FC = () => {
           const model = monacoEditor.getModel();
           if (model) {
             const fileContent = model.getValue();
-            // @ts-ignore
-            if (fileContent !== window.fileContent) {
+
+            if (fileContent !== getContent()) {
               // @ts-ignore
               window.fileContent = fileContent;
               console.log('content changed:');
@@ -263,6 +264,15 @@ export const Editor: React.FC = () => {
     }
   };
 
+  const resetZoom = () => {
+    if (editor) {
+      saveSettings('fontSize', undefined);
+      editor.updateOptions({
+        fontSize: 12,
+      });
+    }
+  };
+
   return (
     <>
       <div
@@ -304,6 +314,12 @@ export const Editor: React.FC = () => {
             icon: <ZoomOutIcon />,
             name: t('zoomOut'),
             action: zoomOut,
+          },
+          {
+            id: 'resetZoomID',
+            icon: <RestartAltIcon />,
+            name: t('resetZoom'),
+            action: resetZoom,
           },
           {
             id: 'wordWrapId',

@@ -2,6 +2,7 @@
   "toggleWordWrap": "Toggle Word Wrap",
   "zoomOut": "Zoom Out",
   "zoomIn": "Zoom In",
+  "resetZoom": "Reset Zoom",
   "toggleLineNumbers": "Toggle Line Numbers",
   "findInDocument": "Find in document",
   "print": "Print",
