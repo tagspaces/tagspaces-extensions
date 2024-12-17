@@ -7,6 +7,7 @@
     "zoomIn": "화면 확대",
     "zoomReset": "원본 화면 크기",
     "toggleLineNumbers": "Toggle line numbers",
+    "toggleWordWrap": "Toggle Word Wrap",
     "changeTheme": "테마 변경",
     "resetTheme": "기본 테마",
     "print": "인쇄",
@@ -47,5 +48,6 @@
     "viewEditor": "Open text editor",
     "viewAsMindMap": "View as mind map",
     "togglePagination": "Toggle Pagination",
+    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
     "-": "-"
 }

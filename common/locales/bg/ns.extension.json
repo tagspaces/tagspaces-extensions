@@ -7,6 +7,7 @@
     "zoomIn": "Приближаване",
     "zoomReset": "Възстановяване на приближаването",
     "toggleLineNumbers": "Показване номерирането на редовете",
+    "toggleWordWrap": "Превключване пренасянето на думи",
     "changeTheme": "Смяна на темата",
     "resetTheme": "Възстановяване на темата",
     "print": "Принтирай",
@@ -46,6 +47,7 @@
     "viewMarkdown": "Отвори маркдаун редактора",
     "viewEditor": "Отвори текстовия редактор",
     "viewAsMindMap": "Виж като mindmap",
-    "togglePagination": "Toggle Pagination",
+    "togglePagination": "Превключване на пагинацията",
+    "encryptedFileUseDownload": "Документът е криптиран, моля, използвайте функцията за изтегляне, за да получите съдържанието му.",
     "-": "-"
 }

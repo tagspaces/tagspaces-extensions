@@ -7,6 +7,7 @@
     "zoomIn": "Ansicht vergrößern",
     "zoomReset": "Ansicht zurücksetzen",
     "toggleLineNumbers": "Zeilennummern umschalten",
+    "toggleWordWrap": "Zeilenumbruch ein-/ausschalten",
     "changeTheme": "Thema ändern",
     "resetTheme": "Thema zurücksetzen",
     "print": "Drucken",
@@ -47,5 +48,6 @@
     "viewEditor": "Text Editor öffnen",
     "viewAsMindMap": "Als Mind-map darstellen",
     "togglePagination": "Paginierung umschalten",
+    "encryptedFileUseDownload": "Dokument verschlüsselt. Bitte verwenden Sie die Download-Funktion, um an den Inhalt zu gelangen.",
     "-": "-"
 }

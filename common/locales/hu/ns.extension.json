@@ -7,6 +7,7 @@
     "zoomIn": "Nagyítás",
     "zoomReset": "Nézet nagyításának visszaállítása",
     "toggleLineNumbers": "Toggle line numbers",
+    "toggleWordWrap": "Toggle Word Wrap",
     "changeTheme": "Téma váltás",
     "resetTheme": "Kinézet visszaállítása",
     "print": "Nyomtatás",
@@ -47,5 +48,6 @@
     "viewEditor": "Open text editor",
     "viewAsMindMap": "View as mind map",
     "togglePagination": "Toggle Pagination",
+    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
     "-": "-"
 }

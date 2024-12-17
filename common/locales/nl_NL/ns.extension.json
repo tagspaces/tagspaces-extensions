@@ -7,6 +7,7 @@
     "zoomIn": "Zoom In",
     "zoomReset": "Zoom Resetten",
     "toggleLineNumbers": "Toggle line numbers",
+    "toggleWordWrap": "Toggle Word Wrap",
     "changeTheme": "Verander Thema",
     "resetTheme": "Thema Resetten",
     "print": "Afdrukken",
@@ -47,5 +48,6 @@
     "viewEditor": "Open text editor",
     "viewAsMindMap": "View as mind map",
     "togglePagination": "Toggle Pagination",
+    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
     "-": "-"
 }
