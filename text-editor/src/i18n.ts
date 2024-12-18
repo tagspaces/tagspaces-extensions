@@ -133,7 +133,7 @@ i18n
     supportedLngs,
     ns: ['translation'],
     defaultNS,
-   // load: 'languageOnly',
+    // load: 'languageOnly',
     nonExplicitSupportedLngs: true,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

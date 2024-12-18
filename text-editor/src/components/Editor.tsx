@@ -118,28 +118,36 @@ export const Editor: React.FC = () => {
     }
   }*/
 
+  function cleanFilePath() {
+    if (filePath.startsWith('http')) {
+      return filePath.split('?')[0];
+    }
+    return filePath;
+  }
+
   function getLanguage() {
+    const path = cleanFilePath();
     if (
-      filePath.endsWith('.js') ||
-      filePath.endsWith('.jsx') ||
-      filePath.endsWith('.ts') ||
-      filePath.endsWith('.tsx')
+      path.endsWith('.js') ||
+      path.endsWith('.jsx') ||
+      path.endsWith('.ts') ||
+      path.endsWith('.tsx')
     ) {
       return 'javascript';
     } else if (
-      filePath.endsWith('.css') ||
-      filePath.endsWith('.scss') ||
-      filePath.endsWith('.less')
+      path.endsWith('.css') ||
+      path.endsWith('.scss') ||
+      path.endsWith('.less')
     ) {
       return 'css';
     } else if (
-      filePath.endsWith('.html') ||
-      filePath.endsWith('.xhtml') ||
-      filePath.endsWith('.handlebars') ||
-      filePath.endsWith('.razor')
+      path.endsWith('.html') ||
+      path.endsWith('.xhtml') ||
+      path.endsWith('.handlebars') ||
+      path.endsWith('.razor')
     ) {
       return 'html';
-    } else if (filePath.endsWith('.json')) {
+    } else if (path.endsWith('.json')) {
       return 'json';
     }
     return 'plaintext';
