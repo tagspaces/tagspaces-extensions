@@ -1,7 +1,7 @@
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 //import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
+//import Backend from 'i18next-http-backend';
 
 import en from '../../common/locales/en_US/ns.extension.json';
 import bg from '../../common/locales/bg/ns.extension.json';
@@ -42,7 +42,7 @@ export const resources = {
   bg: { translation: bg },
   ca: { translation: ca },
   da_DK: { translation: da_DK },
-  de_DE: { translation: de_DE },
+  de: { translation: de_DE },
   el: { translation: el },
   eo: { translation: eo },
   es: { translation: es },
@@ -78,7 +78,7 @@ export const supportedLngs = [
   'bg',
   'ca',
   'da_DK',
-  'de_DE',
+  'de',
   'el',
   'eo',
   'es',
@@ -118,7 +118,7 @@ i18n
   // load translation using http -> see /assets/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/assets/locales)
   // learn more: https://github.com/i18next/i18next-http-backend
   // want your translations to be loaded from a professional CDN? => https://github.com/locize/react-tutorial#step-2---use-the-locize-cdn
-  .use(Backend)
+  //.use(Backend)
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languageDetector
   //.use(LanguageDetector)
@@ -133,7 +133,7 @@ i18n
     supportedLngs,
     ns: ['translation'],
     defaultNS,
-    load: 'languageOnly',
+   // load: 'languageOnly',
     nonExplicitSupportedLngs: true,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
