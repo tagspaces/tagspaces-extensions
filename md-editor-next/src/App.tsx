@@ -1,7 +1,6 @@
 import React, { useReducer, useState, useEffect } from 'react';
-import useEventListener from './useEventListener';
 
-import { ColorModeContext } from '@tagspaces/tagspaces-extension-ui';
+import { ColorModeContext, useEventListener } from '@tagspaces/tagspaces-extension-ui';
 // @ts-ignore
 import EasySpeech from 'easy-speech';
 import './extension.css';

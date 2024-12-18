@@ -7,6 +7,7 @@
     "zoomIn": "放大",
     "zoomReset": "重置缩放",
     "toggleLineNumbers": "切換行编号",
+    "toggleWordWrap": "Toggle Word Wrap",
     "changeTheme": "更换主题",
     "resetTheme": "重置主题",
     "print": "打印",
@@ -47,5 +48,6 @@
     "viewEditor": "打开文本编辑器",
     "viewAsMindMap": "以思维导图形式查看",
     "togglePagination": "切换分页",
+    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
     "-": "-"
 }

@@ -7,6 +7,7 @@
     "zoomIn": "Zoom avant",
     "zoomReset": "Taille normale",
     "toggleLineNumbers": "Désactiver numérotation des lignes",
+    "toggleWordWrap": "Toggle Word Wrap",
     "changeTheme": "Changer le thème",
     "resetTheme": "Réinitialiser le thème",
     "print": "Imprimer",
@@ -36,7 +37,7 @@
     "exportAsHTML": "Exporter en HTML",
     "close": "Fermer",
     "settings": "Paramètres",
-    "speechSpeed": "Speech speed",
+    "speechSpeed": "Vitesse de la voix",
     "voices": "Voix",
     "languages": "Languages",
     "read": "Lire",
@@ -45,7 +46,8 @@
     "stopReading": "Arrêter la lecture",
     "viewMarkdown": "Ouvrir l'éditeur Markdown",
     "viewEditor": "Ouvrir l'éditeur de textes",
-    "viewAsMindMap": "View as mind map",
-    "togglePagination": "Toggle Pagination",
+    "viewAsMindMap": "Vue carte heuristique",
+    "togglePagination": "Changer la mise en page",
+    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
     "-": "-"
 }

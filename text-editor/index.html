@@ -1,330 +1,73 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <title>Text Editor for TagSpaces</title>
-    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
-    <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="libs/codemirror/addon/fold/foldgutter.css" />
-    <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="libs/codemirror/theme/lesser-dark.css" />
-    <link rel="stylesheet" href="libs/codemirror/theme/default.css" />
-    <link rel="stylesheet" href="libs/codemirror/addon/dialog/dialogs.css" />
-    <link
-      rel="stylesheet"
-      href="libs/codemirror/addon/search/matchesonscrollbar.css"
-    />
-    <style>
-      #editorText {
-      }
-    </style>
-    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
-    <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="../common/common.js"></script>
-    <script src="libs/codemirror/lib/codemirror.js"></script>
-    <script src="libs/codemirror/addon/mode/loadmode.js"></script>
-    <script src="libs/codemirror/addon/dialog/dialog.js"></script>
-    <script src="libs/codemirror/addon/search/searchcursor.js"></script>
-    <script src="libs/codemirror/addon/search/search.js"></script>
-    <script src="libs/codemirror/addon/scroll/annotatescrollbar.js"></script>
-    <script src="libs/codemirror/addon/search/matchesonscrollbar.js"></script>
-    <script src="libs/codemirror/addon/search/jump-to-line.js"></script>
-    <script src="libs/codemirror/addon/selection/active-line.js"></script>
-    <script src="libs/codemirror/addon/selection/mark-selection.js"></script>
+    <title>Text editor for TagSpaces</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./src/main.tsx" type="module"></script>
     <script>
-      const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
-
-      let cmEditor;
-      let showLineNumbers = true;
-      let viewMode = true;
-      const filetype = [];
-      filetype.h = 'clike';
-      filetype.c = 'clike';
-      filetype.clj = 'clojure';
-      filetype.coffee = 'coffeescript';
-      filetype.cpp = 'clike';
-      filetype.cs = 'clike';
-      filetype.css = 'css';
-      filetype.groovy = 'groovy';
-      filetype.haxe = 'haxe';
-      filetype.htm = 'xml';
-      filetype.html = 'xml';
-      filetype.java = 'clike';
-      filetype.js = 'javascript';
-      filetype.ts = 'javascript';
-      filetype.jsm = 'javascript';
-      filetype.json = 'javascript';
-      filetype.less = 'less';
-      filetype.lua = 'lua';
-      filetype.markdown = 'markdown';
-      filetype.md = 'markdown';
-      filetype.mdown = 'markdown';
-      filetype.mdwn = 'markdown';
-      filetype.mkd = 'markdown';
-      filetype.ml = 'ocaml';
-      filetype.mli = 'ocaml';
-      filetype.pl = 'perl';
-      filetype.php = 'php';
-      filetype.py = 'python';
-      filetype.rb = 'ruby';
-      filetype.sh = 'shell';
-      filetype.sql = 'sql';
-      filetype.svg = 'xml';
-      filetype.xml = 'xml';
-      filetype.txt = 'txt';
-
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
-
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/text-editor'
-          );
-
-          insertPrintMenuItem();
-
-          insertZoomContentMenuItem();
-
-          insertToggleFindMenuItem();
-
-          initI18N(locale, 'ns.extension.json');
-
-          if (viewMode) {
-            document.body.addEventListener('dblclick', () => {
-              sendMessageToHost({ command: 'editDocument' });
-            });
-          }
-
-          // Handling settings
-          let extSettings = loadExtSettings('editorTextSettings');
-
-          const editorText = document.getElementById('editorText');
-
-          function saveSettings() {
-            saveExtSettings('editorTextSettings', {
-              zoomLevel,
-              showLineNumbers
-            });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            editorText.style.zoom = zoomLevel + '%';
-          }
-
-          if (
-            extSettings &&
-            typeof extSettings.showLineNumbers !== 'undefined'
-          ) {
-            showLineNumbers = extSettings.showLineNumbers;
-          }
-          saveSettings();
-
-          // Bind handler for button
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', e => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              editorText.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', e => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              editorText.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', e => {
-              zoomLevel = 100;
-              saveSettings();
-              editorText.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('toggleLineNumbersMenuItem')
-            .addEventListener('click', e => {
-              showLineNumbers = !showLineNumbers;
-              saveSettings();
-              cmEditor.options.lineNumbers = showLineNumbers;
-              cmEditor.refresh();
-            });
-
-          document
-            .getElementById('toggleFindMenuItem')
-            .addEventListener('click', e => {
-              e.preventDefault();
-              cmEditor.execCommand('findNext');
-            });
-        }
-      });
-
-      function viewerMode(isViewerMode) {
-        viewMode = isViewerMode;
-        if (!viewMode) {
-          cmEditor.focus();
-        }
-
-        cmEditor.options.lineNumbers = showLineNumbers;
-        cmEditor.options.cursorBlinkRate = isViewerMode ? -1 : 530;
-        cmEditor.options.readOnly = isViewerMode;
-        cmEditor.options.foldGutter = isViewerMode;
-        cmEditor.options.styleActiveLine = isViewerMode;
-        cmEditor.options.matchBrackets = isViewerMode;
-        cmEditor.options.showCursorWhenSelecting = isViewerMode;
-        cmEditor.options.autofocus = !isViewerMode;
-        cmEditor.refresh();
+      function setContent(content, fileDirectory, editMode, theme) {
+        console.log('Content updated, event triggered');
+        window.fileContent = content;
+        window.editMode = !editMode;
+        window.fileDirectory = fileDirectory;
+        window.dispatchEvent(new Event('contentLoaded'));
+        setTheme(theme);
       }
 
       function getContent() {
-        return cmEditor.getValue();
+        return window.fileContent;
       }
 
-      function setContent(content, fileDirectory, isViewMode) {
-        const editorText = document.getElementById('editorText');
-        editorText.innerHTML =
-          "<div id='code' style='width: 100%; height: 100%; z-index: 9999; overflow: auto'>";
-
-        let fileExt = '';
-        let cleanedPath = filePath;
-        const lastindexQuestionMark = filePath.lastIndexOf('?');
-        if (lastindexQuestionMark > 0) {
-          // Removing everything after ? in URLs .png?queryParam1=2342
-          cleanedPath = filePath.substring(0, lastindexQuestionMark);
+      function setTheme(theme) {
+        if (theme) {
+          console.log('setTheme: ' + theme + ' event triggered');
+          window.theme = theme;
+          window.dispatchEvent(new Event('themeChanged'));
         }
-        fileExt = cleanedPath
-          .substring(cleanedPath.lastIndexOf('.') + 1, cleanedPath.length)
-          .toLowerCase();
-        const mode = filetype[fileExt];
-
-        const place = document.getElementById('code');
-        cmEditor = new CodeMirror(place, {
-          mode,
-          lineNumbers: true,
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-          lineWrapping: true,
-          tabSize: 2,
-          // lineSeparator: isWin ? '\n\r' : null, // TODO check under windows if content contains \n\r -> set
-          styleSelectedText: true,
-          showCursorWhenSelecting: true,
-          autofocus: !viewMode,
-          theme: theme === 'dark' ? 'lesser-dark' : 'default'
-          // extraKeys: keys // workarrounded with bindGlobal plugin for mousetrap
-        });
-
-        CodeMirror.modeURL = 'libs/codemirror/mode/%N/%N.js';
-        if (mode) {
-          cmEditor.setOption('mode', mode);
-          CodeMirror.autoLoadMode(cmEditor, mode);
-        } else {
-          console.warn('Invalid mode !' + mode);
-        }
-
-        viewerMode(isViewMode);
-
-        cmEditor.setSize('100%', '100%');
-
-        const UTF8_BOM = '\ufeff';
-        if (content.indexOf(UTF8_BOM) === 0) {
-          content = content.substring(1, content.length);
-        }
-
-        cmEditor.setValue(content);
-        cmEditor.clearHistory();
-        cmEditor.refresh();
-        cmEditor.addKeyMap({
-          'Ctrl-S': () => {
-            if (!viewMode) {
-              sendMessageToHost({
-                command: 'saveDocument',
-                filepath: filePath
-              });
-            }
-          }
-        });
-
-        CodeMirror.on(cmEditor, 'change', () => {
-          if (!viewMode) {
-            sendMessageToHost({
-              command: 'contentChangedInEditor',
-              filepath: filePath
-            });
-            document.getElementsByClassName(
-              'CodeMirror-cursor'
-            )[0].style.display = 'block';
-          } else {
-            document.getElementsByClassName(
-              'CodeMirror-cursor'
-            )[0].style.display = 'none';
-          }
-        });
       }
+
+      function getParameterByName(paramName) {
+        const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        let param =
+          results === null
+            ? ''
+            : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (param.includes('#')) {
+          param = param.split('#').join('%23');
+        }
+        return param;
+      }
+
+      const rootEl = document.querySelector(':root');
+      const primaryColor = getParameterByName('primecolor').replace('%23', '#');
+      const textColor = getParameterByName('textcolor').replace('%23', '#');
+      primaryColor && rootEl.style.setProperty('--primary-color', primaryColor);
+      textColor && rootEl.style.setProperty('--primary-text-color', textColor);
+
+      const pathToFile = getParameterByName('file');
+      window.filePath = pathToFile;
+      window.isWeb =
+        (document.URL.startsWith('http') &&
+          !document.URL.startsWith('http://localhost:1212/')) ||
+        pathToFile.startsWith('http');
+
+      window.locale = getParameterByName('locale');
+      window.eventID = getParameterByName('eventID');
+      window.theme = getParameterByName('theme');
+      window.query = getParameterByName('query');
+      window.editMode = getParameterByName('editMode');
+
+      /*const theme = getParameterByName('theme'); // TODO migrate theme GET param in setContent(..theme)
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }*/
     </script>
   </head>
   <body>
-    <div id="editorText"></div>
-    <div id="aboutDialogPlaceholder"></div>
-    <div id="extFabMenu" class="btn-group dropup-center dropup">
-      <button
-        type="button"
-        class="btn btn-primary  btn-lg"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        <svg
-          class="bi"
-          width="24"
-          height="24"
-          focusable="false"
-          aria-hidden="true"
-        >
-          <path
-            d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-          ></path>
-        </svg>
-      </button>
-      <ul class="dropdown-menu">
-        <li id="zoomContentMenuItemPlaceholder"></li>
-        <li>
-          <a id="toggleLineNumbersMenuItem" class="dropdown-item" href="#">
-            <svg width="24" height="24" class="bi">
-              <path
-                d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
-              ></path>
-            </svg>
-            <span data-i18n="toggleLineNumbers" />
-          </a>
-        </li>
-        <li><hr class="dropdown-divider" /></li>
-        <li id="toggleFindMenuItemPlaceholder"></li>
-        <li id="printMenuItemPlaceholder"></li>
-        <li><hr class="dropdown-divider" /></li>
-        <li id="aboutMenuItemPlaceholder"></li>
-      </ul>
-    </div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
   </body>
 </html>

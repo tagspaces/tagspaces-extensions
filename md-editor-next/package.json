@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor-next",
-  "version": "1.0.145",
+  "version": "1.0.148",
   "description": "TagSpaces extension for editing notes in markdown format",
   "tsextension": {
     "name": "MD Editor (beta)",
@@ -50,9 +50,9 @@
   "author": "TagSpaces UG <info@tagspaces.org> (https://www.tagspaces.org)",
   "license": "MIT",
   "dependencies": {
-    "@tagspaces/tagspaces-md": "4.5.18",
+    "@tagspaces/tagspaces-md": "4.5.38",
     "@tagspaces/tagspaces-codemirror": "4.3.6",
-    "@tagspaces/tagspaces-extension-ui": "4.3.7",
+    "@tagspaces/tagspaces-extension-ui": "4.5.44",
     "i18next": "^22.4.6",
     "i18next-http-backend": "^2.2.1",
     "i18next-browser-languagedetector": "^7.0.2",

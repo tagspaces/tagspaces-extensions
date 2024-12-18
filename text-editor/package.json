@@ -1,21 +1,57 @@
 {
   "name": "@tagspaces/text-editor",
-  "version": "1.0.145",
+  "version": "1.0.148",
   "description": "A TagSpaces extension allowing editing of text based documents.",
   "homepage": "https://www.tagspaces.org",
-  "main": "main.js",
+  "files": [
+    "build/"
+  ],
   "author": {
     "name": "TagSpaces GmbH",
     "email": "info@tagspaces.org",
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {
-    "codemirror": "5.65.11",
-    "shelljs": "^0.8.5"
-  },
   "scripts": {
-    "postinstall": "node scripts/update-libs.js"
+    "dev": "vite dev --host",
+    "build": "tsc && vite build",
+    "build-dev": "tsc && vite build --mode development",
+    "preview": "vite preview",
+    "code-format": "npx prettier --write .",
+    "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/text-editor && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/text-editor",
+    "simpleserver": "node ../node_modules/yaserver/bin/yaserver --root ./dist --port 9999"
+  },
+  "dependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
+    "@mui/icons-material": "^6.2.0",
+    "@mui/material": "^6.2.0",
+    "@tagspaces/tagspaces-extension-ui": "^4.5.46",
+    "i18next": "^24.1.0",
+    "monaco-editor": "^0.52.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^15.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.3.4",
+    "prettier": "^2.7.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "tsextension": {
     "name": "Text Editor",
@@ -38,6 +74,9 @@
         "ext": "css"
       },
       {
+        "ext": "scss"
+      },
+      {
         "ext": "h"
       },
       {
@@ -45,6 +84,15 @@
       },
       {
         "ext": "js"
+      },
+      {
+        "ext": "jsx"
+      },
+      {
+        "ext": "ts"
+      },
+      {
+        "ext": "tsx"
       },
       {
         "ext": "jsm"
@@ -81,24 +129,17 @@
       },
       {
         "ext": "mdx",
-        "types": [
-          "editor"
-        ],
         "color": "#beefed"
       },
       {
         "ext": "svg",
-        "types": [
-          "editor"
-        ],
         "color": "#9fd5ba"
       },
       {
-        "ext": "xhtml",
-        "types": [
-          "editor"
-        ],
-        "color": ""
+        "ext": "html"
+      },
+      {
+        "ext": "xhtml"
       }
     ]
   }
