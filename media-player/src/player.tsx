@@ -106,7 +106,7 @@ export function Player() {
 
   function isAudioType(): boolean {
     if (enableVideoOutput.current && filePath) {
-      return /\.(mp3|wav)$/i.test(filePath);
+      return /\.(mp3|wav|wave|ogg|flac|acc|m4a)$/i.test(filePath);
     }
     return true;
   }
@@ -185,6 +185,7 @@ export function Player() {
           viewType={viewType}
           autoPlay={autoPlay.current}
           loop={loop.current === 'loopOne'}
+          hideControlsOnMouseLeave={isAudioType() ? false : true}
           className="player"
           title={fileName}
           src={filePath}
