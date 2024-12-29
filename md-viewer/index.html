@@ -103,11 +103,11 @@
 
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-          document.body.addEventListener('dblclick', () => {
+          documentContent = document.getElementById('documentContent');
+
+          documentContent.addEventListener('dblclick', () => {
             sendMessageToHost({ command: 'editDocument' });
           });
-
-          documentContent = document.getElementById('documentContent');
 
           // Handling settings
           let extSettings = loadExtSettings('viewerMDSettings');

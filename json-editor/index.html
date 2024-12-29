@@ -50,12 +50,6 @@
 
           sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-          if (isViewer) {
-            document.body.addEventListener('dblclick', () => {
-              sendMessageToHost({ command: 'editDocument' });
-            });
-          }
-
           // Handling settings
           let extSettings = loadExtSettings('jsonEditorSettings');
 
@@ -150,6 +144,12 @@
         };
 
         const container = document.getElementById('documentContent');
+
+        if (isViewer) {
+          container.addEventListener('dblclick', () => {
+            sendMessageToHost({ command: 'editDocument' });
+          });
+        }
 
         if (
           !!Object.keys(jsonContent) &&
