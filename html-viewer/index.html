@@ -23,9 +23,12 @@
       }
 
       #documentContent img,
-      #readabilityContent img {
+      #documentContent video,
+      #readabilityContent img,
+      #readabilityContent video {
         max-width: 100%;
         height: auto;
+        display: block;
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
@@ -227,6 +230,14 @@
         );
         htmlContent = document.getElementById('documentContent');
         htmlContent.innerHTML = sanitizeContent(cleanedBodyContent);
+
+        document.querySelectorAll('video, audio').forEach((media) => {
+          // Remove the autoplay attribute
+          media.removeAttribute('autoplay');
+          media.setAttribute('controls', '');
+          media.pause(); // Ensure the media does not start playing
+          // media.muted = true;
+        });
 
         hideLoadingAnimation();
 
