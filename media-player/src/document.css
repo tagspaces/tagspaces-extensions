@@ -2,7 +2,7 @@
  * Document
  *************************************************************************************************/
 
-* {
+ * {
   box-sizing: border-box;
 }
 
@@ -23,17 +23,24 @@ body {
 }
 
 main {
-  width: auto;
+  width: 100%;
   height: 100%;
 }
 
 #root {
   height: 100%;
+  width: 100%;
 }
 
 .player {
+  height: 100%;
+  width: 100%;
   border: none;
   font-family: sans-serif;
+}
+
+.vds-controls-group {
+  padding-right: 70px !important;
 }
 
 .vds-poster {
