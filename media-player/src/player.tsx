@@ -106,7 +106,7 @@ export function Player() {
 
   function isAudioType(): boolean {
     if (enableVideoOutput.current && filePath) {
-      return /\.(mp3|wav|wave|ogg|flac|acc|m4a)$/i.test(filePath);
+      return /\.(mp3|wav|wave|ogg|flac|acc|m4a|opus)$/i.test(filePath);
     }
     return true;
   }
