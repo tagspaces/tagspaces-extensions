@@ -10,6 +10,7 @@ type        = KEYVALUEJSON
 ; only the last file_filter counts
 [o:tagspaces:p:tagspaces:r:nsextensionjson]
 file_filter = md-editor/src/locales/<lang>/ns.extension.json
+file_filter = md-editor-next/src/locales/<lang>/ns.extension.json
 file_filter = common/locales/<lang>/ns.extension.json
 source_file = common/locales/en/ns.extension.json
 source_lang = en
