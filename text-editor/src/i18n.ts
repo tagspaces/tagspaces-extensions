@@ -15,6 +15,7 @@ import fa from '../../common/locales/fa/ns.extension.json';
 import fr from '../../common/locales/fr/ns.extension.json';
 import fr_CA from '../../common/locales/fr_CA/ns.extension.json';
 import fr_CH from '../../common/locales/fr_CH/ns.extension.json';
+import he from '../../common/locales/he/ns.extension.json';
 import hu from '../../common/locales/hu/ns.extension.json';
 import hy from '../../common/locales/hy/ns.extension.json';
 import id_ID from '../../common/locales/id_ID/ns.extension.json';
@@ -50,6 +51,7 @@ export const resources = {
   fr: { translation: fr },
   fr_CA: { translation: fr_CA },
   fr_CH: { translation: fr_CH },
+  he: { translation: he },
   hu: { translation: hu },
   hy: { translation: hy },
   id_ID: { translation: id_ID },
@@ -86,6 +88,7 @@ export const supportedLngs = [
   'fr',
   'fr_CA',
   'fr_CH',
+  'he',
   'hu',
   'hy',
   'id_ID',
