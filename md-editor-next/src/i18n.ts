@@ -11,6 +11,7 @@ import de_DE from './locales/de_DE/ns.extension.json';
 import el from './locales/el/ns.extension.json';
 import eo from './locales/eo/ns.extension.json';
 import es from './locales/es/ns.extension.json';
+import es_CL from './locales/es_CL/ns.extension.json';
 import fa from './locales/fa/ns.extension.json';
 import fr from './locales/fr/ns.extension.json';
 import fr_CA from './locales/fr_CA/ns.extension.json';
@@ -47,6 +48,7 @@ export const resources = {
   el: { translation: el },
   eo: { translation: eo },
   es: { translation: es },
+  es_CL: { translation: es_CL },
   fa: { translation: fa },
   fr: { translation: fr },
   fr_CA: { translation: fr_CA },
@@ -84,6 +86,7 @@ export const supportedLngs = [
   'el',
   'eo',
   'es',
+  'es_CL',
   'fa',
   'fr',
   'fr_CA',
