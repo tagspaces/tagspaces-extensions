@@ -25,3 +25,4 @@ tagspacespro
 *.iml
 .DS_Store
 tx
+*.map
