@@ -19,7 +19,7 @@ function copyRecursiveSync(src, dest) {
     readdirSync(src).forEach((childItemName) => {
       copyRecursiveSync(join(src, childItemName), join(dest, childItemName));
     });
-  } else {
+  } else if(!src.endsWith('.map') && !src.endsWith('.pdf')){
     // For files, simply copy them.
     copyFileSync(src, dest);
   }
