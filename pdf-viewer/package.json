@@ -10,8 +10,9 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {
-    "pdfjs-dist": "4.2.67"
+  "scripts": {
+    "build:pdfjs": "node scripts/buildPdfjs.js",
+    "rebuild:pdfjs": "npx rimraf generic scripts/pdf.js && npm run build:pdfjs"
   },
   "tsextension": {
     "name": "PDF Viewer",
