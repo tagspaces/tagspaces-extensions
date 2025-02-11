@@ -11,8 +11,9 @@
   },
   "license": "MIT",
   "scripts": {
+    "build": "npm run clean:pdfjs && npm run build:pdfjs",
     "build:pdfjs": "node scripts/buildPdfjs.js",
-    "rebuild:pdfjs": "npx rimraf generic scripts/pdf.js && npm run build:pdfjs"
+    "clean:pdfjs": "npx rimraf generic scripts/pdf.js"
   },
   "tsextension": {
     "name": "PDF Viewer",
