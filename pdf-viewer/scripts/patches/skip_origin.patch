@@ -1,0 +1,13 @@
+diff --git a/web/app.js b/web/app.js
+index eebe8beaa..bb3cbc391 100644
+--- a/web/app.js
++++ b/web/app.js
+@@ -2286,7 +2286,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
+       // start accepting URLs from foreign origin -- CORS headers on the remote
+       // server must be properly configured.
+       if (fileOrigin !== viewerOrigin) {
+-        throw new Error("file origin does not match viewer's");
++        // throw new Error("file origin does not match viewer's");
+       }
+     } catch (ex) {
+       PDFViewerApplication._documentError("pdfjs-loading-error", {
