@@ -127,19 +127,54 @@ export const Editor: React.FC = () => {
 
   function getLanguage() {
     const path = cleanFilePath();
-    if (
-      path.endsWith('.js') ||
-      path.endsWith('.jsx') ||
-      path.endsWith('.ts') ||
-      path.endsWith('.tsx')
-    ) {
+    if (path.endsWith('.js') || path.endsWith('.jsx')) {
       return 'javascript';
+    } else if (path.endsWith('.ts') || path.endsWith('.tsx')) {
+      return 'typescript';
     } else if (
       path.endsWith('.css') ||
       path.endsWith('.scss') ||
       path.endsWith('.less')
     ) {
       return 'css';
+    } else if (path.endsWith('.py')) {
+      return 'python';
+    } else if (path.endsWith('.java')) {
+      return 'java';
+    } else if (
+      path.endsWith('.h') ||
+      path.endsWith('.c') ||
+      path.endsWith('.cpp')
+    ) {
+      return 'cpp';
+    } else if (
+      path.endsWith('.md') ||
+      path.endsWith('.mdown') ||
+      path.endsWith('.mdx')
+    ) {
+      return 'markdown';
+    } else if (path.endsWith('.yaml')) {
+      return 'yaml';
+    } else if (path.endsWith('.xml')) {
+      return 'xml';
+    } else if (path.endsWith('.sh')) {
+      return 'shell';
+    } else if (
+      path.endsWith('.ps1') ||
+      path.endsWith('.psm1') ||
+      path.endsWith('.pssc') ||
+      path.endsWith('.psrc') ||
+      path.endsWith('.psd1')
+    ) {
+      return 'powershell';
+    } else if (path.endsWith('.cs')) {
+      return 'csharp';
+    } else if (path.endsWith('.dart')) {
+      return 'dart';
+    } else if (path.endsWith('.go')) {
+      return 'go';
+    } else if (path.endsWith('.dockerfile')) {
+      return 'dockerfile';
     } else if (
       path.endsWith('.html') ||
       path.endsWith('.xhtml') ||

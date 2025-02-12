@@ -128,6 +128,29 @@
         "ext": "xml"
       },
       {
+        "ext": "go"
+      },
+      {
+        "ext": "dart"
+      },
+      {
+        "ext": "sh"
+      },
+      {
+        "ext": "xml"
+      },
+      {
+        "ext": "yaml"
+      },
+      {
+        "ext": "md",
+        "color": "#beefed"
+      },
+      {
+        "ext": "mdown",
+        "color": "#beefed"
+      },
+      {
         "ext": "mdx",
         "color": "#beefed"
       },
