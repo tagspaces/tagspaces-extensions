@@ -143,10 +143,6 @@
         "ext": "yaml"
       },
       {
-        "ext": "md",
-        "color": "#beefed"
-      },
-      {
         "ext": "mdown",
         "color": "#beefed"
       },
