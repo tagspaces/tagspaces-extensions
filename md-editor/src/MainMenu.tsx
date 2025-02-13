@@ -283,7 +283,11 @@ const MainMenu: React.FC<{
           {/* <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
             Export as SVG
           </Button> */}
-          <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
+          <Button
+            onClick={() => setMindMapDialogOpened(false)}
+            variant="outlined"
+            color="primary"
+          >
             Close
           </Button>
         </DialogActions>

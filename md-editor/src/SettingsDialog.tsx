@@ -111,7 +111,12 @@ function SettingsDialog(props: Props) {
         </Select>
       </DialogContent>
       <DialogActions>
-        <Button data-tid="settingsOkTID" onClick={onClose} color="primary">
+        <Button
+          data-tid="settingsOkTID"
+          variant="outlined"
+          onClick={onClose}
+          color="primary"
+        >
           {i18n.t('ok')}
         </Button>
       </DialogActions>
