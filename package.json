@@ -49,6 +49,8 @@
   "scripts": {
     "updatelibs": "node common/update-libs.js",
     "link4dev": "cd .. && export CDIR=$PWD && npx rimraf $CDIR/release/app/node_modules/@tagspaces/extensions && ln -sf $CDIR/extensions $CDIR/release/app/node_modules/@tagspaces",
+    "link4dev-win": "cd .. && rimraf release/app/node_modules/@tagspaces/extensions && mklink /D \"D:\\IdeaProjects\\tagspaces\\release\\app\\node_modules\\@tagspaces\\extensions\" \"D:\\IdeaProjects\\tagspaces\\extensions\"",
+    "copy-web": "cd .. && rimraf web/modules && shx mkdir -p web/modules/@tagspaces/extensions && shx cp -rL release/app/node_modules/@tagspaces/extensions/* web/modules/@tagspaces/extensions/",
     "build": "node postversion.js && npm run build-media-player && npm run build-md-editor && npm run build-text-editor && npm run build-pdf-viewer",
     "build-media-player": "cd media-player && npm install && npm run build && cd ..",
     "build-md-editor": "cd md-editor-next && npm install && npm run build && cd ..",
