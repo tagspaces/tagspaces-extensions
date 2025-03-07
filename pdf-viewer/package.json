@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/pdf-viewer",
-  "version": "1.0.159",
+  "version": "1.0.160",
   "description": "A TagSpaces extension allowing opening of PDF files.",
   "homepage": "https://www.tagspaces.org",
   "main": "index.html",
@@ -12,6 +12,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run clean:pdfjs && npm run build:pdfjs",
+    "create:patch": "cd scripts/pdf.js && git diff > ../patches/skip_origin.patch",
     "build:pdfjs": "node scripts/buildPdfjs.js",
     "clean:pdfjs": "npx rimraf generic scripts/pdf.js"
   },
