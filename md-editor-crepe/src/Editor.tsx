@@ -1,106 +1,78 @@
 import type { FC } from 'react';
-import { useRef } from 'react';
-
-import { Crepe } from '@milkdown/crepe';
 import { Milkdown, useEditor } from '@milkdown/react';
+import { EditorStatus, editorViewCtx, commandsCtx } from '@milkdown/kit/core';
+import { getMarkdown, $useKeymap, $command } from '@milkdown/kit/utils';
 
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/frame.css';
-import { sendMessageToHost } from './utils';
+import { createCrepeEditor, sendMessageToHost } from './utils';
 import { replaceAll } from '@milkdown/utils';
 import { useEventListener } from '@tagspaces/tagspaces-extension-ui';
+import { useEffect } from 'react';
 
 interface Props {
   isEditMode?: boolean;
   readOnly?: boolean;
-  mode?: string;
   content?: string;
+  theme?: string;
   onChange?: (markdown: string, prevMarkdown: string) => void;
-  onFocus?: () => void;
   currentFolder?: string;
 }
 
 export const MilkdownEditor: FC<Props> = (props) => {
-  const {
-    isEditMode,
-    readOnly,
-    mode,
-    content,
-    onChange,
-    onFocus,
-    currentFolder,
-  } = props;
+  const { isEditMode, readOnly, theme, content, onChange, currentFolder } =
+    props;
 
-  const focus = useRef<boolean>(false);
+  const openLink = (link: string) => {
+    sendMessageToHost({ command: 'openLinkExternally', link: link });
+  };
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   const { get, loading } = useEditor(
     (root) => {
-      const crepe = new Crepe({
+      const crepe = createCrepeEditor(
         root,
-        defaultValue: content || 'Loading...',
-        /* features: {
-        [Crepe.Feature.CodeMirror]: false,
-      },*/
-        featureConfigs: {
-          [Crepe.Feature.Placeholder]: {
-            text: 'Type / to use slash command',
+        content || 'Loading...',
+        !!isEditMode,
+        {},
+        'Type / to use slash command',
+        currentFolder,
+        openLink,
+        onContentChange,
+      );
+
+      crepe.editor.onStatusChange((status: EditorStatus) => {
+        if (status === EditorStatus.Created) {
+          sendMessageToHost({ command: 'parentLoadTextContent' });
+          //crepeInstanceRef.current = crepe;
+        }
+      });
+
+      const saveCommand = $command('saveCommand', () => () => {
+        return () => {
+          sendMessageToHost({
+            command: 'savingFile',
+            content: crepe.editor.action(getMarkdown()),
+          });
+          return true;
+        };
+      });
+
+      const saveKeyMap = $useKeymap('saveKeymap', {
+        saveDescription: {
+          //https://prosemirror.net/docs/ref/version/0.18.0.html#keymap
+          shortcuts: 'Mod-s', //keyBindings['saveDocument'], //You can use Mod- as a shorthand for Cmd- on Mac and Ctrl- on other platforms.
+          command: (ctx) => {
+            const commands = ctx.get(commandsCtx);
+            return () => commands.call(saveCommand.key);
           },
-          /*[Crepe.Feature.ImageBlock]: {
-          proxyDomURL: (originalURL: string) => {
-            return `https://example.com${originalURL}`;
-          }
-        },*/
         },
       });
-      crepe.on((listener) => {
-        listener.markdownUpdated(
-          (_, markdown: string, prevMarkdown: string) => {
-            if (focus.current) {
-              console.log('Change listener:' + markdown);
-              if (onChange) {
-                onChange(markdown, prevMarkdown);
-              } else {
-                sendMessageToHost({
-                  command: 'contentChangedInEditor',
-                });
-              }
-            }
-          },
-        );
-        listener.focus(() => {
-          focus.current = true;
-          if (onFocus) {
-            onFocus();
-          }
-        });
-      });
-      crepe.setReadonly(!isEditMode);
-      crepe.create().then(() => {
-        console.log('Editor created');
-        sendMessageToHost({ command: 'parentLoadTextContent' });
-      });
-      /*crepe.editor.config((ctx: Ctx) => {
-      ctx.update(editorViewOptionsCtx, prev => ({
-        ...prev,
-        /!*attributes: {
-          class: 'mx-auto h-full' // text-center w-1/2 flex justify-center items-center h-screen
-        },*!/
-        editable: () => isEditable,
-        handleClickOn: (view: EditorView, pos: number) =>
-            handleClick(textEditorMode, ctx, view, pos) //, node)
-      }));
-    });*/
 
-      //preventDefaultClick
-      /* const observer = new MutationObserver(() => {
-      const links = Array.from(root.querySelectorAll('a'));
-      links.forEach(link => {
-        link.onclick = () => false;
-      });
-    });
-    observer.observe(root, {
-      childList: true
-    });*/
+      crepe.editor.use([saveCommand, saveKeyMap].flat());
 
       return crepe;
     },
@@ -116,8 +88,29 @@ export const MilkdownEditor: FC<Props> = (props) => {
   useEventListener('message', (event: any) => {
     if (event.data.action === 'fileContent') {
       setFileContent(event.data.content);
+    } else if (event.data.action === 'savingFile') {
+      const editor = get();
+      if (editor) {
+        sendMessageToHost({
+          command: 'savingFile',
+          content: editor.action(getMarkdown()),
+        });
+      }
     }
   });
+
+  const onContentChange = (markdown: string, prevMarkdown: string) => {
+    const editor = get();
+    if (editor) {
+      const view = editor.ctx.get(editorViewCtx);
+      if (view && view.hasFocus()) {
+        if (onChange) {
+          onChange(markdown, prevMarkdown);
+        }
+        sendMessageToHost({ command: 'contentChangedInEditor' });
+      }
+    }
+  };
 
   function setFileContent(mdContent: string) {
     const editor = get();
