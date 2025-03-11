@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { Milkdown, useEditor } from '@milkdown/react';
 import { EditorStatus, editorViewCtx, commandsCtx } from '@milkdown/kit/core';
 import { getMarkdown, $useKeymap, $command } from '@milkdown/kit/utils';
+import { diagram } from "@milkdown/plugin-diagram";
 
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/frame.css';
@@ -73,6 +74,7 @@ export const MilkdownEditor: FC<Props> = (props) => {
       });
 
       crepe.editor.use([saveCommand, saveKeyMap].flat());
+      crepe.editor.use(diagram);
 
       return crepe;
     },

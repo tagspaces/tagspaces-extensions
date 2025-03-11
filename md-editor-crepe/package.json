@@ -21,16 +21,17 @@
     "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe/build && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe"
   },
   "dependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
+    "@milkdown/crepe": "^7.6.3",
+    "@milkdown/kit": "^7.6.3",
+    "@milkdown/plugin-diagram": "^7.6.3",
+    "@milkdown/react": "^7.6.3",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
-    "@tagspaces/tagspaces-extension-ui": "^4.5.46",
-    "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
     "@tagspaces/tagspaces-common": "^4.5.51",
-    "@milkdown/crepe": "^7.6.2",
-    "@milkdown/kit": "^7.6.2",
-    "@milkdown/react": "^7.6.2",
+    "@tagspaces/tagspaces-extension-ui": "^4.5.46",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
