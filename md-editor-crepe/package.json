@@ -30,6 +30,7 @@
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@prosemirror-adapter/react": "^0.4.0",
+    "@tagspaces/tagspaces-md-toolbar": "^4.5.52",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
     "@tagspaces/tagspaces-common": "^4.5.52",
     "@tagspaces/tagspaces-extension-ui": "^4.5.52",

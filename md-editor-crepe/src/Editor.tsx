@@ -12,6 +12,7 @@ import React, { useEffect, useRef } from 'react';
 import type { MilkdownRef } from './useCrepeHandler';
 import { useCrepeHandler } from './useCrepeHandler';
 import { Crepe } from '@milkdown/crepe';
+import { useMenuBarPlugin } from "@tagspaces/tagspaces-md-toolbar";
 
 interface Props {
   isEditMode?: boolean;
@@ -27,6 +28,7 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     const { isEditMode, readOnly, theme, content, onChange, currentFolder } =
       props;
     const crepeInstanceRef = useRef<Crepe | undefined>(undefined);
+    const menuBarPlugin = useMenuBarPlugin();
 
     const openLink = (link: string) => {
       sendMessageToHost({ command: 'openLinkExternally', link: link });
@@ -79,6 +81,7 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
 
         crepe.editor.use([saveCommand, saveKeyMap].flat());
         crepe.editor.use(diagram);
+        crepe.editor.use(menuBarPlugin);
 
         return crepe;
       },
