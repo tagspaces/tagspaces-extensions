@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "tsc && vite build",
-    "build-dev": "tsc && vite build --mode development",
+    "build-dev": "tsc && npx cross-env NODE_ENV=development vite build --mode development",
     "preview": "vite preview",
     "code-format": "npx prettier --write .",
     "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe/build && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe"
@@ -31,8 +31,13 @@
     "@mui/material": "^6.4.4",
     "@prosemirror-adapter/react": "^0.4.0",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
-    "@tagspaces/tagspaces-common": "^4.5.51",
-    "@tagspaces/tagspaces-extension-ui": "^4.5.46",
+    "@tagspaces/tagspaces-common": "^4.5.52",
+    "@tagspaces/tagspaces-extension-ui": "^4.5.52",
+    "i18next": "^24.2.2",
+    "markmap-common": "^0.14.2",
+    "markmap-lib": "^0.14.3",
+    "markmap-view": "^0.14.3",
+    "easy-speech": "^1.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
