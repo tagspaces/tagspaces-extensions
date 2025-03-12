@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/media-player",
-  "version": "1.0.163",
+  "version": "1.0.164",
   "description": "A TagSpaces extension allowing playing of audio and video files.",
   "homepage": "./",
   "files": [
