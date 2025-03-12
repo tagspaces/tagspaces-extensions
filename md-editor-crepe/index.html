@@ -1,11 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Sample crepe md editor for TagSpaces</title>
+    <title>Milkdown/Crepe Markdown Editor for TagSpaces</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./src/main.tsx" type="module"></script>
     <link rel="stylesheet" href="./src/milkdown.dark.css" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background-color: transparent;
+      }
+
+      #app {
+        height: 100%;
+        overflow-y: auto;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -35,6 +35,7 @@
     "@tagspaces/tagspaces-common": "^4.5.52",
     "@tagspaces/tagspaces-extension-ui": "^4.5.52",
     "i18next": "^24.2.2",
+    "react-i18next": "^15.4.1",
     "markmap-common": "^0.14.2",
     "markmap-lib": "^0.14.3",
     "markmap-view": "^0.14.3",
