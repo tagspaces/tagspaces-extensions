@@ -113,7 +113,7 @@ function SettingsDialog(props: Props) {
       <DialogActions>
         <Button
           data-tid="settingsOkTID"
-          variant="outlined"
+          variant="contained"
           onClick={onClose}
           color="primary"
         >

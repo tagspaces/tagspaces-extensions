@@ -260,7 +260,11 @@ const MainMenu: React.FC<{
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAboutDialogOpened(false)} color="primary">
+          <Button
+            variant="contained"
+            onClick={() => setAboutDialogOpened(false)}
+            color="primary"
+          >
             Ok
           </Button>
         </DialogActions>
@@ -288,7 +292,7 @@ const MainMenu: React.FC<{
           </Button> */}
           <Button
             onClick={() => setMindMapDialogOpened(false)}
-            variant="outlined"
+            variant="contained"
             color="primary"
           >
             Close

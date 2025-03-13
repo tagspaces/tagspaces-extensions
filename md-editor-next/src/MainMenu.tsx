@@ -260,7 +260,7 @@ const MainMenu: React.FC<{
         </DialogContent>
         <DialogActions>
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={() => setAboutDialogOpened(false)}
             color="primary"
           >
@@ -290,7 +290,7 @@ const MainMenu: React.FC<{
             Export as SVG
           </Button> */}
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={() => setMindMapDialogOpened(false)}
             color="primary"
           >

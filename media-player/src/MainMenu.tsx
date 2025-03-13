@@ -225,7 +225,7 @@ const MainMenu: React.FC<{
             data-tid="AboutDialogOkTID"
             onClick={() => setAboutDialogOpened(false)}
             color="primary"
-            variant="outlined"
+            variant="contained"
           >
             Ok
           </Button>
