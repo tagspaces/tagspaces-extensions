@@ -195,7 +195,8 @@ export function Player() {
           ref={playerRef}
         >
           <MediaProvider>
-            {viewType === 'video' && (
+            {/* todo: make the loading of the poster configurable */}
+            {/* {viewType === 'video' && (
               <Poster
                 className="vds-poster"
                 src={getThumbFileLocationForFile(filePath)}
@@ -205,7 +206,7 @@ export function Player() {
                 }}
                 alt={filePath}
               />
-            )}
+            )} */}
             {textTracks.map((track) => (
               <Track {...track} key={track.src} />
             ))}
