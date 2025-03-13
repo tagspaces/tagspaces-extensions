@@ -10,6 +10,7 @@ import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
+import Typography from '@mui/material/Typography';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -240,21 +241,23 @@ const MainMenu: React.FC<{
           <DialogCloseButton onClick={() => setAboutDialogOpened(false)} />
         </DialogTitle>
         <DialogContent>
-          Please visit the dedicated&nbsp;
-          <Link
-            href="#"
-            variant="body2"
-            onClick={(event: React.SyntheticEvent) => {
-              event.preventDefault();
-              sendMessageToHost({
-                command: 'openLinkExternally',
-                link: 'https://docs.tagspaces.org/extensions/md-editor/'
-              });
-            }}
-          >
-            project page
-          </Link>
-          &nbsp; in the TagSpaces' documentation for more details.
+          <Typography variant="subtitle1">
+            Please visit the dedicated&nbsp;
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(event: React.SyntheticEvent) => {
+                event.preventDefault();
+                sendMessageToHost({
+                  command: 'openLinkExternally',
+                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
+                });
+              }}
+            >
+              project page
+            </Link>
+            &nbsp; in the TagSpaces' documentation for more details.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAboutDialogOpened(false)} color="primary">

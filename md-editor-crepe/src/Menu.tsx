@@ -153,7 +153,11 @@ const Menu: React.FC<{
           <MindMapViewer mdContent={mdContent} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
+          <Button
+            variant="outlined"
+            onClick={() => setMindMapDialogOpened(false)}
+            color="primary"
+          >
             Close
           </Button>
         </DialogActions>

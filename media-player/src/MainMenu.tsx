@@ -17,7 +17,7 @@ import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Divider } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { sendMessageToHost } from './utils';
 
 const MainMenu: React.FC<{
@@ -202,27 +202,30 @@ const MainMenu: React.FC<{
       >
         <DialogTitle id="simple-dialog-title">About this extension</DialogTitle>
         <DialogContent>
-          Please visit the dedicated&nbsp;
-          <Link
-            href="#"
-            variant="body2"
-            onClick={(event: React.SyntheticEvent) => {
-              event.preventDefault();
-              sendMessageToHost({
-                command: 'openLinkExternally',
-                link: 'https://docs.tagspaces.org/extensions/media-player',
-              });
-            }}
-          >
-            project page
-          </Link>
-          &nbsp; in the TagSpaces' documentation for more details.
+          <Typography variant="subtitle1">
+            Please visit the dedicated&nbsp;
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(event: React.SyntheticEvent) => {
+                event.preventDefault();
+                sendMessageToHost({
+                  command: 'openLinkExternally',
+                  link: 'https://docs.tagspaces.org/extensions/media-player',
+                });
+              }}
+            >
+              project page
+            </Link>
+            &nbsp; in the TagSpaces' documentation for more details.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button
             data-tid="AboutDialogOkTID"
             onClick={() => setAboutDialogOpened(false)}
             color="primary"
+            variant="outlined"
           >
             Ok
           </Button>

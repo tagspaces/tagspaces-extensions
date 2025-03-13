@@ -10,13 +10,13 @@ import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
+import Typography from '@mui/material/Typography';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AboutIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SearchIcon from '@mui/icons-material/Search';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import StopIcon from '@mui/icons-material/Stop';
 import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
@@ -240,24 +240,30 @@ const MainMenu: React.FC<{
           <DialogCloseButton onClick={() => setAboutDialogOpened(false)} />
         </DialogTitle>
         <DialogContent>
-          Please visit the dedicated&nbsp;
-          <Link
-            href="#"
-            variant="body2"
-            onClick={(event: React.SyntheticEvent) => {
-              event.preventDefault();
-              sendMessageToHost({
-                command: 'openLinkExternally',
-                link: 'https://docs.tagspaces.org/extensions/md-editor/'
-              });
-            }}
-          >
-            project page
-          </Link>
-          &nbsp; in the TagSpaces' documentation for more details.
+          <Typography variant="subtitle1">
+            Please visit the dedicated&nbsp;
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(event: React.SyntheticEvent) => {
+                event.preventDefault();
+                sendMessageToHost({
+                  command: 'openLinkExternally',
+                  link: 'https://docs.tagspaces.org/extensions/md-editor/'
+                });
+              }}
+            >
+              project page
+            </Link>
+            &nbsp; in the TagSpaces' documentation for more details.
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAboutDialogOpened(false)} color="primary">
+          <Button
+            variant="outlined"
+            onClick={() => setAboutDialogOpened(false)}
+            color="primary"
+          >
             Ok
           </Button>
         </DialogActions>
@@ -283,7 +289,11 @@ const MainMenu: React.FC<{
           {/* <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
             Export as SVG
           </Button> */}
-          <Button onClick={() => setMindMapDialogOpened(false)} color="primary">
+          <Button
+            variant="outlined"
+            onClick={() => setMindMapDialogOpened(false)}
+            color="primary"
+          >
             Close
           </Button>
         </DialogActions>
