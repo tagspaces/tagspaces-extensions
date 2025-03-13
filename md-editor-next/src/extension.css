@@ -22,6 +22,18 @@ body {
   color: var(--primary-background-color) !important;
 }
 
+.milkdown .ProseMirror a[href^="http://"]:after, 
+.milkdown .ProseMirror a[href^="https://"]:after
+{
+  content: ' ⧉';
+}
+/* ⧉ ⎋ ⇲ ⇒*/
+
+.milkdown .ProseMirror a[href^="ts://"]:after
+{
+  content: ' ⇒';
+}
+
 @media print {
   header.MuiToolbar-root {
     display: none;
