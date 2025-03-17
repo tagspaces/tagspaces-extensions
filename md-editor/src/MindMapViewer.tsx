@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+//@ts-ignore
 import { Transformer } from 'markmap-lib';
 import { Markmap, deriveOptions } from 'markmap-view';
-import { IMarkmapOptions } from 'markmap-common';
+import type { IMarkmapOptions } from 'markmap-common';
 
 const transformer = new Transformer();
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const mmOptions: Partial<IMarkmapOptions> = deriveOptions({
-  colorFreezeLevel: 2
+  colorFreezeLevel: 2,
   // color: ['#2980b9']
 });
 

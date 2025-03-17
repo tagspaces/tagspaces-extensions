@@ -1,30 +1,36 @@
-import React, { useReducer, useState, useEffect } from 'react';
-import Mark from 'mark.js';
-import useEventListener from './useEventListener';
-import Fab from '@mui/material/Fab';
-import TextField from '@mui/material/TextField';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import React, { useEffect, useReducer, useState } from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import Menu from './Menu';
 // @ts-ignore
 import EasySpeech from 'easy-speech';
-import './extension.css';
-import i18n from './i18n';
-import MainMenu from './MainMenu';
-import {
-  MilkdownEditor,
-  MilkdownRef,
-  CodeMirror,
-  CodeMirrorRef
-} from '@tagspaces/tagspaces-md';
-import { sendMessageToHost } from './utils';
 import SettingsDialog from './SettingsDialog';
+import { sendMessageToHost } from './utils';
+import { MilkdownProvider } from '@milkdown/react';
+import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/react';
+import { MilkdownEditor } from './Editor';
+import { CodeMirror } from '@tagspaces/tagspaces-codemirror';
+import type { CodeMirrorRef } from '@tagspaces/tagspaces-codemirror';
+import type { MilkdownRef } from './useCrepeHandler';
+import {
+  ColorModeContext,
+  useEventListener,
+} from '@tagspaces/tagspaces-extension-ui';
+import { SearchDialogContextProvider } from './dialogs/SearchDialogContextProvider';
 
-const App: React.FC = () => {
+interface Props {
+  isEditMode: boolean;
+  readOnly: boolean;
+  theme: string;
+}
+function App(props: Props) {
+  const { isEditMode, readOnly, theme } = props;
+  const { i18n } = useTranslation();
   const [isSettingsDialogOpened, setSettingsDialogOpened] =
     useState<boolean>(false);
 
   const languages = React.useRef<string[] | null>(null);
   const language = React.useRef<string>(
-    getSettings('speechLanguage') || i18n.language
+    getSettings('speechLanguage') || i18n.language,
   );
   const allVoices = React.useRef<SpeechSynthesisVoice[] | null>(null);
   const voices = React.useRef<SpeechSynthesisVoice[] | null>(null);
@@ -32,57 +38,70 @@ const App: React.FC = () => {
   const rate = React.useRef<number>(getDefaultRate());
   const focusCode = React.useRef(false);
   const focus = React.useRef(false);
-  const contentRef = React.useRef(null);
   const milkdownRef = React.useRef<MilkdownRef>(null);
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
-  const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  //const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const colorMode = React.useContext(ColorModeContext);
 
   // @ts-ignore
-  const isDarkMode = window.theme && window.theme === 'dark';
+  //const readOnly = () => !window.editMode;
   // @ts-ignore
-  const readOnly = () => !window.editMode;
+  const getContent = () => {
+    if (!milkdownRef.current) return '';
+    return milkdownRef.current.getMarkdown();
+  };
   // @ts-ignore
-  const getContent = () => window.mdContent;
+  //const isDarkMode = window.theme && window.theme === 'dark';
+  // @ts-ignore
+  //const query = window.query;
 
-  // @ts-ignore
-  useEventListener('keydown', event => {
-    if (event.ctrlKey || event.metaKey) {
-      if (event.key.toLowerCase() === 's') {
-        event.stopPropagation();
-        event.preventDefault();
-        if (!readOnly()) {
+  useEventListener('contentLoaded', () => {
+    console.log('contentLoaded: event triggered');
+    forceUpdate();
+  });
+
+  useEventListener('themeChanged', () => {
+    console.log('themeChanged: event triggered');
+    //forceUpdate();
+    //if (milkdownRef.current) {
+    // @ts-ignore
+    console.log('themeChanged: ' + window.theme + ' event triggered');
+    // @ts-ignore
+    colorMode.setMode(window.theme === 'dark' ? 'dark' : 'light');
+    // @ts-ignore
+    //milkdownRef.current.setDarkMode(window.theme && window.theme === 'dark');
+    // }
+  });
+
+  /*useEventListener('keydown', (event: Event) => {
+    // Type assertion to tell TypeScript that it's a KeyboardEvent
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+      if (keyboardEvent.key.toLowerCase() === 's') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
+        if (!readOnly) {
           sendMessageToHost({ command: 'saveDocument' });
         }
-      } else if (event.key.toLowerCase() === 'p') {
-        event.stopPropagation();
-        event.preventDefault();
+      } else if (keyboardEvent.key.toLowerCase() === 'p') {
+        keyboardEvent.stopPropagation();
+        keyboardEvent.preventDefault();
         window.print();
-        // } else if (event.key.toLowerCase() === 'f') {
-        //   setFilterVisible(!isFilterVisible);
       }
     }
     // if (event.key.toLowerCase() === 'escape') {
     //   setFilterVisible(false);
     // }
-  });
+  });*/
 
-  // @ts-ignore
-  useEventListener('dblclick', event => {
-    if (readOnly()) {
+  /*  useEventListener('dblclick', () => {
+    if (readOnly) {
       sendMessageToHost({ command: 'editDocument' });
     }
-  });
-
-  useEventListener('themeChanged', () => {
-    forceUpdate();
-  });
-
-  useEventListener('contentLoaded', () => {
-    forceUpdate();
-  });
+  });*/
 
   useEffect(() => {
     EasySpeech.init()
@@ -98,17 +117,17 @@ const App: React.FC = () => {
   function setVoices(chooseFirst = false) {
     if (allVoices.current && allVoices.current.length > 0) {
       languages.current = [
-        ...new Set(allVoices.current.map(v => v.lang))
+        ...new Set(allVoices.current.map((v) => v.lang)),
       ].sort();
       const langVoices = allVoices.current.filter(
-        v => v.lang === language.current
+        (v) => v.lang === language.current,
       );
 
       if (langVoices.length > 0) {
         voices.current = langVoices;
       } else {
-        const lVoices: SpeechSynthesisVoice[] = allVoices.current.filter(v =>
-          v.lang.startsWith(language.current)
+        const lVoices: SpeechSynthesisVoice[] = allVoices.current.filter((v) =>
+          v.lang.startsWith(language.current),
         );
         if (lVoices.length > 0) {
           voices.current = lVoices;
@@ -141,20 +160,6 @@ const App: React.FC = () => {
   //   });
   // });
 
-  const milkdownListener = React.useCallback((markdown: string) => {
-    const lock = focusCode.current;
-    if (lock) return;
-
-    //if (markdown !== prevMarkdown.current) {
-    // prevMarkdown.current !== null &&
-    updateContent(markdown);
-    //}
-    // update codeMirror
-    const { current } = codeMirrorRef;
-    if (!current) return;
-    current.update(markdown);
-  }, []);
-
   const onCodeChange = React.useCallback((getCode: () => string) => {
     const { current } = milkdownRef;
     if (!current) return;
@@ -164,7 +169,7 @@ const App: React.FC = () => {
   }, []);
 
   const updateContent = (content: string) => {
-    if (focus.current || focusCode.current) {
+    if ((!readOnly && focus.current) || focusCode.current) {
       // @ts-ignore
       window.mdContent = content;
       // console.log('content changed:' + content);
@@ -176,7 +181,7 @@ const App: React.FC = () => {
           '*'
       );*/
       sendMessageToHost({
-        command: 'contentChangedInEditor'
+        command: 'contentChangedInEditor',
         // filepath: filePath
       });
     }
@@ -191,9 +196,9 @@ const App: React.FC = () => {
     console.log(JSON.stringify(milkdownRef.current));
   };
 
-  function speak(text: string | null) {
+  function speak(text: string | null | undefined) {
     if (!text) return Promise.resolve(false);
-    return new Promise<boolean>(resolve => {
+    return new Promise<boolean>((resolve) => {
       EasySpeech.cancel();
       EasySpeech.speak({
         text: text,
@@ -203,7 +208,7 @@ const App: React.FC = () => {
         lang: language.current,
         voice: getVoiceByName(voice.current),
         // there are more events, see the API for supported events
-        end: () => resolve(true)
+        end: () => resolve(true),
         //boundary: (e) => console.debug("boundary reached"),
       });
     });
@@ -228,7 +233,7 @@ const App: React.FC = () => {
 
   function getVoiceByName(voiceName: string): SpeechSynthesisVoice | undefined {
     if (voices.current) {
-      return voices.current.find(v => v.name === voiceName);
+      return voices.current.find((v) => v.name === voiceName);
     }
     return undefined;
   }
@@ -238,7 +243,7 @@ const App: React.FC = () => {
     const speech = {
       speechRate: rate.current,
       speechLanguage: language.current,
-      speechVoice: voice.current
+      speechVoice: voice.current,
     };
     localStorage.setItem('mdEditorSettings', JSON.stringify(speech));
   }
@@ -276,52 +281,43 @@ const App: React.FC = () => {
     mode === 'Milkdown'
       ? { width: 0, height: 0, overflow: 'hidden' }
       : { width: '100%', height: '100%' };
+
   return (
-    <div>
-      {getContent() !== undefined && (
-        <div ref={contentRef}>
-          <div style={milkdownStyle}>
-            <MilkdownEditor
-              ref={milkdownRef}
-              content={getContent()}
-              onChange={milkdownListener}
-              onFocus={() => {
-                focus.current = true;
-              }}
-              readOnly={readOnly()}
-              dark={isDarkMode}
-            />
-          </div>
-          <div style={codeMirrorStyle}>
-            <CodeMirror
-              ref={codeMirrorRef}
-              value={getContent()}
-              onChange={onCodeChange}
-              dark={isDarkMode}
-              editable={!readOnly()}
-              lock={focusCode}
-            />
-          </div>
-        </div>
-      )}
-      {/* {isFilterVisible && (
-        <TextField
-          style={{ position: 'absolute', right: 80, bottom: 20 }}
-          label="Search in text"
-          autoFocus
-          size="small"
-          value={searchQuery}
-          onChange={handleSearch}
+    <I18nextProvider i18n={i18n}>
+      <MilkdownProvider>
+        <SearchDialogContextProvider>
+          <ProsemirrorAdapterProvider>
+            <div style={milkdownStyle}>
+              <MilkdownEditor
+                ref={milkdownRef}
+                isEditMode={isEditMode}
+                readOnly={readOnly}
+                theme={theme}
+              />
+            </div>
+          </ProsemirrorAdapterProvider>
+        </SearchDialogContextProvider>
+      </MilkdownProvider>
+      <div style={codeMirrorStyle}>
+        <CodeMirror
+          ref={codeMirrorRef}
+          value={getContent()}
+          onChange={onCodeChange}
+          dark={theme === 'dark'}
+          editable={!readOnly}
+          lock={focusCode}
         />
-      )} */}
-      <MainMenu
+      </div>
+      <Menu
         readText={() => speak(getMarkdownTxt())} //getContent())}
         cancelRead={() => EasySpeech.cancel()}
         pauseRead={() => EasySpeech.pause()}
         resumeRead={() => EasySpeech.resume()}
         toggleViewSource={toggleViewSource}
-        isFilterVisible={isFilterVisible}
-        setFilterVisible={setFilterVisible}
+        setFilterVisible={() => {
+          if (!milkdownRef.current) return;
+          milkdownRef.current.openSearchDialog();
+        }}
         mdContent={getContent()}
         mode={mode}
         setSettingsDialogOpened={setSettingsDialogOpened}
@@ -330,7 +326,7 @@ const App: React.FC = () => {
       <SettingsDialog
         open={isSettingsDialogOpened}
         onClose={() => setSettingsDialogOpened(false)}
-        handleSpeedChange={speed => {
+        handleSpeedChange={(speed) => {
           rate.current = speed; //parseFloat(speed);
           saveSettings();
         }}
@@ -342,8 +338,8 @@ const App: React.FC = () => {
         voice={voice.current}
         speed={rate.current}
       />
-    </div>
+    </I18nextProvider>
   );
-};
+}
 
 export default App;

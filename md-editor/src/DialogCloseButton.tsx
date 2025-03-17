@@ -1,7 +1,6 @@
 import React from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import i18n from './i18n';
 
 interface Props {
   onClick: () => void;
@@ -16,9 +15,9 @@ function DialogCloseButton(props: Props) {
       style={{
         position: 'absolute',
         right: 5,
-        top: 5
+        top: 5,
       }}
-      onClick={e => onClick()}
+      onClick={(e) => onClick()}
       size="large"
     >
       <CloseIcon />
