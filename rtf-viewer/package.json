@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/rtf-viewer",
-  "version": "1.0.166",
+  "version": "1.0.167",
   "description": "A TagSpaces extension allowing opening of RTF files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
