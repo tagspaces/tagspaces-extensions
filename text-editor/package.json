@@ -151,13 +151,6 @@
         "color": "#beefed"
       },
       {
-        "ext": "svg",
-        "color": "#9fd5ba"
-      },
-      {
-        "ext": "html"
-      },
-      {
         "ext": "xhtml"
       }
     ]
