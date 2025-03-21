@@ -22,6 +22,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
+      let comment;
       let locale = getParameterByName('locale');
       if (locale === 'en') {
         locale = 'en_US';
@@ -53,6 +54,34 @@
             });
           });
 
+          document
+            .getElementById('exportPNGImage')
+            .addEventListener('click', (e) => {
+              if (comment) {
+                fetch(comment)
+                  .then((res) => res.blob())
+                  .then((blob) => {
+                    saveAs(
+                      blob,
+                      extractFileName(filePath, isWin ? '\\' : '/') + '.png'
+                    );
+                  });
+              }
+            });
+
+          document
+            .getElementById('copyToClipboard')
+            .addEventListener('click', (e) => {
+              if (comment) {
+                fetch(comment)
+                  .then((res) => res.blob())
+                  .then((blob) => {
+                    const data = [new ClipboardItem({ [blob.type]: blob })];
+                    navigator.clipboard.write(data);
+                  });
+              }
+            });
+
           insertPrintMenuItem();
 
           insertAboutDialog('https://docs.tagspaces.org/extensions/url-viewer');
@@ -71,7 +100,7 @@
         );
 
         const commentTag = 'COMMENT=';
-        let comment = cleanedContent.substring(
+        comment = cleanedContent.substring(
           cleanedContent.indexOf(commentTag) + commentTag.length,
           cleanedContent.length
         );
@@ -163,6 +192,30 @@
         </svg>
       </button>
       <ul class="dropdown-menu">
+        <li>
+          <a id="exportPNGImage" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"
+              ></path>
+            </svg>
+            <span data-i18n="exportPNGImage" />
+          </a>
+        </li>
+        <li>
+          <a id="copyToClipboard" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2m0 16H8V7h11z"
+              ></path>
+            </svg>
+            <span
+              data-i18n="copyToClipboard"
+              data-i18ntitle="copyToClipboardTitle"
+            />
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>
