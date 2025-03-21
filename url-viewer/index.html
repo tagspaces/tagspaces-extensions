@@ -19,6 +19,7 @@
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/file-saver/FileSaver.min.js"></script>
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
@@ -202,7 +203,7 @@
             <span data-i18n="exportPNGImage" />
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a id="copyToClipboard" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
               <path
@@ -214,7 +215,7 @@
               data-i18ntitle="copyToClipboardTitle"
             />
           </a>
-        </li>
+        </li> -->
         <li><hr class="dropdown-divider" /></li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
