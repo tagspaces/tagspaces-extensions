@@ -70,18 +70,18 @@
               }
             });
 
-          document
-            .getElementById('copyToClipboard')
-            .addEventListener('click', (e) => {
-              if (comment) {
-                fetch(comment)
-                  .then((res) => res.blob())
-                  .then((blob) => {
-                    const data = [new ClipboardItem({ [blob.type]: blob })];
-                    navigator.clipboard.write(data);
-                  });
-              }
-            });
+          // document
+          //   .getElementById('copyToClipboard')
+          //   .addEventListener('click', (e) => {
+          //     if (comment) {
+          //       fetch(comment)
+          //         .then((res) => res.blob())
+          //         .then((blob) => {
+          //           const data = [new ClipboardItem({ [blob.type]: blob })];
+          //           navigator.clipboard.write(data);
+          //         });
+          //     }
+          //   });
 
           insertPrintMenuItem();
 
