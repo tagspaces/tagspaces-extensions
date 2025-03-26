@@ -1,3 +1,22 @@
+.milkdown {
+  --crepe-font-title: 'Open Sans', Arial, Helvetica, sans-serif !important;
+}
+
+.milkdown .ProseMirror {
+  padding: 20px 20px 20px 50px;
+}
+
+
+.milkdown .ProseMirror a[href^="http://"]:after, 
+.milkdown .ProseMirror a[href^="https://"]:after {
+content: ' ⧉';
+}
+/* ⧉ ⎋ ⇲ ⇒*/
+
+.milkdown .ProseMirror a[href^="ts://"]:after {
+content: ' ⇒';
+}
+
 .dark .milkdown {
   --crepe-color-background: #1f1b16;
   --crepe-color-on-background: #eae1d9;
