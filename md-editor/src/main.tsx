@@ -15,10 +15,6 @@ const theme = getParameterByName('theme');
 
 const primaryColor = getParameterByName('primecolor').replace('%23', '#');
 const textColor = getParameterByName('textcolor').replace('%23', '#');
-primaryColor &&
-  document.documentElement.style.setProperty('--primary-color', primaryColor);
-textColor &&
-  document.documentElement.style.setProperty('--primary-text-color', textColor);
 
 root.render(
   <StrictMode>
