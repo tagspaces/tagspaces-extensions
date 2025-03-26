@@ -22,7 +22,7 @@ textColor &&
 
 root.render(
   <StrictMode>
-    <MUIThemeProvider>
+    <MUIThemeProvider primaryColor={primaryColor} primaryTextColor={textColor}>
       <App isEditMode={!!isEditMode} readOnly={!!readOnly} theme={theme} />
     </MUIThemeProvider>
   </StrictMode>,
