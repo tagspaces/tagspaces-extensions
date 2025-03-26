@@ -12,10 +12,18 @@
   "license": "MIT",
   "dependencies": {},
   "tsextension": {
-    "name": "Mindmap Viewer (beta)",
+    "name": "Mindmap Viewer",
     "types": [
       "viewer"
     ],
-    "fileTypes": []
+    "color": "",
+    "fileTypes": [
+      {
+        "ext": "mmd"
+      },
+      {
+        "ext": "mmdown"
+      }
+    ]
   }
 }
