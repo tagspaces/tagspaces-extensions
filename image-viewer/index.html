@@ -110,7 +110,7 @@
           insertPrintMenuItem();
           insertZoomContentMenuItem();
 
-          initI18N(locale, 'ns.viewerImage.json', 'locales');
+          initI18N(locale, 'ns.viewerImage.json');
 
           if (encrypted) {
             sendMessageToHost({ command: 'loadDefaultBinaryContent' });
