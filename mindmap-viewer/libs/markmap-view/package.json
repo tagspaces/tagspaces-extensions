@@ -1,6 +1,6 @@
 {
   "name": "markmap-view",
-  "version": "0.14.3",
+  "version": "0.18.10",
   "description": "View markmaps in browser",
   "author": "Gerald <gera2ld@live.com>",
   "license": "MIT",
@@ -9,47 +9,47 @@
     "markdown",
     "mindmap"
   ],
-  "homepage": "https://github.com/gera2ld/markmap/packages/markmap-view#readme",
+  "homepage": "https://github.com/markmap/markmap/packages/markmap-view#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gera2ld/markmap.git"
+    "url": "git+https://github.com/markmap/markmap.git"
   },
   "scripts": {
-    "dev": "rollup -wc rollup.conf.js",
-    "clean": "del-cli dist types",
-    "build:js": "rollup -c rollup.conf.js",
-    "build:types": "tsc"
+    "clean": "del-cli dist tsconfig.tsbuildinfo",
+    "build:types": "tsc",
+    "build:js": "vite build && TARGET=es vite build",
+    "build": "pnpm clean && pnpm /^build:/",
+    "prepublishOnly": "pnpm build"
   },
   "bugs": {
-    "url": "https://github.com/gera2ld/markmap/issues"
+    "url": "https://github.com/markmap/markmap/issues"
   },
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "unpkg": "dist/index.min.js",
-  "jsdelivr": "dist/index.min.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "unpkg": "dist/browser/index.js",
+  "jsdelivr": "dist/browser/index.js",
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
-  "typings": "types/index.d.ts",
+  "typings": "dist/index.d.ts",
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "@types/d3": "^6.0.0",
-    "d3": "^6.2.0",
-    "d3-flextree": "^2.1.1"
+    "@babel/runtime": "^7.22.6",
+    "d3": "^7.8.5"
   },
   "devDependencies": {
-    "markmap-common": "^0.14.2"
+    "@gera2ld/jsx-dom": "^2.2.2",
+    "@types/d3": "^7.4.0",
+    "@types/d3-flextree": "^2.1.1",
+    "d3-flextree": "^2.1.2",
+    "markmap-common": "0.18.9"
   },
   "peerDependencies": {
     "markmap-common": "*"
   },
-  "engines": {
-    "node": ">=10"
-  },
-  "gitHead": "ef956864fe1a6d9927bf2febbf597f6866efe75d"
+  "gitHead": "5307e8952a3f14e6b4ee763b9127b58e13c6d8b1"
 }

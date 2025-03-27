@@ -10,7 +10,10 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "markmap-lib": "^0.18.11",
+    "markmap-view": "^0.18.10"
+  },
   "tsextension": {
     "name": "Mindmap Viewer",
     "types": [

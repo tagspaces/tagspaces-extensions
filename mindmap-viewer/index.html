@@ -21,10 +21,6 @@
         padding: 10px;
       }
 
-      #documentContent img {
-        max-width: 100%;
-      }
-
       /* Readability */
       #htmlViewer {
         height: 100%;
@@ -43,11 +39,15 @@
       #serifLabel {
         font-family: Georgia, Times New Roman, serif;
       }
+
+      .markmap-foreign img {
+        max-width: 300px;
+      }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="libs/d3/dist/d3.min.js"></script>
-    <script src="libs/markmap-lib/dist/browser/index.min.js"></script>
-    <script src="libs/markmap-view/dist/index.min.js"></script>
+    <script src="libs/markmap-lib/dist/browser/index.iife.js"></script>
+    <script src="libs/markmap-view/dist/browser/index.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
@@ -153,6 +153,9 @@
           content = content.substr(1);
         }
 
+        const { markmap } = window;
+        const { Markmap, loadCSS, loadJS } = window.markmap;
+
         const transformer = new markmap.Transformer();
 
         // transform markdown
@@ -163,8 +166,6 @@
         // either get assets required by used features
         const { styles, scripts } = transformer.getUsedAssets(features);
 
-        const { Markmap, loadCSS, loadJS } = window.markmap;
-
         // Markmap.create('#markmap', null, root);
 
         // or pass an SVG element directly
@@ -174,7 +175,7 @@
           {
             // color: ['blue', 'red'],
             // colorFreezeLevel: 1,
-            initialExpandLevel: 2,
+            // initialExpandLevel: 2,
           },
           root
         );
