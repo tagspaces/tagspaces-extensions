@@ -1,7 +1,7 @@
 {
-  "name": "@tagspaces/md-viewer",
+  "name": "@tagspaces/mindmap-viewer",
   "version": "1.0.176",
-  "description": "A TagSpaces extension allowing opening of MD files.",
+  "description": "A TagSpaces extension for displaying markdown files as mind map.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
   "author": {

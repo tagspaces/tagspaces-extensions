@@ -147,6 +147,14 @@
         "color": "#beefed"
       },
       {
+        "ext": "mmd",
+        "color": "#beefed"
+      },
+      {
+        "ext": "mmdown",
+        "color": "#beefed"
+      },
+      {
         "ext": "mdx",
         "color": "#beefed"
       },

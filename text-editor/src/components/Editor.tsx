@@ -150,6 +150,8 @@ export const Editor: React.FC = () => {
     } else if (
       path.endsWith('.md') ||
       path.endsWith('.mdown') ||
+      path.endsWith('.mmdown') ||
+      path.endsWith('.mmd') ||
       path.endsWith('.mdx')
     ) {
       return 'markdown';
