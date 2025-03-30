@@ -21,6 +21,11 @@
         /* padding: 10px; */
       }
 
+      #markmap {
+        width: 100%;
+        height: 110vh;
+      }
+
       .markmap-foreign img {
         max-width: 300px;
       }
@@ -156,14 +161,19 @@
           {
             // color: ['blue', 'red'],
             // colorFreezeLevel: 1,
-            initialExpandLevel: 3,
+            // initialExpandLevel: 3,
           },
           root
         );
 
-        initFindToolbar();
+        // svgEl.addEventListener('click', (e) => {
+        //   //setTimeout(() => {
+        //   handleLinks(newSVGEl, fileDirectory);
+        //   //}, 500);
+        // });
 
-        handleLinks(documentContent, fileDirectory);
+        // initFindToolbar();
+        handleLinks(svgEl, fileDirectory);
 
         fixingEmbeddingOfLocalImages(documentContent, fileDirectory);
       }
@@ -172,7 +182,7 @@
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="documentContent">
-      <svg id="markmap" style="width: 100%; height: 1800px"></svg>
+      <svg id="markmap"></svg>
     </div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
