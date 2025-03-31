@@ -648,7 +648,7 @@ function insertAboutDialog(helpURL, pro) {
   <a href="https://github.com/tagspaces/tagspaces-extensions">github.com/tagspaces/tagspaces-extensions</a
   >.`;
   if (pro) {
-    description = `This extension belongs to the package with TagSpaces Pro extensions.`;
+    description = `This extension is part of the TagSpaces Pro extensions pack.`;
   }
 
   document.getElementById('aboutMenuItemPlaceholder').innerHTML = `
