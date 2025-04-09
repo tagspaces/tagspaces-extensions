@@ -19,15 +19,14 @@
     "build-dev": "tsc && npx cross-env NODE_ENV=development vite build --mode development",
     "preview": "vite preview",
     "code-format": "npx prettier --write .",
-    "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe/build && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/md-editor-crepe"
+    "npmpack": "npm run build-dev && npx shx cp -rL build/** ../../release/app/node_modules/@tagspaces/extensions/md-editor/build && npx shx cp package.json ../../release/app/node_modules/@tagspaces/extensions/md-editor"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
-    "@milkdown/crepe": "^7.6.3",
-    "@milkdown/kit": "^7.6.3",
-    "@milkdown/plugin-diagram": "^7.6.3",
-    "@milkdown/react": "^7.6.3",
+    "@milkdown/crepe": "^7.8.0",
+    "@milkdown/kit": "^7.8.0",
+    "@milkdown/react": "^7.8.0",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@prosemirror-adapter/react": "^0.4.0",

@@ -37,7 +37,7 @@ function hasURLProtocol(url: any) {
   );
 }
 
-export function handleClick(
+/*export function handleClick(
   mode: string,
   ctx: Ctx,
   view: EditorView,
@@ -71,7 +71,7 @@ export function handleClick(
     }
   }
   return false;
-}
+}*/
 
 export function createCrepeEditor(
   root: HTMLElement,
@@ -80,7 +80,6 @@ export function createCrepeEditor(
   features?: {}, //[Crepe.Feature.CodeMirror]: false,
   placeholder?: string,
   currentFolder?: string,
-  openLink?: (url: string, options?: any) => void,
   onChange?: (markdown: string, prevMarkdown: string) => void,
   onFocus?: () => void,
 ): Crepe {
@@ -121,7 +120,7 @@ export function createCrepeEditor(
       attributes: {
         class: 'mx-auto full-height',
       },
-      handleClickOn: (view: EditorView, pos: number) => {
+      /*handleClickOn: (view: EditorView, pos: number) => {
         if (!view.editable) {
           const href = getHref(ctx, view, pos);
           if (href && openLink) {
@@ -130,7 +129,7 @@ export function createCrepeEditor(
           }
         }
         return false;
-      },
+      },*/
     }));
   });
 

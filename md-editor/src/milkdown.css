@@ -6,15 +6,16 @@
   padding: 15px 15px 15px 50px;
 }
 
-
 .milkdown .ProseMirror a[href^="http://"]:after, 
-.milkdown .ProseMirror a[href^="https://"]:after {
-content: ' ⧉';
+.milkdown .ProseMirror a[href^="https://"]:after
+{
+  content: ' ⧉';
 }
 /* ⧉ ⎋ ⇲ ⇒*/
 
-.milkdown .ProseMirror a[href^="ts://"]:after {
-content: ' ⇒';
+.milkdown .ProseMirror a[href^="ts://"]:after
+{
+  content: ' ⇒';
 }
 
 .dark .milkdown {

@@ -1,7 +1,7 @@
 import { Milkdown, useEditor } from '@milkdown/react';
 import { EditorStatus, editorViewCtx, commandsCtx } from '@milkdown/kit/core';
 import { getMarkdown, $useKeymap, $command } from '@milkdown/kit/utils';
-import { diagram } from '@milkdown/plugin-diagram';
+//import { diagram } from '@milkdown/plugin-diagram';
 
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/frame.css';
@@ -12,7 +12,8 @@ import React, { useEffect, useRef } from 'react';
 import type { MilkdownRef } from './useCrepeHandler';
 import { useCrepeHandler } from './useCrepeHandler';
 import { Crepe } from '@milkdown/crepe';
-import { useMenuBarPlugin } from '@tagspaces/tagspaces-md-toolbar';
+//import { useMenuBarPlugin } from '@tagspaces/tagspaces-md-toolbar';
+import { EditorView } from 'prosemirror-view';
 
 interface Props {
   isEditMode?: boolean;
@@ -47,12 +48,32 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
           {},
           'Type / to use slash command',
           currentFolder,
-          openLink,
-          onContentChange
+          onContentChange,
         );
 
         crepe.editor.onStatusChange((status: EditorStatus) => {
           if (status === EditorStatus.Created) {
+            const view = crepe.editor.ctx.get(editorViewCtx) as EditorView;
+
+            // Intercept clicks on links and prevent default
+            view.setProps({
+              handleDOMEvents: {
+                click: (view, event) => {
+                  const target = event.target as HTMLElement;
+                  if (target.tagName === 'A') {
+                    const href = (target as HTMLAnchorElement).getAttribute(
+                      'href',
+                    );
+                    if (href) {
+                      event.preventDefault();
+                      openLink(href);
+                      return true;
+                    }
+                  }
+                  return false;
+                },
+              },
+            });
             sendMessageToHost({ command: 'parentLoadTextContent' });
             crepeInstanceRef.current = crepe;
           }
@@ -80,12 +101,12 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
         });
 
         crepe.editor.use([saveCommand, saveKeyMap].flat());
-        crepe.editor.use(diagram);
+        // crepe.editor.use(diagram);
         // crepe.editor.use(menuBarPlugin);
 
         return crepe;
       },
-      [isEditMode]
+      [isEditMode],
     );
 
     useCrepeHandler(ref, () => crepeInstanceRef.current, get, loading);
@@ -131,5 +152,5 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     }
 
     return <Milkdown />;
-  }
+  },
 );
