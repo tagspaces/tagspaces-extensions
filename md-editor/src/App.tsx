@@ -3,6 +3,7 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import Menu from './Menu';
 // @ts-ignore
 import EasySpeech from 'easy-speech';
+import { extractContainingDirectoryPath } from '@tagspaces/tagspaces-common/paths';
 import SettingsDialog from './SettingsDialog';
 import { sendMessageToHost } from './utils';
 import { MilkdownProvider } from '@milkdown/react';
@@ -21,9 +22,10 @@ interface Props {
   isEditMode: boolean;
   readOnly: boolean;
   theme: string;
+  file: string;
 }
 function App(props: Props) {
-  const { isEditMode, readOnly, theme } = props;
+  const { isEditMode, readOnly, theme, file } = props;
   const { i18n } = useTranslation();
   const [isSettingsDialogOpened, setSettingsDialogOpened] =
     useState<boolean>(false);
@@ -293,6 +295,9 @@ function App(props: Props) {
                 isEditMode={isEditMode}
                 readOnly={readOnly}
                 theme={theme}
+                currentFolder={
+                  file ? extractContainingDirectoryPath(file) : undefined
+                }
               />
             </div>
           </ProsemirrorAdapterProvider>
