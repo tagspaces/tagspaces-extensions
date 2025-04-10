@@ -1,5 +1,3 @@
-import { EditorView } from 'prosemirror-view';
-import { linkSchema } from '@milkdown/preset-commonmark';
 import { Ctx } from '@milkdown/ctx';
 import { editorViewOptionsCtx } from '@milkdown/kit/core';
 import { Crepe } from '@milkdown/crepe';
@@ -24,7 +22,7 @@ export function sendMessageToHost(message: any) {
   );
 }
 
-function hasURLProtocol(url: any) {
+/*function hasURLProtocol(url: any) {
   // noinspection OverlyComplexBooleanExpressionJS
   return (
     url &&
@@ -35,7 +33,7 @@ function hasURLProtocol(url: any) {
       url.startsWith('ts://?ts') ||
       url.startsWith('ts:?ts'))
   );
-}
+}*/
 
 /*export function handleClick(
   mode: string,
@@ -80,6 +78,7 @@ export function createCrepeEditor(
   features?: {}, //[Crepe.Feature.CodeMirror]: false,
   placeholder?: string,
   currentFolder?: string,
+  openLink?: (url: string, options?: any) => void,
   onChange?: (markdown: string, prevMarkdown: string) => void,
   onFocus?: () => void,
 ): Crepe {
@@ -111,6 +110,15 @@ export function createCrepeEditor(
           }
           return originalURL;
         },
+        onUpload: async (file: File) => {
+          const base64String = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => resolve(event.target?.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          return base64String;
+        },
       },
     },
   });
@@ -119,6 +127,22 @@ export function createCrepeEditor(
       ...prev,
       attributes: {
         class: 'mx-auto full-height',
+      },
+      handleDOMEvents: {
+        click: (view, event) => {
+          if (!view.editable && openLink) {
+            const target = event.target as HTMLElement;
+            if (target.tagName === 'A') {
+              const href = (target as HTMLAnchorElement).getAttribute('href');
+              if (href) {
+                event.preventDefault();
+                openLink(href, { fullWidth: false });
+                return true;
+              }
+            }
+          }
+          return false;
+        },
       },
       /*handleClickOn: (view: EditorView, pos: number) => {
         if (!view.editable) {
@@ -155,7 +179,7 @@ export function createCrepeEditor(
 
   return crepe;
 }
-
+/*
 function getHref(ctx: Ctx, view: EditorView, pos: number): string | undefined {
   const found = view.state.tr.doc.nodeAt(pos);
   if (found && found.marks.length > 0) {
@@ -163,4 +187,4 @@ function getHref(ctx: Ctx, view: EditorView, pos: number): string | undefined {
     return mark?.attrs.href;
   }
   return undefined;
-}
+}*/
