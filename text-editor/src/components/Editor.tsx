@@ -260,11 +260,10 @@ export const Editor: React.FC = () => {
         areLineNumbersVisible.renderType ===
         monaco.editor.RenderLineNumbersType.On;
 
-      saveSettings('lineNumbers', isLineNumbersOn ? 'off' : 'on');
-
       editor.updateOptions({
         lineNumbers: isLineNumbersOn ? 'off' : 'on',
       });
+      saveSettings('lineNumbers', isLineNumbersOn ? 'off' : 'on');
     }
   };
 
@@ -279,10 +278,13 @@ export const Editor: React.FC = () => {
       const currentWordWrap = editor
         .getOptions()
         .get(monaco.editor.EditorOption.wordWrap);
-      saveSettings('wordWrap', currentWordWrap);
+
+      const toggledValue = currentWordWrap === 'off' ? 'on' : 'off';
+
       editor.updateOptions({
-        wordWrap: currentWordWrap === 'off' ? 'on' : 'off',
+        wordWrap: toggledValue,
       });
+      saveSettings('wordWrap', toggledValue);
     }
   };
 
