@@ -12,7 +12,7 @@
     "flipVertical": "Retourner Verticalement",
     "flipBoth": "Retourner les Deux",
     "toggleLineNumbers": "Désactiver numérotation des lignes",
-    "toggleWordWrap": "Toggle Word Wrap",
+    "toggleWordWrap": "Retour à la ligne automatique",
     "changeTheme": "Changer de Thème",
     "resetTheme": "Réinitialiser le Thème",
     "print": "Imprimer",
@@ -56,12 +56,12 @@
     "viewEditor": "Ouvrir l'éditeur de textes",
     "viewAsMindMap": "Vue carte heuristique",
     "togglePagination": "Changer la mise en page",
-    "encryptedFileUseDownload": "Document encrypted, please use the download functionality to get its content.",
+    "encryptedFileUseDownload": "Document chiffré, utilisez la fonction \"Téléchargement\" pour le récupérer.",
     "exportPNGImage": "Exporter au format PNG",
     "exportJPGImage": "Exporter au format JPG",
     "exportJPGImageTitle": "Métadonnées photo supprimées, qualité JPEG 90%",
     "exportWEBPImage": "Exporter au format WEBP",
     "documentation": "Documentation",
-    "copyToClipboard": "Copy to Clipboard",
+    "copyToClipboard": "Copier vers le presse-papier",
     "-": "-"
 }
