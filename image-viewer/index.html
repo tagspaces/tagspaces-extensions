@@ -42,6 +42,14 @@
       .viewer-backdrop {
         background-color: transparent;
       }
+
+      #progressBar {
+        width: 95%;
+        margin: 0 auto;
+        accent-color: rgb(8, 218, 172);
+        height: 10px;
+        display: block;
+      }
     </style>
     <script>
       let filePath = getParameterByName('file');
@@ -242,7 +250,9 @@
                 viewer.full();
               },
               viewed: () => {
-                // hideLoadingAnimation();
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.display = 'none';
+
                 imageViewerContainer =
                   document.getElementsByClassName('viewer-container');
                 imageViewerContainer[0].style.background = 'transparent';
@@ -560,13 +570,15 @@
     </script>
   </head>
   <body>
-    <!-- <div id="loadingAnimationPlaceholder"></div> -->
+    <progress id="progressBar" aria-label="Image loading…"></progress>
     <div
       id="encyptedMessage"
       data-i18n="encryptedFileUseDownload"
       style="display: none; text-align: center; padding: 20px"
     ></div>
     <div
+      aria-busy="true"
+      aria-describedby="progressBar"
       id="imageContainer"
       style="width: 100%; height: 100%; display: block; margin: auto"
     >
