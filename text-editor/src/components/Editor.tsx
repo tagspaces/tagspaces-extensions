@@ -35,7 +35,24 @@ export const Editor: React.FC = () => {
 
   useEventListener('contentLoaded', () => {
     console.log('contentLoaded: event triggered');
+
+    if (!editor) return;
     initEditor();
+    // attach change listener
+    changeListener.current?.dispose();
+    changeListener.current = editor.onDidChangeModelContent(() => {
+      const model = editor.getModel();
+      if (!model) return;
+      const updated = model.getValue();
+      if (updated !== getContent()) {
+        console.log('content changed:'); //, updated, '###', getContent());
+        // @ts-ignore
+        window.fileContent = fileContent;
+        // @ts-ignore
+        window.editMode = true;
+        sendMessageToHost({ command: 'contentChangedInEditor' });
+      }
+    });
   });
 
   useEventListener('themeChanged', () => {
@@ -93,11 +110,14 @@ export const Editor: React.FC = () => {
   }
 
   function initEditor() {
-    if (editor) {
-      setReadOnly();
-      // setLanguage();
-      editor.setValue(getContent());
-    }
+    if (!editor) return;
+    //ensure readOnly flag
+    setReadOnly();
+
+    // load content
+    const raw = getContent();
+    // const clean = raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
+    editor.setValue(raw);
   }
 
   function setReadOnly() {
@@ -213,30 +233,15 @@ export const Editor: React.FC = () => {
           return editor;
         }
 
-        // modelRef.current = monaco.editor.createModel(getContent(), getLanguage());
-
+        const model = monaco.editor.createModel(getContent(), getLanguage());
         const monacoEditor = monaco.editor.create(monacoEl.current!, {
-          value: getContent(),
+          model,
           // model: modelRef.current,
           ...editorOption,
         });
-        changeListener.current = monacoEditor.onDidChangeModelContent(() => {
-          const model = monacoEditor.getModel();
-          if (model) {
-            const fileContent = model.getValue();
+        // Preserve original line endings
+        //model.setEOL(monaco.editor.EndOfLineSequence.LF);
 
-            if (fileContent !== getContent()) {
-              // @ts-ignore
-              window.fileContent = fileContent;
-              console.log('content changed:');
-              // @ts-ignore
-              window.editMode = true;
-              sendMessageToHost({
-                command: 'contentChangedInEditor',
-              });
-            }
-          }
-        });
         return monacoEditor;
       });
     }
