@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/spreadsheet-viewer",
-  "version": "1.0.182",
+  "version": "1.0.183",
   "description": "A TagSpaces extension allowing you to open plain text files",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",

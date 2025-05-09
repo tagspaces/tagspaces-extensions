@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/pdf-viewer",
-  "version": "1.0.182",
+  "version": "1.0.183",
   "description": "A TagSpaces extension allowing opening of PDF files.",
   "homepage": "https://www.tagspaces.org",
   "main": "index.html",
@@ -14,7 +14,7 @@
     "build": "npm run clean:pdfjs && npm run build:pdfjs",
     "create:patch": "cd scripts/pdf.js && git diff > ../patches/skip_origin.patch",
     "build:pdfjs": "node scripts/buildPdfjs.js",
-    "clean:pdfjs": "npx rimraf generic scripts/pdf.js"
+    "clean:pdfjs": "npx rimraf --no-glob \"generic/\" \"scripts/pdf.js/\""
   },
   "tsextension": {
     "name": "PDF Viewer",
