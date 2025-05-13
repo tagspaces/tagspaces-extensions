@@ -47,7 +47,7 @@ export const Editor: React.FC = () => {
       if (updated !== getContent()) {
         console.log('content changed:'); //, updated, '###', getContent());
         // @ts-ignore
-        window.fileContent = fileContent;
+        window.fileContent = updated;
         // @ts-ignore
         window.editMode = true;
         sendMessageToHost({ command: 'contentChangedInEditor' });
