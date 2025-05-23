@@ -2,6 +2,7 @@ import { Ctx } from '@milkdown/ctx';
 import { editorViewOptionsCtx } from '@milkdown/kit/core';
 import { Crepe } from '@milkdown/crepe';
 import AppConfig from '@tagspaces/tagspaces-common/AppConfig';
+import { remarkPreserveEmptyLinePlugin } from '@milkdown/preset-commonmark';
 
 export function getParameterByName(paramName: string) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -122,6 +123,7 @@ export function createCrepeEditor(
       },
     },
   });
+  crepe.editor.remove(remarkPreserveEmptyLinePlugin);
   crepe.editor.config((ctx: Ctx) => {
     ctx.update(editorViewOptionsCtx, (prev) => ({
       ...prev,
