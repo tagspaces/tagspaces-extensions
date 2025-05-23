@@ -94,14 +94,16 @@ export const Editor: React.FC = () => {
   });
 
   function saveSettings(key: string, value: any) {
-    const settings = {
-      [key]: value,
-    };
-    localStorage.setItem(key, JSON.stringify(settings));
+    const items = localStorage.getItem('monacoEditorSettings');
+    const settings = items ? JSON.parse(items) : {};
+    localStorage.setItem(
+      'monacoEditorSettings',
+      JSON.stringify({ ...settings, [key]: value })
+    );
   }
 
   function getSettings(key: string) {
-    const item = localStorage.getItem(key);
+    const item = localStorage.getItem('monacoEditorSettings');
     if (item) {
       const settings = JSON.parse(item);
       return settings[key];
