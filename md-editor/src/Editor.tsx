@@ -37,11 +37,13 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
       document.documentElement.classList.toggle('dark', theme === 'dark');
     }, [theme]);
 
+    const initContent = 'Loading...';
+
     const { get, loading } = useEditor(
       (root) => {
         const crepe = createCrepeEditor(
           root,
-          content || 'Loading...',
+          content || initContent,
           !!isEditMode,
           {},
           'Type / to use slash command',
@@ -110,10 +112,17 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     });
 
     const onContentChange = (markdown: string, prevMarkdown: string) => {
+      if (
+        prevMarkdown === initContent + '\n' ||
+        markdown === prevMarkdown + '\n'
+      ) {
+        return;
+      }
       const editor = get();
       if (editor) {
         const view = editor.ctx.get(editorViewCtx);
-        if (view && view.hasFocus()) {
+        if (view) {
+          // && view.hasFocus()) {
           if (onChange) {
             onChange(markdown, prevMarkdown);
           }
