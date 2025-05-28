@@ -24,22 +24,22 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
-    "@milkdown/crepe": "^7.8.0",
-    "@milkdown/kit": "^7.8.0",
-    "@milkdown/react": "^7.8.0",
-    "@mui/icons-material": "^6.4.4",
-    "@mui/material": "^6.4.4",
-    "@prosemirror-adapter/react": "^0.4.0",
+    "@milkdown/crepe": "^7.11.1",
+    "@milkdown/kit": "^7.11.1",
+    "@milkdown/react": "^7.11.1",
+    "@mui/icons-material": "^7.1.0",
+    "@mui/material": "^7.1.0",
+    "@prosemirror-adapter/react": "^0.4.1",
     "@tagspaces/tagspaces-md-toolbar": "^4.5.54",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
-    "@tagspaces/tagspaces-common": "^4.5.54",
+    "@tagspaces/tagspaces-common": "^4.5.67",
     "@tagspaces/tagspaces-extension-ui": "^4.5.55",
-    "i18next": "^24.2.2",
-    "react-i18next": "^15.4.1",
-    "markmap-common": "^0.14.2",
-    "markmap-lib": "^0.14.3",
-    "markmap-view": "^0.14.3",
-    "easy-speech": "^1.2.1",
+    "i18next": "^25.2.1",
+    "react-i18next": "^15.5.2",
+    "markmap-common": "^0.18.9",
+    "markmap-lib": "^0.18.11",
+    "markmap-view": "^0.18.10",
+    "easy-speech": "^2.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -69,6 +69,7 @@
       "editor"
     ],
     "color": "#beefed",
+    "isDefault": true,
     "fileTypes": [
       {
         "ext": "md"

@@ -106,7 +106,7 @@ function App(props: Props) {
   });*/
 
   useEffect(() => {
-    EasySpeech.init()
+    EasySpeech.init({ maxTimeout: 5000, interval: 250, quiet: true })
       .then((success: boolean) => {
         if (success) {
           allVoices.current = EasySpeech.voices();
@@ -138,7 +138,9 @@ function App(props: Props) {
         }
       }
       if (!voice.current || chooseFirst) {
-        voice.current = voices.current[0].name;
+        if (voices.current) {
+          voice.current = voices.current[0].name;
+        }
       }
     }
   }
@@ -207,7 +209,7 @@ function App(props: Props) {
         pitch: 1.0, //0.9,
         rate: rate.current, //0.9, //1.2,
         volume: 1.0,
-        lang: language.current,
+        //lang: language.current,
         voice: getVoiceByName(voice.current),
         // there are more events, see the API for supported events
         end: () => resolve(true),
@@ -323,7 +325,7 @@ function App(props: Props) {
           if (!milkdownRef.current) return;
           milkdownRef.current.openSearchDialog();
         }}
-        mdContent={getContent()}
+        getContent={getContent}
         mode={mode}
         setSettingsDialogOpened={setSettingsDialogOpened}
         haveSpeakSupport={voices.current !== null}

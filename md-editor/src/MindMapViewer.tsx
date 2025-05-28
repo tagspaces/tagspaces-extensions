@@ -2,12 +2,12 @@ import React, { useRef, useEffect } from 'react';
 //@ts-ignore
 import { Transformer } from 'markmap-lib';
 import { Markmap, deriveOptions } from 'markmap-view';
-import type { IMarkmapOptions } from 'markmap-common';
+import type { IMarkmapOptions } from 'markmap-view';
 
 const transformer = new Transformer();
 
 interface Props {
-  mdContent: string;
+  getContent: () => string;
 }
 
 const mmOptions: Partial<IMarkmapOptions> = deriveOptions({
@@ -16,7 +16,8 @@ const mmOptions: Partial<IMarkmapOptions> = deriveOptions({
 });
 
 export default function MindMapViewer(props: Props) {
-  const { mdContent } = props;
+  const { getContent } = props;
+  const mdContent = getContent();
   // const [value, setValue] = useState('');
   // Ref for SVG element
   const refSvg: any = useRef();

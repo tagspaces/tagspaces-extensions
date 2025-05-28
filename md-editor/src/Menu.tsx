@@ -27,7 +27,7 @@ const Menu: React.FC<{
   resumeRead: () => void;
   setSettingsDialogOpened: (open: boolean) => void;
   setFilterVisible: (isFilterVisible: boolean) => void;
-  mdContent: string;
+  getContent: () => string;
   mode: string;
   haveSpeakSupport: boolean;
 }> = ({
@@ -38,7 +38,7 @@ const Menu: React.FC<{
   resumeRead,
   setSettingsDialogOpened,
   setFilterVisible,
-  mdContent,
+  getContent,
   mode,
   haveSpeakSupport,
 }) => {
@@ -150,7 +150,7 @@ const Menu: React.FC<{
           <DialogCloseButton onClick={() => setMindMapDialogOpened(false)} />
         </DialogTitle>
         <DialogContent style={{ height: '100%' }}>
-          <MindMapViewer mdContent={mdContent} />
+          <MindMapViewer getContent={getContent} />
         </DialogContent>
         <DialogActions>
           <Button
