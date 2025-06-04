@@ -112,17 +112,16 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     });
 
     const onContentChange = (markdown: string, prevMarkdown: string) => {
-      if (
-        prevMarkdown === initContent + '\n' ||
-        markdown === prevMarkdown + '\n'
+      /*if (
+        prevMarkdown === initContent ||
+        markdown === prevMarkdown
       ) {
         return;
-      }
+      }*/
       const editor = get();
       if (editor) {
         const view = editor.ctx.get(editorViewCtx);
-        if (view) {
-          // && view.hasFocus()) {
+        if (view && view.hasFocus()) {
           if (onChange) {
             onChange(markdown, prevMarkdown);
           }
