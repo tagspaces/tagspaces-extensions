@@ -16,7 +16,7 @@
     <script src="libs/exif-js/exif.js"></script>
     <style>
       body {
-        overflow: auto;
+        overflow: hidden;
         width: 100%;
         height: 100%;
       }
@@ -53,6 +53,7 @@
     </style>
     <script>
       let filePath = getParameterByName('file');
+      let tmbPath = getParameterByName('thumb');
       let locale = getParameterByName('locale');
       if (locale === 'en') {
         locale = 'en_US';
@@ -154,6 +155,9 @@
           let orientation;
           let viewer;
           imageContent = document.getElementById('imageContent');
+          imageThumb = document.getElementById('imageThumb');
+          imageThumb.onerror = (i) => (i.target.style.display = 'none');
+          imageThumb.setAttribute('src', tmbPath);
 
           if (
             fileExt === '.cr2' ||
@@ -252,6 +256,7 @@
               viewed: () => {
                 const progressBar = document.getElementById('progressBar');
                 progressBar.style.display = 'none';
+                imageThumb.style.display = 'none';
 
                 imageViewerContainer =
                   document.getElementsByClassName('viewer-container');
@@ -582,6 +587,18 @@
       id="imageContainer"
       style="width: 100%; height: 100%; display: block; margin: auto"
     >
+      <div
+        style="
+          display: flex;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          margin: auto;
+          padding: 7px;
+        "
+      >
+        <img id="imageThumb" style="width: 100%; margin: auto" />
+      </div>
       <img
         id="imageContent"
         style="width: 100%; height: 100%; display: block; margin: auto"
