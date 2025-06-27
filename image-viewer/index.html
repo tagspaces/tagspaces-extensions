@@ -208,6 +208,40 @@
             };
             script.src = 'libs/tga.js/tga.js';
             document.head.appendChild(script);
+            // } else if (fileExt === '.heic') {
+            //   const script = document.createElement('script');
+            //   script.onload = () => {
+            //     const decoder = new libheif.HeifDecoder();
+
+            //     const xhr = new XMLHttpRequest();
+            //     xhr.responseType = 'arrayBuffer';
+            //     xhr.open('GET', filePath);
+            //     xhr.onload = () => {
+            //       // const decoder = new heifModule.HeifDecoder();
+            //       const image = decoder.decode(xhr.response);
+
+            //       // Get width, height, and pixel data
+            //       const width = image.get_width();
+            //       const height = image.get_height();
+            //       const rgba = image.display(); // Uint8ClampedArray with RGBA pixel data
+
+            //       // Draw to canvas
+            //       const canvas = document.createElement('canvas');
+            //       canvas.width = width;
+            //       canvas.height = height;
+            //       const ctx = canvas.getContext('2d');
+            //       const imageData = new ImageData(rgba, width, height);
+            //       ctx.putImageData(imageData, 0, 0);
+
+            //       imageContent.setAttribute(
+            //         'src',
+            //         canvas.toDataURL('image/jpeg', 0.9)
+            //       );
+            //     };
+            //     xhr.send();
+            //   };
+            //   script.src = 'libs/libheif-wasm/libheif-bundle.js';
+            //   document.head.appendChild(script);
           } else if (fileExt === '.heic') {
             const script = document.createElement('script');
             script.onload = () => {
