@@ -208,63 +208,47 @@
             };
             script.src = 'libs/tga.js/tga.js';
             document.head.appendChild(script);
-            // } else if (fileExt === '.heic') {
-            //   const script = document.createElement('script');
-            //   script.onload = () => {
-            //     const decoder = new libheif.HeifDecoder();
-
-            //     const xhr = new XMLHttpRequest();
-            //     xhr.responseType = 'arrayBuffer';
-            //     xhr.open('GET', filePath);
-            //     xhr.onload = () => {
-            //       // const decoder = new heifModule.HeifDecoder();
-            //       const image = decoder.decode(xhr.response);
-
-            //       // Get width, height, and pixel data
-            //       const width = image.get_width();
-            //       const height = image.get_height();
-            //       const rgba = image.display(); // Uint8ClampedArray with RGBA pixel data
-
-            //       // Draw to canvas
-            //       const canvas = document.createElement('canvas');
-            //       canvas.width = width;
-            //       canvas.height = height;
-            //       const ctx = canvas.getContext('2d');
-            //       const imageData = new ImageData(rgba, width, height);
-            //       ctx.putImageData(imageData, 0, 0);
-
-            //       imageContent.setAttribute(
-            //         'src',
-            //         canvas.toDataURL('image/jpeg', 0.9)
-            //       );
-            //     };
-            //     xhr.send();
-            //   };
-            //   script.src = 'libs/libheif-wasm/libheif-bundle.js';
-            //   document.head.appendChild(script);
           } else if (fileExt === '.heic') {
             const script = document.createElement('script');
             script.onload = () => {
+              const libheifInt = libheif();
+              const decoder = new libheifInt.HeifDecoder();
+
               const xhr = new XMLHttpRequest();
-              xhr.responseType = 'blob';
+              xhr.responseType = 'arraybuffer';
               xhr.open('GET', filePath);
-              xhr.onload = () => {
-                heic2any({
-                  blob: xhr.response,
-                  toType: 'image/jpg',
-                  quality: 0.9,
-                })
-                  .then((resultBlob) => {
-                    const dataURL = URL.createObjectURL(resultBlob);
-                    imageContent.setAttribute('src', dataURL);
-                  })
-                  .catch((err) => {
-                    console.log(`Error by converting HEIC file ${err}.`);
+              xhr.onload = async () => {
+                const data = decoder.decode(xhr.response);
+                const imageHandle = data[0];
+
+                const width = imageHandle.get_width();
+                const height = imageHandle.get_height();
+
+                // Create canvas and context for rendering
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const context = canvas.getContext('2d');
+                const imageData = context.createImageData(width, height);
+
+                await new Promise((resolve, reject) => {
+                  imageHandle.display(imageData, (displayData) => {
+                    if (!displayData) {
+                      return reject(new Error('HEIF processing error'));
+                    }
+                    context.putImageData(imageData, 0, 0);
+                    resolve();
                   });
+                });
+
+                imageContent.setAttribute(
+                  'src',
+                  canvas.toDataURL('image/jpeg', 0.9)
+                );
               };
               xhr.send();
             };
-            script.src = 'libs/heic2any/heic2any.min.js';
+            script.src = 'libs/libheif-wasm/libheif-bundle.js';
             document.head.appendChild(script);
           } else if (!encrypted) {
             imageContent.src = filePath;
