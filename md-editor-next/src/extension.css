@@ -29,9 +29,9 @@ body {
 }
 /* ⧉ ⎋ ⇲ ⇒*/
 
-.milkdown .ProseMirror a[href^="ts://"]:after
+.milkdown .ProseMirror a[href^="ts://"]:before
 {
-  content: ' ⇒';
+  content: '⇒ ';
 }
 
 @media print {

@@ -24,9 +24,9 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
-    "@milkdown/crepe": "^7.12.1",
-    "@milkdown/kit": "^7.12.1",
-    "@milkdown/react": "^7.12.1",
+    "@milkdown/crepe": "^7.15.1",
+    "@milkdown/kit": "^7.15.1",
+    "@milkdown/react": "^7.15.1",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
     "@prosemirror-adapter/react": "^0.4.1",
