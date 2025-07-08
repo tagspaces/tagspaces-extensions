@@ -1,3 +1,9 @@
+@media print {
+  html, body {
+    height: auto;
+  }
+}
+
 .milkdown {
   --crepe-font-title: 'Open Sans', Arial, Helvetica, sans-serif !important;
 }

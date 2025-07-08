@@ -32,7 +32,7 @@ function App(props: Props) {
 
   const languages = React.useRef<string[] | null>(null);
   const language = React.useRef<string>(
-    getSettings('speechLanguage') || i18n.language,
+    getSettings('speechLanguage') || i18n.language
   );
   const allVoices = React.useRef<SpeechSynthesisVoice[] | null>(null);
   const voices = React.useRef<SpeechSynthesisVoice[] | null>(null);
@@ -122,14 +122,14 @@ function App(props: Props) {
         ...new Set(allVoices.current.map((v) => v.lang)),
       ].sort();
       const langVoices = allVoices.current.filter(
-        (v) => v.lang === language.current,
+        (v) => v.lang === language.current
       );
 
       if (langVoices.length > 0) {
         voices.current = langVoices;
       } else {
         const lVoices: SpeechSynthesisVoice[] = allVoices.current.filter((v) =>
-          v.lang.startsWith(language.current),
+          v.lang.startsWith(language.current)
         );
         if (lVoices.length > 0) {
           voices.current = lVoices;
@@ -279,12 +279,12 @@ function App(props: Props) {
 
   const milkdownStyle =
     mode === 'Milkdown'
-      ? { width: '100%', height: '100%' }
+      ? { width: '100%', height: 'auto' }
       : { width: 0, height: 0, overflow: 'hidden' };
   const codeMirrorStyle =
     mode === 'Milkdown'
       ? { width: 0, height: 0, overflow: 'hidden' }
-      : { width: '100%', height: '100%' };
+      : { width: '100%', height: 'auto' };
 
   return (
     <I18nextProvider i18n={i18n}>

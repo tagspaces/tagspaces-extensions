@@ -129,6 +129,13 @@ const Menu: React.FC<{
             },
           },
           {
+            id: 'print',
+            name: t('print'),
+            action: () => {
+              setTimeout(() => window.print(), 100);
+            },
+          },
+          {
             id: 'about',
             name: t('about'),
             action: () => {},
@@ -143,7 +150,7 @@ const Menu: React.FC<{
         fullWidth={true}
         maxWidth={false}
         aria-labelledby="dialog-title"
-        PaperProps={{ style: { height: '100%' } }}
+        slotProps={{ paper: { style: { height: '100%' } } }}
       >
         <DialogTitle id="dialog-title">
           {t('Mind Map View')}
@@ -158,7 +165,7 @@ const Menu: React.FC<{
             onClick={() => setMindMapDialogOpened(false)}
             color="primary"
           >
-            Close
+            {t('close')}
           </Button>
         </DialogActions>
       </Dialog>
