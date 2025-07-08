@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/mindmap-viewer",
-  "version": "1.0.196",
+  "version": "1.0.197",
   "description": "A TagSpaces extension for displaying markdown files as mind map.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",

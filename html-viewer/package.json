@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/html-viewer",
-  "version": "1.0.196",
+  "version": "1.0.197",
   "description": "A TagSpaces extension allowing opening of HTML files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
