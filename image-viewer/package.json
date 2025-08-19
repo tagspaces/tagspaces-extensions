@@ -10,6 +10,9 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
+  "scripts": {
+    "copy-index": "npx shx cp index.html ../../release/app/node_modules/@tagspaces/extensions/image-viewer"
+  },
   "dependencies": {
     "heic2any": "0.0.4",
     "psd": "~3.4.0",
