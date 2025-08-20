@@ -31,6 +31,7 @@ import MainMenu from './MainMenu';
 import { sendMessageToHost } from './utils';
 import { Box } from '@mui/material';
 import useEventListener from './useEventListener';
+import { useVidstackScreenshot } from './vidstackScreenshot';
 
 export function Player() {
   const items = localStorage.getItem('viewerAudioVideoSettings');
@@ -47,7 +48,9 @@ export function Player() {
   const autoPlay = useRef<boolean>(defaultAutoPlay);
   const enableVideoOutput = useRef<boolean>(defaultVideoOutput);
   const loop = useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
-  const playerRef = useRef<MediaPlayerInstance>(null);
+  const playerRef = useRef<MediaPlayerInstance | null>(null);
+  // hook returns capture() and loading state
+  const { capture, loading } = useVidstackScreenshot(playerRef);
   const paused = useMediaState('paused', playerRef);
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0, undefined);
 
@@ -118,7 +121,7 @@ export function Player() {
     };
     localStorage.setItem(
       'viewerAudioVideoSettings',
-      JSON.stringify(extSettings)
+      JSON.stringify(extSettings),
     );
     forceUpdate();
   }
@@ -130,6 +133,21 @@ export function Player() {
   function setVideoOutput(value: boolean) {
     enableVideoOutput.current = value;
     saveExtSettings();
+  }
+  function setThumbnail() {
+    try {
+      capture({ format: 'image/jpeg' }).then((base64) => {
+        if (base64) {
+          sendMessageToHost({
+            command: 'thumbnailGenerated',
+            content: base64,
+          });
+        }
+      });
+    } catch (err) {
+      console.error('capture error', err);
+      alert(String(err));
+    }
   }
   function setLoop(value: string) {
     loop.current = value;
@@ -229,6 +247,8 @@ export function Player() {
         setLoop={setLoop}
         enableVideoOutput={enableVideoOutput.current}
         setVideoOutput={setVideoOutput}
+        setThumbnail={setThumbnail}
+        loading={loading}
       />
     </>
   );

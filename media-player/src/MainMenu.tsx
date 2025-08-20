@@ -27,6 +27,8 @@ const MainMenu: React.FC<{
   setLoop: (loop: string) => void;
   enableVideoOutput: boolean;
   setVideoOutput: (video: boolean) => void;
+  setThumbnail: () => void;
+  loading: boolean;
 }> = ({
   autoPlay,
   setAutoPlay,
@@ -34,6 +36,8 @@ const MainMenu: React.FC<{
   setLoop,
   enableVideoOutput,
   setVideoOutput,
+  setThumbnail,
+  loading,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -162,6 +166,20 @@ const MainMenu: React.FC<{
             )}
           </ListItemIcon>
           <ListItemText>No Loop</ListItemText>
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          disabled={loading}
+          data-tid="mediaPlayerThumbnailTID"
+          onClick={() => {
+            setAnchorEl(null);
+            setThumbnail();
+          }}
+        >
+          <ListItemIcon>
+            <AboutIcon />
+          </ListItemIcon>
+          <ListItemText>Set Thumbnail</ListItemText>
         </MenuItem>
         <Divider />
         <MenuItem
