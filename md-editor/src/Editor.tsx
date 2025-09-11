@@ -111,17 +111,38 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
       }
     });
 
+    /**
+     * fix code block issue with hasFocus(): https://github.com/Milkdown/milkdown/issues/1876
+     * @param view
+     */
+    const isActiveInsideCodeBlock = (view?: any) => {
+      // guard for SSR / missing DOM
+      if (typeof document === 'undefined') return false;
+
+      const active = document.activeElement as HTMLElement | null;
+      if (!active) return false;
+
+      // Prefer checking the editor view DOM (if available) — safer when multiple editors exist
+      const editorRoot = view?.dom as HTMLElement | undefined;
+
+      // If the active element is inside the editor root, check for a code-block ancestor
+      if (editorRoot && editorRoot.contains(active)) {
+        return !!active.closest('.milkdown-code-block');
+      }
+
+      // Fallback: check anywhere in the document
+      return !!active.closest('.milkdown-code-block');
+    };
+
     const onContentChange = (markdown: string, prevMarkdown: string) => {
-      /*if (
-        prevMarkdown === initContent ||
-        markdown === prevMarkdown
-      ) {
+      if (!isEditMode) {
         return;
-      }*/
+      }
       const editor = get();
       if (editor) {
         const view = editor.ctx.get(editorViewCtx);
-        if (view && view.hasFocus()) {
+        const inCodeBlock = isActiveInsideCodeBlock(view);
+        if (view && (view.hasFocus() || inCodeBlock)) {
           if (onChange) {
             onChange(markdown, prevMarkdown);
           }
