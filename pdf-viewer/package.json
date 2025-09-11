@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/pdf-viewer",
-  "version": "1.0.200",
+  "version": "1.0.201",
   "description": "A TagSpaces extension allowing opening of PDF files.",
   "homepage": "https://www.tagspaces.org",
   "main": "index.html",
