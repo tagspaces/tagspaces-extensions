@@ -279,6 +279,7 @@ function hasURLProtocol(url) {
     url.startsWith('http://') ||
     url.startsWith('https://') ||
     url.startsWith('file://') ||
+    url.startsWith('mailto://') ||
     url.startsWith('tel://') ||
     url.startsWith('data:') ||
     url.startsWith('ts://?ts') ||
