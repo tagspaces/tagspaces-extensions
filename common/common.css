@@ -35,24 +35,17 @@ img {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-  background-color: var(--primary-background-color) !important;
-  color: var(--primary-text-color) !important;
-  border: 0;
+  border: 1px solid var(--primary-background-color) !important;
+  color: var(--primary-background-color) !important;
+  background-color: transparent;
+  border-radius: 10px;
+  font-size: 14px;
 }
 
-/* .btn-outline-primary,
-.btn-outline-primary:hover,
-.btn-outline-primary:focus,
-.btn-outline-primary:active {
-  border: 1px solid var(--primary-background-color);
-  color: var(--primary-background-color);
-  text-transform: uppercase;
-} 
+#extFabMenu .btn-primary {
+  background-color: var(--primary-background-color) !important;
+}
 
-.btn-outline-primary:hover {
-  background-color: var(--primary-background-color);
-  color: var(--primary-text-color);
-} */
 
 .viewerMainMenuButton {
   background-color: var(--primary-background-color);
