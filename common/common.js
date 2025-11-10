@@ -696,7 +696,7 @@ function insertAboutDialog(helpURL, pro) {
             class="btn btn-primary"
             id="helpButton"
           >
-            <span data-i18n="documentation" />
+            <span data-i18n="help" />
           </button>
           <button
             type="button"

@@ -31,6 +31,14 @@ img {
   color: black !important;
 }
 
+.modal .modal-header {
+  border-bottom: none;
+}
+
+.modal .modal-footer {
+  border-top: none;
+}
+
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus,
