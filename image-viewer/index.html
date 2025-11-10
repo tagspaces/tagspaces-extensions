@@ -111,6 +111,18 @@
       }
 
       document.addEventListener('readystatechange', () => {
+        function resizeDiv() {
+          const div = document.getElementById('fabMenu');
+          // Use window.innerHeight — height of the iframe viewport
+          const menuHeight = window.innerHeight - 100;
+          div.style.height = menuHeight + 'px';
+        }
+
+        // Set once on load
+        window.addEventListener('load', resizeDiv);
+        // Update on resize (e.g. parent resizes iframe)
+        window.addEventListener('resize', resizeDiv);
+
         if (document.readyState === 'complete') {
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/image-viewer'
@@ -274,7 +286,7 @@
                 const progressBar = document.getElementById('progressBar');
                 progressBar.style.display = 'none';
                 imageThumb.style.display = 'none';
-                if(!tmbPath) {
+                if (!tmbPath) {
                   //automatically generate thumb
                   toDataURL(imageContent.src, (base64, err) => {
                     if (err) return console.error(err);
@@ -701,7 +713,7 @@
           ></path>
         </svg>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu" id="fabMenu" style="overflow-y: scroll">
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li>
           <a id="fitToScreen" class="dropdown-item">
