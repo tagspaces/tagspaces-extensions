@@ -63,5 +63,6 @@
     "exportWEBPImage": "WEBP形式でエクスポート",
     "documentation": "ドキュメント",
     "copyToClipboard": "Copy to Clipboard",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }

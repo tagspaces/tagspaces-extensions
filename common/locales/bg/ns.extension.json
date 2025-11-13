@@ -63,5 +63,6 @@
     "exportWEBPImage": "Експортиране в WEBP формат",
     "documentation": "Документация",
     "copyToClipboard": "Копиране в клипборда",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }

@@ -63,5 +63,6 @@
     "exportWEBPImage": "In WEBP-Format exportieren",
     "documentation": "Dokumentation",
     "copyToClipboard": "in die Zwischenablage",
+    "setThumbnail": "Als Vorschaubild festlegen",
     "-": "-"
 }

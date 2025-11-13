@@ -63,5 +63,6 @@
     "exportWEBPImage": "WEBP 형식으로 내보내기",
     "documentation": "문서",
     "copyToClipboard": "클립보드에 복사",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }

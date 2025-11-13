@@ -63,5 +63,6 @@
     "exportWEBPImage": "导出为 WEBP",
     "documentation": "文档",
     "copyToClipboard": "复制到剪贴板",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }

@@ -63,5 +63,6 @@
     "exportWEBPImage": "Export in WEBP format",
     "documentation": "Dokumentácia",
     "copyToClipboard": "Copy to Clipboard",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }

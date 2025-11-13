@@ -63,5 +63,6 @@
     "exportWEBPImage": "ייצא בפורמט WEBP",
     "documentation": "תיעוד",
     "copyToClipboard": "Copy to Clipboard",
+    "setThumbnail": "Set as Thumbnail",
     "-": "-"
 }
