@@ -67,15 +67,12 @@ function App(props: Props) {
 
   useEventListener('themeChanged', () => {
     console.log('themeChanged: event triggered');
-    //forceUpdate();
-    //if (milkdownRef.current) {
     // @ts-ignore
     console.log('themeChanged: ' + window.theme + ' event triggered');
     // @ts-ignore
     colorMode.setMode(window.theme === 'dark' ? 'dark' : 'light');
     // @ts-ignore
     //milkdownRef.current.setDarkMode(window.theme && window.theme === 'dark');
-    // }
   });
 
   /*useEventListener('keydown', (event: Event) => {
@@ -97,12 +94,6 @@ function App(props: Props) {
     // if (event.key.toLowerCase() === 'escape') {
     //   setFilterVisible(false);
     // }
-  });*/
-
-  /*  useEventListener('dblclick', () => {
-    if (readOnly) {
-      sendMessageToHost({ command: 'editDocument' });
-    }
   });*/
 
   useEffect(() => {
@@ -149,21 +140,6 @@ function App(props: Props) {
     setSearchQuery(event.target.value);
   };
 
-  // useEffect(() => {
-  //   let content;
-  //   if (contentRef && contentRef.current) {
-  //     content = contentRef.current;
-  //   } else {
-  //     return;
-  //   }
-  //   const markInstance = new Mark(content);
-  //   markInstance.unmark({
-  //     done: () => {
-  //       markInstance.mark(searchQuery);
-  //     }
-  //   });
-  // });
-
   const onCodeChange = React.useCallback((getCode: () => string) => {
     const { current } = milkdownRef;
     if (!current) return;
@@ -197,7 +173,7 @@ function App(props: Props) {
     } else {
       setMode('CodeMirror');
     }
-    console.log(JSON.stringify(milkdownRef.current));
+    // console.log(JSON.stringify(milkdownRef.current));
   };
 
   function speak(text: string | null | undefined) {
@@ -242,7 +218,6 @@ function App(props: Props) {
     return undefined;
   }
 
-  // const settingsKey = 'speechSettings';
   function saveSettings() {
     const speech = {
       speechRate: rate.current,
@@ -269,9 +244,6 @@ function App(props: Props) {
     return 0.9;
   }
 
-  /**
-   * todo return: #Hellocheck_box_outline_blankoption 1One of the earliest societies was the Neolithic Karanovo cultureAPPLYAPPLYchevron_leftchevron_rightexpand_lessexpand_moreformat_align_leftformat_align_centerformat_align_rightdeleteformat_boldformat_italicstrikethrough_scodelinkdrag_indicatortitleTextlooks_oneHeading 1looks_twoHeading 2looks_3Heading 3format_list_bulletedBullet listformat_list_numberedOrdered listchecklistTask listformat_quoteBlockquotecodeCode
-   */
   function getMarkdownTxt() {
     const elements = document.getElementsByClassName('milkdown');
     return elements[0]?.textContent;

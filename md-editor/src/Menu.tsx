@@ -161,7 +161,8 @@ const Menu: React.FC<{
         </DialogContent>
         <DialogActions>
           <Button
-            variant="contained"
+            variant="outlined"
+            size="small"
             onClick={() => setMindMapDialogOpened(false)}
             color="primary"
           >

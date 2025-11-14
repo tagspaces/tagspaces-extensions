@@ -4,11 +4,20 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-//import i18n from '-/services/i18n';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useTranslation } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Button, InputAdornment } from '@mui/material';
+import {
+  Box,
+  Button,
+  DialogActions,
+  InputAdornment,
+  Tooltip,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { TextSelection } from '@milkdown/prose/state';
 import { EditorView } from '@milkdown/prose/view';
 import { EditorStatus, editorViewCtx, rootCtx } from '@milkdown/core';
@@ -17,6 +26,7 @@ import FormatSizeIcon from '@mui/icons-material/FormatSize';
 import { HtmlSearcher } from './HtmlSearcher';
 import { useMilkdownInstance } from '../hooks/useMilkdownInstance';
 import { getParameterByName } from '../utils';
+import DialogCloseButton from '../DialogCloseButton';
 
 interface Props {
   open: boolean;
@@ -26,6 +36,8 @@ interface Props {
 
 function SearchDialog(props: Props) {
   const { editor, loading } = useMilkdownInstance();
+  const theme = useTheme();
+  const { t } = useTranslation();
   //const { textEditorMode } = useTextEditorContext();
   const isEditMode = getParameterByName('edit');
 
@@ -69,7 +81,7 @@ function SearchDialog(props: Props) {
             const view = ctx.get(editorViewCtx);
             searchAndSelect(
               view,
-              caseSensitive ? searchText : searchText.toLowerCase(),
+              caseSensitive ? searchText : searchText.toLowerCase()
             );
           } else {
             if (!searcher.current) {
@@ -158,7 +170,7 @@ function SearchDialog(props: Props) {
     view: EditorView,
     searchText: string,
     from: number,
-    to: number,
+    to: number
   ): boolean {
     const { state, dispatch } = view;
     const { doc } = state;
@@ -228,7 +240,7 @@ function SearchDialog(props: Props) {
   function searchAndReplace(
     view: EditorView,
     searchText: string,
-    replaceText: string,
+    replaceText: string
   ) {
     const { state, dispatch } = view;
     let { tr } = state;
@@ -278,43 +290,39 @@ function SearchDialog(props: Props) {
       open={open}
       onClose={onClose}
       PaperComponent={Paper}
-      /*BackdropProps={{ style: { backgroundColor: 'transparent' } }}*/
       keepMounted
       scroll="paper"
       aria-labelledby="draggable-dialog-title"
       hideBackdrop
       disableAutoFocus
       disableEnforceFocus
-      //disableRestoreFocus
     >
-      <DialogTitle id="draggable-dialog-title">
-        {replaceMode ? 'Search and replace' : 'Search'}
+      {/* <DialogTitle id="draggable-dialog-title">
+        {replaceMode ? t('searchAndReplace') : t('search')}
+        <DialogCloseButton onClick={onClose} />
+      </DialogTitle> */}
+      <DialogContent
+        sx={{
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }}
+      >
         <IconButton
           title={'close'}
           aria-label="close"
           tabIndex={-1}
           style={{
             position: 'absolute',
-            right: 5,
-            top: 5,
+            right: 1,
+            top: 1,
           }}
           onClick={onClose}
-          size="large"
+          size="small"
         >
           <CloseIcon />
         </IconButton>
-      </DialogTitle>
-      <DialogContent
-        style={{
-          // @ts-ignore
-          overflowY: 'overlay',
-          overflowX: 'hidden',
-        }}
-      >
-        <Paper
-          component="form"
+        <Box
           sx={{
-            p: '2px 4px',
             display: 'flex',
             alignItems: 'center',
             width: 400,
@@ -324,89 +332,115 @@ function SearchDialog(props: Props) {
             <IconButton
               sx={{ p: '10px' }}
               aria-label="menu"
+              size="small"
               onClick={() => setReplaceMode(!replaceMode)}
             >
-              <MenuIcon />
+              {replaceMode ? (
+                <ExpandMoreIcon />
+              ) : (
+                <Tooltip title={t('searchAndReplace')}>
+                  <KeyboardArrowRightIcon />
+                </Tooltip>
+              )}
             </IconButton>
           )}
           <TextField
             sx={{ ml: 1, flex: 1 }}
             margin="dense"
+            size="small"
             fullWidth={true}
             value={searchText}
-            label="Search"
+            label={t('search')}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSearch(event.target.value);
             }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="start searching"
-                    onClick={() => {
-                      search(searchText);
-                    }}
-                    size="large"
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="case sensitive"
-                    onClick={() => setCaseSensitive(!caseSensitive)}
-                    size="large"
-                  >
-                    <FormatSizeIcon
-                      style={{ color: caseSensitive ? 'blue' : 'gray' }}
-                    />
-                  </IconButton>
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Tooltip title={t('matchCase')}>
+                      <IconButton
+                        aria-label="case sensitive"
+                        onClick={() => setCaseSensitive(!caseSensitive)}
+                        size="small"
+                      >
+                        <FormatSizeIcon
+                          style={{
+                            color: caseSensitive
+                              ? theme.palette.primary.main
+                              : theme.palette.text.primary,
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      aria-label="start searching"
+                      variant="text"
+                      size="small"
+                      onClick={() => {
+                        search(searchText);
+                      }}
+                    >
+                      {/* <SearchIcon /> */}
+                      {t('search')}
+                    </Button>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
-        </Paper>
+        </Box>
         {replaceMode && (
           <TextField
             sx={{ flex: 1 }}
             margin="dense"
+            size="small"
             fullWidth={true}
             value={replaceText}
             label="Replace"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setReplaceText(event.target.value);
             }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button
-                    data-tid="replaceAllTID"
-                    onClick={() => {
-                      if (
-                        editor &&
-                        !loading &&
-                        editor.status === EditorStatus.Created
-                      ) {
-                        const { ctx } = editor;
-                        if (ctx) {
-                          try {
-                            const view = ctx.get(editorViewCtx);
-                            searchAndReplace(
-                              view,
-                              caseSensitive
-                                ? searchText
-                                : searchText.toLowerCase(),
-                              replaceText,
-                            );
-                          } catch (e) {
-                            console.debug('searchAndSelect', e);
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      data-tid="replaceAllTID"
+                      size="small"
+                      onClick={() => {
+                        if (
+                          editor &&
+                          !loading &&
+                          editor.status === EditorStatus.Created
+                        ) {
+                          const { ctx } = editor;
+                          if (ctx) {
+                            try {
+                              const view = ctx.get(editorViewCtx);
+                              searchAndReplace(
+                                view,
+                                caseSensitive
+                                  ? searchText
+                                  : searchText.toLowerCase(),
+                                replaceText
+                              );
+                            } catch (e) {
+                              console.debug('searchAndSelect', e);
+                            }
                           }
                         }
-                      }
-                    }}
-                  >
-                    Replace All
-                  </Button>
-                </InputAdornment>
-              ),
+                      }}
+                    >
+                      {t('replaceAll')}
+                    </Button>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
         )}

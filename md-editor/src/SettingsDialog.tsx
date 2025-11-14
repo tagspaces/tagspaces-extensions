@@ -28,17 +28,13 @@ interface Props {
 
 function SettingsDialog(props: Props) {
   const { open, onClose } = props;
-
   const { t } = useTranslation();
-
   const handleSpeedChange = (event: Event, newValue: number | number[]) => {
     props.handleSpeedChange(newValue as number);
   };
-
   const handleVoiceChange = (event: SelectChangeEvent) => {
     props.handleVoiceChange(event.target.value as string);
   };
-
   const handleLanguageChange = (event: SelectChangeEvent) => {
     props.handleLanguageChange(event.target.value as string);
   };
@@ -124,7 +120,8 @@ function SettingsDialog(props: Props) {
       <DialogActions>
         <Button
           data-tid="settingsOkTID"
-          variant="contained"
+          variant="outlined"
+          size="small"
           onClick={onClose}
           color="primary"
         >
