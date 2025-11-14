@@ -43,12 +43,23 @@
         background-color: transparent;
       }
 
+      #imageThumb {
+        display: flex;
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 7px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
       #progressBar {
-        width: 95%;
-        margin: 0 auto;
-        accent-color: rgb(8, 218, 172);
+        width: 100%;
+        accent-color: var(--primary-background-color);
         height: 6px;
-        display: block;
+        position: absolute;
+        top: -1px;
       }
     </style>
     <script>
@@ -626,19 +637,7 @@
       id="imageContainer"
       style="width: 100%; height: 100%; display: block; margin: auto"
     >
-      <div
-        id="imageThumb"
-        style="
-          display: flex;
-          position: absolute;
-          width: calc(100% - 14px);
-          height: calc(100% - 20px);
-          margin: 7px;
-          background-size: contain;
-          background-position: center;
-          background-repeat: no-repeat;
-        "
-      ></div>
+      <div id="imageThumb"></div>
       <img
         id="imageContent"
         style="width: 100%; height: 100%; display: block; margin: auto"
