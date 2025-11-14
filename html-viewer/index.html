@@ -223,6 +223,12 @@
         scrappedon = regexMatcherScrappedon ? regexMatcherScrappedon[1] : '';
         document.getElementById('html-data-scrappedon').value = scrappedon;
 
+        const creaetedonRegex = /data-createdon="([^"]*)"/m;
+        const createdscrappedon = new RegExp(creaetedonRegex);
+        const regexMatcherCreatedon = content.match(createdscrappedon);
+        createdon = regexMatcherCreatedon ? regexMatcherCreatedon[1] : '';
+        document.getElementById('html-data-scrappedon').value = createdon;
+
         // removing all scripts from the document
         const cleanedBodyContent = bodyContent.replace(
           /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
@@ -420,7 +426,7 @@
               class="form-control"
               placeholder=""
               value=""
-              aria-label="readonly input example"
+              aria-label="timestamp of file creation"
               readonly
             />
             <br />
