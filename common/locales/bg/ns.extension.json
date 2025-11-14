@@ -3,6 +3,11 @@
     "find": "Намиране",
     "startSearch": "Старт на търсенето",
     "cancelSearch": "Откажи търсенето",
+    "search": "Търси",
+    "replace": "Замести",
+    "replaceAll": "Замести всички",
+    "searchAndReplace": "Търси и замести",
+    "matchCase": "Различавай главни и малки букви",
     "zoomOut": "Отдалечаване",
     "zoomIn": "Приближаване",
     "zoomReset": "Възстановяване на приближаването",
@@ -63,6 +68,6 @@
     "exportWEBPImage": "Експортиране в WEBP формат",
     "documentation": "Документация",
     "copyToClipboard": "Копиране в клипборда",
-    "setThumbnail": "Set as Thumbnail",
+    "setThumbnail": "Използвай като миниатюра",
     "-": "-"
 }
