@@ -325,7 +325,9 @@ function SearchDialog(props: Props) {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            width: 400,
+            width: '95%',
+            maxWidth: '400px',
+            minWidth: '200px',
           }}
         >
           {!!isEditMode && (
