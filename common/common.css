@@ -50,6 +50,17 @@ img {
   font-size: 14px;
 }
 
+.form-label {
+  font-size: 13px;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+.modal-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 #extFabMenu .btn-primary {
   background-color: var(--primary-background-color) !important;
 }
