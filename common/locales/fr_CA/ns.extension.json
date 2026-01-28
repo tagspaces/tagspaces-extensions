@@ -4,10 +4,10 @@
     "startSearch": "Démarrer une Recherche",
     "cancelSearch": "Annuler la Recherche",
     "search": "Rechercher",
-    "replace": "Replace",
-    "replaceAll": "Replace All",
-    "searchAndReplace": "Search and Replace",
-    "matchCase": "Match Case",
+    "replace": "Remplacer",
+    "replaceAll": "Remplacer tout",
+    "searchAndReplace": "Rechercher et remplacer",
+    "matchCase": "Respecter la casse",
     "zoomOut": "Zoom Arrière",
     "zoomIn": "Zoom Avant",
     "zoomReset": "Taille Normale",
@@ -68,6 +68,6 @@
     "exportWEBPImage": "Exporter au format WEBP",
     "documentation": "Documentation",
     "copyToClipboard": "Copier vers le presse-papier",
-    "setThumbnail": "Set as Thumbnail",
+    "setThumbnail": "Utiliser comme miniature",
     "-": "-"
 }

@@ -4,10 +4,10 @@
     "startSearch": "开始搜索",
     "cancelSearch": "取消搜索",
     "search": "搜索",
-    "replace": "Replace",
-    "replaceAll": "Replace All",
-    "searchAndReplace": "Search and Replace",
-    "matchCase": "Match Case",
+    "replace": "替换",
+    "replaceAll": "替换全部",
+    "searchAndReplace": "搜索并替换",
+    "matchCase": "匹配大小写",
     "zoomOut": "缩小",
     "zoomIn": "放大",
     "zoomReset": "重置缩放",
@@ -68,6 +68,6 @@
     "exportWEBPImage": "导出为 WEBP",
     "documentation": "文档",
     "copyToClipboard": "复制到剪贴板",
-    "setThumbnail": "Set as Thumbnail",
+    "setThumbnail": "设置为缩略图",
     "-": "-"
 }
