@@ -36,7 +36,7 @@
   "devDependencies": {
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "5.1.2",
     "prettier": "^2.7.1",
     "typescript": "^5.7.2",
     "vite": "7.3.1"
