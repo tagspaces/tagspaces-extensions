@@ -37,6 +37,7 @@
   "sourceURL": "Web Page Source URL",
   "openSourceURL": "Open Source URL in your default browser",
   "htmlDetails": "File Details",
+  "toggleDetails": "Toggle Details",
   "webPageSavedOn": "Web Page Saved On",
   "webPageScreenshot": "Web Page Screenshot",
   "openInNewWindow": "Open in new window",

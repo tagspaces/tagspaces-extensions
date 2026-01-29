@@ -47,6 +47,7 @@
       let sourceURL;
       let screenshot;
       let scrappedon;
+      let showDetails = true;
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -73,7 +74,11 @@
           let extSettings = loadExtSettings('viewerHTMLSettings');
 
           function saveSettings() {
-            saveExtSettings('viewerHTMLSettings', { styleIndex, zoomLevel });
+            saveExtSettings('viewerHTMLSettings', {
+              styleIndex,
+              zoomLevel,
+              showDetails,
+            });
           }
 
           let zoomLevel = 100;
@@ -84,6 +89,11 @@
             documentContent.style.zoom = zoomLevel + '%';
           }
 
+          if (extSettings && extSettings.showDetails) {
+            document.getElementById('documentDetails').style.display =
+              extSettings.showDetails ? 'block' : 'none';
+          }
+
           let styleIndex = 0;
           // if (extSettings && extSettings.styleIndex) {
           //   styleIndex = extSettings.styleIndex;
@@ -91,6 +101,16 @@
 
           // documentContent.classList.value = 'markdown ' + styles[styleIndex];
           saveSettings();
+
+          document
+            .getElementById('showWebScrapingDetailsMenuItem')
+            .addEventListener('click', (e) => {
+              e.stopPropagation();
+              showDetails = !showDetails;
+              saveSettings();
+              document.getElementById('documentDetails').style.display =
+                showDetails ? 'block' : 'none';
+            });
 
           document
             .getElementById('zoomInButton')
@@ -177,7 +197,7 @@
             {},
           );
           document
-            .getElementById('showWebScrapingDetailsMenuItem')
+            .getElementById('showWebScrapingDialogMenuItem')
             .addEventListener('click', () => {
               webscrapingDetailsModal.show();
             });
@@ -213,6 +233,7 @@
         screenshot = regexMatcherScreenshot ? regexMatcherScreenshot[1] : '';
         if (screenshot) {
           document.getElementById('html-data-screenshot').src = screenshot;
+          document.getElementById('documentScreenshot').src = screenshot;
           document.getElementById('html-data-screenshot').style.display =
             'block';
         }
@@ -230,6 +251,19 @@
           createdon = regexMatcherCreatedon ? regexMatcherCreatedon[1] : '';
           document.getElementById('html-data-scrappedon').value = createdon;
         }
+
+        const creationTimeStamp = document.getElementById(
+          'html-data-scrappedon',
+        ).value;
+        let documentDetails = '';
+        if (sourceURL) {
+          documentDetails = sourceURL;
+        }
+        if (creationTimeStamp) {
+          documentDetails = documentDetails + ' <-> ' + creationTimeStamp;
+        }
+
+        document.getElementById('documentInfo').innerText = documentDetails;
 
         // removing all scripts from the document
         const cleanedBodyContent = bodyContent.replace(
@@ -275,6 +309,22 @@
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
+    <div
+      id="documentDetails"
+      style="text-align: center; padding: 10px; display: none"
+    >
+      <small id="documentInfo"></small>
+      <img
+        id="documentScreenshot"
+        style="
+          width: 100%;
+          max-width: 1200px;
+          border: 1px solid gray;
+          border-radius: 10px;
+        "
+        src="#"
+      />
+    </div>
     <div id="documentContent"></div>
     <!-- <div id="readabilityContent" style="margin: 15px; display: none"></div> -->
     <div id="aboutDialogPlaceholder"></div>
@@ -356,13 +406,23 @@
         <li id="resetStyleMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li>
-          <a id="showWebScrapingDetailsMenuItem" class="dropdown-item" href="#">
+          <a id="showWebScrapingDialogMenuItem" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
               <path
                 d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 16H5V7h14v12zm-2-7H7v-2h10v2zm-4 4H7v-2h6v2z"
               ></path>
             </svg>
             <span data-i18n="htmlDetails" />
+          </a>
+        </li>
+        <li>
+          <a id="showWebScrapingDetailsMenuItem" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 16H5V7h14v12zm-2-7H7v-2h10v2zm-4 4H7v-2h6v2z"
+              ></path>
+            </svg>
+            <span data-i18n="toggleDetails" />
           </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
@@ -466,7 +526,7 @@
                 display: none;
                 width: 100%;
                 border: 1px solid gray;
-                border-radius: 5px;
+                border-radius: 10px;
               "
               src="#"
             />
