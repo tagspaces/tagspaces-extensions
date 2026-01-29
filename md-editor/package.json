@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.206",
+  "version": "1.0.209",
   "description": "A TagSpaces extension for editing markdown files based on Milkdown's Crepe.",
   "homepage": "./",
   "files": [
@@ -24,11 +24,11 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
-    "@milkdown/crepe": "^7.15.5",
-    "@milkdown/kit": "^7.15.5",
-    "@milkdown/react": "^7.15.5",
-    "@mui/icons-material": "^7.1.0",
-    "@mui/material": "^7.1.0",
+    "@milkdown/crepe": "7.18.0",
+    "@milkdown/kit": "7.18.0",
+    "@milkdown/react": "7.18.0",
+    "@mui/icons-material": "7.3.7",
+    "@mui/material": "7.3.7",
     "@prosemirror-adapter/react": "^0.4.4",
     "@tagspaces/tagspaces-md-toolbar": "^4.5.54",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
@@ -36,19 +36,19 @@
     "@tagspaces/tagspaces-extension-ui": "^4.5.55",
     "i18next": "^25.2.1",
     "react-i18next": "^15.5.2",
-    "markmap-common": "^0.18.9",
-    "markmap-lib": "^0.18.11",
-    "markmap-view": "^0.18.10",
-    "easy-speech": "^2.4.0",
+    "markmap-common": "0.18.9",
+    "markmap-lib": "0.18.12",
+    "markmap-view": "0.18.12",
+    "easy-speech": "2.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.2.0",
+    "@vitejs/plugin-react": "5.1.2",
     "typescript": "^5.3.0",
-    "vite": "^6.1.0"
+    "vite": "7.3.1"
   },
   "browserslist": {
     "production": [
