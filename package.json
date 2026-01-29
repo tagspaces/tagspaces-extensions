@@ -68,7 +68,7 @@
     "drop-media-player": "shx cp media-player/index.backup media-player/index.html && npx rimraf media-player/assets media-player/index.backup",
     "copy-text-editor": "shx cp -rL text-editor/build/assets text-editor && shx cp text-editor/index.html text-editor/index.backup && shx cp text-editor/build/index.html text-editor",
     "drop-text-editor": "shx cp text-editor/index.backup text-editor/index.html && npx rimraf text-editor/assets text-editor/index.backup",
-    "pkg-publish": "npm version patch && npm run build && npm run copy-build && npm publish --access public && npm run drop-build",
+    "pkg-publish": "npm logion && npm version patch && npm run build && npm run copy-build && npm publish --access public && npm run drop-build",
     "prettier-check": "npx prettier --check --ignore-path=.prettierignore \"**/*.{js,jsx,json,ts,tsx,yml}\"",
     "prettier-format": "npx prettier --ignore-path=.prettierignore --write \"**/*.{js,jsx,json,ts,tsx,yml}\"",
     "update-i18n": "./tx pull -a -f"
