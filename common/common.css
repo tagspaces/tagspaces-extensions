@@ -40,14 +40,25 @@ img {
 }
 
 .btn-primary,
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
+.btn-primary:focus {
   border: 1px solid var(--primary-background-color) !important;
   color: var(--primary-background-color) !important;
-  background-color: transparent;
+  background-color: transparent !important;
   border-radius: 10px;
   font-size: 14px;
+}
+
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--primary-background-color) 10%, white 99%) !important; 
+}
+
+.btn-primary:active {
+  background-color: color-mix(in srgb, var(--primary-background-color) 60%, white 99%) !important; 
+}
+
+.dropdown-item:active {
+  background-color: transparent !important;
+  color: black;
 }
 
 .form-label {
