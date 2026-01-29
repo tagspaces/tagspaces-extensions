@@ -130,7 +130,7 @@
           document
             .getElementById('toSansSerifFontButton')
             .addEventListener('click', (e) => {
-              document.getElementById('readabilityContent').style.fontFamily =
+              document.getElementById('documentContent').style.fontFamily =
                 'Helvetica, Arial, sans-serif';
               e.stopPropagation();
             });
@@ -138,7 +138,7 @@
           document
             .getElementById('toSerifFontButton')
             .addEventListener('click', (e) => {
-              document.getElementById('readabilityContent').style.fontFamily =
+              document.getElementById('documentContent').style.fontFamily =
                 'Georgia, Times New Roman, serif';
               e.stopPropagation();
             });
@@ -182,11 +182,11 @@
               webscrapingDetailsModal.show();
             });
 
-          document
-            .getElementById('toggleReadabilityModeMenuItem')
-            .addEventListener('click', (e) => {
-              initReadabilityMode(filePath);
-            });
+          // document
+          //   .getElementById('toggleReadabilityModeMenuItem')
+          //   .addEventListener('click', (e) => {
+          //     initReadabilityMode(filePath);
+          //   });
         }
       });
 
@@ -247,9 +247,22 @@
           // media.muted = true;
         });
 
-        hideLoadingAnimation();
+        document
+          .getElementById('exportScreenshot')
+          .addEventListener('click', (e) => {
+            if (screenshot?.startsWith('data:image')) {
+              fetch(screenshot)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  saveAs(
+                    blob,
+                    extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
+                  );
+                });
+            }
+          });
 
-        document.getElementById('readabilityOffLabel').style.display = 'none';
+        hideLoadingAnimation();
 
         initFindToolbar();
 
@@ -263,7 +276,7 @@
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
     <div id="documentContent"></div>
-    <div id="readabilityContent" style="margin: 15px; display: none"></div>
+    <!-- <div id="readabilityContent" style="margin: 15px; display: none"></div> -->
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
@@ -285,7 +298,7 @@
         </svg>
       </button>
       <ul class="dropdown-menu">
-        <li id="toggleReadabilityModeMenuItemPlaceholder">
+        <!-- <li id="toggleReadabilityModeMenuItemPlaceholder">
           <a id="toggleReadabilityModeMenuItem" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
               <path
@@ -296,10 +309,10 @@
             <span id="readabilityOffLabel" data-i18n="readabilityOff"></span>
           </a>
         </li>
-        <li><hr class="dropdown-divider" /></li>
+        <li><hr class="dropdown-divider" /></li> -->
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li id="changeStyleMenuItemPlaceholder"></li>
-        <li id="fontTypeMenutItem" style="display: none" class="dropdown-item">
+        <li id="fontTypeMenutItem" class="dropdown-item">
           <svg width="24" height="24" class="bi">
             <path
               d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
@@ -355,6 +368,16 @@
         <li><hr class="dropdown-divider" /></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
         <li id="exportAsHTMLMenuItemPlaceholder"></li>
+        <li>
+          <a id="exportScreenshot" class="dropdown-item" href="#">
+            <svg width="24" height="24" class="bi">
+              <path
+                d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"
+              ></path>
+            </svg>
+            <span data-i18n="exportScreenshot" />
+          </a>
+        </li>
         <li id="printMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="aboutMenuItemPlaceholder"></li>

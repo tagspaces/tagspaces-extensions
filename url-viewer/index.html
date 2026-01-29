@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -46,7 +46,7 @@
           document.getElementById('copyURL').addEventListener('click', (e) => {
             e.stopPropagation();
             const promise = navigator.clipboard.writeText(
-              document.getElementById('urlInput').value
+              document.getElementById('urlInput').value,
             );
             sendMessageToHost({
               command: 'showAlertDialog',
@@ -56,15 +56,15 @@
           });
 
           document
-            .getElementById('exportJPGImage')
+            .getElementById('exportScreenshot')
             .addEventListener('click', (e) => {
-              if (comment) {
+              if (comment?.startsWith('data:image')) {
                 fetch(comment)
                   .then((res) => res.blob())
                   .then((blob) => {
                     saveAs(
                       blob,
-                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg'
+                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
                     );
                   });
               }
@@ -97,13 +97,13 @@
         const urlBegin = 'URL=';
         let url = cleanedContent.substring(
           cleanedContent.indexOf(urlBegin) + urlBegin.length,
-          cleanedContent.length
+          cleanedContent.length,
         );
 
         const commentTag = 'COMMENT=';
         comment = cleanedContent.substring(
           cleanedContent.indexOf(commentTag) + commentTag.length,
-          cleanedContent.length
+          cleanedContent.length,
         );
 
         // preventing the case the url is at the end of the file or line after the url lines
@@ -194,13 +194,13 @@
       </button>
       <ul class="dropdown-menu">
         <li>
-          <a id="exportJPGImage" class="dropdown-item" href="#">
+          <a id="exportScreenshot" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
               <path
                 d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"
               ></path>
             </svg>
-            <span data-i18n="exportJPGImage" />
+            <span data-i18n="exportScreenshot" />
           </a>
         </li>
         <!-- <li>

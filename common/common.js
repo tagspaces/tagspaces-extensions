@@ -140,7 +140,7 @@ function extractFileName(filePath, dirSeparator = '/') {
   return filePath
     ? filePath.substring(
         filePath.lastIndexOf(dirSeparator) + 1,
-        filePath.length
+        filePath.length,
       )
     : filePath;
 }
@@ -191,7 +191,7 @@ function initI18N(locale, filename, localePath) {
       return true;
     })
     .catch((error) =>
-      console.log('Error getting default i18n locale: ' + error)
+      console.log('Error getting default i18n locale: ' + error),
     );
 }
 
@@ -214,7 +214,7 @@ function sendMessageToHost(message) {
   } else {
     window.parent.postMessage(
       JSON.stringify({ ...message, eventID: eventID }),
-      '*'
+      '*',
     );
   }
 }
@@ -528,7 +528,11 @@ function insertExportAsHTMLFunctionality() {
     const blob = new Blob([generateHTML(documentContentHTML)], {
       type: 'text/plain;charset=utf-8',
     });
-    saveAs(blob, extractFileName(filePath, isWin ? '\\' : '/') + '.html');
+    let ext = '.html';
+    if (filePath.endsWith('.html') || filePath.endsWith('.htm')) {
+      ext = '';
+    }
+    saveAs(blob, extractFileName(filePath, isWin ? '\\' : '/') + ext);
   });
 }
 /* END: HTML Export */
