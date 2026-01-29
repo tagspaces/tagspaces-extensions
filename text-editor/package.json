@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/text-editor",
-  "version": "1.0.206",
+  "version": "1.0.209",
   "description": "A TagSpaces extension allowing editing of text based documents.",
   "homepage": "https://www.tagspaces.org",
   "files": [
@@ -28,7 +28,7 @@
     "@mui/material": "^6.2.0",
     "@tagspaces/tagspaces-extension-ui": "^4.5.46",
     "i18next": "^24.1.0",
-    "monaco-editor": "^0.52.2",
+    "monaco-editor": "0.55.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^15.2.0"
@@ -39,7 +39,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^2.7.1",
     "typescript": "^5.7.2",
-    "vite": "^6.0.3"
+    "vite": "7.3.1"
   },
   "browserslist": {
     "production": [

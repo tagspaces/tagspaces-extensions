@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-//const prefix = `monaco-editor/esm/vs`;
+const prefix = `monaco-editor/esm/vs`;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: mode === 'development', // Enable sourcemap only in development mode
       outDir: 'build',
-      /*rollupOptions: {
+      rollupOptions: {
         output: {
           manualChunks: {
             jsonWorker: [`${prefix}/language/json/json.worker`],
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
             editorWorker: [`${prefix}/editor/editor.worker`],
           },
         },
-      },*/
+      },
     },
     plugins: [react()],
   };
