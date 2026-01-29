@@ -105,7 +105,6 @@
           document
             .getElementById('showWebScrapingDetailsMenuItem')
             .addEventListener('click', (e) => {
-              e.stopPropagation();
               showDetails = !showDetails;
               saveSettings();
               document.getElementById('documentDetails').style.display =
@@ -313,7 +312,7 @@
       id="documentDetails"
       style="text-align: center; padding: 10px; display: none"
     >
-      <small id="documentInfo"></small>
+      <small data-i18ntitle="sourceURL" id="documentInfo"></small>
       <img
         id="documentScreenshot"
         style="
@@ -324,6 +323,7 @@
         "
         src="#"
       />
+      <hr />
     </div>
     <div id="documentContent"></div>
     <!-- <div id="readabilityContent" style="margin: 15px; display: none"></div> -->
