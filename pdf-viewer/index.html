@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html style="margin: 0; padding: 0; height: 100%">
   <head>
     <meta charset="utf-8" />
@@ -42,9 +42,7 @@
         arrayBufferToDataURL(content, 'application/pdf').then((dataURL) => {
           pdfViewer.setAttribute(
             'src',
-            'generic/web/viewer.html?file=' +
-              encodeURIComponent(dataURL) +
-              '#enableScripting=false'
+            'generic/web/viewer.html?file=' + encodeURIComponent(dataURL),
           );
         });
       }
@@ -59,9 +57,7 @@
           } else {
             pdfViewer.setAttribute(
               'src',
-              'generic/web/viewer.html?file=' +
-                encodeURIComponent(filePath) +
-                '#enableScripting=false'
+              'generic/web/viewer.html?file=' + encodeURIComponent(filePath),
             );
           }
           insertAboutDialog('https://docs.tagspaces.org/extensions/pdf-viewer');
