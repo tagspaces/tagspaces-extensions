@@ -92,23 +92,35 @@
       });
 
       function setContent(content) {
-        const cleanedContent = sanitizeContent(content);
+        let url;
 
-        const urlBegin = 'URL=';
-        let url = cleanedContent.substring(
-          cleanedContent.indexOf(urlBegin) + urlBegin.length,
-          cleanedContent.length,
-        );
+        if (filePath.toLowerCase().endsWith('.webloc')) {
+          url = extractUrlFromWebloc(content);
+        } else {
+          // .url case
+          const cleanedContent = sanitizeContent(content);
+          const urlBegin = 'URL=';
+          url = cleanedContent.substring(
+            cleanedContent.indexOf(urlBegin) + urlBegin.length,
+            cleanedContent.length,
+          );
 
-        const commentTag = 'COMMENT=';
-        comment = cleanedContent.substring(
-          cleanedContent.indexOf(commentTag) + commentTag.length,
-          cleanedContent.length,
-        );
+          const commentTag = 'COMMENT=';
+          comment = cleanedContent.substring(
+            cleanedContent.indexOf(commentTag) + commentTag.length,
+            cleanedContent.length,
+          );
 
-        // preventing the case the url is at the end of the file or line after the url lines
-        url = url + '\n';
-        url = url.substring(0, url.indexOf('\n'));
+          // preventing the case the url is at the end of the file or line after the url lines
+          url = url + '\n';
+          url = url.substring(0, url.indexOf('\n'));
+
+          if (comment.startsWith('data:image')) {
+            const screenshotImg = document.getElementById('screenshotImg');
+            screenshotImg.setAttribute('src', comment);
+            screenshotImg.style['display'] = 'block';
+          }
+        }
 
         const openURLButton = document.getElementById('openURLButton');
         openURLButton.addEventListener('click', (e) => {
@@ -119,12 +131,46 @@
 
         const urlInput = document.getElementById('urlInput');
         urlInput.setAttribute('value', url);
+      }
 
-        if (comment.startsWith('data:image')) {
-          const screenshotImg = document.getElementById('screenshotImg');
-          screenshotImg.setAttribute('src', comment);
-          screenshotImg.style['display'] = 'block';
+      function extractUrlFromWebloc(xmlText) {
+        if (typeof xmlText !== 'string') {
+          throw new TypeError('Input must be a string');
         }
+
+        // Parse XML safely
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlText, 'application/xml');
+
+        // Detect XML parsing errors
+        const parserError = doc.querySelector('parsererror');
+        if (parserError) {
+          throw new Error('Invalid XML in .webloc file');
+        }
+
+        // Find all <key> elements
+        const keys = Array.from(doc.getElementsByTagName('key'));
+
+        for (const key of keys) {
+          if (key.textContent.trim() === 'URL') {
+            // The value is the next element sibling (should be <string>)
+            let valueNode = key.nextElementSibling;
+
+            if (valueNode && valueNode.tagName === 'string') {
+              const url = valueNode.textContent.trim();
+
+              // Optional sanity check
+              try {
+                new URL(url);
+                return url;
+              } catch {
+                throw new Error('Found URL key but value is not a valid URL');
+              }
+            }
+          }
+        }
+
+        throw new Error('URL not found in .webloc file');
       }
     </script>
   </head>
