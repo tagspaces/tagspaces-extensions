@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -136,7 +136,7 @@
 
         if (document.readyState === 'complete') {
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/image-viewer'
+            'https://docs.tagspaces.org/extensions/image-viewer',
           );
           // insertLoadingAnimation();
           insertPrintMenuItem();
@@ -216,7 +216,7 @@
                   return true;
                 })
                 .catch(
-                  (e) => console.warn('Error loading PSD') // : ' + JSON.stringify(e))
+                  (e) => console.warn('Error loading PSD'), // : ' + JSON.stringify(e))
                 );
             };
             script.src = 'libs/psd/dist/psd.min.js';
@@ -266,7 +266,7 @@
 
                 imageContent.setAttribute(
                   'src',
-                  canvas.toDataURL('image/jpeg', 0.9)
+                  canvas.toDataURL('image/jpeg', 0.9),
                 );
               };
               xhr.send();
@@ -409,7 +409,7 @@
                       navigator.clipboard.write(data);
                     });
                 },
-                'png'
+                'png',
               );
             });
 
@@ -422,7 +422,7 @@
                   .then((blob) => {
                     saveAs(
                       blob,
-                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg'
+                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
                     );
                   });
               });
@@ -439,11 +439,11 @@
                     .then((blob) => {
                       saveAs(
                         blob,
-                        extractFileName(filePath, isWin ? '\\' : '/') + '.png'
+                        extractFileName(filePath, isWin ? '\\' : '/') + '.png',
                       );
                     });
                 },
-                'png'
+                'png',
               );
             });
 
@@ -458,11 +458,11 @@
                     .then((blob) => {
                       saveAs(
                         blob,
-                        extractFileName(filePath, isWin ? '\\' : '/') + '.webp'
+                        extractFileName(filePath, isWin ? '\\' : '/') + '.webp',
                       );
                     });
                 },
-                'webp'
+                'webp',
               );
             });
 
@@ -613,7 +613,9 @@
                 const th = document.createElement('th');
                 const td = document.createElement('td');
                 th.textContent = key;
+                th.style.color = 'black';
                 td.textContent = metaData[key];
+                td.style.color = 'black';
                 tr.appendChild(th);
                 tr.appendChild(td);
                 exifTableBody.appendChild(tr);
