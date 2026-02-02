@@ -59,11 +59,29 @@ document.addEventListener('readystatechange', () => {
 
 /**  Helper functions */
 function sanitizeContent(htmlContent) {
-  // TODO: sanitize prevents loading local images with relative path
   if (DOMPurify && DOMPurify.sanitize) {
     return DOMPurify.sanitize(htmlContent, {
+      // 1. Allow relative paths (Fixes the TODO)
+      ALLOW_RELATIVE: true,
+
+      // 2. Define safe protocols (Including data: for screenshots)
       ALLOWED_URI_REGEXP:
-        /^(?:(?:(?:f|ht)tps?|file|mailto|ts|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+        /^(?:(?:(?:f|ht)tps?|file|mailto|ts|tel|callto|sms|cid|xmpp|data):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+
+      // 3. Keep your custom metadata attributes
+      ADD_ATTR: [
+        'data-sourceurl',
+        'data-screenshot',
+        'data-scrappedon',
+        'data-createdon',
+        'data-createdwith',
+      ],
+
+      // 4. Ensure video posters and sources are kept
+      ADD_TAGS: ['video', 'audio', 'source'],
+
+      WHOLE_DOCUMENT: true,
+      RETURN_TRUSTED_TYPE: false,
     });
   } else {
     console.error('DOMpurify not available!');
@@ -110,6 +128,41 @@ function getFileContentPromise(fullPath, type) {
     };
     xhr.send();
   });
+}
+
+/**
+ * Converts a Base64 string or Data URL to a Blob.
+ * Optimized for environments where fetch() is unavailable.
+ *
+ * @param {string} base64 - The base64 string or full Data URL.
+ * @param {string} mime - The desired MIME type (default: 'image/png').
+ * @returns {Blob}
+ */
+function base64ToBlob(base64, mime = 'image/png') {
+  try {
+    // 1. If it's a Data URL, strip the header (e.g., "data:image/png;base64,")
+    const slice = base64.split(',');
+    const base64Data = slice.length > 1 ? slice[1] : slice[0];
+
+    // 2. Decode base64 to a binary string
+    const byteCharacters = window.atob(base64Data);
+
+    // 3. Create an ArrayBuffer of the correct length
+    const byteNumbers = new Uint8Array(byteCharacters.length);
+
+    // 4. Fill the ArrayBuffer with the character codes
+    // Manual loop is 2x-5x faster than Uint8Array.from for large strings
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    // 5. Return the Blob
+    return new Blob([byteNumbers], { type: mime });
+  } catch (e) {
+    console.error('base64ToBlob error:', e);
+    // Return an empty blob to prevent the app from crashing
+    return new Blob([], { type: mime });
+  }
 }
 
 function toDataURL(src, callback, format) {

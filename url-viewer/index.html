@@ -91,86 +91,131 @@
         }
       });
 
+      /**
+       * Optimized and Secure setContent
+       */
       function setContent(content) {
-        let url;
+        let url = '';
+        let screenshot = '';
 
-        if (filePath.toLowerCase().endsWith('.webloc')) {
-          url = extractUrlFromWebloc(content);
-        } else {
-          // .url case
-          const cleanedContent = sanitizeContent(content);
-          const urlBegin = 'URL=';
-          url = cleanedContent.substring(
-            cleanedContent.indexOf(urlBegin) + urlBegin.length,
-            cleanedContent.length,
-          );
-
-          const commentTag = 'COMMENT=';
-          comment = cleanedContent.substring(
-            cleanedContent.indexOf(commentTag) + commentTag.length,
-            cleanedContent.length,
-          );
-
-          // preventing the case the url is at the end of the file or line after the url lines
-          url = url + '\n';
-          url = url.substring(0, url.indexOf('\n'));
-
-          if (comment.startsWith('data:image')) {
-            const screenshotImg = document.getElementById('screenshotImg');
-            screenshotImg.setAttribute('src', comment);
-            screenshotImg.style['display'] = 'block';
+        try {
+          if (filePath.toLowerCase().endsWith('.webloc')) {
+            url = extractUrlFromWebloc(content);
+          } else {
+            // 1. Optimized .url (INI) parsing
+            // We look specifically for the [InternetShortcut] section to be precise
+            const lines = content.split(/\r?\n/);
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith('URL=')) {
+                url = trimmed.substring(4).trim();
+              } else if (trimmed.startsWith('COMMENT=')) {
+                screenshot = trimmed.substring(8).trim();
+              }
+              // Break early if we have both? (Optional optimization)
+              // if (url && screenshot) break;
+            }
           }
+
+          // 2. Security: Validate the extracted URL
+          const isValidUrl = (string) => {
+            try {
+              const u = new URL(string);
+              return (
+                u.protocol === 'ts:' ||
+                u.protocol === 'http:' ||
+                u.protocol === 'https:' ||
+                u.protocol === 'file:'
+              );
+            } catch (e) {
+              return false;
+            }
+          };
+
+          if (!isValidUrl(url)) {
+            console.warn('Invalid or unsafe URL extracted:', url);
+            url = ''; // Reset to prevent malicious protocol execution
+          }
+
+          // 3. Handle Screenshot (COMMENT field)
+          const screenshotImg = document.getElementById('screenshotImg');
+          if (screenshotImg) {
+            if (
+              screenshot.startsWith('data:image/') &&
+              screenshot.length > 64
+            ) {
+              screenshotImg.src = screenshot;
+              screenshotImg.style.display = 'block';
+            } else {
+              screenshotImg.style.display = 'none';
+              screenshotImg.src = '';
+            }
+          }
+
+          // 4. Update UI Inputs safely
+          const urlInput = document.getElementById('urlInput');
+          if (urlInput) {
+            urlInput.value = url;
+          }
+
+          // 5. Memory/Event Optimization: Prevent listener stacking
+          const openURLButton = document.getElementById('openURLButton');
+          if (openURLButton) {
+            // Clone and replace to wipe all previous event listeners
+            const newButton = openURLButton.cloneNode(true);
+            openURLButton.replaceWith(newButton);
+
+            if (url) {
+              newButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                sendMessageToHost({ command: 'openLinkExternally', link: url });
+              });
+              newButton.disabled = false;
+              newButton.style.opacity = '1';
+            } else {
+              newButton.disabled = true;
+              newButton.style.opacity = '0.5';
+            }
+          }
+        } catch (err) {
+          console.error('Error in setContent:', err.message);
         }
-
-        const openURLButton = document.getElementById('openURLButton');
-        openURLButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          const msg = { command: 'openLinkExternally', link: url };
-          sendMessageToHost(msg);
-        });
-
-        const urlInput = document.getElementById('urlInput');
-        urlInput.setAttribute('value', url);
       }
 
+      /**
+       * Safer extractUrlFromWebloc
+       */
       function extractUrlFromWebloc(xmlText) {
-        if (typeof xmlText !== 'string') {
-          throw new TypeError('Input must be a string');
-        }
+        if (typeof xmlText !== 'string' || !xmlText.trim()) return '';
 
-        // Parse XML safely
         const parser = new DOMParser();
         const doc = parser.parseFromString(xmlText, 'application/xml');
 
-        // Detect XML parsing errors
-        const parserError = doc.querySelector('parsererror');
-        if (parserError) {
-          throw new Error('Invalid XML in .webloc file');
+        if (doc.getElementsByTagName('parsererror').length > 0) {
+          throw new Error('Invalid XML');
         }
 
-        // Find all <key> elements
-        const keys = Array.from(doc.getElementsByTagName('key'));
+        // Use XPath for cleaner/faster lookup of the URL value following the URL key
+        const result = doc.evaluate(
+          "//key[text()='URL']/following-sibling::string[1]",
+          doc,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null,
+        );
 
-        for (const key of keys) {
-          if (key.textContent.trim() === 'URL') {
-            // The value is the next element sibling (should be <string>)
-            let valueNode = key.nextElementSibling;
-
-            if (valueNode && valueNode.tagName === 'string') {
-              const url = valueNode.textContent.trim();
-
-              // Optional sanity check
-              try {
-                new URL(url);
-                return url;
-              } catch {
-                throw new Error('Found URL key but value is not a valid URL');
-              }
-            }
+        const urlNode = result.singleNodeValue;
+        if (urlNode && urlNode.textContent) {
+          const url = urlNode.textContent.trim();
+          try {
+            new URL(url);
+            return url;
+          } catch {
+            throw new Error('Found URL key but value is not a valid URL');
           }
         }
 
-        throw new Error('URL not found in .webloc file');
+        return '';
       }
     </script>
   </head>

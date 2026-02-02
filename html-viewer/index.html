@@ -210,101 +210,124 @@
       });
 
       function setContent(content, fileDirectory) {
-        const bodyRegex = /\<body[^>]*\>([^]*)\<\/body/m; // jshint ignore:line
-        let bodyContent;
+        const cleanHtml = sanitizeContent(content);
 
-        try {
-          bodyContent = content.match(bodyRegex)[1];
-        } catch (e) {
-          console.log('Error parsing the body of the HTML document. ' + e);
-          bodyContent = content;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(cleanHtml, 'text/html');
+        const body = doc.body || doc.documentElement;
+
+        // 1. Extract Metadata using getAttribute
+        const sourceURL = body.getAttribute('data-sourceurl') || '';
+        const screenshot = body.getAttribute('data-screenshot') || '';
+        const scrappedOn =
+          body.getAttribute('data-scrappedon') ||
+          body.getAttribute('data-createdon') ||
+          '';
+
+        // 2. Update UI Inputs
+        const sourceUrlInput = document.getElementById('html-data-sourceurl');
+        if (sourceUrlInput) sourceUrlInput.value = sourceURL;
+
+        const scrappedOnInput = document.getElementById('html-data-scrappedon');
+
+        // 3. Handle Source URL Container
+        const sourceUrlContainer = document.getElementById('documentSourceUrl');
+        if (sourceUrlContainer) {
+          sourceUrlContainer.replaceChildren(); // Safely clears all children
+          if (sourceURL && sourceURL !== 'undefined') {
+            const aEl = document.createElement('a');
+            aEl.textContent = sourceURL;
+            aEl.href = sourceURL;
+            aEl.target = '_blank';
+            sourceUrlContainer.appendChild(aEl);
+          }
         }
 
-        const sourceURLRegex = /data-sourceurl="([^"]*)"/m;
-        const regex = new RegExp(sourceURLRegex);
-        const regexMatcher = content.match(regex);
-        sourceURL = regexMatcher ? regexMatcher[1] : '';
-        document.getElementById('html-data-sourceurl').value = sourceURL;
+        // 4. Handle Screenshot UI
+        const screenshotEls = [
+          document.getElementById('html-data-screenshot'),
+          document.getElementById('documentScreenshot'),
+        ];
+        const hasScreenshot = screenshot && screenshot.startsWith('data:image');
 
-        const screenshotRegex = /data-screenshot="([^"]*)"/m;
-        const regexscreenshot = new RegExp(screenshotRegex);
-        const regexMatcherScreenshot = content.match(regexscreenshot);
-        screenshot = regexMatcherScreenshot ? regexMatcherScreenshot[1] : '';
-        if (screenshot) {
-          document.getElementById('html-data-screenshot').src = screenshot;
-          document.getElementById('documentScreenshot').src = screenshot;
-          document.getElementById('html-data-screenshot').style.display =
-            'block';
-          document.getElementById('documentScreenshot').style.display = 'block';
-        }
-
-        const scrappedonRegex = /data-scrappedon="([^"]*)"/m;
-        const regexscrappedon = new RegExp(scrappedonRegex);
-        const regexMatcherScrappedon = content.match(regexscrappedon);
-        scrappedon = regexMatcherScrappedon ? regexMatcherScrappedon[1] : '';
-
-        if (!scrappedon) {
-          const creaetedonRegex = /data-createdon="([^"]*)"/m;
-          const createdscrappedon = new RegExp(creaetedonRegex);
-          const regexMatcherCreatedon = content.match(createdscrappedon);
-          scrappedon = regexMatcherCreatedon ? regexMatcherCreatedon[1] : '';
-        }
-        const creationDate = new Date(scrappedon);
-        document.getElementById('html-data-scrappedon').value =
-          creationDate?.toString();
-
-        const creationTimeStamp = creationDate?.toString().substring(0, 33);
-        if (sourceURL && sourceURL !== 'undefined') {
-          const aEl = document.createElement('a');
-          aEl.innerText = sourceURL;
-          aEl.href = sourceURL;
-          document.getElementById('documentSourceUrl').appendChild(aEl);
-        }
-        if (typeof creationDate.getMonth === 'function' && creationTimeStamp) {
-          const spanEl = document.createElement('span');
-          spanEl.innerText = creationTimeStamp;
-          document.getElementById('documentCreationDate').appendChild(spanEl);
-          document.getElementById('createdOnSection').style.display = 'block';
-        }
-
-        // removing all scripts from the document
-        const cleanedBodyContent = bodyContent.replace(
-          /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-          '',
-        );
-        htmlContent = document.getElementById('documentContent');
-        htmlContent.innerHTML = sanitizeContent(cleanedBodyContent);
-
-        document.querySelectorAll('video, audio').forEach((media) => {
-          // Remove the autoplay attribute
-          media.removeAttribute('autoplay');
-          media.setAttribute('controls', '');
-          media.pause(); // Ensure the media does not start playing
-          // media.muted = true;
+        screenshotEls.forEach((el) => {
+          if (el instanceof HTMLImageElement) {
+            if (hasScreenshot) {
+              el.src = screenshot;
+              el.style.display = 'block';
+            } else {
+              el.src = '';
+              el.style.display = 'none';
+            }
+          }
         });
 
-        document
-          .getElementById('exportScreenshot')
-          .addEventListener('click', (e) => {
-            if (screenshot?.startsWith('data:image')) {
-              fetch(screenshot)
-                .then((res) => res.blob())
-                .then((blob) => {
-                  saveAs(
-                    blob,
-                    extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
-                  );
-                });
+        // 5. Handle Dates
+        const creationDate = scrappedOn ? new Date(scrappedOn) : null;
+        const creationDateContainer = document.getElementById(
+          'documentCreationDate',
+        );
+        const createdSection = document.getElementById('createdOnSection');
+
+        if (creationDate && !isNaN(creationDate.getTime())) {
+          const dateStr = creationDate.toLocaleString();
+          if (scrappedOnInput) scrappedOnInput.value = dateStr;
+          if (creationDateContainer) {
+            const spanEl = document.createElement('span');
+            spanEl.textContent = dateStr;
+            creationDateContainer.replaceChildren(spanEl);
+          }
+          if (createdSection) createdSection.style.display = 'block';
+        }
+
+        // 6. Clean and Prepare Content Nodes
+        // Remove scripts from the memory-DOM
+        body.querySelectorAll('script').forEach((s) => s.remove());
+
+        // Media adjustments
+        body.querySelectorAll('video, audio').forEach((media) => {
+          media.removeAttribute('autoplay');
+          media.setAttribute('controls', '');
+          media.preload = 'metadata';
+          // media.pause(); // Ensure the media does not start playing
+        });
+
+        // 7. Inject Content
+        const contentTarget = document.getElementById('documentContent');
+        if (contentTarget) {
+          /**
+           * replaceChildren(...nodes) takes all child nodes from our parsed 'body'
+           * and moves them physically into 'contentTarget'.
+           * This is much faster and safer than innerHTML.
+           */
+          contentTarget.replaceChildren(...body.childNodes);
+        }
+
+        // 8. Export Screenshot (Event Listener Cleanup)
+        const exportBtn = document.getElementById('exportScreenshot');
+        if (exportBtn) {
+          const newBtn = exportBtn.cloneNode(true);
+          exportBtn.replaceWith(newBtn);
+
+          newBtn.addEventListener('click', () => {
+            if (hasScreenshot) {
+              const blob = base64ToBlob(screenshot, 'image/jpeg');
+              const fileName =
+                (filePath.split(/[\\/]/).pop() || 'screenshot') + '.jpg';
+              saveAs(blob, fileName);
             }
           });
+        }
 
+        // 9. Run post-processing helpers
         hideLoadingAnimation();
-
-        initFindToolbar();
-
-        handleLinks(document.documentElement, fileDirectory);
-
-        fixingEmbeddingOfLocalImages(htmlContent, fileDirectory);
+        if (typeof initFindToolbar === 'function') initFindToolbar();
+        if (typeof handleLinks === 'function') {
+          handleLinks(document.documentElement, fileDirectory);
+        }
+        if (typeof fixingEmbeddingOfLocalImages === 'function') {
+          fixingEmbeddingOfLocalImages(contentTarget, fileDirectory);
+        }
       }
     </script>
   </head>
@@ -324,6 +347,7 @@
         id="documentScreenshot"
         style="
           display: none;
+          margin: 0 auto;
           width: 100%;
           max-width: 1200px;
           border: 1px solid gray;
