@@ -257,7 +257,11 @@ function getBase64Image(imgURL) {
   canvas.height = img.height;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(img, 0, 0);
-  return canvas.toDataURL('image/png');
+  try {
+    return canvas.toDataURL('image/png');
+  } catch (e) {
+    return '';
+  }
 }
 
 function sendMessageToHost(message) {
