@@ -235,6 +235,7 @@
           document.getElementById('documentScreenshot').src = screenshot;
           document.getElementById('html-data-screenshot').style.display =
             'block';
+          document.getElementById('documentScreenshot').style.display = 'block';
         }
 
         const scrappedonRegex = /data-scrappedon="([^"]*)"/m;
@@ -253,15 +254,18 @@
           creationDate?.toString();
 
         const creationTimeStamp = creationDate?.toString().substring(0, 33);
-        let documentDetails = '';
-        if (sourceURL) {
-          documentDetails = sourceURL;
+        if (sourceURL && sourceURL !== 'undefined') {
+          const aEl = document.createElement('a');
+          aEl.innerText = sourceURL;
+          aEl.href = sourceURL;
+          document.getElementById('documentSourceUrl').appendChild(aEl);
         }
-        if (creationTimeStamp) {
-          documentDetails = documentDetails + ' <-> ' + creationTimeStamp;
+        if (typeof creationDate.getMonth === 'function' && creationTimeStamp) {
+          const spanEl = document.createElement('span');
+          spanEl.innerText = creationTimeStamp;
+          document.getElementById('documentCreationDate').appendChild(spanEl);
+          document.getElementById('createdOnSection').style.display = 'block';
         }
-
-        document.getElementById('documentInfo').innerText = documentDetails;
 
         // removing all scripts from the document
         const cleanedBodyContent = bodyContent.replace(
@@ -311,10 +315,15 @@
       id="documentDetails"
       style="text-align: center; padding: 10px; display: none"
     >
-      <small data-i18ntitle="sourceURL" id="documentInfo"></small>
+      <small
+        data-i18ntitle="sourceURL"
+        id="documentSourceUrl"
+        style="display: block"
+      ></small>
       <img
         id="documentScreenshot"
         style="
+          display: none;
           width: 100%;
           max-width: 1200px;
           border: 1px solid gray;
@@ -322,6 +331,10 @@
         "
         src="#"
       />
+      <div id="createdOnSection" style="display: none">
+        <small data-i18n="webPageSavedOn"></small>:&nbsp;
+        <small id="documentCreationDate"></small>
+      </div>
       <hr />
     </div>
     <div id="documentContent"></div>
