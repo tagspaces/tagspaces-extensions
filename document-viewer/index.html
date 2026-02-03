@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -29,7 +29,7 @@
     </style>
     <script src="../libs/jszip/jszip.min.js"></script>
     <script src="../libs/jszip-utils/jszip-utils.min.js"></script>
-    <script src="libs/mammoth/mammoth.browser.js"></script>
+    <script src="libs/mammoth/mammoth.browser.min.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
@@ -46,7 +46,7 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/document-viewer'
+            'https://docs.tagspaces.org/extensions/document-viewer',
           );
 
           insertPrintMenuItem();

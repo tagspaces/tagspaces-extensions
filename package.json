@@ -80,6 +80,7 @@
     "jsoneditor": "9.9.2",
     "jszip": "3.10.1",
     "jszip-utils": "0.1.0",
+    "mammoth": "1.4.8",
     "mark.js": "8.11.1",
     "marked": "4.2.5",
     "markmap-lib": "^0.14.3",
