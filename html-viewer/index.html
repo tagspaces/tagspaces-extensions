@@ -216,7 +216,7 @@
         const doc = parser.parseFromString(cleanHtml, 'text/html');
         const body = doc.body || doc.documentElement;
 
-        // 1. Extract Metadata using getAttribute
+        // Extract Metadata using getAttribute
         const sourceURL = body.getAttribute('data-sourceurl') || '';
         const screenshot = body.getAttribute('data-screenshot') || '';
         const scrappedOn =
@@ -224,13 +224,13 @@
           body.getAttribute('data-createdon') ||
           '';
 
-        // 2. Update UI Inputs
+        // Update UI Inputs
         const sourceUrlInput = document.getElementById('html-data-sourceurl');
         if (sourceUrlInput) sourceUrlInput.value = sourceURL;
 
         const scrappedOnInput = document.getElementById('html-data-scrappedon');
 
-        // 3. Handle Source URL Container
+        // Handle Source URL Container
         const sourceUrlContainer = document.getElementById('documentSourceUrl');
         if (sourceUrlContainer) {
           sourceUrlContainer.replaceChildren(); // Safely clears all children
@@ -243,7 +243,7 @@
           }
         }
 
-        // 4. Handle Screenshot UI
+        // Handle Screenshot UI
         const screenshotEls = [
           document.getElementById('html-data-screenshot'),
           document.getElementById('documentScreenshot'),
@@ -262,7 +262,7 @@
           }
         });
 
-        // 5. Handle Dates
+        // Handle Dates
         const creationDate = scrappedOn ? new Date(scrappedOn) : null;
         const creationDateContainer = document.getElementById(
           'documentCreationDate',
@@ -270,7 +270,10 @@
         const createdSection = document.getElementById('createdOnSection');
 
         if (creationDate && !isNaN(creationDate.getTime())) {
-          const dateStr = creationDate.toLocaleString();
+          const dateStr = formatDateTime(creationDate, {
+            withTime: true,
+            splitter: ' ',
+          });
           if (scrappedOnInput) scrappedOnInput.value = dateStr;
           if (creationDateContainer) {
             const spanEl = document.createElement('span');
@@ -280,7 +283,7 @@
           if (createdSection) createdSection.style.display = 'block';
         }
 
-        // 6. Clean and Prepare Content Nodes
+        // Clean and Prepare Content Nodes
         // Remove scripts from the memory-DOM
         body.querySelectorAll('script').forEach((s) => s.remove());
 
@@ -292,7 +295,7 @@
           // media.pause(); // Ensure the media does not start playing
         });
 
-        // 7. Inject Content
+        // Inject Content
         const contentTarget = document.getElementById('documentContent');
         if (contentTarget) {
           /**
@@ -303,7 +306,7 @@
           contentTarget.replaceChildren(...body.childNodes);
         }
 
-        // 8. Export Screenshot (Event Listener Cleanup)
+        // Export Screenshot (Event Listener Cleanup)
         const exportBtn = document.getElementById('exportScreenshot');
         if (exportBtn) {
           const newBtn = exportBtn.cloneNode(true);
@@ -319,7 +322,7 @@
           });
         }
 
-        // 9. Run post-processing helpers
+        // Run post-processing helpers
         hideLoadingAnimation();
         if (typeof initFindToolbar === 'function') initFindToolbar();
         if (typeof handleLinks === 'function') {

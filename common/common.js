@@ -88,6 +88,39 @@ function sanitizeContent(htmlContent) {
   }
 }
 
+function formatDateTime(
+  date = new Date(),
+  {
+    withTime = false,
+    splitter = 'T',
+    timeDelimiter = ':',
+    dateDelimiter = '-',
+  } = {},
+) {
+  const d = date instanceof Date ? date : new Date(date);
+  const pad = (n) => String(n).padStart(2, '0');
+
+  const datePart =
+    d.getFullYear() +
+    dateDelimiter +
+    pad(d.getMonth() + 1) +
+    dateDelimiter +
+    pad(d.getDate());
+
+  if (!withTime) {
+    return datePart;
+  }
+
+  const timePart =
+    pad(d.getHours()) +
+    timeDelimiter +
+    pad(d.getMinutes()) +
+    timeDelimiter +
+    pad(d.getSeconds());
+
+  return `${datePart}${splitter}${timePart}`;
+}
+
 function getParameterByName(paramName) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
