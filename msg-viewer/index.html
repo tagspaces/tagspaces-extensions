@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -12,180 +12,291 @@
     <style>
       body {
         overflow: auto;
+        background-color: var(--default-background-color);
       }
       #documentContent {
-        margin: 15px;
+        /* margin: 20px auto; */
+        padding: 20px;
+        background-color: white;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+        border-radius: 4px;
+        /* max-width: 900px; */
+        min-height: 100vh;
+        transform-origin: top center;
+      }
+      .msg-header-box {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+      }
+      .msg-label {
+        font-weight: bold;
+        color: #666;
+        width: 100px;
+        display: inline-block;
+      }
+      .attachment-item {
+        display: inline-block;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        padding: 2px 8px;
+        margin: 2px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      pre.text-body {
+        white-space: pre-wrap;
+        font-family: inherit;
+      }
+
+      .attachment-item {
+        display: inline-flex;
+        align-items: center;
+        background: #e9ecef;
+        border: 1px solid #ced4da;
+        padding: 5px 12px;
+        margin: 5px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+        color: #495057;
+      }
+      .attachment-item:hover {
+        background: #dee2e6;
+        color: #007bff;
+      }
+      .attachment-icon {
+        margin-right: 8px;
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
-    <script src="libs/DataStream.js"></script>
-    <script src="libs/msg.reader.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
+    <script src="libs/msgreader.js"></script>
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      let locale = getParameterByName('locale') || 'en';
+      if (locale === 'en') locale = 'en_US';
       const encrypted = getParameterByName('encrypted');
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          if (encrypted) {
-            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-          } else {
-            getFileContentPromise(filePath, 'arraybuffer').then((content) => {
-              setContent(content);
-            });
-          }
-          insertLoadingAnimation();
-          insertToggleFindMenuItem();
-          insertZoomContentMenuItem();
-          insertExportAsHTMLFunctionality();
-          insertPrintMenuItem();
-          insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
-          initI18N(locale, 'ns.extension.json');
+      let currentMsgReader = null; // Store the reader instance
+      let currentAttachments = []; // Store the attachment metadata
 
-          // Handling settings
-          let extSettings = loadExtSettings('msgViewerSettings');
+      let zoomLevel = 100;
 
-          function saveSettings() {
-            saveExtSettings('msgViewerSettings', { zoomLevel });
-          }
+      document.addEventListener('DOMContentLoaded', () => {
+        initUI();
 
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            documentContent.style.zoom = zoomLevel + '%';
-          }
-
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              zoomLevel = 100;
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
+        if (encrypted) {
+          sendMessageToHost({ command: 'loadDefaultBinaryContent' });
+        } else {
+          getFileContentPromise(filePath, 'arraybuffer')
+            .then(setContent)
+            .catch((err) => console.error('Error loading MSG:', err));
         }
       });
 
+      function initUI() {
+        insertLoadingAnimation();
+        insertToggleFindMenuItem();
+        insertZoomContentMenuItem();
+        insertExportAsHTMLFunctionality();
+        insertPrintMenuItem();
+        insertAboutDialog('https://docs.tagspaces.org/extensions/msg-viewer');
+        initI18N(locale, 'ns.extension.json');
+
+        // Settings & Zoom
+        const extSettings = loadExtSettings('msgViewerSettings');
+        if (extSettings && extSettings.zoomLevel) {
+          zoomLevel = Math.min(Math.max(extSettings.zoomLevel, 30), 500);
+          applyZoom();
+        }
+
+        document
+          .getElementById('zoomInButton')
+          .addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.min(zoomLevel + 10, 500);
+            saveZoom();
+          });
+
+        document
+          .getElementById('zoomOutButton')
+          .addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.max(zoomLevel - 10, 30);
+            saveZoom();
+          });
+
+        document
+          .getElementById('zoomResetButton')
+          .addEventListener('click', (e) => {
+            zoomLevel = 100;
+            saveZoom();
+          });
+
+        // Attach this once inside your DOMContentLoaded or readystatechange listener
+        document.addEventListener('click', (e) => {
+          const downloadBtn = e.target.closest('.attachment-download');
+          if (downloadBtn) {
+            e.preventDefault();
+            const index = parseInt(downloadBtn.getAttribute('data-index'), 10);
+            const attachmentRef = currentAttachments[index];
+
+            if (currentMsgReader && attachmentRef) {
+              try {
+                // Use getAttachment to fetch the binary content
+                const attachment =
+                  currentMsgReader.getAttachment(attachmentRef);
+
+                // The library returns the content as a Uint8Array in the .content property
+                if (attachment && attachment.content) {
+                  const blob = new Blob([attachment.content], {
+                    type: 'application/octet-stream',
+                  });
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download =
+                    attachment.fileName || attachment.name || 'download';
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  window.URL.revokeObjectURL(url);
+                } else {
+                  console.error(
+                    'Attachment content is still empty',
+                    attachment,
+                  );
+                  alert('Could not extract attachment content.');
+                }
+              } catch (err) {
+                console.error('Error extracting attachment:', err);
+              }
+            }
+          }
+        });
+      }
+
+      function saveZoom() {
+        saveExtSettings('msgViewerSettings', { zoomLevel });
+        applyZoom();
+      }
+
+      function applyZoom() {
+        const el = document.getElementById('documentContent');
+        if (el) el.style.zoom = zoomLevel + '%';
+      }
+
       function setContent(buffer) {
-        var msgReader = new MSGReader(buffer);
-        var fileData = msgReader.getFileData();
+        try {
+          // Initialize the reader
+          currentMsgReader = new MSGReader(buffer);
+          const fileData = currentMsgReader.getFileData();
 
-        if (!fileData.error) {
-          let htmlContent = '';
-          if (fileData.subject) {
-            htmlContent += `<b>Subject: </b>${fileData.subject}<br />`;
+          if (!fileData.error) {
+            renderMessage(fileData);
+            hideLoadingAnimation();
+            initFindToolbar();
+          } else {
+            console.error('Error parsing MSG:', fileData.error);
           }
-          if (fileData.senderName) {
-            htmlContent += `<b>From: </b>${fileData.senderName}<br />`;
-          }
-          if (fileData.senderEmail) {
-            htmlContent += ` - ${fileData.senderEmail}<br />`;
-          }
-          if (fileData.headers) {
-            htmlContent += `<b>Sending date: </b>${getMsgDate(
-              fileData.headers
-            )}<br />`;
-          }
-          if (fileData.recipients && fileData.recipients.length > 0) {
-            htmlContent += '<b>To:</b> ';
-            fileData.recipients.map((recipient) => {
-              let recipientHTML = '';
-              if (recipient.name) {
-                recipientHTML += recipient.name;
-              }
-              if (recipient.email) {
-                recipientHTML += ' &lt;' + recipient.email + '&gt;';
-              }
-              htmlContent += recipientHTML + ';';
-            });
-            htmlContent += '<br />';
-          }
-          if (fileData.attachments) {
-            htmlContent += `<b>Attachments: </b>${fileData.attachments.length}<br />`;
-          }
-          if (fileData.bodyHTML) {
-            htmlContent += `<b>Body (html):</b><br />${fileData.bodyHTML}<br />`;
-          }
-          if (fileData.body) {
-            htmlContent += `<b>Body (text):</b><br /><pre>${fileData.body}</pre><br />`;
-          }
-          // if (fileData.headers) {
-          //   htmlContent +=
-          //     '<b>Headers:</b><br /> ' +
-          //     fileData.headers +
-          //     '<br />';
-          // }
-          const documentContent = document.getElementById('documentContent');
-          documentContent.innerHTML = sanitizeContent(htmlContent);
+        } catch (err) {
+          console.error('Error in setContent:', err);
+        }
+      }
 
-          handleLinks(documentContent);
+      function renderMessage(data) {
+        const container = document.getElementById('documentContent');
+        currentAttachments = data.attachments || []; // Save attachments for downloading
 
-          hideLoadingAnimation();
+        // Build Header Section
+        let headerHtml = '<div class="msg-header-box">';
 
-          initFindToolbar();
+        if (data.subject) {
+          headerHtml += `<h3>${DOMPurify.sanitize(data.subject)}</h3>`;
+        }
+
+        headerHtml += `<div><span class="msg-label">From:</span> ${formatContact(data.senderName, data.senderEmail)}</div>`;
+
+        if (data.recipients && data.recipients.length > 0) {
+          const to = data.recipients.filter(
+            (r) => r.recipType === 'to' || !r.recipType,
+          );
+          const cc = data.recipients.filter((r) => r.recipType === 'cc');
+
+          if (to.length > 0) {
+            headerHtml += `<div><span class="msg-label">To:</span> ${to.map((r) => formatContact(r.name, r.email)).join('; ')}</div>`;
+          }
+          if (cc.length > 0) {
+            headerHtml += `<div><span class="msg-label">Cc:</span> ${cc.map((r) => formatContact(r.name, r.email)).join('; ')}</div>`;
+          }
+        }
+
+        const msgDate =
+          data.messageDate || extractDateFromHeaders(data.headers);
+        headerHtml += `<div><span class="msg-label">Date:</span> ${msgDate}</div>`;
+
+        // Attachment UI
+        if (currentAttachments.length > 0) {
+          headerHtml += `<div><span class="msg-label">Attachments:</span> `;
+          headerHtml += currentAttachments
+            .map((att, index) => {
+              const fileName = att.fileName || att.name || 'attachment';
+              return `
+                <a class="attachment-item attachment-download" data-index="${index}" title="Click to download">
+                    <svg class="attachment-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    ${DOMPurify.sanitize(fileName)}
+                </a>`;
+            })
+            .join('');
+          headerHtml += `</div>`;
+        }
+        headerHtml += '</div>';
+
+        // Build Body Section (FIXED: Defining bodyHtml)
+        let bodyHtml = ''; // Initialize the variable
+        if (data.bodyHTML) {
+          bodyHtml = `<div class="msg-body-html">${data.bodyHTML}</div>`;
+        } else if (data.body) {
+          bodyHtml = `<pre class="text-body">${DOMPurify.sanitize(data.body)}</pre>`;
         } else {
-          console.log('Error parsing MSG file');
+          bodyHtml = `<p class="text-muted italic">No message body found.</p>`;
         }
+
+        // Security: Sanitization & Injection
+        container.innerHTML = DOMPurify.sanitize(headerHtml + bodyHtml, {
+          ADD_TAGS: ['style', 'svg', 'path'], // Allow SVG for attachment icons
+          ADD_ATTR: ['target', 'data-index', 'viewBox', 'fill'], // Allow data-index for downloader
+        });
+
+        handleLinks(container);
       }
 
-      function formatEmail(data) {
-        return data.name ? data.name + ' [' + data.email + ']' : data.email;
+      function formatContact(name, email) {
+        const cleanName = name ? DOMPurify.sanitize(name) : '';
+        const cleanEmail = email ? DOMPurify.sanitize(email) : '';
+
+        if (cleanName && cleanEmail && cleanName !== cleanEmail) {
+          return `${cleanName} &lt;${cleanEmail}&gt;`;
+        }
+        return cleanName || cleanEmail || 'Unknown';
       }
 
-      function parseHeaders(headers) {
-        var parsedHeaders = {};
-        if (!headers) {
-          return parsedHeaders;
+      function extractDateFromHeaders(headers) {
+        if (!headers) return '-';
+        const match = headers.match(/^Date: (.*)$/m);
+        if (match && match[1]) {
+          const d = new Date(match[1]);
+          return isNaN(d) ? match[1] : d.toLocaleString();
         }
-        var headerRegEx = /(.*)\: (.*)/g;
-        while ((m = headerRegEx.exec(headers))) {
-          // TODO: Header can be presented many times (e.g. Received).
-          parsedHeaders[m[1]] = m[2];
-        }
-        return parsedHeaders;
-      }
-
-      function getMsgDate(rawHeaders) {
-        // Example for the Date header
-        var headers = parseHeaders(rawHeaders);
-        if (!headers['Date']) {
-          return '-';
-        }
-        return new Date(headers['Date']);
+        return '-';
       }
     </script>
   </head>
@@ -202,7 +313,7 @@
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
-        class="btn btn-primary btn-lg"
+        class="btn btn-primary btn-lg shadow"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
@@ -218,7 +329,7 @@
           ></path>
         </svg>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu shadow">
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
