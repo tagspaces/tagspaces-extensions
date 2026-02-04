@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -7,208 +7,256 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <title>RTF Viewer for TagSpaces</title>
+
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="libs/rtf/samples/jquery.svg.css" />
+
     <style>
+      :root {
+        --rtf-zoom: 100%;
+      }
       body {
         overflow: auto;
+        background-color: #f0f2f5;
+      }
+      #documentWrapper {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
       }
       #documentContent {
-        height: 100%;
-        padding: 5px;
-        font-size: var(--default-text-size);
-        color: var(--default-text-color) 1;
-        background-color: var(--default-background-color);
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 50px;
+        min-height: 297mm;
+        width: 100%;
+        max-width: 850px;
+        zoom: var(--rtf-zoom);
+        transform-origin: top center;
+        word-wrap: break-word;
+      }
+      .error-overlay {
+        padding: 20px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c2c7;
+        margin: 20px;
+        border-radius: 4px;
+      }
+      #documentContent img,
+      #documentContent svg {
+        max-width: 100%;
+        height: auto;
       }
     </style>
+
     <script src="../libs/jquery/dist/jquery.min.js"></script>
-    <script src="libs/rtf/samples/cptable.full.js"></script>
-    <script src="libs/rtf/samples/symboltable.js"></script>
-    <script src="libs/rtf/samples/jquery.svg.min.js"></script>
-    <script src="libs/rtf/samples/jquery.svgfilter.min.js"></script>
-    <script src="libs/rtf/rtf.js"></script>
-    <script src="libs/rtf/wmf.js"></script>
     <script src="../libs/mark.js/mark.min.js"></script>
-    <!-- <script src="../libs/dompurify/dist/purify.min.js"></script> -->
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="libs/rtf/RTFJS.bundle.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
+
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      const locale = (getParameterByName('locale') || 'en').replace(
+        'en',
+        'en_US',
+      );
       const encrypted = getParameterByName('encrypted');
+      let zoomLevel = 100;
 
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          if (encrypted) {
-            sendMessageToHost({ command: 'loadDefaultTextContent' });
-          } else {
-            getFileContentPromise(filePath, 'text')
-              .then((content) => {
-                setContent(content);
-              })
-              .catch((e) => {
-                console.log('Error getting content for: ' + filePath);
-              });
+      document.addEventListener('DOMContentLoaded', initExtension);
+
+      async function initExtension() {
+        insertAboutDialog('https://docs.tagspaces.org/extensions/rtf-viewer');
+        insertPrintMenuItem();
+        insertToggleFindMenuItem();
+        insertZoomContentMenuItem();
+        insertExportAsHTMLFunctionality();
+        initI18N(locale, 'ns.extension.json');
+
+        const settings = loadExtSettings('rtfViewerSettings') || {};
+        zoomLevel = settings.zoomLevel || 100;
+        updateZoom(zoomLevel);
+
+        // Global Click Listener (including link hijacking)
+        document.addEventListener('click', (e) => {
+          const id = e.target.closest('button')?.id || e.target.id;
+
+          // Handle Zoom UI
+          if (id === 'zoomInButton') updateZoom(zoomLevel + 10);
+          if (id === 'zoomOutButton') updateZoom(zoomLevel - 10);
+          if (id === 'zoomResetButton') updateZoom(100);
+
+          // Show Properties Modal
+          if (e.target.id === 'showMetaBtn') {
+            e.preventDefault();
+            const modalEl = document.getElementById('metaModal');
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
           }
 
-          insertAboutDialog('https://docs.tagspaces.org/extensions/rtf-viewer');
-
-          insertPrintMenuItem();
-          insertToggleFindMenuItem();
-          insertZoomContentMenuItem();
-          insertExportAsHTMLFunctionality();
-
-          initI18N(locale, 'ns.extension.json');
-
-          const documentContent = document.getElementById('documentContent');
-
-          // Handling settings
-          let extSettings = loadExtSettings('rtfViewerSettings');
-
-          function saveSettings() {
-            saveExtSettings('rtfViewerSettings', { zoomLevel });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
+          // Intercept all <a> tag clicks inside #documentContent
+          const link = e.target.closest('#documentContent a');
+          if (link) {
+            e.preventDefault();
+            const url = link.getAttribute('href');
+            if (url && url !== '#' && !url.startsWith('javascript:')) {
+              console.log('Opening link externally:', url);
+              sendMessageToHost({ command: 'openLinkExternally', link: url });
             }
-            documentContent.style.zoom = zoomLevel + '%';
           }
-          saveSettings();
+        });
 
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              zoomLevel = 100;
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
+        if (encrypted) {
+          sendMessageToHost({ command: 'loadDefaultTextContent' });
+        } else {
+          try {
+            const content = await getFileContentPromise(
+              filePath,
+              'arraybuffer',
+            );
+            await processRTF(content);
+          } catch (e) {
+            handleError('Failed to load file: ' + e.message);
+          }
         }
-      });
-
-      function setContent(content) {
-        displayRtfFile(stringToBinaryArray(content));
-        initFindToolbar();
       }
 
-      function stringToBinaryArray(string) {
-        const buffer = new ArrayBuffer(string.length);
-        const bufferView = new Uint8Array(buffer);
-        for (let i = 0; i < string.length; i += 1) {
-          bufferView[i] = string.charCodeAt(i);
-        }
-        return buffer;
+      function updateZoom(val) {
+        zoomLevel = Math.min(Math.max(val, 30), 500);
+        document.documentElement.style.setProperty(
+          '--rtf-zoom',
+          zoomLevel + '%',
+        );
+        saveExtSettings('rtfViewerSettings', { zoomLevel });
       }
 
-      function setPictBorder(elem, show) {
-        return elem.css('border', show ? '1px dotted red' : 'none');
-      }
+      async function processRTF(data) {
+        const contentArea = document.getElementById('documentContent');
+        const metaBody = document.getElementById('metaBody');
 
-      function setUnsafeLink(elem, warn) {
-        return elem.css('border', warn ? '1px dashed red' : 'none');
-      }
-
-      function displayRtfFile(blob) {
         try {
-          const showPicBorder = $('#showpicborder').prop('checked');
-          const warnHttpLinks = $('#warnhttplink').prop('checked');
-          const settings = {
-            onPicture: (create) => {
-              const elem = create().attr('class', 'rtfpict'); // WHY does addClass not work on <svg>?!
-              return setPictBorder(elem, showPicBorder);
-            },
+          const doc = new RTFJS.Document(data, {
+            // This hook still helps by ensuring URL data is preserved in the rendered HTML
             onHyperlink: (create, hyperlink) => {
               const url = hyperlink.url();
               const lnk = create();
-              const span = setUnsafeLink(
-                $('<span>').addClass('unsafelink').append(lnk),
-                warnHttpLinks
-              );
-              span.click((evt) => {
-                evt.preventDefault();
-                sendMessageToHost({ command: 'openLinkExternally', link: url });
-              });
-              return {
-                content: lnk,
-                element: span,
-              };
+              lnk.setAttribute('href', url);
+              return { content: lnk, element: lnk };
             },
-          };
-          const doc = new RTFJS.Document(blob, settings);
-          let haveMeta = false;
+          });
+
+          // Metadata Handling
           const meta = doc.metadata();
-          for (let prop in meta) {
-            console.log(meta);
-            $('#havemeta').append(
-              $('<div>')
-                .append($('<span>').text(prop + ': '))
-                .append($('<span>').text(meta[prop].toString()))
-            );
-            haveMeta = true;
+          metaBody.innerHTML = '';
+          let hasMeta = false;
+          for (const key in meta) {
+            const metaEntry = document.createElement('div');
+            metaEntry.className = 'mb-2';
+            metaEntry.innerHTML = `<strong>${DOMPurify.sanitize(key)}:</strong><br>${DOMPurify.sanitize(meta[key].toString())}`;
+            metaBody.appendChild(metaEntry);
+            hasMeta = true;
           }
-          if (haveMeta) {
-            $('#havemeta').show();
-          }
+          if (!hasMeta)
+            document.getElementById('showMetaBtn').parentElement.style.display =
+              'none';
 
-          const convertedRTF = doc.render();
+          // Rendering
+          const elements = await doc.render();
+          const wrapper = document.createElement('div');
 
-          $('#documentContent').empty().append(convertedRTF);
-          // $('#documentContent')
-          //   .empty()
-          //   .append(sanitizeContent($('#documentContent').html()));
-          $('#closebutton').show();
-          $('#tools').show();
-
-          // const documentContent = document.getElementById('documentContent');
-          // handleLinks(documentContent);
-        } catch (e) {
-          if (e instanceof RTFJS.Error) {
-            console.log('Error: ' + e.message);
-            $('#content').text('Error: ' + e.message);
+          if (Array.isArray(elements)) {
+            elements.forEach((el) => wrapper.appendChild(el));
           } else {
-            throw e;
+            wrapper.appendChild(elements);
           }
+
+          // Clean HTML while preserving styles and SVG data
+          const cleanHtml = DOMPurify.sanitize(wrapper.innerHTML, {
+            ALLOW_UNKNOWN_PROTOCOLS: true,
+            ADD_TAGS: [
+              'svg',
+              'use',
+              'image',
+              'path',
+              'rect',
+              'circle',
+              'ellipse',
+              'line',
+              'polyline',
+              'polygon',
+            ],
+            ADD_ATTR: [
+              'xlink:href',
+              'target',
+              'viewBox',
+              'fill',
+              'stroke',
+              'style',
+            ],
+          });
+
+          if (cleanHtml && cleanHtml.trim().length > 0) {
+            contentArea.innerHTML = cleanHtml;
+          } else {
+            contentArea.innerHTML =
+              '<p class="text-muted text-center mt-5">The document has no displayable content.</p>';
+          }
+
+          if (typeof initFindToolbar === 'function') initFindToolbar();
+        } catch (error) {
+          handleError(error.message || 'Error parsing RTF content');
         }
+      }
+
+      function handleError(msg) {
+        document.getElementById('documentContent').innerHTML = `
+          <div class="error-overlay">
+            <h5>Viewer Error</h5>
+            <p>${DOMPurify.sanitize(msg)}</p>
+          </div>
+        `;
+      }
+
+      function setContent(content) {
+        const encoder = new TextEncoder();
+        processRTF(encoder.encode(content).buffer);
       }
     </script>
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
-    <div id="documentContent"></div>
-    <hr />
-    <div id="havemeta"></div>
+
+    <div id="documentWrapper">
+      <div id="documentContent">
+        <div class="text-center mt-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Rendering document...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Properties Modal -->
+    <div class="modal fade" id="metaModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Document Properties</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div id="metaBody" class="modal-body small"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="aboutDialogPlaceholder"></div>
+
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
@@ -228,9 +276,18 @@
           ></path>
         </svg>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu shadow">
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a class="dropdown-item" href="#" id="showMetaBtn">
+            <svg width="24" height="24" class="bi" style="margin-right: 8px">
+              <path
+                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 16H5V7h14v12zm-2-7H7v-2h10v2zm-4 4H7v-2h6v2z"
+              ></path></svg
+            >Document Properties</a
+          >
+        </li>
         <li id="exportAsHTMLMenuItemPlaceholder"></li>
         <li id="toggleFindMenuItemPlaceholder"></li>
         <li id="printMenuItemPlaceholder"></li>
