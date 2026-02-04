@@ -17,7 +17,7 @@
       }
       body {
         overflow: auto;
-        background-color: #f0f2f5;
+        background-color: var(--background-color);
       }
       #documentWrapper {
         display: flex;
@@ -25,7 +25,8 @@
         padding: 20px;
       }
       #documentContent {
-        background-color: white;
+        color: var(--text-color);
+        background-color: var(--background-color);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         padding: 50px;
         min-height: 297mm;

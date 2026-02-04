@@ -18,7 +18,7 @@
       #documentContent,
       #readabilityContent {
         color: var(--text-color);
-        background-color: white;
+        background-color: var(--background-color);
         /* margin: 15px auto; */
         padding: 20px;
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
@@ -42,6 +42,26 @@
         padding-bottom: 10px;
         font-family: sans-serif;
       }
+
+      .attachment-item {
+        display: inline-flex;
+        align-items: center;
+        background: #e9ecef;
+        border: 1px solid #ced4da;
+        padding: 4px 12px;
+        margin: 2px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+        color: #495057;
+      }
+
+      .attachment-item:hover {
+        background: #dee2e6;
+        color: #007bff;
+      }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="libs/postal-mime/postal-mime.min.js"></script>
@@ -58,6 +78,7 @@
       let documentContent;
       let zoomLevel = 100;
       let blobUrls = []; // Track blobs for cleanup
+      let currentAttachments = []; // Store binary data for downloading
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
@@ -147,8 +168,38 @@
             .addEventListener('click', () => {
               webscrapingDetailsModal.show();
             });
+
+          document.addEventListener('click', (e) => {
+            const downloadBtn = e.target.closest('.attachment-download');
+            if (downloadBtn) {
+              e.preventDefault();
+              const index = parseInt(
+                downloadBtn.getAttribute('data-index'),
+                10,
+              );
+              const attachment = currentAttachments[index];
+
+              if (attachment && attachment.content) {
+                downloadFile(attachment);
+              }
+            }
+          });
         }
       });
+
+      function downloadFile(attachment) {
+        const blob = new Blob([attachment.content], {
+          type: attachment.mimeType || 'application/octet-stream',
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = attachment.filename || 'attachment';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
 
       function updateZoom() {
         saveExtSettings('viewerMHTMLSettings', { zoomLevel });
@@ -161,111 +212,174 @@
           zoomLevel + '%';
       }
 
-      async function setContent(contentBuffer) {
-        try {
-          // Cleanup old blobs
-          blobUrls.forEach((url) => URL.revokeObjectURL(url));
-          blobUrls = [];
+      /**
+       * Global variables required for this function
+       * let currentAttachments = [];
+       * let blobUrls = [];
+       */
 
+      async function setContent(contentBuffer) {
+        const container = document.getElementById('documentContent');
+
+        try {
+          // Cleanup: Revoke old Blob URLs to prevent memory leaks
+          if (blobUrls && blobUrls.length > 0) {
+            blobUrls.forEach((url) => URL.revokeObjectURL(url));
+            blobUrls = [];
+          }
+
+          // Parse the EML/MHTML content
           const parser = new PostalMime();
           const email = await parser.parse(contentBuffer);
 
-          // Extract MHTML specific Metadata
-          // Content-Location is often in the top-level headers for MHTML
+          // Save attachments globally for the click-delegator downloader
+          currentAttachments = email.attachments || [];
+
+          // Metadata Extraction (Source URL and Saved Date)
+          // MHTML files store the original URL in the top-level Content-Location header
           const contentLocationHeader = email.headers.find(
             (h) => h.key === 'content-location',
           );
           const sourceURL = contentLocationHeader
-            ? contentLocationHeader.value
+            ? contentLocationHeader.value.trim()
             : '';
 
-          document.getElementById('html-data-sourceurl').value =
-            sourceURL.trim();
-          document.getElementById('html-data-savedon').value = email.date || '';
+          const sourceUrlInput = document.getElementById('html-data-sourceurl');
+          const savedOnInput = document.getElementById('html-data-savedon');
 
-          // Resource Re-linking (Crucial for MHTML)
-          // Map CIDs and Locations to Blob URLs so images load
-          let finalHtml = email.html || `<pre>${email.text}</pre>`;
+          if (sourceUrlInput) sourceUrlInput.value = sourceURL;
+          if (savedOnInput) savedOnInput.value = email.date || '';
 
-          if (email.attachments && email.attachments.length > 0) {
-            email.attachments.forEach((att) => {
-              const blob = new Blob([att.content], { type: att.mimeType });
+          // Resource Re-linking (Handling Inline Images/CSS)
+          // We convert binary attachments into Blob URLs and replace CIDs or Locations in the HTML
+          let renderedHtml =
+            email.html ||
+            (email.text ? `<pre>${DOMPurify.sanitize(email.text)}</pre>` : '');
+
+          if (currentAttachments.length > 0) {
+            currentAttachments.forEach((att, index) => {
+              // Only create blobs for resources likely to be used inline or for download
+              const blob = new Blob([att.content], {
+                type: att.mimeType || 'application/octet-stream',
+              });
               const blobUrl = URL.createObjectURL(blob);
               blobUrls.push(blobUrl);
 
-              // Replace Content-ID (cid:...)
+              // Replace Content-ID (Standard EML inline images: <img src="cid:unique-id">)
               if (att.contentId) {
                 const cid = att.contentId.replace(/[<>]/g, '');
-                finalHtml = finalHtml.split(`cid:${cid}`).join(blobUrl);
+                renderedHtml = renderedHtml.split(`cid:${cid}`).join(blobUrl);
               }
-              // Replace Content-Location (absolute or relative URLs)
-              // This is common in MHTML web archives
+
+              // Replace Content-Location (Standard MHTML resources: <img src="http://site.com/img.jpg">)
               const location = att.headers?.find(
                 (h) => h.key === 'content-location',
               )?.value;
               if (location) {
-                finalHtml = finalHtml.split(location).join(blobUrl);
+                renderedHtml = renderedHtml
+                  .split(location.trim())
+                  .join(blobUrl);
               }
             });
           }
 
-          // Build Email Header (if it's an email)
+          // Build Header Section (Subject, From, To, Attachments)
           const isEmail = email.messageId || (email.to && email.to.length > 0);
           let headerHTML = '';
 
           if (isEmail) {
             headerHTML += '<div class="email-header">';
-            if (email.subject)
-              headerHTML += `<div><strong>Subject:</strong> ${DOMPurify.sanitize(email.subject)}</div>`;
-            if (email.date)
-              headerHTML += `<div><strong>Date:</strong> ${DOMPurify.sanitize(email.date)}</div>`;
-            if (email.from)
-              headerHTML += `<div><strong>From:</strong> ${formatAddress(email.from)}</div>`;
+            if (email.subject) {
+              headerHTML += `<h3 style="margin-top:0">${DOMPurify.sanitize(email.subject)}</h3>`;
+            }
+            headerHTML += `<div><strong>From:</strong> ${formatAddress(email.from)}</div>`;
             if (email.to)
               headerHTML += `<div><strong>To:</strong> ${formatAddress(email.to)}</div>`;
-            if (email.attachments?.length > 0) {
-              const names = email.attachments
-                .map((a) => a.filename || 'unnamed')
-                .join(', ');
-              headerHTML += `<div><strong>Attachments:</strong> ${DOMPurify.sanitize(names)}</div>`;
-            }
-            headerHTML += '</div>';
+            if (email.date)
+              headerHTML += `<div><strong>Date:</strong> ${DOMPurify.sanitize(email.date)}</div>`;
+
+            headerHTML += currentAttachments
+              .map((att, index) => {
+                const name = att.filename || 'unnamed-file';
+
+                // Robust size calculation
+                let sizeText = 'Unknown size';
+                if (att.content && att.content.byteLength !== undefined) {
+                  sizeText = (att.content.byteLength / 1024).toFixed(1) + ' KB';
+                } else if (att.content && att.content.length !== undefined) {
+                  sizeText = (att.content.length / 1024).toFixed(1) + ' KB';
+                } else if (att.size !== undefined) {
+                  sizeText = (att.size / 1024).toFixed(1) + ' KB';
+                }
+
+                return `
+    <a class="attachment-item attachment-download" data-index="${index}" >
+      <svg style="margin-right: 6px;" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+      </svg>
+      ${DOMPurify.sanitize(name)} <small style="margin-left: 5px; opacity: 0.6;">(${sizeText})</small>
+    </a>`;
+              })
+              .join('');
+            headerHTML += '<hr style="margin: 20px 0;" /></div>';
           }
 
-          // Sanitize and Inject
-          const cleanBody = DOMPurify.sanitize(finalHtml, {
-            ADD_TAGS: ['style', 'video', 'audio', 'source'],
-            ADD_ATTR: ['target', 'controls', 'autoplay'],
+          // 6. Security: Sanitize Combined Content
+          const cleanBody = DOMPurify.sanitize(renderedHtml, {
+            ADD_TAGS: ['style', 'video', 'audio', 'source', 'svg', 'path'],
+            ADD_ATTR: [
+              'target',
+              'controls',
+              'data-index',
+              'viewBox',
+              'fill',
+              'd',
+            ],
           });
 
-          document.getElementById('documentContent').innerHTML =
-            headerHTML + cleanBody;
+          // 7. Inject into DOM
+          container.innerHTML = headerHTML + cleanBody;
 
-          // Post-processing
-          document.querySelectorAll('video, audio').forEach((media) => {
+          // 8. Post-Processing
+          // Disable autoplay on any media found in the document
+          container.querySelectorAll('video, audio').forEach((media) => {
             media.removeAttribute('autoplay');
             media.setAttribute('controls', '');
             media.pause();
           });
 
-          handleLinks(document.getElementById('documentContent'));
-          initFindToolbar();
+          // Re-link external links to TagSpaces host
+          handleLinks(container);
+
+          // Initialize search/mark.js
+          if (typeof initFindToolbar === 'function') {
+            initFindToolbar();
+          }
+
           hideLoadingAnimation();
         } catch (err) {
-          console.error('Parsing failed', err);
-          document.getElementById('documentContent').innerHTML =
-            'Error parsing file.';
+          console.error('Error in setContent:', err);
+          container.innerHTML = `<div class="alert alert-danger">Failed to parse document: ${err.message}</div>`;
           hideLoadingAnimation();
         }
       }
 
+      /**
+       * Helper to format email address objects from Postal-Mime
+       */
       function formatAddress(addrObj) {
+        if (!addrObj) return 'Unknown';
         if (Array.isArray(addrObj)) {
           return addrObj
-            .map((a) => `${a.name || ''} <${a.address}>`)
+            .map((a) => {
+              const name = a.name ? DOMPurify.sanitize(a.name) : '';
+              const email = a.address ? DOMPurify.sanitize(a.address) : '';
+              return name ? `${name} &lt;${email}&gt;` : email;
+            })
             .join('; ');
         }
-        return `${addrObj.name || ''} <${addrObj.address}>`;
+        return addrObj.address || 'Unknown';
       }
     </script>
   </head>
