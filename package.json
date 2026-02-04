@@ -87,6 +87,7 @@
     "markmap-view": "^0.14.3",
     "psd": "3.4.0",
     "reveal.js": "4.6.1",
+    "rtf.js": "3.0.9",
     "summernote": "~0.8.20",
     "tga-js": "1.1.1",
     "viewerjs": "1.11.6"
