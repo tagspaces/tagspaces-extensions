@@ -97,9 +97,14 @@
       function setContent(content) {
         let url = '';
         let screenshot = '';
-
+        let fileExt = filePath
+          .substring(filePath.lastIndexOf('.'))
+          .toLowerCase();
+        if (fileExt.includes('?')) {
+          fileExt = fileExt.split('?')[0];
+        }
         try {
-          if (filePath.toLowerCase().endsWith('.webloc')) {
+          if (fileExt === '.webloc') {
             url = extractUrlFromWebloc(content);
           } else {
             // 1. Optimized .url (INI) parsing
@@ -134,7 +139,7 @@
 
           if (!isValidUrl(url)) {
             console.warn('Invalid or unsafe URL extracted:', url);
-            url = ''; // Reset to prevent malicious protocol execution
+            url = 'INVALID URL'; // Reset to prevent malicious protocol execution
           }
 
           // 3. Handle Screenshot (COMMENT field)
