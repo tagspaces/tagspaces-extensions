@@ -325,7 +325,7 @@
             headerHTML += '<hr style="margin: 20px 0;" /></div>';
           }
 
-          // 6. Security: Sanitize Combined Content
+          // Security: Sanitize Combined Content
           const cleanBody = DOMPurify.sanitize(renderedHtml, {
             ADD_TAGS: ['style', 'video', 'audio', 'source', 'svg', 'path'],
             ADD_ATTR: [
@@ -338,7 +338,7 @@
             ],
           });
 
-          // 7. Inject into DOM
+          // Inject into DOM
           container.innerHTML = headerHTML + cleanBody;
 
           // 8. Post-Processing
@@ -375,7 +375,7 @@
             .map((a) => {
               const name = a.name ? DOMPurify.sanitize(a.name) : '';
               const email = a.address ? DOMPurify.sanitize(a.address) : '';
-              return name ? `${name} &lt;${email}&gt;` : email;
+              return `${name ? name + ' ' : ' '}<a href="mailto:${email}">${email}</a>`;
             })
             .join('; ');
         }

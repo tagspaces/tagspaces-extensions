@@ -286,7 +286,7 @@
         const cleanEmail = email ? DOMPurify.sanitize(email) : '';
 
         if (cleanName && cleanEmail && cleanName !== cleanEmail) {
-          return `${cleanName} &lt;${cleanEmail}&gt;`;
+          return `${cleanName} <a href="mailto:${cleanEmail}">${cleanEmail}</a>`;
         }
         return cleanName || cleanEmail || 'Unknown';
       }
