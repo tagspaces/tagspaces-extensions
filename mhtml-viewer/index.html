@@ -19,10 +19,10 @@
       #readabilityContent {
         color: var(--text-color);
         background-color: var(--background-color);
-        /* margin: 15px auto; */
+        margin: 0 auto;
         padding: 20px;
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-        /* max-width: 900px; */
+        max-width: 1280px;
         min-height: 100vh;
         border-radius: 4px;
       }
@@ -238,7 +238,7 @@
           // Metadata Extraction (Source URL and Saved Date)
           // MHTML files store the original URL in the top-level Content-Location header
           const contentLocationHeader = email.headers.find(
-            (h) => h.key === 'content-location',
+            (h) => h.key === 'snapshot-content-location', // 'content-location',
           );
           const sourceURL = contentLocationHeader
             ? contentLocationHeader.value.trim()
@@ -248,7 +248,13 @@
           const savedOnInput = document.getElementById('html-data-savedon');
 
           if (sourceUrlInput) sourceUrlInput.value = sourceURL;
-          if (savedOnInput) savedOnInput.value = email.date || '';
+
+          if (savedOnInput && email.date) {
+            savedOnInput.value = formatDateTime(email.date, {
+              withTime: true,
+              splitter: ' ',
+            });
+          }
 
           // Resource Re-linking (Handling Inline Images/CSS)
           // We convert binary attachments into Blob URLs and replace CIDs or Locations in the HTML
@@ -341,7 +347,7 @@
           // Inject into DOM
           container.innerHTML = headerHTML + cleanBody;
 
-          // 8. Post-Processing
+          // Post-Processing
           // Disable autoplay on any media found in the document
           container.querySelectorAll('video, audio').forEach((media) => {
             media.removeAttribute('autoplay');
@@ -379,7 +385,8 @@
             })
             .join('; ');
         }
-        return addrObj.address || 'Unknown';
+        const email = DOMPurify.sanitize(addrObj.address || 'Unknown');
+        return `<a href="mailto:${email}">${email}</a>`;
       }
     </script>
   </head>
@@ -451,7 +458,7 @@
               <div class="input-group">
                 <button
                   id="copyURL"
-                  class="btn btn-outline-secondary"
+                  class="btn btn-primary"
                   type="button"
                   title="Copy"
                 >
@@ -492,7 +499,7 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-primary"
               data-bs-dismiss="modal"
               data-i18n="ok"
             ></button>
