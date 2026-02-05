@@ -97,14 +97,8 @@
       function setContent(content) {
         let url = '';
         let screenshot = '';
-        let fileExt = filePath
-          .substring(filePath.lastIndexOf('.'))
-          .toLowerCase();
-        if (fileExt.includes('?')) {
-          fileExt = fileExt.split('?')[0];
-        }
         try {
-          if (fileExt === '.webloc') {
+          if (extractFileExtension(filePath) === '.webloc') {
             url = extractUrlFromWebloc(content);
           } else {
             // 1. Optimized .url (INI) parsing

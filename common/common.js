@@ -133,6 +133,14 @@ function getParameterByName(paramName) {
   return param;
 }
 
+function extractFileExtension(filePath) {
+  let fileExt = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
+  if (fileExt.includes('?')) {
+    fileExt = fileExt.split('?')[0];
+  }
+  return fileExt;
+}
+
 function loadExtSettings(key) {
   return JSON.parse(localStorage.getItem(key));
 }
