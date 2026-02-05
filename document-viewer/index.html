@@ -12,19 +12,32 @@
     <style>
       html,
       body {
-        width: 100%;
-        height: 100%;
         overflow: auto;
+        background-color: var(--default-background-color);
       }
       #documentContent {
         height: 100%;
-        padding: 15px;
+        padding: 20px;
+        max-width: 1280px;
+        width: 100%;
+        margin: 0 auto;
         font-size: var(--default-text-size);
-        /* color: var(--default-text-color); */
-        /* background-color: white; */ /* var(--default-background-color) */
+        color: var(--text-color);
+        background-color: var(--background-color);
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
       }
       #documentContent img {
         max-width: 100%;
+        height: auto;
+      }
+      .odt-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+      }
+      .odt-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
       }
     </style>
     <script src="../libs/jszip/jszip.min.js"></script>
@@ -37,10 +50,8 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      let locale = getParameterByName('locale') || 'en';
+      if (locale === 'en') locale = 'en_US';
       const encrypted = getParameterByName('encrypted');
 
       document.addEventListener('readystatechange', () => {
@@ -48,108 +59,253 @@
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/document-viewer',
           );
-
           insertPrintMenuItem();
           insertToggleFindMenuItem();
           insertZoomContentMenuItem();
           insertExportAsHTMLFunctionality();
-
           initI18N(locale, 'ns.extension.json');
-
-          const options = {
-            convertImage: mammoth.images.imgElement((image) => {
-              return image.read('base64').then((imageBuffer) => {
-                return {
-                  src: 'data:' + image.contentType + ';base64,' + imageBuffer,
-                };
-              });
-            }),
-            styleMap: [
-              "p[style-name='Section Title'] => h1:fresh",
-              "p[style-name='Subsection Title'] => h2:fresh",
-            ],
-          };
 
           if (encrypted) {
             document.getElementById('encyptedMessage').style.display = 'block';
           } else {
-            JSZipUtils.getBinaryContent(filePath, (err, data) => {
-              if (err) {
-                throw err; // or handle err
-              }
-              mammoth
-                .convertToHtml({ arrayBuffer: data }, options)
-                .then((result) => {
-                  // console.log(result);
-                  // const html = result.value; // The generated HTML
-                  // const messages = result.messages; // Any messages, such as warnings during conversion
-                  displayDocument(result);
-                })
-                .done();
-            });
+            loadDocument();
           }
 
-          const documentContent = document.getElementById('documentContent');
-
-          // Handling settings
-          let extSettings = loadExtSettings('documentViewerSettings');
-
-          function saveSettings() {
-            saveExtSettings('documentViewerSettings', { zoomLevel });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            documentContent.style.zoom = zoomLevel + '%';
-          }
-          saveSettings();
-
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              zoomLevel = 100;
-              saveSettings();
-              documentContent.style.zoom = zoomLevel + '%';
-            });
+          setupZoomLogic();
         }
       });
 
+      function loadDocument() {
+        const isOdt = extractFileExtension(filePath) === '.odt';
+
+        JSZipUtils.getBinaryContent(filePath, async (err, data) => {
+          if (err) {
+            console.error('Error loading file:', err);
+            return;
+          }
+
+          if (isOdt) {
+            renderODT(data);
+          } else {
+            // Existing DOCX logic with Mammoth
+            const options = {
+              convertImage: mammoth.images.imgElement((image) => {
+                return image.read('base64').then((imageBuffer) => {
+                  return {
+                    src: 'data:' + image.contentType + ';base64,' + imageBuffer,
+                  };
+                });
+              }),
+            };
+            mammoth
+              .convertToHtml({ arrayBuffer: data }, options)
+              .then(displayDocument)
+              .done();
+          }
+        });
+      }
+
+      let odtStyleMap = {};
+
+      /**
+       * Leverages JSZip to read content.xml
+       */
+      async function renderODT(data) {
+        try {
+          const zip = await JSZip.loadAsync(data);
+          const contentXml = await zip.file('content.xml').async('string');
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(contentXml, 'text/xml');
+
+          // 1. Pre-parse styles to find bold/italic definitions
+          odtStyleMap = parseOdtStyles(xmlDoc);
+
+          let html = '';
+          const body = xmlDoc.getElementsByTagName('office:text')[0];
+
+          if (body) {
+            for (let node of body.childNodes) {
+              html += await processOdtNode(node, zip);
+            }
+          }
+
+          displayDocument({ value: html });
+        } catch (e) {
+          console.error('ODT parsing failed:', e);
+          document.getElementById('documentContent').innerHTML =
+            'Failed to parse ODT file.';
+        }
+      }
+
+      /**
+       * Scans <office:automatic-styles> to create a map of text formatting
+       */
+      function parseOdtStyles(xmlDoc) {
+        const styleMap = {};
+        const autoStyles = xmlDoc.getElementsByTagName(
+          'office:automatic-styles',
+        )[0];
+        if (!autoStyles) return styleMap;
+
+        const styles = autoStyles.getElementsByTagName('style:style');
+        for (let style of styles) {
+          const name = style.getAttribute('style:name');
+          const textProps = style.getElementsByTagName(
+            'style:text-properties',
+          )[0];
+
+          if (textProps) {
+            styleMap[name] = {
+              bold: textProps.getAttribute('fo:font-weight') === 'bold',
+              italic: textProps.getAttribute('fo:font-style') === 'italic',
+              underline:
+                textProps.getAttribute('style:text-underline-style') ===
+                  'solid' ||
+                textProps.getAttribute('style:text-underline-type') !== null,
+            };
+          }
+        }
+        return styleMap;
+      }
+
+      async function processOdtNode(node, zip) {
+        const nodeName = node.nodeName;
+
+        // Text Nodes
+        if (node.nodeType === 3) {
+          return node.textContent;
+        }
+
+        // Heading
+        if (nodeName === 'text:h') {
+          const level = node.getAttribute('text:outline-level') || 1;
+          let content = await processChildNodes(node, zip);
+          return `<h${level}>${content}</h${level}>`;
+        }
+
+        // Paragraph
+        if (nodeName === 'text:p') {
+          let content = await processChildNodes(node, zip);
+          return `<p>${content}</p>`;
+        }
+
+        // Span (The primary container for bold/italic)
+        if (nodeName === 'text:span') {
+          const styleName = node.getAttribute('text:style-name');
+          let content = await processChildNodes(node, zip);
+
+          if (odtStyleMap[styleName]) {
+            const s = odtStyleMap[styleName];
+            if (s.bold) content = `<strong>${content}</strong>`;
+            if (s.italic) content = `<em>${content}</em>`;
+            if (s.underline) content = `<u>${content}</u>`;
+          }
+          return `<span>${content}</span>`;
+        }
+
+        // Line Break
+        if (nodeName === 'text:line-break') {
+          return '<br/>';
+        }
+
+        // Multiple Spaces
+        if (nodeName === 'text:s') {
+          const count = parseInt(node.getAttribute('text:c') || '1');
+          return '&nbsp;'.repeat(count);
+        }
+
+        // Table
+        if (nodeName === 'table:table') {
+          let tableHtml = '<table class="odt-table">';
+          const rows = node.getElementsByTagName('table:table-row');
+          for (let row of rows) {
+            tableHtml += '<tr>';
+            const cells = row.getElementsByTagName('table:table-cell');
+            for (let cell of cells) {
+              // Tables can contain paragraphs, so we process children
+              let cellContent = await processChildNodes(cell, zip);
+              tableHtml += `<td>${cellContent}</td>`;
+            }
+            tableHtml += '</tr>';
+          }
+          return tableHtml + '</table>';
+        }
+
+        // Image Handling
+        if (nodeName === 'draw:frame') {
+          const imgNode = node.getElementsByTagName('draw:image')[0];
+          if (imgNode) {
+            const imgPath = imgNode.getAttribute('xlink:href');
+            const imgFile = zip.file(imgPath.replace('./', '')); // Fix paths
+            if (imgFile) {
+              const base64 = await imgFile.async('base64');
+              const ext = imgPath.split('.').pop();
+              return `<img src="data:image/${ext};base64,${base64}" />`;
+            }
+          }
+        }
+
+        return '';
+      }
+
+      /**
+       * Helper to process all children of a node recursively
+       */
+      async function processChildNodes(node, zip) {
+        let html = '';
+        if (node.childNodes) {
+          for (let child of node.childNodes) {
+            html += await processOdtNode(child, zip);
+          }
+        }
+        return html;
+      }
+
       function displayDocument(result) {
         const content = result.value;
-        // const warrningMessage = result.message;
         const documentContent = document.getElementById('documentContent');
         documentContent.innerHTML = sanitizeContent(content);
-
         handleLinks(documentContent);
-
         initFindToolbar();
+      }
+
+      function setupZoomLogic() {
+        const documentContent = document.getElementById('documentContent');
+        let extSettings = loadExtSettings('documentViewerSettings');
+        let zoomLevel = 100;
+
+        if (extSettings && extSettings.zoomLevel) {
+          zoomLevel = Math.min(Math.max(extSettings.zoomLevel, 30), 500);
+          documentContent.style.zoom = zoomLevel + '%';
+        }
+
+        document
+          .getElementById('zoomInButton')
+          .addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.min(zoomLevel + 10, 500);
+            applyZoom();
+          });
+
+        document
+          .getElementById('zoomOutButton')
+          .addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.max(zoomLevel - 10, 30);
+            applyZoom();
+          });
+
+        document
+          .getElementById('zoomResetButton')
+          .addEventListener('click', (e) => {
+            zoomLevel = 100;
+            applyZoom();
+          });
+
+        function applyZoom() {
+          saveExtSettings('documentViewerSettings', { zoomLevel });
+          documentContent.style.zoom = zoomLevel + '%';
+        }
       }
     </script>
   </head>
