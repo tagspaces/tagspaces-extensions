@@ -13,6 +13,7 @@
     <script src="../libs/viewerjs/viewer.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../libs/file-saver/FileSaver.min.js"></script>
     <script src="libs/exif-js/exif.js"></script>
     <style>
       body {
@@ -63,567 +64,410 @@
       }
     </style>
     <script>
+      // --- Global Configuration ---
       let filePath = getParameterByName('file');
-      let tmbPath = getParameterByName('thumb');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      const tmbPath = getParameterByName('thumb');
+      const locale =
+        getParameterByName('locale') === 'en'
+          ? 'en_US'
+          : getParameterByName('locale');
       const encrypted = getParameterByName('encrypted');
 
-      function arrayBufferToDataURL(arrayBuffer, mime) {
-        return new Promise((resolve) => {
-          const blob = new Blob([arrayBuffer], { type: mime });
+      const MIME_MAP = {
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.jfif': 'image/jpeg',
+        '.pjpeg': 'image/jpeg',
+        '.pjp': 'image/jpeg',
+        '.png': 'image/png',
+        '.avif': 'image/avif',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml',
+        '.webp': 'image/webp',
+      };
+
+      let imageContent, viewer, imageViewerContainer;
+      let imageBackgroundColor = '#000000';
+      let flipState = { h: false, v: false, grayscale: false };
+
+      // --- Utility: XHR Wrapper (Replacement for fetch) ---
+      const requestBuffer = (url) =>
+        new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = 'arraybuffer';
+          xhr.open('GET', url);
+          xhr.onload = () =>
+            xhr.status >= 400 ? reject(xhr.status) : resolve(xhr.response);
+          xhr.onerror = () => reject(new Error('Network Error'));
+          xhr.send();
+        });
+
+      // --- Utility: Script Loader ---
+      const loadScript = (src) =>
+        new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+
+      // --- Utility: DataURL Converter ---
+      const arrayBufferToDataURL = (buffer, mime) =>
+        new Promise((resolve) => {
+          const blob = new Blob([buffer], { type: mime });
           const reader = new FileReader();
-
-          reader.onload = function (event) {
-            const dataUrl = event.target?.result;
-            resolve(dataUrl);
-          };
-
+          reader.onload = (e) => resolve(e.target.result);
           reader.readAsDataURL(blob);
         });
-      }
 
-      let imageContent;
-      let fileExt;
-
-      function setContent(content) {
-        if (!imageContent) {
-          return;
-        }
-        let mimeType = '';
-        if (
-          fileExt === '.jpg' ||
-          fileExt === '.jpeg' ||
-          fileExt === '.jfif' ||
-          fileExt === '.pjpeg' ||
-          fileExt === '.pjp'
-        ) {
-          mimeType = 'image/jpeg';
-        } else if (fileExt === '.png') {
-          mimeType = 'image/png';
-        } else if (fileExt === '.avif') {
-          mimeType = 'image/avif';
-        } else if (fileExt === '.gif') {
-          mimeType = 'image/gif';
-        } else if (fileExt === '.svg') {
-          mimeType = 'image/svg+xml';
-        } else if (fileExt === '.webp') {
-          mimeType = 'image/webp';
-        }
-        if (mimeType) {
-          arrayBufferToDataURL(content, mimeType).then((dataURL) => {
-            imageContent.setAttribute('src', dataURL);
+      // --- Specialized Format Handlers ---
+      const FormatHandlers = {
+        async tiff(path) {
+          await loadScript('libs/utif.js/UTIF.js');
+          const buffer = await requestBuffer(path);
+          const ifds = UTIF.decode(buffer);
+          return UTIF.bufferToURI(buffer, ifds[0]);
+        },
+        async psd(path) {
+          await loadScript('libs/psd/dist/psd.min.js');
+          const PSD = require('psd');
+          const psd = await PSD.fromURL(path);
+          return psd.image.toPng().getAttribute('src');
+        },
+        async tga(path) {
+          await loadScript('libs/tga.js/tga.js');
+          return new Promise((resolve) => {
+            const tga = new TgaLoader();
+            tga.open(path, () => resolve(tga.getDataURL('image/png')));
           });
+        },
+        async heic(path) {
+          await loadScript('libs/libheif-wasm/libheif-bundle.js');
+          const decoder = new (libheif().HeifDecoder)();
+          const buffer = await requestBuffer(path);
+          const data = decoder.decode(buffer);
+          const handle = data[0];
+          const canvas = document.createElement('canvas');
+          canvas.width = handle.get_width();
+          canvas.height = handle.get_height();
+          const ctx = canvas.getContext('2d');
+          const imgData = ctx.createImageData(canvas.width, canvas.height);
+
+          await new Promise((res, rej) => {
+            handle.display(imgData, (displayData) => {
+              if (!displayData) return rej();
+              ctx.putImageData(imgData, 0, 0);
+              res();
+            });
+          });
+          return canvas.toDataURL('image/jpeg', 0.9);
+        },
+      };
+
+      // --- Content Handlers ---
+      async function setContent(content) {
+        if (!imageContent) return;
+        const ext = filePath.split(/[?#]/)[0].split('.').pop().toLowerCase();
+        const mime = MIME_MAP['.' + ext];
+
+        if (mime) {
+          const dataUrl = await arrayBufferToDataURL(content, mime);
+          imageContent.setAttribute('src', dataUrl);
         } else {
           document.getElementById('encyptedMessage').style.display = 'block';
         }
       }
 
-      document.addEventListener('readystatechange', () => {
-        function resizeDiv() {
-          const div = document.getElementById('fabMenu');
-          // Use window.innerHeight — height of the iframe viewport
-          const menuHeight = window.innerHeight - 100;
-          div.style.maxHeight = menuHeight + 'px';
+      // --- Main Init ---
+      document.addEventListener('readystatechange', async () => {
+        if (document.readyState !== 'complete') return;
+
+        // UI Init
+        insertAboutDialog('https://docs.tagspaces.org/extensions/image-viewer');
+        insertPrintMenuItem();
+        insertZoomContentMenuItem();
+        initI18N(locale, 'ns.extension.json');
+
+        imageContent = document.getElementById('imageContent');
+        const imageThumb = document.getElementById('imageThumb');
+        imageThumb.style.backgroundImage = `url("${tmbPath}")`;
+
+        // Path Normalization
+        if (!(isCordova || isWeb)) {
+          filePath = 'file://' + filePath;
         }
 
-        // Set once on load
-        window.addEventListener('load', resizeDiv);
-        // Update on resize (e.g. parent resizes iframe)
-        window.addEventListener('resize', resizeDiv);
+        // Settings
+        const extSettings = loadExtSettings('imageViewerSettings');
+        if (extSettings?.imageBackgroundColor) {
+          imageBackgroundColor = extSettings.imageBackgroundColor;
+          document.body.style.background = imageBackgroundColor;
+        }
 
-        if (document.readyState === 'complete') {
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/image-viewer',
-          );
-          // insertLoadingAnimation();
-          insertPrintMenuItem();
-          insertZoomContentMenuItem();
-
-          initI18N(locale, 'ns.extension.json');
-
-          if (encrypted) {
-            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-            // document.getElementById('encyptedMessage').style.display = 'block';
-            // return;
+        // Load File
+        if (encrypted) {
+          sendMessageToHost({ command: 'loadDefaultBinaryContent' });
+        } else {
+          const ext =
+            '.' + filePath.split(/[?#]/)[0].split('.').pop().toLowerCase();
+          try {
+            if (['.cr2', '.dng', '.nef', '.tiff', '.tif'].includes(ext)) {
+              imageContent.src = await FormatHandlers.tiff(filePath);
+            } else if (ext === '.psd') {
+              imageContent.src = await FormatHandlers.psd(filePath);
+            } else if (ext === '.tga') {
+              imageContent.src = await FormatHandlers.tga(filePath);
+            } else if (ext === '.heic') {
+              imageContent.src = await FormatHandlers.heic(filePath);
+            } else {
+              imageContent.src = filePath;
+            }
+          } catch (e) {
+            console.error('Format loading error', e);
+            imageContent.src = filePath; // Fallback
           }
+        }
 
-          fileExt = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
-          if (fileExt.includes('?')) {
-            fileExt = fileExt.split('?')[0];
-          }
-          if (isCordova || isWeb) {
-            // to nothing in these cases
-          } else {
-            filePath = 'file://' + filePath;
-          }
+        // Viewer.js Setup
+        imageContent.addEventListener('load', (e) => {
+          const eTarget = event.target;
+          viewer = new Viewer(imageContent, {
+            movable: true,
+            navbar: false,
+            toolbar: false,
+            title: false,
+            transition: false,
+            initialCoverage: 0.98,
+            fullscreen: true,
+            inline: 'inline',
+            ready: () => viewer.full(),
+            viewed: () => {
+              document.getElementById('progressBar').style.display = 'none';
+              imageThumb.style.display = 'none';
+              imageViewerContainer =
+                document.getElementsByClassName('viewer-container')[0];
+              imageViewerContainer.style.background = 'transparent';
+              imageContent.style['visibility'] = 'hidden';
 
-          let exifObj;
-
-          let extSettings = loadExtSettings('imageViewerSettings');
-
-          let imageBackgroundColor = '#000000';
-          if (extSettings && extSettings.imageBackgroundColor) {
-            imageBackgroundColor = extSettings.imageBackgroundColor;
-            document.body.style.background = imageBackgroundColor;
-            // imageViewerContainer[0].style.background = '#ffffff';
-          }
-
-          function saveSettings() {
-            saveExtSettings('imageViewerSettings', { imageBackgroundColor });
-          }
-
-          let orientation;
-          let viewer;
-          imageContent = document.getElementById('imageContent');
-          imageThumb = document.getElementById('imageThumb');
-          imageThumb.style['background-image'] = 'url("' + tmbPath + '")';
-
-          if (
-            fileExt === '.cr2' ||
-            fileExt === '.dng' ||
-            fileExt === '.nef' ||
-            fileExt === '.tiff' ||
-            fileExt === '.tif'
-          ) {
-            const script = document.createElement('script');
-            script.onload = function () {
-              const xhr = new XMLHttpRequest();
-              xhr.responseType = 'arraybuffer';
-              xhr.open('GET', filePath);
-              xhr.onload = () => {
-                const ifds = UTIF.decode(xhr.response);
-                // UTIF.decodeImage(xhr.response, ifds[0]);
-                const dataURL = UTIF.bufferToURI(xhr.response, ifds[0]);
-                // const rgba = UTIF.toRGBA8(ifds[0]); // Uint8Array with RGBA pixels
-                // console.log(ifds[0].width, ifds[0].height, ifds[0]);
-                imageContent.setAttribute('src', dataURL);
-              };
-              xhr.send();
-            };
-            script.src = 'libs/utif.js/UTIF.js';
-            document.head.appendChild(script);
-          } else if (fileExt === '.psd') {
-            const script = document.createElement('script');
-            script.onload = function () {
-              const PSD = require('psd');
-              PSD.fromURL(filePath)
-                .then((psd) => {
-                  const image = psd.image.toPng();
-                  imageContent.setAttribute('src', image.getAttribute('src'));
-                  return true;
-                })
-                .catch(
-                  (e) => console.warn('Error loading PSD'), // : ' + JSON.stringify(e))
-                );
-            };
-            script.src = 'libs/psd/dist/psd.min.js';
-            document.head.appendChild(script);
-          } else if (fileExt === '.tga') {
-            const script = document.createElement('script');
-            script.onload = function () {
-              const tga = new TgaLoader();
-              tga.open(filePath, () => {
-                imageContent.setAttribute('src', tga.getDataURL('image/png'));
-              });
-            };
-            script.src = 'libs/tga.js/tga.js';
-            document.head.appendChild(script);
-          } else if (fileExt === '.heic') {
-            const script = document.createElement('script');
-            script.onload = () => {
-              const libheifInt = libheif();
-              const decoder = new libheifInt.HeifDecoder();
-
-              const xhr = new XMLHttpRequest();
-              xhr.responseType = 'arraybuffer';
-              xhr.open('GET', filePath);
-              xhr.onload = async () => {
-                const data = decoder.decode(xhr.response);
-                const imageHandle = data[0];
-
-                const width = imageHandle.get_width();
-                const height = imageHandle.get_height();
-
-                // Create canvas and context for rendering
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const context = canvas.getContext('2d');
-                const imageData = context.createImageData(width, height);
-
-                await new Promise((resolve, reject) => {
-                  imageHandle.display(imageData, (displayData) => {
-                    if (!displayData) {
-                      return reject(new Error('HEIF processing error'));
-                    }
-                    context.putImageData(imageData, 0, 0);
-                    resolve();
+              // Metadata handling
+              handleMetadata(imageContent);
+              if (!tmbPath) {
+                //automatically generate thumb
+                toDataURL(imageContent.src, (base64, err) => {
+                  if (err) return console.error(err);
+                  sendMessageToHost({
+                    command: 'thumbnailGenerated',
+                    content: base64,
                   });
                 });
-
-                imageContent.setAttribute(
-                  'src',
-                  canvas.toDataURL('image/jpeg', 0.9),
-                );
-              };
-              xhr.send();
-            };
-            script.src = 'libs/libheif-wasm/libheif-bundle.js';
-            document.head.appendChild(script);
-          } else if (!encrypted) {
-            imageContent.src = filePath;
-          }
-
-          let imageViewerContainer;
-
-          imageContent.addEventListener('load', (e) => {
-            const eTarget = event.target;
-            viewer = new Viewer(document.getElementById('imageContent'), {
-              movable: true,
-              navbar: false,
-              toolbar: false,
-              title: false,
-              transition: false,
-              initialCoverage: 0.98,
-              fullscreen: true,
-              inline: 'inline',
-              ready: () => {
-                viewer.full();
-              },
-              viewed: () => {
-                const progressBar = document.getElementById('progressBar');
-                progressBar.style.display = 'none';
-                imageThumb.style.display = 'none';
-                if (!tmbPath) {
-                  //automatically generate thumb
-                  toDataURL(imageContent.src, (base64, err) => {
-                    if (err) return console.error(err);
-                    sendMessageToHost({
-                      command: 'thumbnailGenerated',
-                      content: base64,
-                    });
-                  });
-                }
-
-                imageViewerContainer =
-                  document.getElementsByClassName('viewer-container');
-                imageViewerContainer[0].style.background = 'transparent';
-                exifObj = {};
-                exifObj['Width'] = eTarget.naturalWidth;
-                exifObj['Height'] = eTarget.naturalHeight;
-
-                if (
-                  filePath.toLowerCase().includes('.jpg') ||
-                  filePath.toLowerCase().includes('.jpeg')
-                ) {
-                  EXIF.getData(eTarget, () => {
-                    orientation = EXIF.getTag(eTarget, 'Orientation');
-                    // console.log(EXIF.pretty(this));
-                    // Construct EXIF info
-                    exifObj = {};
-                    exifObj['Width'] = eTarget.naturalWidth;
-                    exifObj['Height'] = eTarget.naturalHeight;
-                    orientationText = '0°';
-                    // 1= 0 degrees: the correct orientation, no adjustment is required.
-                    // 2= 0 degrees, mirrored: image has been flipped back-to-front.
-                    // 3= 180 degrees: image is upside down.
-                    // 4= 180 degrees, mirrored: image has been flipped back-to-front and is upside down.
-                    // 5= 90 degrees: image has been flipped back-to-front and is on its side.
-                    // 6= 90 degrees, mirrored: image is on its side.
-                    // 7= 270 degrees: image has been flipped back-to-front and is on its far side.
-                    // 8= 270 degrees, mirrored: image is on its far side.
-                    if (orientation === 1) {
-                      orientationText = '0°';
-                    } else if (orientation === 2) {
-                      orientationText = '0°, mirrored';
-                    } else if (orientation === 3) {
-                      orientationText = '180°';
-                    } else if (orientation === 4) {
-                      orientationText = '180°, mirrored';
-                    } else if (orientation === 5) {
-                      orientationText = '90°';
-                    } else if (orientation === 6) {
-                      orientationText = '90°, mirrored°';
-                    } else if (orientation === 7) {
-                      orientationText = '270°';
-                    } else if (orientation === 8) {
-                      orientationText = '270°, mirrored';
-                    }
-                    if (orientation) {
-                      exifObj['Orientation'] = orientationText;
-                    }
-                    const tags = [
-                      'Make',
-                      'Model',
-                      'DateTime',
-                      'Artist',
-                      'Copyright',
-                      'ExposureTime ',
-                      'FNumber',
-                      'Flash',
-                      'WhiteBalance',
-                      'ISOSpeedRatings',
-                      'ShutterSpeedValue',
-                      'ApertureValue',
-                      'FocalLength',
-                      'GPSLatitude',
-                      'GPSLatitudeRef',
-                      'GPSLongitude',
-                      'GPSLongitudeRef',
-                    ];
-                    for (let tag in tags) {
-                      const prop = tags[tag];
-                      if (eTarget.exifdata.hasOwnProperty(prop)) {
-                        exifObj[prop] = eTarget.exifdata[prop];
-                      }
-                    }
-                    metaData = { ...exifObj, ...eTarget.iptcdata };
-                    printEXIF(metaData);
-                  });
-                }
-                printEXIF(exifObj);
-
-                // Lazy loading of the file-saver library
-                const script = document.createElement('script');
-                script.src = '../libs/file-saver/FileSaver.min.js';
-                document.head.appendChild(script);
-              },
-            });
+              }
+            },
           });
+        });
 
-          imageContent.style['visibility'] = 'hidden';
-
-          document
-            .getElementById('copyToClipboard')
-            .addEventListener('click', (e) => {
-              toDataURL(
-                imageContent.src,
-                (dataURL) => {
-                  fetch(dataURL)
-                    .then((res) => res.blob())
-                    .then((blob) => {
-                      const data = [new ClipboardItem({ [blob.type]: blob })];
-                      navigator.clipboard.write(data);
-                    });
-                },
-                'png',
-              );
-            });
-
-          document
-            .getElementById('exportJPGImage')
-            .addEventListener('click', (e) => {
-              toDataURL(imageContent.src, (dataURL) => {
-                fetch(dataURL)
-                  .then((res) => res.blob())
-                  .then((blob) => {
-                    saveAs(
-                      blob,
-                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
-                    );
-                  });
-              });
-            });
-
-          document
-            .getElementById('exportPNGImage')
-            .addEventListener('click', (e) => {
-              toDataURL(
-                imageContent.src,
-                (dataURL) => {
-                  fetch(dataURL)
-                    .then((res) => res.blob())
-                    .then((blob) => {
-                      saveAs(
-                        blob,
-                        extractFileName(filePath, isWin ? '\\' : '/') + '.png',
-                      );
-                    });
-                },
-                'png',
-              );
-            });
-
-          document
-            .getElementById('exportWEBPImage')
-            .addEventListener('click', (e) => {
-              toDataURL(
-                imageContent.src,
-                (dataURL) => {
-                  fetch(dataURL)
-                    .then((res) => res.blob())
-                    .then((blob) => {
-                      saveAs(
-                        blob,
-                        extractFileName(filePath, isWin ? '\\' : '/') + '.webp',
-                      );
-                    });
-                },
-                'webp',
-              );
-            });
-
-          if (isWeb || isCordova) {
-            // TODO fix for saving images from web needed / security
-            document.getElementById('exportJPGImage').style.display = 'none';
-            document.getElementById('exportPNGImage').style.display = 'none';
-            document.getElementById('exportWEBPImage').style.display = 'none';
-            document.getElementById('expottImagesDelimiter').style.display =
-              'none';
-          }
-
-          const offset = 0;
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              viewer.zoom(offset + 1);
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              viewer.zoom(offset - 1);
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              viewer.reset();
-            });
-
-          document
-            .getElementById('fitToScreen')
-            .addEventListener('click', (e) => {
-              viewer.zoomTo(1);
-            });
-
-          document
-            .getElementById('rotateLeftButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              viewer.rotate(-90);
-            });
-
-          document
-            .getElementById('rotateRightButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              viewer.rotate(90);
-            });
-
-          let flipHorizontal;
-          let flipVertical;
-          let flipBoth;
-          let flipColor;
-          document
-            .getElementById('flipHorizontal')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              if (flipHorizontal === true) {
-                flipHorizontal = false;
-                viewer.scaleX(1); // Flip horizontal
-              } else {
-                flipHorizontal = true;
-                viewer.scaleX(-1); // Flip horizontal
-              }
-            });
-
-          document
-            .getElementById('flipVertical')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              if (flipVertical === true) {
-                flipVertical = false;
-                viewer.scaleY(1); // Flip horizontal
-              } else {
-                flipVertical = true;
-                viewer.scaleY(-1); // Flip vertical
-              }
-            });
-
-          document
-            .getElementById('whiteBackgroundColor')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              document.body.style.background = '#ffffff';
-              imageViewerContainer[0].style.background = '#ffffff';
-              imageBackgroundColor = '#ffffff';
-              saveSettings();
-            });
-
-          document
-            .getElementById('blackBackgroundColor')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              document.body.style.background = '#000000';
-              imageViewerContainer[0].style.background = '#000000';
-              imageBackgroundColor = '#000000';
-              saveSettings();
-            });
-
-          document
-            .getElementById('sepiaBackgroundColor')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              document.body.style.background = '#f4ecd8';
-              imageViewerContainer[0].style.background = '#f4ecd8';
-              imageBackgroundColor = '#f4ecd8';
-              saveSettings();
-            });
-
-          document
-            .getElementById('resetBackgroundColor')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              document.body.style.background = 'transparent';
-              imageViewerContainer[0].style.background = 'transparent';
-              imageBackgroundColor = 'transparent';
-              saveSettings();
-            });
-
-          document
-            .getElementById('flipBlackAndWhiteColor')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              if (flipColor) {
-                flipColor = false;
-                imageViewerContainer[0].style.filter = 'grayscale(0%)';
-                imageViewerContainer[0].style.WebkitFilter = 'grayscale(0%)';
-              } else {
-                flipColor = true;
-                imageViewerContainer[0].style.filter = 'grayscale(100%)'; // sepia(100%) brightness(50%) contrast(200%)
-                imageViewerContainer[0].style.WebkitFilter = 'grayscale(100%)';
-              }
-            });
-
-          function printEXIF(metaData) {
-            if (Object.keys(metaData).length < 1) {
-              return;
-            }
-            const exifTableBody = document.getElementById('exifTableBody');
-            exifTableBody.textContent = '';
-            for (let key in metaData) {
-              if (metaData.hasOwnProperty(key) && metaData[key].length !== 0) {
-                const tr = document.createElement('tr');
-                const th = document.createElement('th');
-                const td = document.createElement('td');
-                th.textContent = key;
-                th.style.color = 'black';
-                td.textContent = metaData[key];
-                td.style.color = 'black';
-                tr.appendChild(th);
-                tr.appendChild(td);
-                exifTableBody.appendChild(tr);
-              }
-            }
-          }
-        }
+        setupUIListeners();
       });
+
+      // --- Corrected Metadata Handling ---
+      function handleMetadata(img) {
+        // Safety Check: Ensure the image element exists and is loaded
+        if (!img || !img.naturalWidth) {
+          console.warn('Metadata requested but image not fully loaded yet.');
+          return;
+        }
+
+        const meta = {
+          Width: img.naturalWidth,
+          Height: img.naturalHeight,
+        };
+
+        const isJpeg =
+          filePath.toLowerCase().includes('.jpg') ||
+          filePath.toLowerCase().includes('.jpeg');
+
+        if (isJpeg && typeof EXIF !== 'undefined') {
+          EXIF.getData(img, function () {
+            const orientation = EXIF.getTag(this, 'Orientation');
+            const oMap = {
+              1: '0°',
+              2: '0°, mirrored',
+              3: '180°',
+              4: '180°, mirrored',
+              5: '90°',
+              6: '90°, mirrored',
+              7: '270°',
+              8: '270°, mirrored',
+            };
+
+            if (orientation)
+              meta['Orientation'] = oMap[orientation] || orientation;
+
+            const tags = [
+              'Make',
+              'Model',
+              'DateTime',
+              'Artist',
+              'Copyright',
+              'ExposureTime ',
+              'FNumber',
+              'Flash',
+              'WhiteBalance',
+              'ISOSpeedRatings',
+              'ShutterSpeedValue',
+              'ApertureValue',
+              'FocalLength',
+              'GPSLatitude',
+              'GPSLatitudeRef',
+              'GPSLongitude',
+              'GPSLongitudeRef',
+            ];
+            tags.forEach((tag) => {
+              if (this.exifdata && this.exifdata[tag]) {
+                meta[tag] = this.exifdata[tag];
+              }
+            });
+            renderExif(Object.assign(meta, this.iptcdata || {}));
+          });
+        } else {
+          renderExif(meta);
+        }
+      }
+
+      function renderExif(data) {
+        const container = document.getElementById('exifTableBody');
+        if (!container) return;
+
+        container.innerHTML = '';
+        // Use Object.keys to be safer in older environments
+        Object.keys(data).forEach((key) => {
+          const val = data[key];
+          if (val && val.toString().trim() !== '') {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<th style="color:black">${key}</th><td style="color:black">${val}</td>`;
+            container.appendChild(tr);
+          }
+        });
+      }
+
+      // --- UI Logic ---
+      function setupUIListeners() {
+        const save = () =>
+          saveExtSettings('imageViewerSettings', { imageBackgroundColor });
+
+        if (isWeb || isCordova) {
+          // TODO fix for saving images from web needed / security
+          document.getElementById('exportJPGImage').style.display = 'none';
+          document.getElementById('exportPNGImage').style.display = 'none';
+          document.getElementById('exportWEBPImage').style.display = 'none';
+          document.getElementById('exportImagesDelimiter').style.display =
+            'none';
+        }
+        // Zoom & Rotate
+        document.getElementById('zoomInButton').onclick = (e) => {
+          e.stopPropagation();
+          viewer.zoom(1);
+        };
+        document.getElementById('zoomOutButton').onclick = (e) => {
+          e.stopPropagation();
+          viewer.zoom(-1);
+        };
+        document.getElementById('zoomResetButton').onclick = () =>
+          viewer.reset();
+        document.getElementById('rotateLeftButton').onclick = (e) => {
+          e.stopPropagation();
+          viewer.rotate(-90);
+        };
+        document.getElementById('rotateRightButton').onclick = (e) => {
+          e.stopPropagation();
+          viewer.rotate(90);
+        };
+
+        // Flips
+        document.getElementById('flipHorizontal').onclick = (e) => {
+          e.stopPropagation();
+          flipState.h = !flipState.h;
+          viewer.scaleX(flipState.h ? -1 : 1);
+        };
+        document.getElementById('flipVertical').onclick = (e) => {
+          e.stopPropagation();
+          flipState.v = !flipState.v;
+          viewer.scaleY(flipState.v ? -1 : 1);
+        };
+
+        // Colors & Filters
+        const setBg = (color) => {
+          imageBackgroundColor = color;
+          document.body.style.background = color;
+          if (imageViewerContainer)
+            imageViewerContainer.style.background = color;
+          save();
+        };
+
+        document.getElementById('whiteBackgroundColor').onclick = () =>
+          setBg('#ffffff');
+        document.getElementById('blackBackgroundColor').onclick = () =>
+          setBg('#000000');
+
+        document.getElementById('sepiaBackgroundColor').onclick = () =>
+          setBg('#f4ecd8');
+        document.getElementById('resetBackgroundColor').onclick = () =>
+          setBg('transparent');
+
+        document.getElementById('flipBlackAndWhiteColor').onclick = () => {
+          flipState.grayscale = !flipState.grayscale;
+          const val = flipState.grayscale ? 'grayscale(100%)' : 'grayscale(0%)';
+          imageViewerContainer.style.filter = val;
+          imageViewerContainer.style.WebkitFilter = val;
+        };
+
+        // Exports (Using XHR inside toDataURL helper logic)
+        const triggerDownload = (format) => {
+          toDataURL(
+            imageContent.src,
+            (url) => {
+              const xhr = new XMLHttpRequest();
+              xhr.open('GET', url);
+              xhr.responseType = 'blob';
+              xhr.onload = () =>
+                saveAs(
+                  xhr.response,
+                  `${extractFileName(filePath, isWin ? '\\' : '/')}.${format}`,
+                );
+              xhr.send();
+            },
+            format,
+          );
+        };
+
+        document.getElementById('copyToClipboard').onclick = (e) => {
+          toDataURL(
+            imageContent.src,
+            (dataURL) => {
+              fetch(dataURL)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  const data = [new ClipboardItem({ [blob.type]: blob })];
+                  navigator.clipboard.write(data);
+                });
+            },
+            'png',
+          );
+        };
+
+        document.getElementById('exportJPGImage').onclick = () =>
+          triggerDownload('jpg');
+        document.getElementById('exportPNGImage').onclick = () =>
+          triggerDownload('png');
+
+        // Fab Menu Height
+        const fixMenu = () => {
+          const menu = document.getElementById('fabMenu');
+          if (menu) menu.style.maxHeight = window.innerHeight - 100 + 'px';
+        };
+        window.addEventListener('resize', fixMenu);
+        fixMenu();
+      }
     </script>
   </head>
   <body>
@@ -870,7 +714,7 @@
             <span data-i18n="toggleBlackAndWhiteColor"></span>
           </a>
         </li>
-        <li id="expottImagesDelimiter"><hr class="dropdown-divider" /></li>
+        <li id="exportImagesDelimiter"><hr class="dropdown-divider" /></li>
         <li>
           <a id="exportJPGImage" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
