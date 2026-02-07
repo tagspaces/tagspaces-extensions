@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -40,7 +40,7 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/json-editor'
+            'https://docs.tagspaces.org/extensions/json-editor',
           );
 
           insertPrintMenuItem();
@@ -124,7 +124,6 @@
           jsonContent = jsonContent.substring(1, jsonContent.length);
         }
 
-        // filePath = filePathParam;
         try {
           jsonContent = JSON.parse(jsonContent);
         } catch (e) {
@@ -155,7 +154,6 @@
           !!Object.keys(jsonContent) &&
           (typeof jsonContent !== 'function' || jsonContent === null)
         ) {
-          // console.debug(Object.keys(jsonContent));
           jsonEditor = new JSONEditor(container, options, jsonContent);
         } else {
           throw new TypeError('Object.keys called on non-object');
@@ -185,18 +183,6 @@
     </script>
   </head>
   <body>
-    <!-- <a id="jsonHelpButton">
-      <i class="fa fa-info fa-lg fa-fw"></i>&nbsp;<span
-        data-i18n="JSONHelp"
-      ></span>
-    </a>
-    <div
-      class="modal fullScreenMobile"
-      id="markdownHelpModal"
-      tabindex="-1"
-      role="dialog"
-      aria-hidden="true"
-    ></div> -->
     <div
       id="documentContent"
       style="border-width: 0 !important; width: 100%; height: 100%"
