@@ -1,75 +1,80 @@
 <!doctype html>
-<html style="margin: 0; padding: 0; height: 100%">
+<html lang="en" style="margin: 0; padding: 0; height: 100%">
   <head>
     <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
-    <script src="../common/common.js"></script>
+    <title>PDF Viewer</title>
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      let locale = getParameterByName('locale') || 'en';
+      if (locale === 'en') locale = 'en_US';
       const encrypted = getParameterByName('encrypted');
-      let pdfViewer;
 
-      function arrayBufferToDataURL(arrayBuffer, mime) {
-        return new Promise((resolve) => {
-          const blob = new Blob([arrayBuffer], { type: mime });
-          const reader = new FileReader();
+      let currentBlobUrl = null;
 
-          reader.onload = function (event) {
-            const dataUrl = event.target?.result;
-            resolve(dataUrl);
-          };
-
-          reader.readAsDataURL(blob);
-        });
+      /**
+       * Clean up memory to prevent leaks
+       */
+      function revokeCurrentBlob() {
+        if (currentBlobUrl) {
+          URL.revokeObjectURL(currentBlobUrl);
+          currentBlobUrl = null;
+        }
       }
 
-      function setContent(content) {
-        if (!pdfViewer) {
-          document.getElementById('encyptedMessage').style.display = 'block';
-          return;
-        }
-        arrayBufferToDataURL(content, 'application/pdf').then((dataURL) => {
-          pdfViewer.setAttribute(
-            'src',
-            'generic/web/viewer.html?file=' + encodeURIComponent(dataURL),
-          );
-        });
+      /**
+       * Sets the content of the PDF viewer
+       * @param {ArrayBuffer} buffer
+       */
+      function setContent(buffer) {
+        const pdfViewer = document.getElementById('pdfviewer');
+        if (!pdfViewer) return;
+
+        revokeCurrentBlob();
+
+        // Security & Optimization: Blobs are more efficient than DataURLs
+        const blob = new Blob([buffer], { type: 'application/pdf' });
+        currentBlobUrl = URL.createObjectURL(blob);
+
+        const viewerUrl = `generic/web/viewer.html?file=${encodeURIComponent(currentBlobUrl)}`;
+        pdfViewer.setAttribute('src', viewerUrl);
       }
 
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          pdfViewer = document.getElementById('pdfviewer');
-          if (encrypted) {
-            sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-            // pdfViewer.style.display = 'none';
-            // document.getElementById('encyptedMessage').style.display = 'block';
-          } else {
-            pdfViewer.setAttribute(
-              'src',
-              'generic/web/viewer.html?file=' + encodeURIComponent(filePath),
-            );
-          }
-          insertAboutDialog('https://docs.tagspaces.org/extensions/pdf-viewer');
+      document.addEventListener('DOMContentLoaded', () => {
+        const pdfViewer = document.getElementById('pdfviewer');
 
-          initI18N(locale, 'ns.extension.json');
+        if (encrypted) {
+          sendMessageToHost({ command: 'loadDefaultBinaryContent' });
+        } else if (filePath) {
+          // Direct file loading
+          const viewerUrl = `generic/web/viewer.html?file=${encodeURIComponent(filePath)}`;
+          pdfViewer.setAttribute('src', viewerUrl);
         }
+
+        insertAboutDialog('https://docs.tagspaces.org/extensions/pdf-viewer');
+        initI18N(locale, 'ns.extension.json');
       });
+
+      // Revoke blob URL when user leaves to free up memory
+      window.addEventListener('unload', revokeCurrentBlob);
     </script>
   </head>
 
   <body style="margin: 0; padding: 0; height: 100%; overflow: hidden">
-    <iframe id="pdfviewer" style="width: 100%; border: 0; height: 100%">
+    <iframe
+      id="pdfviewer"
+      style="width: 100%; border: 0; height: 100%"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      allow="fullscreen"
+    >
     </iframe>
     <div
       id="encyptedMessage"
@@ -97,8 +102,6 @@
         </svg>
       </button>
       <ul class="dropdown-menu">
-        <!-- <li id="printMenuItemPlaceholder"></li>
-        <li><hr class="dropdown-divider" /></li> -->
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
