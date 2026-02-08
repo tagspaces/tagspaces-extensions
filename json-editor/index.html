@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -11,99 +11,105 @@
     <link rel="stylesheet" href="libs/jsoneditor/jsoneditor.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <style>
+      :root {
+        --json-zoom-level: 100%;
+      }
       html,
       body {
         width: 100%;
         height: 100%;
+        margin: 0;
+        padding: 0;
         overflow: auto;
+        background-color: var(--default-background-color);
       }
-
+      #documentContent {
+        width: 100%;
+        height: 100%;
+        /* Use zoom with a fallback for better browser support */
+        zoom: var(--json-zoom-level);
+      }
       .jsoneditor {
-        border: 0px;
+        border: 0 !important;
+      }
+      /* Ensure the editor menu stays accessible during zoom */
+      .jsoneditor-menu {
+        zoom: 1 !important;
       }
     </style>
     <script src="libs/jsoneditor/jsoneditor-minimalist.min.js"></script>
-    <script src="../libs/marked/marked.min.js"></script>
-    <script src="../libs/mark.js/mark.min.js"></script>
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      let locale = getParameterByName('locale') || 'en';
+      if (locale === 'en') locale = 'en_US';
+
       let jsonEditor;
       let isViewer = true;
+      let zoomLevel = 100;
 
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/json-editor',
-          );
-
-          insertPrintMenuItem();
-          insertZoomContentMenuItem();
-
-          initI18N(locale, 'ns.extension.json');
-
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
-
-          // Handling settings
-          let extSettings = loadExtSettings('jsonEditorSettings');
-
-          function saveSettings() {
-            saveExtSettings('jsonEditorSettings', { zoomLevel });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            document.getElementById('documentContent').style.zoom =
-              zoomLevel + '%';
-          }
-          saveSettings();
-
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              zoomLevel = 100;
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-        }
+      document.addEventListener('DOMContentLoaded', () => {
+        setupUI();
+        sendMessageToHost({ command: 'loadDefaultTextContent' });
       });
 
+      function setupUI() {
+        insertAboutDialog('https://docs.tagspaces.org/extensions/json-editor');
+        insertPrintMenuItem();
+        insertZoomContentMenuItem();
+        initI18N(locale, 'ns.extension.json');
+
+        // Load and apply settings
+        const extSettings = loadExtSettings('jsonEditorSettings');
+        if (extSettings && extSettings.zoomLevel) {
+          zoomLevel = Math.min(Math.max(extSettings.zoomLevel, 30), 500);
+        }
+        applyZoom();
+
+        // Zoom Event Listeners
+        document
+          .getElementById('zoomInButton')
+          ?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.min(zoomLevel + 10, 500);
+            updateZoom();
+          });
+
+        document
+          .getElementById('zoomOutButton')
+          ?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = Math.max(zoomLevel - 10, 30);
+            updateZoom();
+          });
+
+        document
+          .getElementById('zoomResetButton')
+          ?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomLevel = 100;
+            updateZoom();
+          });
+      }
+
+      function updateZoom() {
+        saveExtSettings('jsonEditorSettings', { zoomLevel });
+        applyZoom();
+      }
+
+      function applyZoom() {
+        document.documentElement.style.setProperty(
+          '--json-zoom-level',
+          zoomLevel + '%',
+        );
+      }
+
+      /**
+       * Notifies host that content has changed
+       */
       function contentChanged() {
         sendMessageToHost({
           command: 'contentChangedInEditor',
@@ -111,103 +117,140 @@
         });
       }
 
+      /**
+       * Returns current JSON content to TagSpaces host for saving
+       */
       function getContent() {
         if (jsonEditor) {
-          return JSON.stringify(jsonEditor.get());
+          try {
+            return JSON.stringify(jsonEditor.get(), null, 2);
+          } catch (e) {
+            console.error('Error getting content from editor', e);
+          }
         }
+        return '';
       }
 
+      /**
+       * Main entry point for loading content
+       */
       function setContent(jsonContentParam, filePathParam, isViewMode) {
-        const UTF8_BOM = '\ufeff';
         let jsonContent = jsonContentParam;
-        if (jsonContent.indexOf(UTF8_BOM) === 0) {
-          jsonContent = jsonContent.substring(1, jsonContent.length);
+
+        // Securely handle UTF-8 BOM
+        if (jsonContent.startsWith('\ufeff')) {
+          jsonContent = jsonContent.substring(1);
         }
 
+        let parsedData;
         try {
-          jsonContent = JSON.parse(jsonContent);
+          parsedData = JSON.parse(jsonContent);
+
+          // Basic Prototype Pollution Defense
+          if (
+            jsonContent.includes('__proto__') ||
+            jsonContent.includes('constructor')
+          ) {
+            console.warn(
+              'Potential prototype pollution detected in JSON. Content will be handled strictly.',
+            );
+          }
         } catch (e) {
-          console.log('Error parsing JSON document. ' + e);
+          console.error('Error parsing JSON document:', e);
+          // Show error to user in the content area
+          document.getElementById('documentContent').innerHTML =
+            `<div class="alert alert-danger m-3">Error parsing JSON: ${DOMPurify.sanitize(e.message)}</div>`;
           return false;
         }
 
-        const options = {
-          search: true,
-          history: true,
-          mode: isViewer ? 'view' : 'tree',
-          // modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
-          onError: (err) => {
-            console.warn(err.toString());
-          },
-          onChange: contentChanged,
-        };
-
+        isViewer = isViewMode;
         const container = document.getElementById('documentContent');
 
-        if (isViewer) {
-          container.addEventListener('dblclick', () => {
-            sendMessageToHost({ command: 'editDocument' });
-          });
+        const options = {
+          mode: isViewer ? 'view' : 'tree',
+          search: true,
+          history: true,
+          // Security: prevent execution of scripts if the editor renders certain fields as HTML
+          onSafeHTML: (html) => DOMPurify.sanitize(html),
+          onError: (err) => {
+            console.warn('JSONEditor Error:', err.toString());
+          },
+          onChange: () => {
+            if (!isViewer) contentChanged();
+          },
+          onModeChange: (newMode) => {
+            isViewer = newMode === 'view';
+          },
+        };
+
+        // Cleanup existing instance if any
+        if (jsonEditor) {
+          jsonEditor.destroy();
         }
 
+        // Validate data type before initializing
         if (
-          !!Object.keys(jsonContent) &&
-          (typeof jsonContent !== 'function' || jsonContent === null)
+          parsedData !== null &&
+          (typeof parsedData === 'object' || Array.isArray(parsedData))
         ) {
-          jsonEditor = new JSONEditor(container, options, jsonContent);
-        } else {
-          throw new TypeError('Object.keys called on non-object');
-        }
+          jsonEditor = new JSONEditor(container, options, parsedData);
 
-        viewerMode(isViewMode);
+          if (isViewer) {
+            container.addEventListener('dblclick', handleDblClick);
+          } else {
+            setupKeyboardShortcuts();
+          }
+        } else {
+          container.innerHTML = `<div class="alert alert-warning m-3">The file contains valid JSON, but it is not an object or array.</div>`;
+        }
       }
 
+      function handleDblClick() {
+        if (isViewer) {
+          sendMessageToHost({ command: 'editDocument' });
+        }
+      }
+
+      function setupKeyboardShortcuts() {
+        document.body.addEventListener('keydown', (event) => {
+          if (
+            (event.ctrlKey || event.metaKey) &&
+            event.key.toLowerCase() === 's'
+          ) {
+            event.stopPropagation();
+            event.preventDefault();
+            sendMessageToHost({ command: 'saveDocument' });
+          }
+        });
+      }
+
+      // Hook for viewer mode toggling from TagSpaces
       function viewerMode(isViewerMode) {
-        isViewer = isViewerMode;
-        if (isViewerMode) {
-          jsonEditor.setMode('view');
-        } else {
-          jsonEditor.setMode('tree');
-          document.body.addEventListener('keydown', (event) => {
-            if (
-              (event.ctrlKey || event.metaKey) &&
-              event.key.toLowerCase() === 's'
-            ) {
-              event.stopPropagation();
-              event.preventDefault();
-              sendMessageToHost({ command: 'saveDocument' });
-            }
-          });
+        if (jsonEditor) {
+          isViewer = isViewerMode;
+          jsonEditor.setMode(isViewerMode ? 'view' : 'tree');
+          if (!isViewerMode) setupKeyboardShortcuts();
         }
       }
     </script>
   </head>
   <body>
-    <div
-      id="documentContent"
-      style="border-width: 0 !important; width: 100%; height: 100%"
-    ></div>
+    <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
-        class="btn btn-primary btn-lg"
+        class="btn btn-primary btn-lg shadow"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <svg
-          class="bi"
-          width="24"
-          height="24"
-          focusable="false"
-          aria-hidden="true"
-        >
+        <svg class="bi" width="24" height="24" fill="currentColor">
           <path
             d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
           ></path>
         </svg>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu shadow">
         <li id="zoomContentMenuItemPlaceholder"></li>
         <li><hr class="dropdown-divider" /></li>
         <li id="printMenuItemPlaceholder"></li>
