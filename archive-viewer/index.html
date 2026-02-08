@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -10,14 +10,48 @@
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
     <style>
+      :root {
+        --archive-zoom: 100%;
+      }
       body {
         overflow: auto;
+        background-color: var(--default-background-color);
+      }
+      #documentContent {
+        padding: 15px;
+        width: 100%;
+        zoom: var(--archive-zoom);
+      }
+      .table td {
+        word-break: break-all;
+        vertical-align: middle;
       }
 
-      #documentContent {
+      #filePreviewText {
+        white-space: pre-wrap;
+        min-height: 200px;
+        max-height: 60vh;
+        border: 1px solid #ccc;
+        border-radius: 5px;
         padding: 10px;
+        text-align: left;
+        overflow: auto;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        background-color: #f8f9fa;
+        display: none;
+      }
+      #filePreviewImage {
+        display: none;
+        max-width: 100%;
+        max-height: 70vh;
+        margin: 0 auto;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .preview-container {
+        text-align: center;
         width: 100%;
-        height: 100%;
+        margin-bottom: 15px;
       }
     </style>
     <script src="../libs/jszip/jszip.min.js"></script>
@@ -27,185 +61,10 @@
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
-    <script>
-      const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
-      const encrypted = getParameterByName('encrypted');
-
-      const maxPreviewSize = 1024 * 3 || {}; // 3kb limit for preview
-      let filePreviewModal;
-
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/archive-viewer'
-          );
-
-          insertPrintMenuItem();
-          insertToggleFindMenuItem();
-          insertZoomContentMenuItem();
-
-          initI18N(locale, 'ns.extension.json');
-
-          filePreviewModal = new bootstrap.Modal('#filePreviewModal', {});
-
-          if (encrypted) {
-            document.getElementById('encyptedMessage').style.display = 'block';
-          } else {
-            insertLoadingAnimation();
-            JSZipUtils.getBinaryContent(filePath, (err, data) => {
-              if (err) {
-                throw err; // or handle err
-              }
-              JSZip.loadAsync(data).then((data) => {
-                displayDocument(data, filePath);
-              });
-            });
-          }
-
-          // Handling settings
-          let extSettings = loadExtSettings('archiveViewerSettings');
-
-          function saveSettings() {
-            saveExtSettings('archiveViewerSettings', { zoomLevel });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            document.getElementById('documentContent').style.zoom =
-              zoomLevel + '%';
-          }
-          saveSettings();
-
-          document
-            .getElementById('zoomInButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel + 10;
-              if (zoomLevel >= 500) {
-                zoomLevel = 500;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomOutButton')
-            .addEventListener('click', (e) => {
-              e.stopPropagation();
-              zoomLevel = zoomLevel - 10;
-              if (zoomLevel < 30) {
-                zoomLevel = 30;
-              }
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-
-          document
-            .getElementById('zoomResetButton')
-            .addEventListener('click', (e) => {
-              zoomLevel = 100;
-              saveSettings();
-              document.getElementById('documentContent').style.zoom =
-                zoomLevel + '%';
-            });
-        }
-      });
-
-      function displayDocument(zipFile, filePath) {
-        const documentContent = document.getElementById('documentContent');
-        documentContent.innerHTML = '';
-
-        handleLinks(documentContent);
-
-        if (
-          !!Object.keys(zipFile.files) &&
-          (typeof zipFile !== 'function' || zipFile === null)
-        ) {
-          let fileCounter = 0;
-          let tableHTML = `
-          <table class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col" style="min-width: 30px">#</th>
-                <th scope="col" style="width: 100%">Filepath</th>
-              </tr>
-            </thead>
-            <tbody>`;
-          for (const fileName in zipFile.files) {
-            if (zipFile.files[fileName].dir === true) {
-              continue;
-            }
-            fileCounter++;
-            tableHTML += `
-              <tr>
-                <th scope="row">${fileCounter}</th>
-                <td><a href="#" title="${fileName}" data-zipfile="${fileName}">${fileName}</a></td>
-              </tr>
-            `;
-          }
-          tableHTML += `</tbody></table>`;
-          documentContent.innerHTML = DOMPurify.sanitize(tableHTML);
-        } else {
-          documentContent.innerHTML = 'ZIP file is empty';
-          // throw new TypeError('Object.keys called on non-object');
-        }
-
-        hideLoadingAnimation();
-
-        function showContentFilePreviewDialog(filePath) {
-          showLoadingAnimation();
-          const containFile = zipFile.files[filePath];
-          containFile.options.compression = 'STORE';
-          containFile.async('text').then((blob) => {
-            let previewText = blob;
-            if (previewText.length > maxPreviewSize) {
-              previewText = previewText.substring(maxPreviewSize);
-            }
-            document.getElementById('filePreview').innerText =
-              sanitizeContent(previewText);
-            hideLoadingAnimation();
-          });
-
-          document.getElementById('filePathInput').value = filePath;
-          filePreviewModal.show();
-        }
-
-        function handleZIPLinks() {
-          const allZIPLinks = document.querySelectorAll('[data-zipfile]');
-          allZIPLinks.forEach((link) => {
-            let currentSrc = link.dataset.zipfile;
-            if (currentSrc.length > 0) {
-              link.addEventListener('click', (e) => {
-                e.preventDefault();
-                showContentFilePreviewDialog(currentSrc);
-              });
-            }
-          });
-        }
-
-        handleZIPLinks();
-
-        initFindToolbar();
-      }
-    </script>
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
     <div id="loadingAnimationPlaceholder"></div>
-    <div
-      id="encyptedMessage"
-      data-i18n="encryptedFileUseDownload"
-      style="display: none; text-align: center; padding: 20px"
-    ></div>
     <div id="documentContent"></div>
     <div id="aboutDialogPlaceholder"></div>
     <div id="extFabMenu" class="btn-group dropup-center dropup">
@@ -236,22 +95,22 @@
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
+    <!-- Preview Modal -->
     <div
       class="modal fade"
       id="filePreviewModal"
       tabindex="-1"
-      aria-labelledby="filePreviewModal"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5">
-              <span data-i18n="fileContentPreview" />
-            </h1>
+            <h5 class="modal-title m-0" data-i18n="fileContentPreview">
+              Preview
+            </h5>
             <button
               type="button"
-              class="btn-close"
+              class="btn-close ms-0"
               data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
@@ -260,28 +119,57 @@
             <input
               id="filePathInput"
               type="text"
-              class="form-control"
-              value="file path in ZIP file"
-              title="file path in ZIP file"
-              aria-label="readonly input"
+              class="form-control mb-3"
               readonly
             />
-            <pre
-              id="filePreview"
-              style="
-                white-space: pre-wrap;
-                min-height: 200px;
-                max-height: 500px;
-                border: 1px solid gray;
-                margin-top: 10px;
-                border-radius: 5px;
-                padding: 10px;
-                overflow: auto;
-              "
-              title="Showing the first 3kb of the file"
-            ></pre>
+            <div class="preview-container">
+              <img id="filePreviewImage" alt="Preview" />
+              <pre id="filePreviewText"></pre>
+            </div>
           </div>
-          <div class="modal-footer">
+          <div
+            class="modal-footer d-flex justify-content-between align-items-center"
+          >
+            <!-- <button
+                id="copyToClipboardBtn"
+                class="btn btn-primary"
+                title="Copy to clipboard"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
+                  />
+                  <path
+                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
+                  />
+                </svg>
+                Copy
+              </button> -->
+            <button
+              id="downloadFileBtn"
+              class="btn btn-primary"
+              title="Download file"
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
+                />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
+                />
+              </svg>
+              Download
+            </button>
             <button
               type="button"
               class="btn btn-primary"
@@ -293,5 +181,219 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const filePath = getParameterByName('file');
+      const locale = (getParameterByName('locale') || 'en').replace(
+        'en',
+        'en_US',
+      );
+      const MAX_TEXT_PREVIEW = 1024 * 5;
+      const IMAGE_EXTENSIONS = [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'webp',
+        'svg',
+        'bmp',
+        'ico',
+      ];
+
+      let filePreviewModal;
+      let loadedZip = null;
+      let currentObjectUrl = null;
+      let currentFileBlob = null; // For image clipboard & download
+      let currentFileText = null; // For text clipboard
+      let currentFileName = '';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initUI();
+        loadArchive();
+      });
+
+      function initUI() {
+        insertAboutDialog(
+          'https://docs.tagspaces.org/extensions/archive-viewer',
+        );
+        insertPrintMenuItem();
+        insertToggleFindMenuItem();
+        insertZoomContentMenuItem();
+        initI18N(locale, 'ns.extension.json');
+
+        const modalEl = document.getElementById('filePreviewModal');
+        filePreviewModal = new bootstrap.Modal(modalEl);
+        modalEl.addEventListener('hidden.bs.modal', cleanupPreview);
+
+        // Zoom logic
+        const extSettings = loadExtSettings('archiveViewerSettings') || {};
+        let zoomLevel = extSettings.zoomLevel || 100;
+        const applyZoom = (level) => {
+          zoomLevel = Math.min(Math.max(level, 30), 500);
+          document.documentElement.style.setProperty(
+            '--archive-zoom',
+            zoomLevel + '%',
+          );
+          saveExtSettings('archiveViewerSettings', { zoomLevel });
+        };
+        applyZoom(zoomLevel);
+
+        document
+          .getElementById('zoomInButton')
+          ?.addEventListener('click', () => applyZoom(zoomLevel + 10));
+        document
+          .getElementById('zoomOutButton')
+          ?.addEventListener('click', () => applyZoom(zoomLevel - 10));
+        document
+          .getElementById('zoomResetButton')
+          ?.addEventListener('click', () => applyZoom(100));
+
+        // Archive List Click Delegation
+        document
+          .getElementById('documentContent')
+          .addEventListener('click', (e) => {
+            const link = e.target.closest('[data-zipfile]');
+            if (link) {
+              e.preventDefault();
+              showFilePreview(link.dataset.zipfile);
+            }
+          });
+
+        // Combined Copy Button
+        // document
+        //   .getElementById('copyToClipboardBtn')
+        //   .addEventListener('click', async () => {
+        //     try {
+        //       if (currentFileBlob) {
+        //         // Image copy logic
+        //         const item = new ClipboardItem({
+        //           [currentFileBlob.type]: currentFileBlob,
+        //         });
+        //         await navigator.clipboard.write([item]);
+        //         notifySuccess('Image copied to clipboard!');
+        //       } else if (currentFileText) {
+        //         // Text copy logic
+        //         await navigator.clipboard.writeText(currentFileText);
+        //         notifySuccess('Text copied to clipboard!');
+        //       }
+        //     } catch (err) {
+        //       console.error('Copy failed', err);
+        //       alert('Clipboard access denied or format not supported.');
+        //     }
+        //   });
+
+        // Download Button
+        document
+          .getElementById('downloadFileBtn')
+          .addEventListener('click', () => {
+            if (!currentFileBlob || !currentFileName) return;
+            const url = URL.createObjectURL(currentFileBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName.split('/').pop();
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+      }
+
+      function notifySuccess(msg) {
+        if (typeof sendMessageToHost === 'function') {
+          sendMessageToHost({
+            command: 'showAlertDialog',
+            title: 'Success',
+            message: msg,
+          });
+        }
+      }
+
+      function cleanupPreview() {
+        if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+        currentFileBlob = null;
+        currentFileText = null;
+        currentFileName = '';
+
+        const imgEl = document.getElementById('filePreviewImage');
+        const textEl = document.getElementById('filePreviewText');
+        imgEl.style.display = 'none';
+        imgEl.src = '';
+        textEl.style.display = 'none';
+        textEl.textContent = '';
+      }
+
+      async function loadArchive() {
+        insertLoadingAnimation();
+        try {
+          const data = await new Promise((resolve, reject) => {
+            JSZipUtils.getBinaryContent(filePath, (err, data) =>
+              err ? reject(err) : resolve(data),
+            );
+          });
+          loadedZip = await JSZip.loadAsync(data);
+          renderFileList();
+        } catch (error) {
+          document.getElementById('documentContent').innerHTML =
+            `<div class="alert alert-danger">Error loading archive.</div>`;
+        } finally {
+          hideLoadingAnimation();
+        }
+      }
+
+      function renderFileList() {
+        const documentContent = document.getElementById('documentContent');
+        const fileNames = Object.keys(loadedZip.files).filter(
+          (name) => !loadedZip.files[name].dir,
+        );
+        let tableHTML = `<table class="table table-striped table-hover"><thead><tr><th>#</th><th>Filename</th></tr></thead><tbody>`;
+        fileNames.forEach((name, index) => {
+          const safeName = DOMPurify.sanitize(name);
+          tableHTML += `<tr><td>${index + 1}</td><td><a href="#" class="text-decoration-none" data-zipfile="${safeName}">${safeName}</a></td></tr>`;
+        });
+        documentContent.innerHTML = tableHTML + `</tbody></table>`;
+        initFindToolbar();
+      }
+
+      async function showFilePreview(internalPath) {
+        showLoadingAnimation();
+        cleanupPreview();
+        currentFileName = internalPath;
+
+        try {
+          const file = loadedZip.file(internalPath);
+          if (!file) throw new Error('File not found');
+          document.getElementById('filePathInput').value = internalPath;
+
+          const ext = internalPath.split('.').pop().toLowerCase();
+          currentFileBlob = await file.async('blob');
+
+          if (IMAGE_EXTENSIONS.includes(ext)) {
+            // Setup Image Preview
+            currentObjectUrl = URL.createObjectURL(currentFileBlob);
+            const imgEl = document.getElementById('filePreviewImage');
+            imgEl.src = currentObjectUrl;
+            imgEl.style.display = 'block';
+          } else {
+            // Setup Text Preview
+            currentFileText = await file.async('string');
+            const previewText =
+              currentFileText.length > MAX_TEXT_PREVIEW
+                ? currentFileText.substring(0, MAX_TEXT_PREVIEW) +
+                  '\n... [TRUNCATED]'
+                : currentFileText;
+
+            const textEl = document.getElementById('filePreviewText');
+            textEl.textContent = previewText;
+            textEl.style.display = 'block';
+          }
+          filePreviewModal.show();
+        } catch (error) {
+          alert('Could not preview this file.');
+        } finally {
+          hideLoadingAnimation();
+        }
+      }
+    </script>
   </body>
 </html>
