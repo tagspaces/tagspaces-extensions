@@ -6,296 +6,162 @@
     <title>eBook Viewer for TagSpaces</title>
     <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="extension.css" />
     <style>
-      .bi {
-        display: inline;
-      }
       html,
       body {
+        margin: 0;
+        padding: 0;
         overflow: hidden;
         height: 100%;
         width: 100%;
-        background-color: white !important;
-        color: black !important;
+        background-color: #f5f5f5 !important;
+        color: #757575 !important;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       }
 
-      :root.dark {
-        --background-color: white;
-        --text-color: black;
-        --primary-text-color: black;
+      #viewer {
+        width: 100%;
+        height: calc(100% - 45px);
+        margin: auto;
+        transition: opacity 0.3s;
+      }
+
+      #toc {
+        display: block;
+        margin: 5px auto;
+        max-width: 95%;
+      }
+
+      @media print {
+        #extFabMenu {
+          display: none;
+        }
+        #toc {
+          display: none;
+        }
+        .arrow {
+          display: none !important;
+        }
+      }
+
+      .arrow {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        color: rgba(0, 0, 0, 0.15);
+        z-index: 10;
+        cursor: pointer;
+        user-select: none;
+        text-decoration: none;
+      }
+      .arrow:hover {
+        color: rgba(0, 0, 0, 0.4);
+      }
+      #prev {
+        left: 10px;
+      }
+      #next {
+        right: 10px;
+      }
+
+      /* Custom Menu Styling */
+      .style-control-group {
+        padding: 10px 15px;
+        min-width: 250px;
+      }
+      .style-label {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #666;
+        margin-bottom: 5px;
+        display: block;
+        text-transform: uppercase;
+      }
+      .btn-group-xs > .btn {
+        padding: 2px 8px;
+        font-size: 0.85rem;
+      }
+      .loading {
+        background: url('ajax-loader.gif') center center no-repeat;
       }
     </style>
+
     <script src="../libs/jszip/jszip.min.js"></script>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="libs/epubjs/epub.min.js"></script>
     <script src="../common/common.js"></script>
-    <script>
-      const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
-      const encrypted = getParameterByName('encrypted');
-
-      let showPagination = true;
-
-      function showNavigation() {
-        document.getElementById('next').style.display = 'block';
-        document.getElementById('prev').style.display = 'block';
-      }
-
-      function hideNavigation() {
-        document.getElementById('next').style.display = 'none';
-        document.getElementById('prev').style.display = 'none';
-      }
-
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          // isWeb ? filePath : 'file://' + filePath
-
-          if (encrypted) {
-            document.getElementById('encyptedMessage').style.display = 'block';
-            document.getElementById('toc').style.display = 'none';
-            document.getElementById('viewer').style.display = 'none';
-          } else {
-            getFileContentPromise(filePath, 'arraybuffer')
-              .then((content) => {
-                setContent(content);
-              })
-              .catch((e) => {
-                console.log('Error getting content for: ' + filePath);
-              });
-          }
-
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/ebook-viewer',
-          );
-          insertPrintMenuItem();
-          initI18N(locale, 'ns.extension.json');
-
-          const documentContent = document.getElementById('viewer');
-          // handleLinks(documentContent);
-
-          // Handling settings
-          let extSettings = loadExtSettings('ebookViewerSettings');
-
-          function saveSettings() {
-            saveExtSettings('ebookViewerSettings', {
-              zoomLevel,
-              showPagination,
-            });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            documentContent.style.zoom = zoomLevel + '%';
-          }
-
-          if (extSettings && extSettings.showPagination !== 'undefined') {
-            showPagination = extSettings.showPagination;
-            showPagination ? showNavigation() : hideNavigation();
-          }
-
-          saveSettings();
-
-          document
-            .getElementById('togglePaginationMenuItem')
-            .addEventListener('click', (e) => {
-              showPagination = !showPagination;
-              // showPagination ? showNavigation() : hideNavigation();
-              saveSettings();
-              document.location.href = document.location.href;
-              //              location.href.reload();
-            });
-        }
-      });
-
-      function setContent(buffer) {
-        var params =
-          URLSearchParams &&
-          new URLSearchParams(document.location.search.substring(1));
-        // var url = params && params.get("url") && decodeURIComponent(params.get("url"));
-        var currentSectionIndex =
-          params && params.get('loc') ? params.get('loc') : undefined;
-
-        var book = ePub(buffer);
-        var rendition = book.renderTo('viewer', {
-          width: '100%',
-          height: '100%',
-          // minSpreadWidth: 1000,
-          flow: showPagination ? 'paginated' : 'scrolled-doc',
-          method: showPagination ? 'default' : 'continuous',
-          spread: showPagination ? 'both' : 'none',
-        });
-
-        rendition.display(currentSectionIndex);
-
-        book.ready.then(() => {
-          var next = document.getElementById('next');
-
-          next.addEventListener(
-            'click',
-            function (e) {
-              book.package.metadata.direction === 'rtl'
-                ? rendition.prev()
-                : rendition.next();
-              e.preventDefault();
-            },
-            false,
-          );
-
-          var prev = document.getElementById('prev');
-          prev.addEventListener(
-            'click',
-            function (e) {
-              book.package.metadata.direction === 'rtl'
-                ? rendition.next()
-                : rendition.prev();
-              e.preventDefault();
-            },
-            false,
-          );
-
-          var keyListener = function (e) {
-            // Left Key
-            if ((e.keyCode || e.which) == 37) {
-              book.package.metadata.direction === 'rtl'
-                ? rendition.next()
-                : rendition.prev();
-            }
-
-            // Right Key
-            if ((e.keyCode || e.which) == 39) {
-              book.package.metadata.direction === 'rtl'
-                ? rendition.prev()
-                : rendition.next();
-            }
-          };
-
-          rendition.on('keyup', keyListener);
-          document.addEventListener('keyup', keyListener, false);
-        });
-
-        var title = document.getElementById('title');
-
-        rendition.on('rendered', function (section) {
-          var current = book.navigation && book.navigation.get(section.href);
-
-          if (current) {
-            var $select = document.getElementById('toc');
-            var $selected = $select.querySelector('option[selected]');
-            if ($selected) {
-              $selected.removeAttribute('selected');
-            }
-
-            var $options = $select.querySelectorAll('option');
-            for (var i = 0; i < $options.length; ++i) {
-              let selected = $options[i].getAttribute('ref') === current.href;
-              if (selected) {
-                $options[i].setAttribute('selected', '');
-              }
-            }
-          }
-        });
-
-        rendition.on('relocated', function (location) {
-          console.log(location);
-
-          var next =
-            book.package.metadata.direction === 'rtl'
-              ? document.getElementById('prev')
-              : document.getElementById('next');
-          var prev =
-            book.package.metadata.direction === 'rtl'
-              ? document.getElementById('next')
-              : document.getElementById('prev');
-
-          if (location.atEnd) {
-            next.style.visibility = 'hidden';
-          } else {
-            next.style.visibility = 'visible';
-          }
-
-          if (location.atStart) {
-            prev.style.visibility = 'hidden';
-          } else {
-            prev.style.visibility = 'visible';
-          }
-        });
-
-        rendition.on('layout', function (layout) {
-          let viewer = document.getElementById('viewer');
-
-          if (layout.spread) {
-            viewer.classList.remove('single');
-          } else {
-            viewer.classList.add('single');
-          }
-        });
-
-        window.addEventListener('unload', function () {
-          console.log('unloading');
-          if (this.book) {
-            this.book.destroy();
-          }
-        });
-
-        book.loaded.navigation.then(function (toc) {
-          var $select = document.getElementById('toc'),
-            docfrag = document.createDocumentFragment();
-          toc.forEach(function (chapter) {
-            var option = document.createElement('option');
-            option.textContent = chapter.label;
-            option.setAttribute('ref', chapter.href);
-            docfrag.appendChild(option);
-          });
-          $select.appendChild(docfrag);
-          $select.onchange = function () {
-            var index = $select.selectedIndex,
-              url = $select.options[index].getAttribute('ref');
-            rendition.display(url);
-            return false;
-          };
-        });
-      }
-    </script>
   </head>
   <body>
     <div
       id="encyptedMessage"
       data-i18n="encryptedFileUseDownload"
-      style="display: none; text-align: center; padding: 20px"
+      style="display: none; padding: 20px; text-align: center"
     ></div>
-    <select id="toc"></select>
-    <div id="viewer" class="spreads"></div>
-    <a id="prev" href="#prev" class="arrow">‹</a>
-    <a id="next" href="#next" class="arrow">›</a>
+
+    <select id="toc" class="form-select form-select-sm shadow-sm"></select>
+
+    <div id="viewer" class="loading"></div>
+
+    <a id="prev" class="arrow">‹</a>
+    <a id="next" class="arrow">›</a>
+
     <div id="aboutDialogPlaceholder"></div>
+
     <div id="extFabMenu" class="btn-group dropup-center dropup">
       <button
         type="button"
-        class="btn btn-primary btn-lg"
+        class="btn btn-primary btn-lg shadow"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <svg
-          class="bi"
-          width="24"
-          height="24"
-          focusable="false"
-          aria-hidden="true"
-        >
+        <svg class="bi" width="24" height="24" fill="currentColor">
           <path
             d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
           ></path>
         </svg>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu shadow">
+        <!-- Appearance Settings Submenu -->
+        <li class="style-control-group">
+          <span class="style-label">Text Size</span>
+          <div class="btn-group w-100 mb-3">
+            <button class="btn btn-outline-secondary btn-sm" id="fontDec">
+              -
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="fontRes">
+              100%
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="fontInc">
+              +
+            </button>
+          </div>
+
+          <span class="style-label">Font Family</span>
+          <div class="btn-group w-100 mb-3">
+            <button class="btn btn-outline-secondary btn-sm" id="fontSans">
+              Sans
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="fontSerif">
+              Serif
+            </button>
+          </div>
+
+          <span class="style-label">Line Spacing</span>
+          <div class="btn-group w-100">
+            <button class="btn btn-outline-secondary btn-sm" id="lineSingle">
+              1.0
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="lineMedium">
+              1.5
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="lineDouble">
+              2.0
+            </button>
+          </div>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
         <li>
           <a id="togglePaginationMenuItem" class="dropdown-item" href="#">
             <svg width="24" height="24" class="bi">
@@ -303,7 +169,7 @@
                 d="m19 1-5 5v11l5-4.5zM1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5V6c-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6m22 13.5V6c-.6-.45-1.25-.75-2-1v13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5v2c1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5z"
               ></path>
             </svg>
-            <span data-i18n="togglePagination" />
+            <span data-i18n="togglePagination">Toggle Pagination</span>
           </a>
         </li>
         <li id="printMenuItemPlaceholder"></li>
@@ -311,5 +177,201 @@
         <li id="aboutMenuItemPlaceholder"></li>
       </ul>
     </div>
+
+    <script>
+      const filePath = getParameterByName('file');
+      const locale = (getParameterByName('locale') || 'en').replace(
+        'en',
+        'en_US',
+      );
+      const encrypted = getParameterByName('encrypted');
+
+      let book, rendition;
+
+      // Default Settings
+      let readerSettings = {
+        fontSize: 100,
+        fontFamily: 'sans-serif',
+        lineHeight: 1.5,
+        showPagination: true,
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const saved = loadExtSettings('ebookViewerSettings');
+        if (saved) readerSettings = { ...readerSettings, ...saved };
+
+        initUI();
+        loadBook();
+      });
+
+      function initUI() {
+        insertAboutDialog('https://docs.tagspaces.org/extensions/ebook-viewer');
+        insertPrintMenuItem();
+        initI18N(locale, 'ns.extension.json');
+
+        // Pagination Toggle
+        document.getElementById('togglePaginationMenuItem').onclick = (e) => {
+          e.preventDefault();
+          readerSettings.showPagination = !readerSettings.showPagination;
+          saveSettings();
+          if (book) renderRendition();
+        };
+
+        // Font Size
+        document.getElementById('fontInc').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('fontSize', readerSettings.fontSize + 10);
+        };
+        document.getElementById('fontDec').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('fontSize', readerSettings.fontSize - 10);
+        };
+        document.getElementById('fontRes').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('fontSize', 100);
+        };
+
+        // Font Family
+        document.getElementById('fontSans').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('fontFamily', 'sans-serif');
+        };
+        document.getElementById('fontSerif').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('fontFamily', 'Georgia, serif');
+        };
+
+        // Line Spacing
+        document.getElementById('lineSingle').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('lineHeight', 1.0);
+        };
+        document.getElementById('lineMedium').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('lineHeight', 1.5);
+        };
+        document.getElementById('lineDouble').onclick = (e) => {
+          e.stopPropagation();
+          updateStyles('lineHeight', 2.0);
+        };
+      }
+
+      function updateStyles(key, value) {
+        if (key === 'fontSize') value = Math.min(Math.max(value, 50), 300);
+        readerSettings[key] = value;
+        saveSettings();
+        applyStylesToBook();
+      }
+
+      function saveSettings() {
+        saveExtSettings('ebookViewerSettings', readerSettings);
+      }
+
+      function applyStylesToBook() {
+        if (!rendition) return;
+
+        rendition.themes.default({
+          body: {
+            'font-family': `${readerSettings.fontFamily} !important`,
+            'font-size': `${readerSettings.fontSize}% !important`,
+            'line-height': `${readerSettings.lineHeight} !important`,
+          },
+        });
+
+        // Update UI Label
+        const fontResBtn = document.getElementById('fontRes');
+        if (fontResBtn) fontResBtn.textContent = readerSettings.fontSize + '%';
+      }
+
+      async function loadBook() {
+        if (encrypted) {
+          document.getElementById('encyptedMessage').style.display = 'block';
+          document.getElementById('viewer').style.display = 'none';
+          return;
+        }
+
+        try {
+          const buffer = await getFileContentPromise(filePath, 'arraybuffer');
+          book = ePub(buffer);
+          renderRendition();
+
+          book.loaded.navigation.then((nav) => {
+            const select = document.getElementById('toc');
+            select.innerHTML = '';
+            nav.forEach((chapter) => {
+              const opt = document.createElement('option');
+              opt.textContent = chapter.label.trim();
+              opt.value = chapter.href;
+              select.appendChild(opt);
+            });
+            select.onchange = (e) => rendition.display(e.target.value);
+          });
+        } catch (e) {
+          console.error('Error loading book:', e);
+        }
+      }
+
+      function renderRendition() {
+        if (rendition) rendition.destroy();
+
+        const viewer = document.getElementById('viewer');
+        viewer.classList.add('loading');
+
+        rendition = book.renderTo('viewer', {
+          width: '100%',
+          height: '100%',
+          flow: readerSettings.showPagination ? 'paginated' : 'scrolled-doc',
+          manager: readerSettings.showPagination ? 'default' : 'continuous',
+          spread: readerSettings.showPagination ? 'auto' : 'none',
+        });
+
+        rendition.display().then(() => {
+          viewer.classList.remove('loading');
+          applyStylesToBook();
+        });
+
+        attachNavEvents();
+      }
+
+      function attachNavEvents() {
+        const next = document.getElementById('next');
+        const prev = document.getElementById('prev');
+        const isRTL = () => book.package.metadata.direction === 'rtl';
+
+        next.onclick = (e) => {
+          e.preventDefault();
+          isRTL() ? rendition.prev() : rendition.next();
+        };
+        prev.onclick = (e) => {
+          e.preventDefault();
+          isRTL() ? rendition.next() : rendition.prev();
+        };
+
+        const keyListener = (e) => {
+          if (e.key === 'ArrowLeft')
+            isRTL() ? rendition.next() : rendition.prev();
+          if (e.key === 'ArrowRight')
+            isRTL() ? rendition.prev() : rendition.next();
+        };
+
+        rendition.on('keyup', keyListener);
+        document.removeEventListener('keyup', keyListener);
+        document.addEventListener('keyup', keyListener);
+
+        rendition.on('relocated', (loc) => {
+          next.style.visibility = loc.atEnd ? 'hidden' : 'visible';
+          prev.style.visibility = loc.atStart ? 'hidden' : 'visible';
+          if (loc.start.href)
+            document.getElementById('toc').value = loc.start.href;
+        });
+
+        next.style.display = readerSettings.showPagination ? 'block' : 'none';
+        prev.style.display = readerSettings.showPagination ? 'block' : 'none';
+      }
+
+      window.addEventListener('unload', () => {
+        if (book) book.destroy();
+      });
+    </script>
   </body>
 </html>
