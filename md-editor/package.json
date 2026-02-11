@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/md-editor",
-  "version": "1.0.219",
+  "version": "1.0.220",
   "description": "A TagSpaces extension for editing markdown files based on Milkdown's Crepe.",
   "homepage": "./",
   "files": [
