@@ -69,7 +69,8 @@
     "prettier-format": "npx prettier --ignore-path=.prettierignore --write \"**/*.{js,jsx,json,ts,tsx,yml}\"",
     "update-i18n": "./tx pull -a -f",
     "create-msgreader-dist": "npx esbuild msg-viewer/libs/msgreader-wrapper.js --bundle --minify --format=iife --define:global=window --outfile=./msg-viewer/libs/msgreader.js",
-    "create-postalmime-dist": "npx esbuild mhtml-viewer/libs/postal-mime/postal-mime-wrapper.js --bundle --minify --format=iife --outfile=mhtml-viewer/libs/postal-mime/postal-mime.min.js"
+    "create-postalmime-dist": "npx esbuild mhtml-viewer/libs/postal-mime/postal-mime-wrapper.js --bundle --minify --format=iife --outfile=mhtml-viewer/libs/postal-mime/postal-mime.min.js",
+    "create-tiptap-dist": "npx esbuild html-editor/libs/tiptap/tiptap-wrapper.js --bundle --minify --format=iife --outfile=html-editor/libs/tiptap/tiptap.min.js"
   },
   "devDependencies": {
     "@mozilla/readability": "0.6.0",
@@ -101,9 +102,16 @@
   },
   "dependencies": {
     "@kenjiuno/msgreader": "^1.28.0",
+    "@tiptap/core": "^3.19.0",
+    "@tiptap/extension-link": "^3.19.0",
+    "@tiptap/extension-placeholder": "^3.19.0",
+    "@tiptap/extension-underline": "^3.19.0",
+    "@tiptap/pm": "^3.19.0",
+    "@tiptap/starter-kit": "^3.19.0",
     "buffer": "^6.0.3",
     "postal-mime": "^2.7.3",
     "shelljs": "0.10.0",
-    "shx": "0.4.0"
+    "shx": "0.4.0",
+    "tiptap": "github:ueberdosis/tiptap"
   }
 }

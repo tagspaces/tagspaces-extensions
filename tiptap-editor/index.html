@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>Tiptap Editor for TagSpaces</title>
+
+    <link rel="stylesheet" href="../libs/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="../common/common.css" />
+
+    <style>
+      :root {
+        --editor-zoom: 100%;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--default-background-color);
+      }
+
+      #editor-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        zoom: var(--editor-zoom);
+      }
+
+      /* Tiptap Menu Bar */
+      .menu-bar {
+        padding: 5px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        display: none; /* Hidden in viewer mode */
+        flex-wrap: wrap;
+        gap: 2px;
+      }
+
+      .menu-bar button {
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 0.9rem;
+      }
+
+      .menu-bar button:hover {
+        background: #e9ecef;
+      }
+      .menu-bar button.is-active {
+        background: #dee2e6;
+        color: #0d6efd;
+        font-weight: bold;
+      }
+
+      /* The Editor Area */
+      .tiptap-editor {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px;
+        background: white;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .ProseMirror {
+        min-height: 100%;
+        outline: none;
+      }
+      .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #adb5bd;
+        pointer-events: none;
+        height: 0;
+      }
+
+      /* Basic Typography Styles */
+      .ProseMirror h1 {
+        font-size: 2rem;
+      }
+      .ProseMirror h2 {
+        font-size: 1.5rem;
+      }
+      .ProseMirror blockquote {
+        border-left: 3px solid #dee2e6;
+        padding-left: 1rem;
+        color: #6c757d;
+      }
+      .ProseMirror code {
+        background: #f1f3f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+    </style>
+
+    <script src="../libs/dompurify/dist/purify.min.js"></script>
+    <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script src="../libs/i18next/i18next.min.js"></script>
+    <script src="../common/common.js"></script>
+    <script src="libs/tiptap/tiptap.min.js"></script>
+  </head>
+  <body>
+    <div id="findToolbarPlaceholder"></div>
+
+    <div id="editor-container">
+      <!-- Rich Text Menu -->
+      <div id="menuBar" class="menu-bar">
+        <button onclick="exec('toggleBold')" id="btn-bold"><b>B</b></button>
+        <button onclick="exec('toggleItalic')" id="btn-italic"><i>I</i></button>
+        <button onclick="exec('toggleUnderline')" id="btn-underline">
+          <u>U</u>
+        </button>
+        <button onclick="exec('toggleStrike')" id="btn-strike"><s>S</s></button>
+        <button onclick="exec('toggleCode')" id="btn-code">Code</button>
+        <div class="vr mx-1"></div>
+        <button onclick="exec('toggleHeading', { level: 1 })" id="btn-h1">
+          H1
+        </button>
+        <button onclick="exec('toggleHeading', { level: 2 })" id="btn-h2">
+          H2
+        </button>
+        <button onclick="exec('toggleBulletList')" id="btn-ul">UL</button>
+        <button onclick="exec('toggleOrderedList')" id="btn-ol">OL</button>
+        <button onclick="exec('toggleBlockquote')" id="btn-quote">Quote</button>
+        <div class="vr mx-1"></div>
+        <button onclick="exec('undo')">Undo</button>
+        <button onclick="exec('redo')">Redo</button>
+      </div>
+
+      <!-- Editor Canvas -->
+      <div id="tiptap-viewport" class="tiptap-editor"></div>
+    </div>
+
+    <div id="aboutDialogPlaceholder"></div>
+
+    <!-- Floating Menu -->
+    <div id="extFabMenu" class="btn-group dropup-center dropup">
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <svg
+          class="bi"
+          width="24"
+          height="24"
+          focusable="false"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+          ></path>
+        </svg>
+      </button>
+      <ul class="dropdown-menu">
+        <li id="zoomContentMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="printMenuItemPlaceholder"></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li id="aboutMenuItemPlaceholder"></li>
+      </ul>
+    </div>
+
+    <script>
+      const filePath = getParameterByName('file');
+      const locale = (getParameterByName('locale') || 'en').replace(
+        'en',
+        'en_US',
+      );
+      let editor = null;
+      let zoomLevel = 100;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initUI();
+        initTiptap();
+        sendMessageToHost({ command: 'loadDefaultTextContent' });
+      });
+
+      function initUI() {
+        insertAboutDialog(
+          'https://docs.tagspaces.org/extensions/tiptap-editor',
+        );
+        insertPrintMenuItem();
+        insertZoomContentMenuItem();
+        initI18N(locale, 'ns.extension.json');
+
+        const settings = loadExtSettings('tiptapEditorSettings') || {};
+        zoomLevel = settings.zoomLevel || 100;
+        applyZoom();
+
+        // Zoom Listeners
+        document.addEventListener('click', (e) => {
+          const id = e.target.closest('button')?.id || e.target.id;
+          if (id === 'zoomInButton') {
+            zoomLevel += 10;
+            updateZoom();
+          }
+          if (id === 'zoomOutButton') {
+            zoomLevel -= 10;
+            updateZoom();
+          }
+          if (id === 'zoomResetButton') {
+            zoomLevel = 100;
+            updateZoom();
+          }
+        });
+      }
+
+      function updateZoom() {
+        zoomLevel = Math.min(Math.max(zoomLevel, 30), 500);
+        saveExtSettings('tiptapEditorSettings', { zoomLevel });
+        applyZoom();
+      }
+
+      function applyZoom() {
+        document.documentElement.style.setProperty(
+          '--editor-zoom',
+          zoomLevel + '%',
+        );
+      }
+
+      function initTiptap() {
+        // Tiptap Standalone uses a global named 'tiptap'
+        editor = new tiptap.Editor({
+          element: document.querySelector('#tiptap-viewport'),
+          extensions: [
+            tiptap.StarterKit,
+            tiptap.Underline,
+            tiptap.Placeholder.configure({
+              placeholder: 'Start typing your notes...',
+            }),
+            tiptap.Link.configure({ openOnClick: false }),
+          ],
+          editable: false,
+          onUpdate: () => {
+            sendMessageToHost({
+              command: 'contentChangedInEditor',
+              filepath: filePath,
+            });
+            updateMenuStates();
+          },
+          onSelectionUpdate: () => {
+            updateMenuStates();
+          },
+        });
+      }
+
+      // --- TagSpaces Interface Functions ---
+
+      function setContent(content, filePath, isViewMode) {
+        if (!editor) return;
+
+        // Remove BOM if present
+        const cleanContent = content.startsWith('\ufeff')
+          ? content.substring(1)
+          : content;
+
+        editor.commands.setContent(cleanContent, false);
+        viewerMode(isViewMode);
+      }
+
+      function getContent() {
+        return editor ? editor.getHTML() : '';
+      }
+
+      function viewerMode(isViewerMode) {
+        if (!editor) return;
+        editor.setEditable(!isViewerMode);
+        document.getElementById('menuBar').style.display = isViewerMode
+          ? 'none'
+          : 'flex';
+      }
+
+      // --- Menu Helpers ---
+
+      function exec(command, options = {}) {
+        editor.chain().focus()[command](options).run();
+      }
+
+      function updateMenuStates() {
+        if (!editor) return;
+        const items = {
+          'btn-bold': 'bold',
+          'btn-italic': 'italic',
+          'btn-underline': 'underline',
+          'btn-strike': 'strike',
+          'btn-code': 'code',
+          'btn-ul': 'bulletList',
+          'btn-ol': 'orderedList',
+          'btn-quote': 'blockquote',
+        };
+
+        Object.entries(items).forEach(([id, name]) => {
+          const el = document.getElementById(id);
+          if (el) {
+            editor.isActive(name)
+              ? el.classList.add('is-active')
+              : el.classList.remove('is-active');
+          }
+        });
+
+        // Special case for headings
+        [1, 2].forEach((level) => {
+          const el = document.getElementById(`btn-h${level}`);
+          if (el) {
+            editor.isActive('heading', { level })
+              ? el.classList.add('is-active')
+              : el.classList.remove('is-active');
+          }
+        });
+      }
+
+      // Keyboard Shortcut: Ctrl+S
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          sendMessageToHost({ command: 'saveDocument' });
+        }
+      });
+    </script>
+  </body>
+</html>
