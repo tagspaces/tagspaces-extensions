@@ -138,7 +138,7 @@ export function createCrepeEditor(
             const target = event.target as HTMLElement;
             if (target.tagName === 'A') {
               const href = (target as HTMLAnchorElement).getAttribute('href');
-              if (href) {
+              if (href && !href.startsWith('#')) {
                 event.preventDefault();
                 openLink(href, { fullWidth: false });
                 return true;
