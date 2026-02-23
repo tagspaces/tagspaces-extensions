@@ -140,7 +140,7 @@ function initEditor() {
   $('.note-editable').height(window.innerHeight - 80);
   $(window).on('resize', () => {
     $('.note-editable').height(window.innerHeight - 80);
-    console.log(window.innerHeight);
+    // console.log(window.innerHeight);
   });
 }
 
@@ -152,7 +152,7 @@ let createdWith = '';
 let createdOn = '';
 
 function getContent() {
-  console.log('Getting text content from editor.');
+  // console.log('Getting text content from editor.');
   $('.note-editable .tsCheckBox').each((index, checkbox) => {
     $(checkbox).attr('disabled', 'disabled');
   });
@@ -179,7 +179,7 @@ function getContent() {
 
   while ((match = rex.exec(cleanedContent))) {
     imgUrl = match[1];
-    console.log('URLs: ' + imgUrl);
+    // console.log('URLs: ' + imgUrl);
     if (imgUrl.indexOf('data:image') === 0) {
       // Ignore data url
     } else {
