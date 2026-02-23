@@ -36,6 +36,9 @@
       .jsoneditor-menu {
         zoom: 1 !important;
       }
+      .jsoneditor-outer {
+        height: calc(100% - 10px) !important;
+      }
     </style>
     <script src="libs/jsoneditor/jsoneditor-minimalist.min.js"></script>
     <script src="../libs/dompurify/dist/purify.min.js"></script>
@@ -137,30 +140,40 @@
       function setContent(jsonContentParam, filePathParam, isViewMode) {
         let jsonContent = jsonContentParam;
 
-        // Securely handle UTF-8 BOM
+        // Strip UTF-8 BOM
         if (jsonContent.startsWith('\ufeff')) {
           jsonContent = jsonContent.substring(1);
         }
 
         let parsedData;
         try {
-          parsedData = JSON.parse(jsonContent);
-
-          // Basic Prototype Pollution Defense
-          if (
-            jsonContent.includes('__proto__') ||
-            jsonContent.includes('constructor')
-          ) {
-            console.warn(
-              'Potential prototype pollution detected in JSON. Content will be handled strictly.',
-            );
-          }
+          // SECURE PARSING: The "reviver" function checks every key
+          parsedData = JSON.parse(jsonContent, (key, value) => {
+            if (key === '__proto__' || key === 'constructor') {
+              throw new Error(
+                `Security Violation: Dangerous key "${key}" detected.`,
+              );
+            }
+            return value;
+          });
         } catch (e) {
-          console.error('Error parsing JSON document:', e);
-          // Show error to user in the content area
-          document.getElementById('documentContent').innerHTML =
-            `<div class="alert alert-danger m-3">Error parsing JSON: ${DOMPurify.sanitize(e.message)}</div>`;
-          return false;
+          const container = document.getElementById('documentContent');
+
+          // Check if it was a security error or a syntax error
+          const isSecurityError = e.message.includes('Security Violation');
+          const errorMsg = isSecurityError
+            ? e.message
+            : `Invalid JSON syntax: ${e.message}`;
+
+          container.innerHTML = DOMPurify.sanitize(
+            `<div class="alert ${isSecurityError ? 'alert-dark' : 'alert-danger'} m-3">
+         <h4 class="alert-heading">${isSecurityError ? '🔒 Security Block' : '❌ Parsing Error'}</h4>
+         <p>${errorMsg}</p>
+         <hr>
+         <p class="mb-0 small text-muted">The document was blocked to prevent potential malicious script execution.</p>
+       </div>`,
+          );
+          return false; // STOP EXECUTION
         }
 
         isViewer = isViewMode;
@@ -171,7 +184,6 @@
           search: true,
           history: true,
           // Security: prevent execution of scripts if the editor renders certain fields as HTML
-          onSafeHTML: (html) => DOMPurify.sanitize(html),
           onError: (err) => {
             console.warn('JSONEditor Error:', err.toString());
           },
