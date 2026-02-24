@@ -318,70 +318,127 @@ function sendMessageToHost(message) {
 }
 
 function fixingEmbeddingOfLocalImages(domElement, fileDirectory) {
+  // Safety check for arguments
+  if (!domElement || !fileDirectory) return;
+
   const allImages = domElement.querySelectorAll('img');
+
+  // Safe Environment Check
+  // Prevents crash if 'isWeb' is not defined globally
+  const isWebEnv = typeof isWeb !== 'undefined' && isWeb;
+  const prefix = isWebEnv ? '' : 'file://';
+
+  // Pre-process directory to remove trailing slash (optimization)
+  // Ensures we don't get "folder//image.png"
+  const cleanDir = fileDirectory.replace(/\/$/, '');
+
   allImages.forEach((image) => {
     const currentSrc = image.getAttribute('src');
-    if (currentSrc && !hasURLProtocol(currentSrc)) {
-      const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
-      image.alt = path;
-      image.src = path;
+
+    // Guard Clause: Skip if empty or already absolute
+    // Using your existing helper function
+    if (!currentSrc || hasURLProtocol(currentSrc)) {
+      return;
     }
+
+    // Remove leading slash from the specific image source
+    const cleanSrc = currentSrc.replace(/^\//, '');
+
+    // Construct the full path
+    const fullPath = `${prefix}${cleanDir}/${cleanSrc}`;
+
+    // Apply the new path
+    image.src = fullPath;
+
+    // Accessibility Improvement
+    // Don't overwrite existing alt text. Only set it if missing.
+    // Overwriting alt with a file path is bad for screen readers.
+    if (!image.alt) {
+      image.alt = cleanSrc;
+    }
+
+    // Put the full path in the title so you can hover over the broken image
+    // to see where it's trying to load from.
+    image.title = fullPath;
   });
 }
 
 function handleLinks(domElement, fileDirectory) {
-  // if (fileDirectory.indexOf('file://') === 0) {
-  //   fileDirectory = fileDirectory.substring(
-  //     'file://'.length,
-  //     fileDirectory.length
-  //   );
-  // }
+  // Select all links within the element
   const allLinks = domElement.querySelectorAll('a');
+
   allLinks.forEach((link) => {
     let currentSrc = link.getAttribute('href');
-    let path;
-    if (!currentSrc) {
+
+    // Safety Check: Skip if no href or if it's an internal anchor
+    if (!currentSrc || currentSrc.startsWith('#')) {
       return;
     }
-    if (currentSrc.startsWith('#')) {
-      // Leave the default link behaviour by internal links
-    } else {
-      if (!hasURLProtocol(currentSrc) && fileDirectory) {
-        path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
-        currentSrc = path;
-      }
-      link.title = currentSrc;
-      if (isExternalLink(currentSrc) && !link.innerText.endsWith('⧉')) {
-        link.innerText += ' ⧉';
-      }
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        // if (path) {
-        //   currentSrc = encodeURIComponent(path);
-        // }
-        sendMessageToHost({
-          command: 'openLinkExternally',
-          link: currentSrc,
-        });
-      });
+
+    // Path Resolution
+    // If it is NOT a known protocol (it is a relative path) AND we have a directory
+    if (!hasURLProtocol(currentSrc) && fileDirectory) {
+      // Check if 'isWeb' is defined globally, otherwise default to false (file://)
+      const isWebEnv = typeof isWeb !== 'undefined' && isWeb;
+      const prefix = isWebEnv ? '' : 'file://';
+
+      // Ensure we don't end up with "path//file" by stripping slashes
+      const cleanDir = fileDirectory.replace(/\/$/, ''); // remove trailing slash
+      const cleanSrc = currentSrc.replace(/^\//, ''); // remove leading slash
+
+      currentSrc = `${prefix}${cleanDir}/${cleanSrc}`;
     }
+
+    // Set the hover title
+    link.title = currentSrc;
+
+    // 4. Add External Icon (Safe Method)
+    // We check if it is external AND if we haven't already marked it (to avoid duplicates)
+    if (
+      isExternalLink(currentSrc) &&
+      !link.classList.contains('external-link-marked')
+    ) {
+      // Create a text node instead of setting innerText
+      // This preserves child elements like <img /> inside the <a> tag
+      const icon = document.createTextNode(' ⧉');
+      link.appendChild(icon);
+
+      // Mark it so we don't add the icon again if this function runs twice
+      link.classList.add('external-link-marked');
+    }
+
+    // Click Handler
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      sendMessageToHost({
+        command: 'openLinkExternally',
+        link: currentSrc,
+      });
+    });
   });
 }
 
 function isExternalLink(url) {
-  return url.startsWith('http://') || url.startsWith('https://');
+  if (!url) return false;
+  const lower = url.trim().toLowerCase();
+  return lower.startsWith('http://') || lower.startsWith('https://');
 }
 
 function hasURLProtocol(url) {
+  if (!url) return false;
+
+  // Convert to lowercase to handle 'HTTPS://' or 'Mailto:'
+  const lowerUrl = url.trim().toLowerCase();
+
   return (
-    url.startsWith('http://') ||
-    url.startsWith('https://') ||
-    url.startsWith('file://') ||
-    url.startsWith('mailto://') ||
-    url.startsWith('tel://') ||
-    url.startsWith('data:') ||
-    url.startsWith('ts://?ts') ||
-    url.startsWith('ts:?ts')
+    lowerUrl.startsWith('http://') ||
+    lowerUrl.startsWith('https://') ||
+    lowerUrl.startsWith('file://') ||
+    lowerUrl.startsWith('data:') ||
+    lowerUrl.startsWith('mailto:') ||
+    lowerUrl.startsWith('tel:') ||
+    lowerUrl.startsWith('ts://?ts') ||
+    lowerUrl.startsWith('ts:?ts')
   );
 }
 
