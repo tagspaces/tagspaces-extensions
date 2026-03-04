@@ -173,12 +173,12 @@
 
         // Text Nodes
         if (node.nodeType === 3) {
-          return node.textContent;
+          return htmlEncode(node.textContent);
         }
 
         // Heading
         if (nodeName === 'text:h') {
-          const level = node.getAttribute('text:outline-level') || 1;
+          const level = Math.min(Math.max(parseInt(node.getAttribute('text:outline-level')) || 1, 1), 6);
           let content = await processChildNodes(node, zip);
           return `<h${level}>${content}</h${level}>`;
         }
@@ -239,7 +239,9 @@
             const imgFile = zip.file(imgPath.replace('./', '')); // Fix paths
             if (imgFile) {
               const base64 = await imgFile.async('base64');
-              const ext = imgPath.split('.').pop();
+              const ext = (imgPath.split('.').pop() || '').toLowerCase();
+              const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'];
+              if (!allowedTypes.includes(ext)) return '';
               return `<img src="data:image/${ext};base64,${base64}" />`;
             }
           }
@@ -265,6 +267,9 @@
         const content = result.value;
         const documentContent = document.getElementById('documentContent');
         documentContent.innerHTML = sanitizeContent(content);
+        documentContent.querySelectorAll('style').forEach((styleEl) => {
+          styleEl.textContent = sanitizeCss(styleEl.textContent);
+        });
         handleLinks(documentContent);
         initFindToolbar();
       }

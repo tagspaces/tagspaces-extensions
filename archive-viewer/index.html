@@ -252,10 +252,12 @@
         document
           .getElementById('documentContent')
           .addEventListener('click', (e) => {
-            const link = e.target.closest('[data-zipfile]');
+            const link = e.target.closest('[data-zipindex]');
             if (link) {
               e.preventDefault();
-              showFilePreview(link.dataset.zipfile);
+              const idx = parseInt(link.dataset.zipindex, 10);
+              const name = fileIndex[idx];
+              if (name !== undefined) showFilePreview(name);
             }
           });
 
@@ -341,15 +343,18 @@
         }
       }
 
+      const fileIndex = []; // maps row index -> actual zip filename
+
       function renderFileList() {
         const documentContent = document.getElementById('documentContent');
         const fileNames = Object.keys(loadedZip.files).filter(
           (name) => !loadedZip.files[name].dir,
         );
+        fileIndex.length = 0;
         let tableHTML = `<table class="table table-striped table-hover"><thead><tr><th>#</th><th>Filename</th></tr></thead><tbody>`;
         fileNames.forEach((name, index) => {
-          const safeName = DOMPurify.sanitize(name);
-          tableHTML += `<tr><td>${index + 1}</td><td><a href="#" class="text-decoration-none" data-zipfile="${safeName}">${safeName}</a></td></tr>`;
+          fileIndex.push(name);
+          tableHTML += `<tr><td>${index + 1}</td><td><a href="#" class="text-decoration-none" data-zipindex="${index}">${htmlEncode(name)}</a></td></tr>`;
         });
         documentContent.innerHTML = tableHTML + `</tbody></table>`;
         initFindToolbar();

@@ -140,12 +140,16 @@
           const htmlstr = XLSX.utils.sheet_to_html(wb.Sheets[sheetName], {
             editable: false,
           });
-          let sheetHTML = `
-            <h2>${sheetName}</h2>
+          const sheetHTML = `
+            <h2>${htmlEncode(sheetName)}</h2>
             ${htmlstr}
             <br />
           `;
-          documentContent.innerHTML += sanitizeContent(sheetHTML);
+          documentContent.insertAdjacentHTML('beforeend', sanitizeContent(sheetHTML));
+        });
+
+        documentContent.querySelectorAll('style').forEach((styleEl) => {
+          styleEl.textContent = sanitizeCss(styleEl.textContent);
         });
 
         const allTables = documentContent.querySelectorAll('table');

@@ -102,8 +102,7 @@
           if (link) {
             e.preventDefault();
             const url = link.getAttribute('href');
-            if (url && url !== '#' && !url.startsWith('javascript:')) {
-              console.log('Opening link externally:', url);
+            if (url && isValidUrl(url)) {
               sendMessageToHost({ command: 'openLinkExternally', link: url });
             }
           }
@@ -143,7 +142,9 @@
             onHyperlink: (create, hyperlink) => {
               const url = hyperlink.url();
               const lnk = create();
-              lnk.setAttribute('href', url);
+              if (isValidUrl(url)) {
+                lnk.setAttribute('href', url);
+              }
               return { content: lnk, element: lnk };
             },
           });
@@ -155,7 +156,7 @@
           for (const key in meta) {
             const metaEntry = document.createElement('div');
             metaEntry.className = 'mb-2';
-            metaEntry.innerHTML = `<strong>${DOMPurify.sanitize(key)}:</strong><br>${DOMPurify.sanitize(meta[key].toString())}`;
+            metaEntry.innerHTML = `<strong>${htmlEncode(key)}:</strong><br>${htmlEncode(meta[key].toString())}`;
             metaBody.appendChild(metaEntry);
             hasMeta = true;
           }
@@ -200,6 +201,9 @@
 
           if (cleanHtml && cleanHtml.trim().length > 0) {
             contentArea.innerHTML = cleanHtml;
+            contentArea.querySelectorAll('style').forEach((styleEl) => {
+              styleEl.textContent = sanitizeCss(styleEl.textContent);
+            });
           } else {
             contentArea.innerHTML =
               '<p class="text-muted text-center mt-5">The document has no displayable content.</p>';
@@ -215,7 +219,7 @@
         document.getElementById('documentContent').innerHTML = `
           <div class="error-overlay">
             <h5>Viewer Error</h5>
-            <p>${DOMPurify.sanitize(msg)}</p>
+            <p>${htmlEncode(msg)}</p>
           </div>
         `;
       }

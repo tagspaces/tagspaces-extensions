@@ -210,7 +210,8 @@
 
         imageContent = document.getElementById('imageContent');
         const imageThumb = document.getElementById('imageThumb');
-        imageThumb.style.backgroundImage = `url("${tmbPath}")`;
+        // JSON.stringify safely quotes and escapes the path for CSS url() string context
+        if (tmbPath) imageThumb.style.backgroundImage = `url(${JSON.stringify(tmbPath)})`;
 
         // Path Normalization
         if (!(isCordova || isWeb)) {
@@ -363,7 +364,7 @@
           const val = data[key];
           if (val && val.toString().trim() !== '') {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<th style="color:black">${key}</th><td style="color:black">${val}</td>`;
+            tr.innerHTML = `<th style="color:black">${htmlEncode(String(key))}</th><td style="color:black">${htmlEncode(String(val))}</td>`;
             container.appendChild(tr);
           }
         });

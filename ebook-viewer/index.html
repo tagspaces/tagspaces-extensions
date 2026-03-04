@@ -198,7 +198,17 @@
 
       document.addEventListener('DOMContentLoaded', () => {
         const saved = loadExtSettings('ebookViewerSettings');
-        if (saved) readerSettings = { ...readerSettings, ...saved };
+        if (saved) {
+          readerSettings = { ...readerSettings, ...saved };
+          // Validate all settings loaded from storage to prevent CSS injection
+          readerSettings.fontSize = Math.min(Math.max(Number(readerSettings.fontSize) || 100, 50), 300);
+          const allowedFamilies = ['sans-serif', 'Georgia, serif'];
+          if (!allowedFamilies.includes(readerSettings.fontFamily)) {
+            readerSettings.fontFamily = 'sans-serif';
+          }
+          readerSettings.lineHeight = Math.min(Math.max(Number(readerSettings.lineHeight) || 1.5, 0.5), 4);
+          readerSettings.showPagination = Boolean(readerSettings.showPagination);
+        }
 
         initUI();
         loadBook();

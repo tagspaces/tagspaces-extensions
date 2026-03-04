@@ -18,7 +18,6 @@
         height: 100%;
         color: var(--text-color);
         background-color: var(--background-color);
-        /* padding: 10px; */
       }
 
       #markmap {
@@ -44,11 +43,6 @@
         locale = 'en_US';
       }
 
-      let htmlContent;
-      let sourceURL;
-      let screenshot;
-      let scrappedon;
-
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
@@ -59,16 +53,9 @@
           insertZoomContentMenuItem();
           insertToggleFindMenuItem();
           insertExportAsHTMLFunctionality();
-          // insertChangeStyleMenuItemMenuItem();
-          // insertResetStyleMenuItemMenuItem();
-
           initI18N(locale, 'ns.extension.json');
 
           sendMessageToHost({ command: 'loadDefaultTextContent' });
-
-          // document.body.addEventListener('dblclick', () => {
-          //   sendMessageToHost({ command: 'editDocument' });
-          // });
 
           documentContent = document.getElementById('documentContent');
 
@@ -144,9 +131,11 @@
 
         const transformer = new markmap.Transformer();
 
-        // transform markdown
+        // Sanitize inline HTML embedded in Markdown before rendering.
+        // sanitizeContent() uses WHOLE_DOCUMENT:true which wraps output in
+        // <html>...</html> and breaks Markdown parsing — use DOMPurify directly.
         const { root, features } = transformer.transform(
-          sanitizeContent(content)
+          DOMPurify.sanitize(content)
         );
 
         // either get assets required by used features

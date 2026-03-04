@@ -51,18 +51,12 @@
       function setContent(content, fileDir) {
         // Cutting preview content 10kb
         const previewSize = 1024 * 10;
-        // console.log('Content size: ' + content.length);
-
-        // removing the script tags from the content
-        let cleanedContent = content
-          .toString()
-          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-        if (cleanedContent.length > previewSize) {
-          cleanedContent = cleanedContent.substring(0, previewSize);
+        let previewContent = content.toString();
+        if (previewContent.length > previewSize) {
+          previewContent = previewContent.substring(0, previewSize);
         }
-
-        document.getElementById('textContentArea').textContent =
-          sanitizeContent(cleanedContent);
+        // textContent is inherently safe — no HTML interpretation, no XSS possible
+        document.getElementById('textContentArea').textContent = previewContent;
       }
     </script>
   </head>

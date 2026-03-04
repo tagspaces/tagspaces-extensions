@@ -49,29 +49,16 @@
         locale = 'en_US';
       }
 
-      let htmlContent;
-      let sourceURL;
-      let screenshot;
-      let scrappedon;
-
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
             'https://docs.tagspaces.org/extensions/slides-viewer'
           );
           insertLoadingAnimation();
-          // insertPrintMenuItem();
-          // insertToggleFindMenuItem();
-          // insertZoomContentMenuItem();
-          // insertExportAsHTMLFunctionality();
 
           initI18N(locale, 'ns.extension.json');
 
           sendMessageToHost({ command: 'loadDefaultTextContent' });
-
-          // document.body.addEventListener('dblclick', () => {
-          //   sendMessageToHost({ command: 'editDocument' });
-          // });
 
           documentContent = document.getElementById('documentContent');
 
@@ -91,63 +78,8 @@
           }
 
           let styleIndex = 0;
-          // if (extSettings && extSettings.styleIndex) {
-          //   styleIndex = extSettings.styleIndex;
-          // }
 
-          // documentContent.classList.value = 'markdown ' + styles[styleIndex];
           saveSettings();
-
-          // document
-          //   .getElementById('zoomInButton')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     zoomLevel = zoomLevel + 10;
-          //     if (zoomLevel >= 500) {
-          //       zoomLevel = 500;
-          //     }
-          //     saveSettings();
-          //     document.getElementById('documentContent').style.zoom =
-          //       zoomLevel + '%';
-          //   });
-
-          // document
-          //   .getElementById('zoomOutButton')
-          //   .addEventListener('click', e => {
-          //     e.stopPropagation();
-          //     zoomLevel = zoomLevel - 10;
-          //     if (zoomLevel < 30) {
-          //       zoomLevel = 30;
-          //     }
-          //     saveSettings();
-          //     document.getElementById('documentContent').style.zoom =
-          //       zoomLevel + '%';
-          //   });
-
-          // document
-          //   .getElementById('zoomResetButton')
-          //   .addEventListener('click', e => {
-          //     zoomLevel = 100;
-          //     saveSettings();
-          //     document.getElementById('documentContent').style.zoom =
-          //       zoomLevel + '%';
-          //   });
-
-          // document
-          //   .getElementById('toSansSerifFontButton')
-          //   .addEventListener('click', e => {
-          //     document.getElementById('readabilityContent').style.fontFamily =
-          //       'Helvetica, Arial, sans-serif';
-          //     e.stopPropagation();
-          //   });
-
-          // document
-          //   .getElementById('toSerifFontButton')
-          //   .addEventListener('click', e => {
-          //     document.getElementById('readabilityContent').style.fontFamily =
-          //       'Georgia, Times New Roman, serif';
-          //     e.stopPropagation();
-          //   });
         }
       });
 
@@ -168,7 +100,10 @@
           ''
         );
 
-        document.body.innerHTML = sanitizeContent(cleanedBodyContent);
+        document.body.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
+        document.body.querySelectorAll('style').forEach((styleEl) => {
+          styleEl.textContent = sanitizeCss(styleEl.textContent);
+        });
 
         Reveal.initialize({
           controls: true,
@@ -188,11 +123,9 @@
 
         document.getElementById('readabilityOffLabel').style.display = 'none';
 
-        // initFindToolbar();
-
         handleLinks(document.documentElement, fileDirectory);
 
-        fixingEmbeddingOfLocalImages(htmlContent, fileDirectory);
+        fixingEmbeddingOfLocalImages(document.body, fileDirectory);
       }
     </script>
   </head>

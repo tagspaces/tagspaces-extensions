@@ -53,7 +53,7 @@
 
         if (encrypted) {
           sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-        } else if (filePath) {
+        } else if (filePath && isValidUrl(filePath)) {
           // Direct file loading
           const viewerUrl = `generic/web/viewer.html?file=${encodeURIComponent(filePath)}`;
           pdfViewer.setAttribute('src', viewerUrl);
