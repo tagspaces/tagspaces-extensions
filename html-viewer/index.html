@@ -52,6 +52,7 @@
       let scrappedon;
       let showDetails = true;
 
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
@@ -180,7 +181,7 @@
           document
             .getElementById('openSourceURL')
             .addEventListener('click', (e) => {
-              if (sourceURL && sourceURL.length > 0) {
+              if (sourceURL && isValidUrl(sourceURL)) {
                 sendMessageToHost({
                   command: 'openLinkExternally',
                   link: sourceURL,
@@ -237,7 +238,7 @@
         const sourceUrlContainer = document.getElementById('documentSourceUrl');
         if (sourceUrlContainer) {
           sourceUrlContainer.replaceChildren(); // Safely clears all children
-          if (sourceURL && sourceURL !== 'undefined') {
+          if (sourceURL && sourceURL !== 'undefined' && isValidUrl(sourceURL)) {
             const aEl = document.createElement('a');
             aEl.textContent = sourceURL;
             aEl.href = sourceURL;
@@ -307,6 +308,12 @@
            * This is much faster and safer than innerHTML.
            */
           contentTarget.replaceChildren(...body.childNodes);
+
+          // Block external URLs in CSS style blocks — DOMPurify keeps <style>
+          // tags but does not sanitize their CSS content
+          contentTarget.querySelectorAll('style').forEach((styleEl) => {
+            styleEl.textContent = sanitizeCss(styleEl.textContent);
+          });
         }
 
         // Export Screenshot (Event Listener Cleanup)

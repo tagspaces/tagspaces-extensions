@@ -32,19 +32,6 @@
       let isViewer = true;
       const MAX_SCREENSHOT_SIZE = 2 * 1024 * 1024; // 2 MB
 
-      function isValidUrl(string) {
-        try {
-          const u = new URL(string);
-          return (
-            u.protocol === 'ts:' ||
-            u.protocol === 'http:' ||
-            u.protocol === 'https:' ||
-            u.protocol === 'file:'
-          );
-        } catch (e) {
-          return false;
-        }
-      }
 
       function xmlEscape(str) {
         return str

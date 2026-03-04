@@ -80,25 +80,6 @@
       let blobUrls = []; // Track blobs for cleanup
       let currentAttachments = []; // Store binary data for downloading
 
-      function htmlEncode(str) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(String(str ?? '')));
-        return div.innerHTML;
-      }
-
-      function sanitizeCss(css) {
-        // Block external @import rules
-        css = css.replace(/@import\b[^;]+;/gi, (m) =>
-          /https?:\/\//i.test(m) ? '' : m,
-        );
-        // Block external url() references
-        css = css.replace(
-          /url\(\s*['"]?https?:\/\/[^'"\)]*['"]?\s*\)/gi,
-          'url()',
-        );
-        return css;
-      }
-
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertLoadingAnimation();

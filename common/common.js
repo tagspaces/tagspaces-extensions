@@ -888,3 +888,34 @@ function insertAboutDialog(helpURL, pro) {
     sendMessageToHost(msg);
   });
 }
+
+function htmlEncode(str) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(String(str ?? '')));
+  return div.innerHTML;
+}
+
+function isValidUrl(string) {
+  try {
+    const u = new URL(string);
+    return (
+      u.protocol === 'ts:' ||
+      u.protocol === 'http:' ||
+      u.protocol === 'https:' ||
+      u.protocol === 'file:'
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
+function sanitizeCss(css) {
+  css = css.replace(/@import\b[^;]+;/gi, (m) =>
+    /https?:\/\//i.test(m) ? '' : m,
+  );
+  css = css.replace(
+    /url\(\s*['"]?https?:\/\/[^'"\\)]*['"]?\s*\)/gi,
+    'url()',
+  );
+  return css;
+}

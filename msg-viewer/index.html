@@ -90,23 +90,6 @@
 
       let zoomLevel = 100;
 
-      function htmlEncode(str) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(String(str ?? '')));
-        return div.innerHTML;
-      }
-
-      function sanitizeCss(css) {
-        css = css.replace(/@import\b[^;]+;/gi, (m) =>
-          /https?:\/\//i.test(m) ? '' : m,
-        );
-        css = css.replace(
-          /url\(\s*['"]?https?:\/\/[^'"\)]*['"]?\s*\)/gi,
-          'url()',
-        );
-        return css;
-      }
-
       document.addEventListener('DOMContentLoaded', () => {
         initUI();
 
