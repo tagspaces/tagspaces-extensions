@@ -53,7 +53,7 @@
 
         if (encrypted) {
           sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-        } else if (filePath && isValidUrl(filePath)) {
+        } else if (filePath) { //  && isValidUrl(filePath) do not work on electron due to path begin with /
           // Direct file loading
           const viewerUrl = `generic/web/viewer.html?file=${encodeURIComponent(filePath)}`;
           pdfViewer.setAttribute('src', viewerUrl);
