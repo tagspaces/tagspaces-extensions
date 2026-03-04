@@ -80,6 +80,25 @@
       let blobUrls = []; // Track blobs for cleanup
       let currentAttachments = []; // Store binary data for downloading
 
+      function htmlEncode(str) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(String(str ?? '')));
+        return div.innerHTML;
+      }
+
+      function sanitizeCss(css) {
+        // Block external @import rules
+        css = css.replace(/@import\b[^;]+;/gi, (m) =>
+          /https?:\/\//i.test(m) ? '' : m,
+        );
+        // Block external url() references
+        css = css.replace(
+          /url\(\s*['"]?https?:\/\/[^'"\)]*['"]?\s*\)/gi,
+          'url()',
+        );
+        return css;
+      }
+
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertLoadingAnimation();
@@ -212,42 +231,116 @@
           zoomLevel + '%';
       }
 
-      /**
-       * Global variables required for this function
-       * let currentAttachments = [];
-       * let blobUrls = [];
-       */
+      // Convert an attachment's binary content to an inline base64 data URL.
+      function attachmentToDataUrl(att) {
+        if (!att.content) return null;
+        const mimeType = att.mimeType || 'application/octet-stream';
+        const bytes = new Uint8Array(att.content);
+        let binary = '';
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+          binary += String.fromCharCode.apply(
+            null,
+            bytes.subarray(i, Math.min(i + chunkSize, bytes.byteLength)),
+          );
+        }
+        return `data:${mimeType};base64,${btoa(binary)}`;
+      }
+
+      // Parse the raw MHTML ArrayBuffer and return a Map of
+      // Content-Location URL → "data:mime;base64,..." string.
+      //
+      // PostalMime does not expose Content-Location in att.headers, so we
+      // parse the MIME boundaries ourselves. MHTML binary parts (images, CSS)
+      // are base64-encoded in the file, so we can reuse that base64 directly
+      // without decoding and re-encoding.
+      function buildMhtmlResourceMap(arrayBuffer) {
+        // Decode as Latin-1 so every byte maps 1:1 to a character.
+        // Binary content is safe because it is already base64-encoded in MHTML.
+        const text = new TextDecoder('latin1').decode(arrayBuffer);
+        const resourceMap = new Map();
+
+        // Extract the multipart boundary from the top-level Content-Type header.
+        const boundaryMatch = text.match(
+          /\bboundary=(?:"([^"]+)"|([^\s;,\r\n]+))/i,
+        );
+        if (!boundaryMatch) return resourceMap;
+        const boundary = (boundaryMatch[1] ?? boundaryMatch[2]).trim();
+
+        // Split on "--boundary" delimiters
+        const escaped = boundary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const parts = text.split(new RegExp(`--${escaped}`));
+
+        for (let i = 1; i < parts.length; i++) {
+          const part = parts[i];
+          // "--" suffix marks the closing delimiter — stop here
+          if (/^[ \t]*--/.test(part)) break;
+
+          // Blank line separates headers from body
+          const blankIdx = part.search(/\r?\n[ \t]*\r?\n/);
+          if (blankIdx === -1) continue;
+
+          const headerText = part.substring(0, blankIdx);
+          // Skip leading CRLF after the blank line
+          const body = part.substring(blankIdx).replace(/^(\r?\n){1,2}/, '');
+
+          // Unfold headers (RFC 2822 folding: continuation lines start with whitespace)
+          const hdrs = {};
+          const unfolded = headerText.replace(/\r?\n[ \t]+/g, ' ');
+          for (const line of unfolded.split(/\r?\n/)) {
+            const colon = line.indexOf(':');
+            if (colon > 0) {
+              hdrs[line.substring(0, colon).trim().toLowerCase()] = line
+                .substring(colon + 1)
+                .trim();
+            }
+          }
+
+          const location = hdrs['content-location'];
+          if (!location) continue;
+
+          const encoding = (hdrs['content-transfer-encoding'] || '').toLowerCase();
+          const mimeType = (hdrs['content-type'] || 'application/octet-stream')
+            .split(';')[0]
+            .trim();
+
+          if (encoding === 'base64') {
+            // Strip all whitespace — base64 lines in MHTML have CRLF line breaks
+            const b64 = body.replace(/\s/g, '');
+            if (b64) {
+              resourceMap.set(
+                location.trim(),
+                `data:${mimeType};base64,${b64}`,
+              );
+            }
+          }
+          // quoted-printable / 7bit parts (HTML body) are handled by PostalMime
+        }
+
+        return resourceMap;
+      }
 
       async function setContent(contentBuffer) {
         const container = document.getElementById('documentContent');
 
         try {
-          // Cleanup: Revoke old Blob URLs to prevent memory leaks
-          if (blobUrls && blobUrls.length > 0) {
-            blobUrls.forEach((url) => URL.revokeObjectURL(url));
-            blobUrls = [];
-          }
-
-          // Parse the EML/MHTML content
           const parser = new PostalMime();
           const email = await parser.parse(contentBuffer);
 
-          // Save attachments globally for the click-delegator downloader
           currentAttachments = email.attachments || [];
 
-          // Metadata Extraction (Source URL and Saved Date)
-          // MHTML files store the original URL in the top-level Content-Location header
+          // Metadata Extraction
           const contentLocationHeader = email.headers.find(
-            (h) => h.key === 'snapshot-content-location', // 'content-location',
+            (h) => h.key === 'snapshot-content-location',
           );
-          const sourceURL = contentLocationHeader
+          const baseUrl = contentLocationHeader
             ? contentLocationHeader.value.trim()
             : '';
 
           const sourceUrlInput = document.getElementById('html-data-sourceurl');
           const savedOnInput = document.getElementById('html-data-savedon');
 
-          if (sourceUrlInput) sourceUrlInput.value = sourceURL;
+          if (sourceUrlInput) sourceUrlInput.value = baseUrl;
 
           if (savedOnInput && email.date) {
             savedOnInput.value = formatDateTime(email.date, {
@@ -256,38 +349,120 @@
             });
           }
 
-          // Resource Re-linking (Handling Inline Images/CSS)
-          // We convert binary attachments into Blob URLs and replace CIDs or Locations in the HTML
+          // Build resource map: original URL/CID → inline data URL.
+          // For MHTML: parse Content-Location headers from the raw MIME structure,
+          // because PostalMime does not expose them in att.headers.
+          // For EML: supplement with CID mappings from PostalMime's attachments.
+          const resourceMap = buildMhtmlResourceMap(contentBuffer);
+
+          currentAttachments.forEach((att) => {
+            if (!att.contentId) return;
+            const dataUrl = attachmentToDataUrl(att);
+            if (!dataUrl) return;
+            const cid = att.contentId.replace(/[<>]/g, '');
+            resourceMap.set(`cid:${cid}`, dataUrl);
+          });
+
+          // console.log(
+          //   'MHTML Viewer: resourceMap size =',
+          //   resourceMap.size,
+          //   '| first key:',
+          //   [...resourceMap.keys()][0] ?? '(none)',
+          // );
+
+          // Phase 1: Exact string replacement in raw HTML
+          // Handles direct CID matches and full Content-Location URL matches
           let renderedHtml =
             email.html ||
             (email.text ? `<pre>${DOMPurify.sanitize(email.text)}</pre>` : '');
 
-          if (currentAttachments.length > 0) {
-            currentAttachments.forEach((att, index) => {
-              // Only create blobs for resources likely to be used inline or for download
-              const blob = new Blob([att.content], {
-                type: att.mimeType || 'application/octet-stream',
-              });
-              const blobUrl = URL.createObjectURL(blob);
-              blobUrls.push(blobUrl);
+          resourceMap.forEach((dataUrl, originalUrl) => {
+            renderedHtml = renderedHtml.split(originalUrl).join(dataUrl);
+          });
 
-              // Replace Content-ID (Standard EML inline images: <img src="cid:unique-id">)
-              if (att.contentId) {
-                const cid = att.contentId.replace(/[<>]/g, '');
-                renderedHtml = renderedHtml.split(`cid:${cid}`).join(blobUrl);
+          // Phase 2: DOM-based pass — resolves relative URLs + blocks remaining external URLs
+          const tempDoc = new DOMParser().parseFromString(
+            renderedHtml,
+            'text/html',
+          );
+
+          tempDoc
+            .querySelectorAll(
+              'img, source, video, audio, link[rel="stylesheet"]',
+            )
+            .forEach((el) => {
+              const attr = el.tagName === 'LINK' ? 'href' : 'src';
+              const src = el.getAttribute(attr);
+              if (!src || src.startsWith('data:') || src.startsWith('blob:'))
+                return;
+
+              // Resolve relative src against the document's base URL
+              if (baseUrl && !src.includes('://')) {
+                try {
+                  const resolved = new URL(src, baseUrl).href;
+                  if (resourceMap.has(resolved)) {
+                    el.setAttribute(attr, resourceMap.get(resolved));
+                    el.removeAttribute('srcset');
+                    return;
+                  }
+                } catch (e) {}
               }
 
-              // Replace Content-Location (Standard MHTML resources: <img src="http://site.com/img.jpg">)
-              const location = att.headers?.find(
-                (h) => h.key === 'content-location',
-              )?.value;
-              if (location) {
-                renderedHtml = renderedHtml
-                  .split(location.trim())
-                  .join(blobUrl);
+              // DEBUG — log URLs that couldn't be matched to a local resource
+              if (src.startsWith('http://') || src.startsWith('https://')) {
+                console.warn('MHTML Viewer: unmatched external URL:', src);
               }
+
+              // Block any remaining external URLs — never fetch from internet
+              if (src.startsWith('http://') || src.startsWith('https://')) {
+                el.removeAttribute(attr);
+              }
+              el.removeAttribute('srcset');
             });
-          }
+
+          // Phase 3: CSS url() replacement inside <style> blocks
+          tempDoc.querySelectorAll('style').forEach((styleEl) => {
+            if (!styleEl.textContent.includes('url(')) return;
+            let css = styleEl.textContent;
+            resourceMap.forEach((dataUrl, originalUrl) => {
+              css = css.split(originalUrl).join(dataUrl);
+            });
+            styleEl.textContent = css;
+          });
+
+          // Phase 4: CSS url() replacement in inline style attributes
+          tempDoc.querySelectorAll('[style]').forEach((el) => {
+            let style = el.getAttribute('style');
+            if (!style.includes('url(')) return;
+            resourceMap.forEach((dataUrl, originalUrl) => {
+              style = style.split(originalUrl).join(dataUrl);
+            });
+            el.setAttribute('style', style);
+          });
+
+          // Phase 5: Stash data: URLs out of the HTML before DOMPurify.
+          // DOMPurify's IS_SCRIPT_OR_DATA check blocks data: URIs in attributes
+          // regardless of ALLOWED_URI_REGEXP. We remove them now and re-inject
+          // them after sanitization via direct DOM property assignment.
+          const mediaResources = [];
+          tempDoc.querySelectorAll('[src^="data:"]').forEach((el) => {
+            const idx = mediaResources.length;
+            mediaResources.push(el.getAttribute('src'));
+            el.dataset.mhtmlId = idx;
+            el.removeAttribute('src');
+          });
+
+          // Stash processed <style> block content for the same reason:
+          // DOMPurify may strip data: URLs inside CSS url() references.
+          const styleBlocks = [];
+          tempDoc.querySelectorAll('style').forEach((styleEl) => {
+            const idx = styleBlocks.length;
+            styleBlocks.push(styleEl.textContent);
+            styleEl.dataset.mhtmlStyle = idx;
+            styleEl.textContent = '';
+          });
+
+          renderedHtml = tempDoc.body.innerHTML;
 
           // Build Header Section (Subject, From, To, Attachments)
           const isEmail = email.messageId || (email.to && email.to.length > 0);
@@ -296,22 +471,22 @@
           if (isEmail) {
             headerHTML += '<div class="email-header">';
             if (email.subject) {
-              headerHTML += `<h3 style="margin-top:0">${DOMPurify.sanitize(email.subject)}</h3>`;
+              headerHTML += `<h3 style="margin-top:0">${htmlEncode(email.subject)}</h3>`;
             }
             headerHTML += `<div><strong>From:</strong> ${formatAddress(email.from)}</div>`;
             if (email.to)
               headerHTML += `<div><strong>To:</strong> ${formatAddress(email.to)}</div>`;
             if (email.date)
-              headerHTML += `<div><strong>Date:</strong> ${DOMPurify.sanitize(email.date)}</div>`;
+              headerHTML += `<div><strong>Date:</strong> ${htmlEncode(email.date)}</div>`;
 
             headerHTML += currentAttachments
               .map((att, index) => {
                 const name = att.filename || 'unnamed-file';
 
-                // Robust size calculation
                 let sizeText = 'Unknown size';
                 if (att.content && att.content.byteLength !== undefined) {
-                  sizeText = (att.content.byteLength / 1024).toFixed(1) + ' KB';
+                  sizeText =
+                    (att.content.byteLength / 1024).toFixed(1) + ' KB';
                 } else if (att.content && att.content.length !== undefined) {
                   sizeText = (att.content.length / 1024).toFixed(1) + ' KB';
                 } else if (att.size !== undefined) {
@@ -331,7 +506,7 @@
             headerHTML += '<hr style="margin: 20px 0;" /></div>';
           }
 
-          // Security: Sanitize Combined Content
+          // Sanitize the HTML (no data: URIs present — they were stashed above)
           const cleanBody = DOMPurify.sanitize(renderedHtml, {
             ADD_TAGS: ['style', 'video', 'audio', 'source', 'svg', 'path'],
             ADD_ATTR: [
@@ -344,21 +519,34 @@
             ],
           });
 
-          // Inject into DOM
           container.innerHTML = headerHTML + cleanBody;
 
-          // Post-Processing
-          // Disable autoplay on any media found in the document
+          // Re-inject media src values via direct DOM assignment — bypasses
+          // DOMPurify's URI filtering entirely, so data: URLs work reliably.
+          container.querySelectorAll('[data-mhtml-id]').forEach((el) => {
+            const idx = +el.dataset.mhtmlId;
+            if (mediaResources[idx]) el.src = mediaResources[idx];
+            delete el.dataset.mhtmlId;
+          });
+
+          // Re-inject <style> block CSS (also contains data: URLs)
+          // sanitizeCss strips external @import and url() references first
+          container.querySelectorAll('[data-mhtml-style]').forEach((styleEl) => {
+            const idx = +styleEl.dataset.mhtmlStyle;
+            if (styleBlocks[idx] !== undefined)
+              styleEl.textContent = sanitizeCss(styleBlocks[idx]);
+            delete styleEl.dataset.mhtmlStyle;
+          });
+
+          // Disable autoplay on media elements
           container.querySelectorAll('video, audio').forEach((media) => {
             media.removeAttribute('autoplay');
             media.setAttribute('controls', '');
             media.pause();
           });
 
-          // Re-link external links to TagSpaces host
           handleLinks(container);
 
-          // Initialize search/mark.js
           if (typeof initFindToolbar === 'function') {
             initFindToolbar();
           }
@@ -366,7 +554,7 @@
           hideLoadingAnimation();
         } catch (err) {
           console.error('Error in setContent:', err);
-          container.innerHTML = `<div class="alert alert-danger">Failed to parse document: ${err.message}</div>`;
+          container.innerHTML = `<div class="alert alert-danger">Failed to parse document: ${htmlEncode(err.message)}</div>`;
           hideLoadingAnimation();
         }
       }
@@ -379,14 +567,20 @@
         if (Array.isArray(addrObj)) {
           return addrObj
             .map((a) => {
-              const name = a.name ? DOMPurify.sanitize(a.name) : '';
-              const email = a.address ? DOMPurify.sanitize(a.address) : '';
-              return `${name ? name + ' ' : ' '}<a href="mailto:${email}">${email}</a>`;
+              const name = a.name ? htmlEncode(a.name) : '';
+              const emailDisplay = a.address ? htmlEncode(a.address) : '';
+              const emailHref = a.address
+                ? encodeURIComponent(a.address)
+                : '';
+              return `${name ? name + ' ' : ' '}<a href="mailto:${emailHref}">${emailDisplay}</a>`;
             })
             .join('; ');
         }
-        const email = DOMPurify.sanitize(addrObj.address || 'Unknown');
-        return `<a href="mailto:${email}">${email}</a>`;
+        const emailDisplay = htmlEncode(addrObj.address || 'Unknown');
+        const emailHref = addrObj.address
+          ? encodeURIComponent(addrObj.address)
+          : '';
+        return `<a href="mailto:${emailHref}">${emailDisplay}</a>`;
       }
     </script>
   </head>
