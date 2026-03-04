@@ -12,9 +12,9 @@
   "license": "MIT",
   "dependencies": {},
   "tsextension": {
-    "name": "URL Viewer",
+    "name": "URL Editor",
     "types": [
-      "viewer"
+      "viewer", "editor"
     ],
     "color": "",
     "fileTypes": [
