@@ -902,7 +902,9 @@ function isValidUrl(string) {
       u.protocol === 'ts:' ||
       u.protocol === 'http:' ||
       u.protocol === 'https:' ||
-      u.protocol === 'file:'
+      u.protocol === 'file:' ||
+      u.protocol === 'tel:' ||
+      u.protocol === 'mailto:'
     );
   } catch (e) {
     return false;
@@ -913,9 +915,6 @@ function sanitizeCss(css) {
   css = css.replace(/@import\b[^;]+;/gi, (m) =>
     /https?:\/\//i.test(m) ? '' : m,
   );
-  css = css.replace(
-    /url\(\s*['"]?https?:\/\/[^'"\\)]*['"]?\s*\)/gi,
-    'url()',
-  );
+  css = css.replace(/url\(\s*['"]?https?:\/\/[^'"\\)]*['"]?\s*\)/gi, 'url()');
   return css;
 }
