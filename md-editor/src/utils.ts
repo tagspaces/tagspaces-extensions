@@ -154,6 +154,10 @@ export function createCrepeEditor(
           return originalURL;
         },
         onUpload: async (file: File) => {
+          const MAX_IMAGE_SIZE = 15 * 1024 * 1024; // 15 MB
+          if (file.size > MAX_IMAGE_SIZE) {
+            throw new Error('Image file exceeds the 15 MB limit.');
+          }
           const base64String = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = (event) => resolve(event.target?.result as string);
@@ -181,7 +185,17 @@ export function createCrepeEditor(
               const href = (target as HTMLAnchorElement).getAttribute('href');
               if (href && !href.startsWith('#')) {
                 event.preventDefault();
-                openLink(href, { fullWidth: false });
+                // Block dangerous protocols before forwarding to host
+                try {
+                  const parsed = new URL(href, window.location.href);
+                  const safe = ['http:', 'https:', 'mailto:', 'ts:', 'tel:'].includes(parsed.protocol);
+                  if (safe) {
+                    openLink(href, { fullWidth: false });
+                  }
+                } catch {
+                  // Relative path — safe to open
+                  openLink(href, { fullWidth: false });
+                }
                 return true;
               }
             }

@@ -243,10 +243,16 @@ function App(props: Props) {
   }
 
   function getSettings(key: string) {
-    const item = localStorage.getItem('mdEditorSettings');
-    if (item) {
-      const settings = JSON.parse(item);
-      return settings[key];
+    try {
+      const item = localStorage.getItem('mdEditorSettings');
+      if (item) {
+        const settings = JSON.parse(item);
+        if (settings && typeof settings === 'object') {
+          return settings[key];
+        }
+      }
+    } catch {
+      // corrupted localStorage entry — ignore
     }
     return undefined;
   }
