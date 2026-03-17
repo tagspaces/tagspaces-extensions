@@ -114,6 +114,32 @@ export function sendMessageToHost(message: any) {
   return false;
 }*/
 
+let _linkTooltip: HTMLElement | null = null;
+
+function getLinkTooltip(): HTMLElement {
+  if (!_linkTooltip || !document.body.contains(_linkTooltip)) {
+    _linkTooltip = document.createElement('div');
+    _linkTooltip.style.cssText =
+      'position:fixed;background:#333333;color:#fff;padding:3px 8px;border-radius:10px;' +
+      'font-size:12px;font-family: Helvetica, Arial, sans-serif;pointer-events:none;z-index:9999;max-width:480px;' +
+      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none;';
+    document.body.appendChild(_linkTooltip);
+  }
+  return _linkTooltip;
+}
+
+function showLinkTooltip(href: string, x: number, y: number) {
+  const tip = getLinkTooltip();
+  tip.textContent = href;
+  tip.style.left = `${x + 14}px`;
+  tip.style.top = `${y + 14}px`;
+  tip.style.display = 'block';
+}
+
+function hideLinkTooltip() {
+  if (_linkTooltip) _linkTooltip.style.display = 'none';
+}
+
 export function createCrepeEditor(
   root: HTMLElement,
   defaultContent: string,
@@ -200,6 +226,34 @@ export function createCrepeEditor(
                 return true;
               }
             }
+          }
+          return false;
+        },
+        mouseover: (view, event) => {
+          if (!view.editable) {
+            const anchor = (event.target as HTMLElement).closest('a') as HTMLAnchorElement | null;
+            if (anchor) {
+              const href = anchor.getAttribute('href');
+              if (href && !href.startsWith('#')) {
+                showLinkTooltip(href, event.clientX, event.clientY);
+                return false;
+              }
+            }
+            hideLinkTooltip();
+          }
+          return false;
+        },
+        mousemove: (view, event) => {
+          if (!view.editable && _linkTooltip && _linkTooltip.style.display === 'block') {
+            _linkTooltip.style.left = `${event.clientX + 14}px`;
+            _linkTooltip.style.top = `${event.clientY + 14}px`;
+          }
+          return false;
+        },
+        mouseout: (view, event) => {
+          if (!view.editable) {
+            const anchor = (event.target as HTMLElement).closest('a');
+            if (anchor) hideLinkTooltip();
           }
           return false;
         },
