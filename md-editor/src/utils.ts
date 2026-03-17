@@ -174,6 +174,7 @@ export function createCrepeEditor(
   crepe.editor.config((ctx: Ctx) => {
     ctx.update(editorViewOptionsCtx, (prev) => ({
       ...prev,
+      editable: () => defaultEditMode,
       attributes: {
         class: 'mx-auto full-height',
       },

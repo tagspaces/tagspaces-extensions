@@ -8,6 +8,7 @@ interface Props {
   isEditMode: boolean;
   theme?: string;
   onChange?: (value: string) => void;
+  onSave?: () => void;
 }
 
 const FrontmatterPanel: React.FC<Props> = ({
@@ -15,6 +16,7 @@ const FrontmatterPanel: React.FC<Props> = ({
   isEditMode,
   theme,
   onChange,
+  onSave,
 }) => {
   const { t } = useTranslation();
   const isDark = theme === 'dark';
@@ -37,6 +39,13 @@ const FrontmatterPanel: React.FC<Props> = ({
         <textarea
           value={frontmatter}
           onChange={(e) => onChange?.(e.target.value)}
+          onKeyDown={(e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+              e.preventDefault();
+              e.stopPropagation();
+              onSave?.();
+            }
+          }}
           style={{
             width: '100%',
             boxSizing: 'border-box',

@@ -182,6 +182,25 @@ function App(props: Props) {
     sendMessageToHost({ command: 'contentChangedInEditor' });
   }, []);
 
+  const handleSave = React.useCallback(() => {
+    if (!isEditMode || readOnly) return;
+    const body = milkdownRef.current?.getMarkdown() ?? '';
+    sendMessageToHost({
+      command: 'savingFile',
+      content: combineFrontmatter(frontmatterRef.current, body),
+    });
+  }, [isEditMode, readOnly]);
+
+  useEventListener('keydown', (event: Event) => {
+    const e = event as KeyboardEvent;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      if (mode === 'CodeMirror') {
+        e.preventDefault();
+        handleSave();
+      }
+    }
+  });
+
   const toggleViewSource = () => {
     if (mode === 'CodeMirror') {
       setMode('Milkdown');
@@ -290,6 +309,7 @@ function App(props: Props) {
                 isEditMode={true}
                 theme={theme}
                 onChange={handleFrontmatterChange}
+                onSave={handleSave}
               />
             )}
             <div style={milkdownStyle}>
@@ -320,7 +340,7 @@ function App(props: Props) {
           value={getContent()}
           onChange={onCodeChange}
           dark={theme === 'dark'}
-          editable={!readOnly}
+          editable={isEditMode && !readOnly}
           lock={focusCode}
         />
       </div>
