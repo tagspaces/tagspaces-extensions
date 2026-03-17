@@ -30,18 +30,19 @@
     "@mui/icons-material": "7.3.9",
     "@mui/material": "7.3.9",
     "@prosemirror-adapter/react": "^0.4.4",
-    "@tagspaces/tagspaces-md-toolbar": "^4.5.54",
     "@tagspaces/tagspaces-codemirror": "^4.3.6",
     "@tagspaces/tagspaces-common": "^4.5.99",
     "@tagspaces/tagspaces-extension-ui": "^4.5.55",
+    "@tagspaces/tagspaces-md-toolbar": "^4.5.54",
+    "easy-speech": "2.4.0",
     "i18next": "^25.2.1",
-    "react-i18next": "^15.5.2",
     "markmap-common": "0.18.9",
     "markmap-lib": "0.18.12",
     "markmap-view": "0.18.12",
-    "easy-speech": "2.4.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-draggable": "4.5.0",
+    "react-i18next": "^15.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.18",
