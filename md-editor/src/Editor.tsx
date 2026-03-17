@@ -5,7 +5,12 @@ import { getMarkdown, $useKeymap, $command } from '@milkdown/kit/utils';
 
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/frame.css';
-import { createCrepeEditor, sendMessageToHost } from './utils';
+import {
+  createCrepeEditor,
+  sendMessageToHost,
+  parseFrontmatter,
+  combineFrontmatter,
+} from './utils';
 import { replaceAll } from '@milkdown/utils';
 import { useEventListener } from '@tagspaces/tagspaces-extension-ui';
 import React, { useEffect, useRef } from 'react';
@@ -20,13 +25,22 @@ interface Props {
   theme?: string;
   onChange?: (markdown: string, prevMarkdown: string) => void;
   currentFolder?: string;
+  onFrontmatterLoaded?: (frontmatter: string | null) => void;
 }
 
 export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
   (props, ref) => {
-    const { isEditMode, readOnly, theme, content, onChange, currentFolder } =
-      props;
+    const {
+      isEditMode,
+      readOnly,
+      theme,
+      content,
+      onChange,
+      currentFolder,
+      onFrontmatterLoaded,
+    } = props;
     const crepeInstanceRef = useRef<Crepe | undefined>(undefined);
+    const frontmatterRef = useRef(null as string | null);
     // const menuBarPlugin = useMenuBarPlugin();
 
     const openLink = (link: string) => {
@@ -63,7 +77,10 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
           return () => {
             sendMessageToHost({
               command: 'savingFile',
-              content: crepe.editor.action(getMarkdown()),
+              content: combineFrontmatter(
+                frontmatterRef.current,
+                crepe.editor.action(getMarkdown()),
+              ),
             });
             return true;
           };
@@ -89,7 +106,7 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
       [isEditMode],
     );
 
-    useCrepeHandler(ref, () => crepeInstanceRef.current, get, loading);
+    useCrepeHandler(ref, () => crepeInstanceRef.current, get, loading, frontmatterRef);
 
     useEventListener('dblclick', () => {
       if (!readOnly) {
@@ -105,7 +122,10 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
         if (editor) {
           sendMessageToHost({
             command: 'savingFile',
-            content: editor.action(getMarkdown()),
+            content: combineFrontmatter(
+              frontmatterRef.current,
+              editor.action(getMarkdown()),
+            ),
           });
         }
       }
@@ -154,7 +174,12 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     function setFileContent(mdContent: string) {
       const editor = get();
       if (editor) {
-        editor.action(replaceAll(mdContent));
+        const { frontmatter, body } = parseFrontmatter(mdContent);
+        frontmatterRef.current = frontmatter;
+        if (onFrontmatterLoaded) {
+          onFrontmatterLoaded(frontmatter);
+        }
+        editor.action(replaceAll(body));
       }
     }
 

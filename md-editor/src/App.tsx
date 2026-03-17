@@ -5,7 +5,8 @@ import Menu from './Menu';
 import EasySpeech from 'easy-speech';
 import { extractContainingDirectoryPath } from '@tagspaces/tagspaces-common/paths';
 import SettingsDialog from './SettingsDialog';
-import { sendMessageToHost } from './utils';
+import { sendMessageToHost, combineFrontmatter } from './utils';
+import FrontmatterPanel from './FrontmatterPanel';
 import { MilkdownProvider } from '@milkdown/react';
 import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/react';
 import { MilkdownEditor } from './Editor';
@@ -44,6 +45,9 @@ function App(props: Props) {
   const codeMirrorRef = React.useRef<CodeMirrorRef>(null);
   const [mode, setMode] = React.useState('Milkdown');
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [frontmatter, setFrontmatter] = useState<string | null>(null);
+  const [showFrontmatter, setShowFrontmatter] = useState<boolean>(false);
+  const frontmatterRef = React.useRef(null as string | null);
   //const [isFilterVisible, setFilterVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const colorMode = React.useContext(ColorModeContext);
@@ -151,21 +155,32 @@ function App(props: Props) {
   const updateContent = (content: string) => {
     if ((!readOnly && focus.current) || focusCode.current) {
       // @ts-ignore
-      window.mdContent = content;
-      // console.log('content changed:' + content);
+      window.mdContent = combineFrontmatter(frontmatterRef.current, content);
       // @ts-ignore
       window.editMode = true;
-      // TODO send only contentChangedInEditor and auto enable editDocument in Tagspaces
-      /*window.parent.postMessage(
-          JSON.stringify({ command: 'editDocument' }),
-          '*'
-      );*/
       sendMessageToHost({
         command: 'contentChangedInEditor',
-        // filepath: filePath
       });
     }
   };
+
+  const handleFrontmatterLoaded = React.useCallback(
+    (fm: string | null) => {
+      frontmatterRef.current = fm;
+      setFrontmatter(fm);
+      if (fm !== null) {
+        setShowFrontmatter(true);
+      }
+    },
+    [],
+  );
+
+  const handleFrontmatterChange = React.useCallback((newFm: string) => {
+    frontmatterRef.current = newFm;
+    setFrontmatter(newFm);
+    milkdownRef.current?.updateFrontmatter(newFm);
+    sendMessageToHost({ command: 'contentChangedInEditor' });
+  }, []);
 
   const toggleViewSource = () => {
     if (mode === 'CodeMirror') {
@@ -263,7 +278,22 @@ function App(props: Props) {
       <MilkdownProvider>
         <SearchDialogContextProvider>
           <ProsemirrorAdapterProvider>
+            {frontmatter !== null && showFrontmatter && isEditMode && (
+              <FrontmatterPanel
+                frontmatter={frontmatter}
+                isEditMode={true}
+                theme={theme}
+                onChange={handleFrontmatterChange}
+              />
+            )}
             <div style={milkdownStyle}>
+              {frontmatter !== null && showFrontmatter && !isEditMode && (
+                <FrontmatterPanel
+                  frontmatter={frontmatter}
+                  isEditMode={false}
+                  theme={theme}
+                />
+              )}
               <MilkdownEditor
                 ref={milkdownRef}
                 isEditMode={isEditMode}
@@ -272,6 +302,7 @@ function App(props: Props) {
                 currentFolder={
                   file ? extractContainingDirectoryPath(file) : undefined
                 }
+                onFrontmatterLoaded={handleFrontmatterLoaded}
               />
             </div>
           </ProsemirrorAdapterProvider>
@@ -301,6 +332,9 @@ function App(props: Props) {
         mode={mode}
         setSettingsDialogOpened={setSettingsDialogOpened}
         haveSpeakSupport={voices.current !== null}
+        hasFrontmatter={frontmatter !== null}
+        showFrontmatter={showFrontmatter}
+        toggleFrontmatter={() => setShowFrontmatter((prev) => !prev)}
       />
       <SettingsDialog
         open={isSettingsDialogOpened}

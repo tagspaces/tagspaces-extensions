@@ -12,6 +12,8 @@ export interface MilkdownRef {
   setEditMode: (isEditMode: boolean) => void;
   openSearchDialog: () => void;
   getMarkdown: () => string;
+  getFrontmatter: () => string | null;
+  updateFrontmatter: (frontmatter: string | null) => void;
   destroy: () => void;
 }
 
@@ -20,6 +22,7 @@ export function useCrepeHandler(
   getCrepe: () => Crepe | undefined,
   get: () => Editor | undefined,
   loading: boolean,
+  frontmatterRef: React.MutableRefObject<string | null>,
 ) {
   const { openSearchDialog } = useSearchDialogContext();
   useImperativeHandle(ref, () => ({
@@ -55,6 +58,12 @@ export function useCrepeHandler(
       if (loading || !editor || editor.status !== EditorStatus.Created)
         return '';
       return editor.action(getMarkdown());
+    },
+    getFrontmatter: (): string | null => {
+      return frontmatterRef.current;
+    },
+    updateFrontmatter: (frontmatter: string | null) => {
+      frontmatterRef.current = frontmatter;
     },
     destroy: () => {
       const crepe = getCrepe();

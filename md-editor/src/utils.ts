@@ -5,6 +5,47 @@ import AppConfig from '@tagspaces/tagspaces-common/AppConfig';
 import { remarkPreserveEmptyLinePlugin } from '@milkdown/preset-commonmark';
 import { trailing } from '@milkdown/kit/plugin/trailing';
 
+export function parseFrontmatter(content: string): {
+  frontmatter: string | null;
+  body: string;
+} {
+  if (!content) return { frontmatter: null, body: '' };
+
+  // Strip UTF-8 BOM if present
+  const stripped = content.startsWith('\uFEFF') ? content.slice(1) : content;
+
+  // Normalize line endings to \n for consistent parsing
+  const normalized = stripped.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  if (!normalized.startsWith('---\n') && normalized !== '---') {
+    return { frontmatter: null, body: stripped };
+  }
+
+  const closeIndex = normalized.indexOf('\n---', 4);
+  if (closeIndex === -1) {
+    return { frontmatter: null, body: stripped };
+  }
+
+  // Accept closing --- followed by \n, end-of-string, or whitespace only
+  const afterDashes = normalized.slice(closeIndex + 4);
+  if (afterDashes.length > 0 && afterDashes[0] !== '\n' && afterDashes[0] !== ' ' && afterDashes[0] !== '\t') {
+    // This \n--- is not a proper closing delimiter (e.g. inside a value)
+    return { frontmatter: null, body: stripped };
+  }
+
+  const frontmatter = normalized.slice(4, closeIndex).trim();
+  const body = afterDashes.startsWith('\n') ? afterDashes.slice(1) : afterDashes;
+  return { frontmatter: frontmatter || null, body };
+}
+
+export function combineFrontmatter(
+  frontmatter: string | null,
+  body: string,
+): string {
+  if (!frontmatter) return body;
+  return `---\n${frontmatter}\n---\n${body}`;
+}
+
 export function getParameterByName(paramName: string) {
   const name = paramName.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');

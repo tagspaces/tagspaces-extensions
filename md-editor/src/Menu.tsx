@@ -7,6 +7,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Button,
@@ -30,6 +31,9 @@ const Menu: React.FC<{
   getContent: () => string;
   mode: string;
   haveSpeakSupport: boolean;
+  hasFrontmatter: boolean;
+  showFrontmatter: boolean;
+  toggleFrontmatter: () => void;
 }> = ({
   toggleViewSource,
   readText,
@@ -41,6 +45,9 @@ const Menu: React.FC<{
   getContent,
   mode,
   haveSpeakSupport,
+  hasFrontmatter,
+  showFrontmatter,
+  toggleFrontmatter,
 }) => {
   const { t } = useTranslation();
   const isSpeaking = React.useRef<boolean>(false);
@@ -102,6 +109,20 @@ const Menu: React.FC<{
               toggleViewSource();
             },
           },
+          ...(hasFrontmatter
+            ? [
+                {
+                  id: 'toggleFrontmatterID',
+                  icon: <InfoIcon />,
+                  name: showFrontmatter
+                    ? t('hideFrontmatter')
+                    : t('showFrontmatter'),
+                  action: () => {
+                    toggleFrontmatter();
+                  },
+                },
+              ]
+            : []),
           {
             id: 'findInDocumentID',
             icon: <SearchIcon />,
