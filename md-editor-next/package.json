@@ -9,17 +9,7 @@
       "editor"
     ],
     "color": "#beefed",
-    "fileTypes": [
-      {
-        "ext": "md"
-      },
-      {
-        "ext": "mdx",
-        "types": [
-          "viewer"
-        ]
-      }
-    ],
+    "fileTypes": [],
     "buildFolder": "build"
   },
   "homepage": "./",
