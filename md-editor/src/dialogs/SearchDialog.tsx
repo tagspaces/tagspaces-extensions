@@ -1,37 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DragHandleIcon from '@mui/icons-material/DragHandle';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
-import {
-  Box,
-  Button,
-  DialogActions,
-  InputAdornment,
-  Tooltip,
-} from '@mui/material';
+import { Box, Button, InputAdornment, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { TextSelection } from '@milkdown/prose/state';
 import { EditorView } from '@milkdown/prose/view';
 import { EditorStatus, editorViewCtx, rootCtx } from '@milkdown/core';
 import Paper from '@mui/material/Paper';
+import type { PaperProps } from '@mui/material/Paper';
 import FormatSizeIcon from '@mui/icons-material/FormatSize';
+import Draggable from 'react-draggable';
 import { HtmlSearcher } from './HtmlSearcher';
+import { findAllRanges, applyHighlights, clearHighlights } from './searchHighlight';
 import { useMilkdownInstance } from '../hooks/useMilkdownInstance';
 import { getParameterByName } from '../utils';
-import DialogCloseButton from '../DialogCloseButton';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   searchTxt?: string;
+}
+
+function DraggablePaper(props: PaperProps) {
+  return (
+    <Draggable handle="#search-dialog-handle" cancel={'[class*="MuiDialogContent-root"]'}>
+      <Paper {...props} />
+    </Draggable>
+  );
 }
 
 function SearchDialog(props: Props) {
@@ -47,6 +49,9 @@ function SearchDialog(props: Props) {
   const [replaceText, setReplaceText] = useState('');
   const [caseSensitive, setCaseSensitive] = useState(false);
   const searcher = useRef<HtmlSearcher | undefined>(getHtmlSearcher());
+  const editModeRanges = useRef<Range[]>([]);
+  const editModeIndex = useRef<number>(-1);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchTxt && searchTxt.length > 0) {
@@ -56,7 +61,14 @@ function SearchDialog(props: Props) {
 
   useEffect(() => {
     if (!open) {
+      searcher.current?.clear();
       searcher.current = undefined;
+      editModeRanges.current = [];
+      editModeIndex.current = -1;
+      clearHighlights();
+    } else {
+      const t = setTimeout(() => searchInputRef.current?.focus(), 80);
+      return () => clearTimeout(t);
     }
   }, [open]);
 
@@ -79,10 +91,17 @@ function SearchDialog(props: Props) {
           if (!!isEditMode) {
             //textEditorMode === 'active') {
             const view = ctx.get(editorViewCtx);
-            searchAndSelect(
-              view,
-              caseSensitive ? searchText : searchText.toLowerCase()
-            );
+            const needle = caseSensitive ? searchText : searchText.toLowerCase();
+            // Rebuild all-match highlights when the query changed
+            const freshRanges = findAllRanges(view.dom as HTMLElement, searchText, caseSensitive);
+            if (freshRanges.length !== editModeRanges.current.length) {
+              editModeRanges.current = freshRanges;
+              editModeIndex.current = -1;
+            }
+            editModeIndex.current = (editModeIndex.current + 1) % (freshRanges.length || 1);
+            const currentRange = freshRanges[editModeIndex.current];
+            applyHighlights(freshRanges, currentRange);
+            searchAndSelect(view, needle);
           } else {
             if (!searcher.current) {
               searcher.current = getHtmlSearcher();
@@ -158,12 +177,10 @@ function SearchDialog(props: Props) {
       return;
     }
 
-    // If not found, searchText from the start of the document
+    // If not found, search from the start of the document
     if (searchFromStart(view, searchText)) {
       return;
     }
-
-    // alert('Text not found.');
   }
 
   function searchFromSelection(
@@ -275,52 +292,48 @@ function SearchDialog(props: Props) {
     view.dom.focus();
   }
 
-  /*function DraggablePaper(props: PaperProps) {
-        return (
-            <Draggable
-                handle="#draggable-dialog-title"
-                cancel={'[class*="MuiDialogContent-root"]'}
-            >
-                <Paper {...props} />
-            </Draggable>
-        );
-    }*/
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      PaperComponent={Paper}
+      PaperComponent={DraggablePaper}
       keepMounted
       scroll="paper"
-      aria-labelledby="draggable-dialog-title"
       hideBackdrop
       disableAutoFocus
       disableEnforceFocus
     >
-      {/* <DialogTitle id="draggable-dialog-title">
-        {replaceMode ? t('searchAndReplace') : t('search')}
-        <DialogCloseButton onClick={onClose} />
-      </DialogTitle> */}
+      <Box
+        id="search-dialog-handle"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          px: 1,
+          py: 0.25,
+          cursor: 'move',
+          borderBottom: 1,
+          borderColor: 'divider',
+          userSelect: 'none',
+        }}
+      >
+        <DragHandleIcon sx={{ opacity: 0.4, fontSize: 18 }} />
+        <IconButton
+          aria-label="close"
+          tabIndex={-1}
+          onClick={onClose}
+          size="small"
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
       <DialogContent
         sx={{
           overflowY: 'auto',
           overflowX: 'hidden',
+          pt: 1,
         }}
       >
-        <IconButton
-          title={'close'}
-          aria-label="close"
-          tabIndex={-1}
-          style={{
-            position: 'absolute',
-            right: 1,
-            top: 1,
-          }}
-          onClick={onClose}
-          size="small"
-        >
-          <CloseIcon />
-        </IconButton>
         <Box
           sx={{
             display: 'flex',
@@ -351,10 +364,17 @@ function SearchDialog(props: Props) {
             margin="dense"
             size="small"
             fullWidth={true}
+            inputRef={searchInputRef}
             value={searchText}
             label={t('search')}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSearch(event.target.value);
+            }}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                search(searchText);
+              }
             }}
             slotProps={{
               input: {

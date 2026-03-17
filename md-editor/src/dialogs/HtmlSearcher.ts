@@ -1,13 +1,12 @@
+import { findAllRanges, applyHighlights, clearHighlights } from './searchHighlight';
+
 export class HtmlSearcher {
-  private nodes: Node[] = [];
-  private currentNodeIndex: number = 0;
-  private currentOffset: number = 0;
+  private allRanges: Range[] = [];
+  private currentIndex: number = -1;
 
   constructor(private container: HTMLElement) {
     if (!this.container) {
-      console.error(`Container not found.`);
-    } else {
-      this.collectTextNodes(this.container);
+      console.error('Container not found.');
     }
   }
 
@@ -15,76 +14,45 @@ export class HtmlSearcher {
     searchText: string,
     caseSensitive: boolean = false,
   ): boolean {
-    if (!this.container || this.nodes.length === 0) {
-      console.error(`Container not found or empty.`);
+    if (!this.container || !searchText) {
+      clearHighlights();
       return false;
     }
 
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges(); // Clear any existing selection.
+    // Rebuild ranges each call so DOM changes (lazy images, etc.) are reflected
+    this.allRanges = findAllRanges(this.container, searchText, caseSensitive);
+
+    if (this.allRanges.length === 0) {
+      clearHighlights();
+      console.log(`Text "${searchText}" not found.`);
+      return false;
     }
 
-    let found = this.searchInNodes(searchText, caseSensitive);
+    // Advance to next match, wrapping around
+    this.currentIndex = (this.currentIndex + 1) % this.allRanges.length;
+    const current = this.allRanges[this.currentIndex];
 
-    // If not found, reset and search from the beginning.
-    if (!found) {
-      this.currentNodeIndex = 0;
-      this.currentOffset = 0;
-      found = this.searchInNodes(searchText, caseSensitive);
-    }
+    applyHighlights(this.allRanges, current);
 
-    if (!found) {
-      console.log(`Text "${searchText}" not found in container.`);
-    }
+    // Scroll current match into view
+    const el = current.startContainer.parentElement;
+    el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
-    return found;
-  }
-
-  private collectTextNodes(node: Node): void {
-    if (node.nodeType === Node.TEXT_NODE) {
-      this.nodes.push(node);
-    } else {
-      for (let i = 0; i < node.childNodes.length; i++) {
-        this.collectTextNodes(node.childNodes[i]);
+    // Fallback for browsers without CSS Highlight API: native selection
+    if (typeof CSS === 'undefined' || !('highlights' in CSS)) {
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(current.cloneRange());
       }
     }
+
+    return true;
   }
 
-  private searchInNodes(searchText: string, caseSensitive: boolean): boolean {
-    const searchStr = caseSensitive ? searchText : searchText.toLowerCase();
-
-    for (; this.currentNodeIndex < this.nodes.length; this.currentNodeIndex++) {
-      const node = this.nodes[this.currentNodeIndex];
-      const text = caseSensitive
-        ? node.nodeValue
-        : node.nodeValue?.toLowerCase();
-
-      if (text) {
-        const startIndex =
-          this.currentNodeIndex === this.currentNodeIndex
-            ? this.currentOffset
-            : 0;
-        const index = text.indexOf(searchStr, startIndex);
-        if (index !== -1) {
-          const range = document.createRange();
-          range.setStart(node, index);
-          range.setEnd(node, index + searchText.length);
-          const selection = window.getSelection();
-          if (selection) {
-            selection.addRange(range);
-          }
-
-          this.currentOffset = index + searchText.length;
-
-          return true;
-        }
-      }
-
-      // Reset currentOffset when moving to the next node.
-      this.currentOffset = 0;
-    }
-
-    return false;
+  public clear(): void {
+    clearHighlights();
+    this.allRanges = [];
+    this.currentIndex = -1;
   }
 }

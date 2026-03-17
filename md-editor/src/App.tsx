@@ -193,10 +193,15 @@ function App(props: Props) {
 
   useEventListener('keydown', (event: Event) => {
     const e = event as KeyboardEvent;
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-      if (mode === 'CodeMirror') {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.key.toLowerCase() === 's') {
+        if (mode === 'CodeMirror') {
+          e.preventDefault();
+          handleSave();
+        }
+      } else if (e.key.toLowerCase() === 'f') {
         e.preventDefault();
-        handleSave();
+        milkdownRef.current?.openSearchDialog();
       }
     }
   });
@@ -352,6 +357,8 @@ function App(props: Props) {
         toggleViewSource={toggleViewSource}
         setFilterVisible={() => {
           if (!milkdownRef.current) return;
+          // Close the FAB menu by clicking its backdrop (MainMenu doesn't expose a close API)
+          (document.querySelector('.MuiBackdrop-root') as HTMLElement | null)?.click();
           milkdownRef.current.openSearchDialog();
         }}
         getContent={getContent}
