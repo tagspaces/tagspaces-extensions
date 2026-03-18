@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: https: tsfile:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'"
+    />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -48,7 +50,7 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/mindmap-viewer'
+            'https://docs.tagspaces.org/extensions/mindmap-viewer',
           );
 
           insertPrintMenuItem();
@@ -137,7 +139,7 @@
         // sanitizeContent() uses WHOLE_DOCUMENT:true which wraps output in
         // <html>...</html> and breaks Markdown parsing — use DOMPurify directly.
         const { root, features } = transformer.transform(
-          DOMPurify.sanitize(content)
+          DOMPurify.sanitize(content),
         );
 
         // either get assets required by used features
@@ -154,7 +156,7 @@
             // colorFreezeLevel: 1,
             // initialExpandLevel: 3,
           },
-          root
+          root,
         );
 
         // svgEl.addEventListener('click', (e) => {

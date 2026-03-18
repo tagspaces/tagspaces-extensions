@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src: data: tsfile: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'"
+    />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -50,7 +52,10 @@
       }
 
       #serifLabel {
-        font-family: Georgia, Times New Roman, serif;
+        font-family:
+          Georgia,
+          Times New Roman,
+          serif;
       }
     </style>
     <script src="../libs/bootstrap5/bootstrap.bundle.min.js"></script>
