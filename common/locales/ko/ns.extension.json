@@ -71,8 +71,5 @@
     "documentation": "문서",
     "copyToClipboard": "클립보드에 복사",
     "setThumbnail": "썸네일로 설정",
-    "frontmatter": "프론트매터",
-    "showFrontmatter": "프론트매터 표시",
-    "hideFrontmatter": "프론트매터 숨기기",
     "-": "-"
 }

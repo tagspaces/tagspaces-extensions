@@ -71,8 +71,5 @@
     "documentation": "Documentation",
     "copyToClipboard": "Copy to Clipboard",
     "setThumbnail": "Set as Thumbnail",
-    "frontmatter": "Frontmatter",
-    "showFrontmatter": "Show Frontmatter",
-    "hideFrontmatter": "Hide Frontmatter",
     "-": "-"
 }

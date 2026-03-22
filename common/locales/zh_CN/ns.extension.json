@@ -71,8 +71,5 @@
     "documentation": "文档",
     "copyToClipboard": "复制到剪贴板",
     "setThumbnail": "设置为缩略图",
-    "frontmatter": "前言",
-    "showFrontmatter": "显示前言",
-    "hideFrontmatter": "隐藏前言",
     "-": "-"
 }
