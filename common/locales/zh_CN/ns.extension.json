@@ -18,7 +18,7 @@
     "flipBoth": "双向翻转",
     "toggleLineNumbers": "切换行编号",
     "toggleWordWrap": "切换文字换行",
-    "toggleDetails": "Toggle Details",
+    "toggleDetails": "切换详细信息",
     "changeTheme": "更换主题",
     "resetTheme": "重置主题",
     "print": "打印",
@@ -49,7 +49,7 @@
     "ok": "确定",
     "save": "保存",
     "exportAsHTML": "导出为 HTML",
-    "exportScreenshot": "Export Screenshot",
+    "exportScreenshot": "导出截图",
     "close": "关闭",
     "settings": "设置",
     "speechSpeed": "语速",
@@ -71,5 +71,8 @@
     "documentation": "文档",
     "copyToClipboard": "复制到剪贴板",
     "setThumbnail": "设置为缩略图",
+    "frontmatter": "前言",
+    "showFrontmatter": "显示前言",
+    "hideFrontmatter": "隐藏前言",
     "-": "-"
 }

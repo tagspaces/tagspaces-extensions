@@ -35,8 +35,8 @@
     "changeBackgroundColor": "Changer la Couleur de l'Arrière-plan",
     "fitToScreen": "Adapter à l'Écran",
     "toggleBlackAndWhiteColor": "Basculer le Noir et Blanc",
-    "sourceURL": "URL de la Source de la Page Web ",
-    "openSourceURL": "Ouvrire la Source URL dans ton navigateur par défaut",
+    "sourceURL": "URL de la Source de la Page Web",
+    "openSourceURL": "Ouvrir la Source URL dans ton navigateur par défaut",
     "htmlDetails": "Détails des fichiers",
     "webPageSavedOn": "Page Web Sauvegardée Sur",
     "webPageScreenshot": "Capture de la page web",
@@ -54,7 +54,7 @@
     "settings": "Paramètres",
     "speechSpeed": "Vitesse d'élocution",
     "voices": "Voix",
-    "languages": "Languages",
+    "languages": "Langues",
     "read": "Lire",
     "continueReading": "Continuer la lecture",
     "pauseReading": "Pauser la lecture",
@@ -71,5 +71,8 @@
     "documentation": "Documentation",
     "copyToClipboard": "Copier vers le presse-papier",
     "setThumbnail": "Utiliser comme miniature",
+    "frontmatter": "Frontmatter",
+    "showFrontmatter": "Afficher le Frontmatter",
+    "hideFrontmatter": "Masquer le Frontmatter",
     "-": "-"
 }

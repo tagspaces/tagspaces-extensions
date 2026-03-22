@@ -35,7 +35,7 @@
     "changeBackgroundColor": "Changer la couleur de fond",
     "fitToScreen": "S'adapter à l'écran",
     "toggleBlackAndWhiteColor": "Basculer en Noir & Blanc",
-    "sourceURL": "URL de la Source de la Page Web ",
+    "sourceURL": "URL de la Source de la Page Web",
     "openSourceURL": "Ouvrir l'URL source dans le navigateur par défaut",
     "htmlDetails": "Détails des fichiers",
     "webPageSavedOn": "Page Web Sauvegardée Sur",
@@ -54,7 +54,7 @@
     "settings": "Paramètres",
     "speechSpeed": "Vitesse de la voix",
     "voices": "Voix",
-    "languages": "Languages",
+    "languages": "Langues",
     "read": "Lire",
     "continueReading": "Continuer la lecture",
     "pauseReading": "Pauser la lecture",
@@ -71,5 +71,8 @@
     "documentation": "Documentation",
     "copyToClipboard": "Copier dans le presse-papier",
     "setThumbnail": "Utiliser comme miniature",
+    "frontmatter": "Frontmatter",
+    "showFrontmatter": "Afficher le Frontmatter",
+    "hideFrontmatter": "Masquer le Frontmatter",
     "-": "-"
 }

@@ -18,7 +18,7 @@
     "flipBoth": "両方の反転",
     "toggleLineNumbers": "行番号の切り替え",
     "toggleWordWrap": "折り返しの切り替え",
-    "toggleDetails": "Toggle Details",
+    "toggleDetails": "詳細の切り替え",
     "changeTheme": "テーマの変更",
     "resetTheme": "テーマのリセット",
     "print": "印刷",
@@ -49,7 +49,7 @@
     "ok": "Ok",
     "save": "保存",
     "exportAsHTML": "HTMLとしてエクスポート",
-    "exportScreenshot": "Export Screenshot",
+    "exportScreenshot": "スクリーンショットのエクスポート",
     "close": "閉じる",
     "settings": "設定",
     "speechSpeed": "話す速度",
@@ -71,5 +71,8 @@
     "documentation": "ドキュメント",
     "copyToClipboard": "クリップボードにコピー",
     "setThumbnail": "サムネイルとして設定",
+    "frontmatter": "フロントマター",
+    "showFrontmatter": "フロントマターを表示",
+    "hideFrontmatter": "フロントマターを非表示",
     "-": "-"
 }

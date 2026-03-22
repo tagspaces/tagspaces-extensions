@@ -18,7 +18,7 @@
     "flipBoth": "Двойно обръщане",
     "toggleLineNumbers": "Показване номерирането на редовете",
     "toggleWordWrap": "Превключване пренасянето на думи",
-    "toggleDetails": "Toggle Details",
+    "toggleDetails": "Превключване на подробности",
     "changeTheme": "Смяна на темата",
     "resetTheme": "Възстановяване на темата",
     "print": "Принтирай",
@@ -49,7 +49,7 @@
     "ok": "Ок",
     "save": "Запиши",
     "exportAsHTML": "Експортиране като HTML",
-    "exportScreenshot": "Export Screenshot",
+    "exportScreenshot": "Експортиране на екранна снимка",
     "close": "Затвори",
     "settings": "Настройки",
     "speechSpeed": "Скорост на четенето",
@@ -71,5 +71,8 @@
     "documentation": "Документация",
     "copyToClipboard": "Копиране в клипборда",
     "setThumbnail": "Използвай като миниатюра",
+    "frontmatter": "Frontmatter",
+    "showFrontmatter": "Показване на Frontmatter",
+    "hideFrontmatter": "Скриване на Frontmatter",
     "-": "-"
 }
