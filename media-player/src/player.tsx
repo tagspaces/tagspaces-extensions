@@ -38,16 +38,21 @@ export function Player() {
   let defaultAutoPlay = true;
   let defaultVideoOutput = true;
   let defaultLoop = 'loopAll';
+  let defaultVolume = 1;
   if (items) {
     const extSettings = JSON.parse(items);
     defaultAutoPlay = extSettings.autoPlay;
     defaultVideoOutput = extSettings.enableVideoOutput;
     defaultLoop = extSettings.loop;
+    if (extSettings.volume !== undefined) {
+      defaultVolume = extSettings.volume;
+    }
   }
   //const isControlsHidden = useRef<boolean>(false);
   const autoPlay = useRef<boolean>(defaultAutoPlay);
   const enableVideoOutput = useRef<boolean>(defaultVideoOutput);
   const loop = useRef<string>(defaultLoop); // loopOne, noLoop, loopAll
+  const volume = useRef<number>(defaultVolume);
   const playerRef = useRef<MediaPlayerInstance | null>(null);
   // hook returns capture() and loading state
   const { capture, loading } = useVidstackScreenshot(playerRef);
@@ -118,6 +123,7 @@ export function Player() {
       autoPlay: autoPlay.current,
       enableVideoOutput: enableVideoOutput.current,
       loop: loop.current,
+      volume: volume.current,
     };
     localStorage.setItem(
       'viewerAudioVideoSettings',
@@ -151,6 +157,11 @@ export function Player() {
   }
   function setLoop(value: string) {
     loop.current = value;
+    saveExtSettings();
+  }
+
+  function onVolumeChange(detail: { volume: number; muted: boolean }) {
+    volume.current = detail.volume;
     saveExtSettings();
   }
 
@@ -209,6 +220,8 @@ export function Player() {
           src={filePath}
           crossOrigin
           playsInline
+          volume={volume.current}
+          onVolumeChange={onVolumeChange}
           onEnded={onEnded}
           ref={playerRef}
         >
