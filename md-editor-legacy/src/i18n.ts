@@ -73,17 +73,6 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
         });
       break;
     }
-    case 'eo': {
-      import('./locales/eo/ns.extension.json')
-        .then(locale => {
-          callback(undefined, { status: '200', data: locale });
-          return true;
-        })
-        .catch(() => {
-          console.log('Error loading ' + url + ' locale.');
-        });
-      break;
-    }
     case 'es': {
       import('./locales/es/ns.extension.json')
         .then(locale => {
@@ -174,17 +163,6 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
     }
     case 'ko': {
       import('./locales/ko/ns.extension.json')
-        .then(locale => {
-          callback(undefined, { status: '200', data: locale });
-          return true;
-        })
-        .catch(() => {
-          console.log('Error loading ' + url + ' locale.');
-        });
-      break;
-    }
-    case 'mt': {
-      import('./locales/mt/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;

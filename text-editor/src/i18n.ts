@@ -9,13 +9,11 @@ import ca from '../../common/locales/ca/ns.extension.json';
 import da_DK from '../../common/locales/da_DK/ns.extension.json';
 import de_DE from '../../common/locales/de_DE/ns.extension.json';
 import el from '../../common/locales/el/ns.extension.json';
-import eo from '../../common/locales/eo/ns.extension.json';
 import es from '../../common/locales/es/ns.extension.json';
 import es_CL from '../../common/locales/es_CL/ns.extension.json';
 import fa from '../../common/locales/fa/ns.extension.json';
 import fr from '../../common/locales/fr/ns.extension.json';
 import fr_CA from '../../common/locales/fr_CA/ns.extension.json';
-import fr_CH from '../../common/locales/fr_CH/ns.extension.json';
 import he from '../../common/locales/he/ns.extension.json';
 import hu from '../../common/locales/hu/ns.extension.json';
 import hy from '../../common/locales/hy/ns.extension.json';
@@ -23,7 +21,6 @@ import id_ID from '../../common/locales/id_ID/ns.extension.json';
 import it from '../../common/locales/it/ns.extension.json';
 import ja from '../../common/locales/ja/ns.extension.json';
 import ko from '../../common/locales/ko/ns.extension.json';
-import mt from '../../common/locales/mt/ns.extension.json';
 import nb from '../../common/locales/nb/ns.extension.json';
 import nl_NL from '../../common/locales/nl_NL/ns.extension.json';
 import pl from '../../common/locales/pl/ns.extension.json';
@@ -46,13 +43,11 @@ export const resources = {
   da_DK: { translation: da_DK },
   de: { translation: de_DE },
   el: { translation: el },
-  eo: { translation: eo },
   es: { translation: es },
   es_CL: { translation: es_CL },
   fa: { translation: fa },
   fr: { translation: fr },
   fr_CA: { translation: fr_CA },
-  fr_CH: { translation: fr_CH },
   he: { translation: he },
   hu: { translation: hu },
   hy: { translation: hy },
@@ -60,7 +55,6 @@ export const resources = {
   it: { translation: it },
   ja: { translation: ja },
   ko: { translation: ko },
-  mt: { translation: mt },
   nb: { translation: nb },
   nl_NL: { translation: nl_NL },
   pl: { translation: pl },
