@@ -374,6 +374,7 @@ function SearchDialog(props: Props) {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 search(searchText);
+                searchInputRef.current?.focus();
               }
             }}
             slotProps={{
