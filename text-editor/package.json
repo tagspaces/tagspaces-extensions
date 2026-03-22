@@ -86,6 +86,9 @@
         "ext": "js"
       },
       {
+        "ext": "jsonl"
+      },
+      {
         "ext": "jsx"
       },
       {
