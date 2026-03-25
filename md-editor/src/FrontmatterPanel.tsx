@@ -64,17 +64,50 @@ const FrontmatterPanel: React.FC<Props> = ({
     );
   }
 
-  // Viewer mode: parse key: value pairs for display
-  const fields: Array<[string, string]> = frontmatter
-    .split('\n')
-    .filter((line) => line.includes(':'))
-    .map((line) => {
-      const colonIdx = line.indexOf(':');
-      return [
-        line.slice(0, colonIdx).trim(),
-        line.slice(colonIdx + 1).trim(),
-      ] as [string, string];
-    });
+  // Viewer mode: parse key: value pairs, including YAML list items and block scalars (> / |)
+  const fields: Array<[string, string | string[]]> = [];
+  let inBlockScalar = false;
+  for (const line of frontmatter.split('\n')) {
+    const isIndented = /^\s/.test(line) && line.trim() !== '';
+    const listMatch = line.match(/^\s+-\s+(.*)/);
+
+    if (inBlockScalar) {
+      if (isIndented && !listMatch) {
+        // Continuation line of a block scalar — append to last field's text
+        const last = fields[fields.length - 1];
+        if (last && typeof last[1] === 'string') {
+          const text = line.trim();
+          fields[fields.length - 1] = [last[0], (last[1] ? last[1] + ' ' : '') + text];
+        }
+        continue;
+      } else {
+        inBlockScalar = false;
+      }
+    }
+
+    if (listMatch) {
+      const last = fields[fields.length - 1];
+      if (last) {
+        if (Array.isArray(last[1])) {
+          (last[1] as string[]).push(listMatch[1].trim());
+        } else {
+          fields[fields.length - 1] = [last[0], [last[1], listMatch[1].trim()].filter(Boolean)];
+        }
+      }
+      continue;
+    }
+
+    const colonIdx = line.indexOf(':');
+    if (colonIdx === -1) continue;
+    const key = line.slice(0, colonIdx).trim();
+    const value = line.slice(colonIdx + 1).trim();
+    if (value === '>' || value === '|') {
+      inBlockScalar = true;
+      fields.push([key, '']);
+    } else {
+      fields.push([key, value]);
+    }
+  }
 
   return (
     <Box
@@ -103,9 +136,28 @@ const FrontmatterPanel: React.FC<Props> = ({
           >
             {key}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.primary', wordBreak: 'break-word' }}>
-            {value}
-          </Typography>
+          {Array.isArray(value) ? (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {value.map((item) => (
+                <Typography
+                  key={item}
+                  variant="body2"
+                  sx={{
+                    color: 'text.primary',
+                    bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                    borderRadius: 1,
+                    px: 0.75,
+                  }}
+                >
+                  {item}
+                </Typography>
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body2" sx={{ color: 'text.primary', wordBreak: 'break-word' }}>
+              {value}
+            </Typography>
+          )}
         </Box>
       ))}
     </Box>
