@@ -206,7 +206,11 @@ export const Editor: React.FC = () => {
       path.endsWith('.razor')
     ) {
       return 'html';
-    } else if (path.endsWith('.json')) {
+    } else if (
+      path.endsWith('.json') ||
+      path.endsWith('.jsonl') ||
+      path.endsWith('.canvas')
+    ) {
       return 'json';
     }
     return 'plaintext';
