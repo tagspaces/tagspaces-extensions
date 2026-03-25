@@ -140,6 +140,27 @@ function hideLinkTooltip() {
   if (_linkTooltip) _linkTooltip.style.display = 'none';
 }
 
+/**
+ * Resolves a relative path against a base folder path.
+ * Handles '../' and './' traversal.
+ */
+function resolveRelativePath(baseFolderPath: string, relativePath: string): string {
+  const separator = baseFolderPath.includes('\\') ? '\\' : '/';
+  const baseParts = baseFolderPath.replace(/\\/g, '/').split('/').filter(Boolean);
+  const relParts = relativePath.replace(/\\/g, '/').split('/');
+
+  for (const part of relParts) {
+    if (part === '..') {
+      baseParts.pop();
+    } else if (part !== '.') {
+      baseParts.push(part);
+    }
+  }
+
+  const joined = baseParts.join(separator);
+  return baseFolderPath.startsWith('/') ? '/' + joined : joined;
+}
+
 export function createCrepeEditor(
   root: HTMLElement,
   defaultContent: string,
@@ -213,15 +234,19 @@ export function createCrepeEditor(
               if (href && !href.startsWith('#')) {
                 event.preventDefault();
                 // Block dangerous protocols before forwarding to host
+                let resolvedHref = href;
+                if (currentFolder && !href.includes('://') && !href.startsWith('/')) {
+                  const absolutePath = resolveRelativePath(currentFolder, href);
+                  resolvedHref = 'ts://?cmdopen=' + encodeURIComponent(absolutePath);
+                }
                 try {
-                  const parsed = new URL(href, window.location.href);
+                  const parsed = new URL(resolvedHref, window.location.href);
                   const safe = ['http:', 'https:', 'mailto:', 'ts:', 'tel:'].includes(parsed.protocol);
                   if (safe) {
-                    openLink(href, { fullWidth: false });
+                    openLink(resolvedHref, { fullWidth: false });
                   }
                 } catch {
-                  // Relative path — safe to open
-                  openLink(href, { fullWidth: false });
+                  openLink(resolvedHref, { fullWidth: false });
                 }
                 return true;
               }
