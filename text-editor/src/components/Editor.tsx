@@ -177,7 +177,13 @@ export const Editor: React.FC = () => {
       path.endsWith('.mdx')
     ) {
       return 'markdown';
-    } else if (path.endsWith('.yaml')) {
+    } else if (
+      path.endsWith('.yaml') ||
+      path.endsWith('.yml') ||
+      path.endsWith('.cff') ||
+      path.endsWith('.frontmatter') ||
+      path.endsWith('.fm')
+    ) {
       return 'yaml';
     } else if (path.endsWith('.xml')) {
       return 'xml';

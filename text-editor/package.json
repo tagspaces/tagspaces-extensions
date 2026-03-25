@@ -143,7 +143,24 @@
         "ext": "xml"
       },
       {
-        "ext": "yaml"
+        "ext": "yaml",
+        "color": "#f89728"
+      },
+      {
+        "ext": "yml",
+        "color": "#f89728"
+      },
+      {
+        "ext": "frontmatter",
+        "color": "#f89728"
+      },
+      {
+        "ext": "fm",
+        "color": "#f89728"
+      },
+      {
+        "ext": "cff",
+        "color": "#f89728"
       },
       {
         "ext": "mdown",
