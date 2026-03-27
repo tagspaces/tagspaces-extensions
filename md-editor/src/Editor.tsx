@@ -13,7 +13,11 @@ import {
 } from './utils';
 import { replaceAll } from '@milkdown/utils';
 import { useEventListener } from '@tagspaces/tagspaces-extension-ui';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import AppConfig from '@tagspaces/tagspaces-common/AppConfig';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import type { MilkdownRef } from './useCrepeHandler';
 import { useCrepeHandler } from './useCrepeHandler';
 import { Crepe } from '@milkdown/crepe';
@@ -41,6 +45,10 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     } = props;
     const crepeInstanceRef = useRef<Crepe | undefined>(undefined);
     const frontmatterRef = useRef(null as string | null);
+    const [ctxMenu, setCtxMenu] = useState<{ top: number; left: number } | null>(null);
+    const ctxFocusRef = useRef<{ el: HTMLElement | null; range: Range | null }>({ el: null, range: null });
+    const isMac = navigator.userAgent.includes('Mac OS X');
+    const mod = isMac ? '⌘' : 'Ctrl+';
     // const menuBarPlugin = useMenuBarPlugin();
 
     const openLink = (link: string) => {
@@ -107,6 +115,48 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
     );
 
     useCrepeHandler(ref, () => crepeInstanceRef.current, get, loading, frontmatterRef);
+
+    // Context menu for Electron — suppress the native menu and show MUI Menu instead
+    useEffect(() => {
+      if (!AppConfig.isElectron) return;
+      const onContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+        ctxFocusRef.current = {
+          el: document.activeElement as HTMLElement | null,
+          range: (() => {
+            const sel = window.getSelection();
+            return sel?.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+          })(),
+        };
+        setCtxMenu({ top: e.clientY, left: e.clientX });
+      };
+      document.addEventListener('contextmenu', onContextMenu);
+      return () => document.removeEventListener('contextmenu', onContextMenu);
+    }, []);
+
+    const execCtxCmd = (cmd: string) => {
+      const { el, range } = ctxFocusRef.current;
+      setCtxMenu(null);
+      el?.focus();
+      if (range) {
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+      if (cmd === 'paste') {
+        // execCommand('paste') is blocked in Electron; read clipboard manually and
+        // dispatch a ClipboardEvent so ProseMirror's own paste handler processes it.
+        navigator.clipboard.readText().then((text) => {
+          const dt = new DataTransfer();
+          dt.setData('text/plain', text);
+          const target = (document.activeElement ?? el) as HTMLElement | null;
+          target?.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData: dt }));
+        });
+      } else {
+        // @ts-ignore -- execCommand is deprecated but required to trigger ProseMirror's clipboard event handlers
+        document.execCommand(cmd);
+      }
+    };
 
     useEventListener('dblclick', () => {
       if (!readOnly) {
@@ -183,6 +233,40 @@ export const MilkdownEditor = React.forwardRef<MilkdownRef, Props>(
       }
     }
 
-    return <Milkdown />;
+    const ctxItems = [
+      { label: 'Cut',        shortcut: `${mod}X`, cmd: 'cut'       },
+      { label: 'Copy',       shortcut: `${mod}C`, cmd: 'copy'      },
+      { label: 'Paste',      shortcut: `${mod}V`, cmd: 'paste'     },
+      { label: 'Select All', shortcut: `${mod}A`, cmd: 'selectAll' },
+    ];
+
+    return (
+      <>
+        <Milkdown />
+        {AppConfig.isElectron && (
+          <Menu
+            open={ctxMenu !== null}
+            onClose={() => setCtxMenu(null)}
+            anchorReference="anchorPosition"
+            anchorPosition={ctxMenu ?? undefined}
+            disableAutoFocus
+            disableEnforceFocus
+            disableRestoreFocus
+          >
+            {ctxItems.map(({ label, shortcut, cmd }) => (
+              <MenuItem
+                key={cmd}
+                dense
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => execCtxCmd(cmd)}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>{label}</Typography>
+                <Typography variant="caption" sx={{ ml: 3, opacity: 0.5 }}>{shortcut}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        )}
+      </>
+    );
   },
 );
