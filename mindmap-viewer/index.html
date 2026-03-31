@@ -42,10 +42,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale');
-      if (locale === 'en') {
-        locale = 'en_US';
-      }
+      const locale = getParameterByName('locale') || 'en';
 
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {

@@ -86,8 +86,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale') || 'en';
-      if (locale === 'en') locale = 'en_US';
+      const locale = getParameterByName('locale') || 'en';
       const encrypted = getParameterByName('encrypted');
       let currentMsgReader = null; // Store the reader instance
       let currentAttachments = []; // Store the attachment metadata

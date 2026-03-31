@@ -2,8 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:"
+    />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -73,8 +75,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale') || 'en';
-      if (locale === 'en') locale = 'en_US';
+      const locale = getParameterByName('locale') || 'en';
       const encrypted = getParameterByName('encrypted');
 
       let documentContent;
@@ -282,7 +283,9 @@
           const location = hdrs['content-location'];
           if (!location) continue;
 
-          const encoding = (hdrs['content-transfer-encoding'] || '').toLowerCase();
+          const encoding = (
+            hdrs['content-transfer-encoding'] || ''
+          ).toLowerCase();
           const mimeType = (hdrs['content-type'] || 'application/octet-stream')
             .split(';')[0]
             .trim();
@@ -468,8 +471,7 @@
 
                 let sizeText = 'Unknown size';
                 if (att.content && att.content.byteLength !== undefined) {
-                  sizeText =
-                    (att.content.byteLength / 1024).toFixed(1) + ' KB';
+                  sizeText = (att.content.byteLength / 1024).toFixed(1) + ' KB';
                 } else if (att.content && att.content.length !== undefined) {
                   sizeText = (att.content.length / 1024).toFixed(1) + ' KB';
                 } else if (att.size !== undefined) {
@@ -514,12 +516,14 @@
 
           // Re-inject <style> block CSS (also contains data: URLs)
           // sanitizeCss strips external @import and url() references first
-          container.querySelectorAll('[data-mhtml-style]').forEach((styleEl) => {
-            const idx = +styleEl.dataset.mhtmlStyle;
-            if (styleBlocks[idx] !== undefined)
-              styleEl.textContent = sanitizeCss(styleBlocks[idx]);
-            delete styleEl.dataset.mhtmlStyle;
-          });
+          container
+            .querySelectorAll('[data-mhtml-style]')
+            .forEach((styleEl) => {
+              const idx = +styleEl.dataset.mhtmlStyle;
+              if (styleBlocks[idx] !== undefined)
+                styleEl.textContent = sanitizeCss(styleBlocks[idx]);
+              delete styleEl.dataset.mhtmlStyle;
+            });
 
           // Disable autoplay on media elements
           container.querySelectorAll('video, audio').forEach((media) => {
@@ -552,9 +556,7 @@
             .map((a) => {
               const name = a.name ? htmlEncode(a.name) : '';
               const emailDisplay = a.address ? htmlEncode(a.address) : '';
-              const emailHref = a.address
-                ? encodeURIComponent(a.address)
-                : '';
+              const emailHref = a.address ? encodeURIComponent(a.address) : '';
               return `${name ? name + ' ' : ' '}<a href="mailto:${emailHref}">${emailDisplay}</a>`;
             })
             .join('; ');

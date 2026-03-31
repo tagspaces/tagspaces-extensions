@@ -92,10 +92,8 @@
       // --- Global Configuration ---
       let filePath = getParameterByName('file');
       const tmbPath = getParameterByName('thumb');
-      const locale =
-        getParameterByName('locale') === 'en'
-          ? 'en_US'
-          : getParameterByName('locale');
+      const locale = getParameterByName('locale') || 'en';
+
       const encrypted = getParameterByName('encrypted');
 
       const MIME_MAP = {

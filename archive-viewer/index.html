@@ -2,8 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:"
+    />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -186,10 +188,7 @@
 
     <script>
       const filePath = getParameterByName('file');
-      const locale = (getParameterByName('locale') || 'en').replace(
-        'en',
-        'en_US',
-      );
+      const locale = getParameterByName('locale') || 'en';
       const MAX_TEXT_PREVIEW = 1024 * 5;
       const IMAGE_EXTENSIONS = [
         'jpg',

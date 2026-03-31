@@ -2,8 +2,10 @@
 <html lang="en" style="margin: 0; padding: 0; height: 100%">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self';"
+    />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -16,8 +18,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale') || 'en';
-      if (locale === 'en') locale = 'en_US';
+      const locale = getParameterByName('locale') || 'en';
       const encrypted = getParameterByName('encrypted');
 
       let currentBlobUrl = null;
@@ -55,7 +56,8 @@
 
         if (encrypted) {
           sendMessageToHost({ command: 'loadDefaultBinaryContent' });
-        } else if (filePath) { //  && isValidUrl(filePath) do not work on electron due to path begin with /
+        } else if (filePath) {
+          //  && isValidUrl(filePath) do not work on electron due to path begin with /
           // Direct file loading
           const viewerUrl = `generic/web/viewer.html?file=${encodeURIComponent(filePath)}`;
           pdfViewer.setAttribute('src', viewerUrl);

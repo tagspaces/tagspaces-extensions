@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import HttpApi from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import enUs from './locales/en_US/ns.extension.json';
+import enUs from './locales/en/ns.extension.json';
 
 let defaultLanguage = enUs;
 
@@ -75,17 +75,6 @@ function loadLocales(options: any, url: string, payload: any, callback: any) {
     }
     case 'es': {
       import('./locales/es/ns.extension.json')
-        .then(locale => {
-          callback(undefined, { status: '200', data: locale });
-          return true;
-        })
-        .catch(() => {
-          console.log('Error loading ' + url + ' locale.');
-        });
-      break;
-    }
-    case 'fa': {
-      import('./locales/fa/ns.extension.json')
         .then(locale => {
           callback(undefined, { status: '200', data: locale });
           return true;

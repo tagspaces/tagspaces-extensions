@@ -3,7 +3,7 @@ import i18n from 'i18next';
 //import LanguageDetector from 'i18next-browser-languagedetector';
 //import Backend from 'i18next-http-backend';
 
-import en from '../../common/locales/en_US/ns.extension.json';
+import en from '../../common/locales/en/ns.extension.json';
 import bg from '../../common/locales/bg/ns.extension.json';
 import ca from '../../common/locales/ca/ns.extension.json';
 import da_DK from '../../common/locales/da_DK/ns.extension.json';
@@ -11,7 +11,6 @@ import de_DE from '../../common/locales/de_DE/ns.extension.json';
 import el from '../../common/locales/el/ns.extension.json';
 import es from '../../common/locales/es/ns.extension.json';
 import es_CL from '../../common/locales/es_CL/ns.extension.json';
-import fa from '../../common/locales/fa/ns.extension.json';
 import fr from '../../common/locales/fr/ns.extension.json';
 import fr_CA from '../../common/locales/fr_CA/ns.extension.json';
 import he from '../../common/locales/he/ns.extension.json';

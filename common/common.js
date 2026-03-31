@@ -241,16 +241,16 @@ function extractFileName(filePath, dirSeparator = '/') {
 
 function initI18N(locale, filename, localePath) {
   lPath = localePath || '../common/locales';
-  getFileContentPromise(lPath + '/en_US/' + filename, 'text') // loading fallback lng
+  getFileContentPromise(lPath + '/en/' + filename, 'text') // loading fallback lng
     .then((enLocale) => {
       const i18noptions = {
         lng: locale,
         // debug: true,
         resources: {},
-        fallbackLng: 'en_US',
+        fallbackLng: 'en',
       };
-      i18noptions.resources.en_US = {};
-      i18noptions.resources.en_US.translation = JSON.parse(enLocale);
+      i18noptions.resources.en = {};
+      i18noptions.resources.en.translation = JSON.parse(enLocale);
       getFileContentPromise(lPath + '/' + locale + '/' + filename, 'text')
         .then((content) => {
           i18noptions.resources[locale] = {};

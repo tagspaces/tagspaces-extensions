@@ -173,10 +173,7 @@
 
     <script>
       const filePath = getParameterByName('file');
-      const locale = (getParameterByName('locale') || 'en').replace(
-        'en',
-        'en_US',
-      );
+      const locale = getParameterByName('locale') || 'en';
       let editor = null;
       let zoomLevel = 100;
 

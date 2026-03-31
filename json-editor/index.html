@@ -51,8 +51,7 @@
     <script src="../common/common.js"></script>
     <script>
       const filePath = getParameterByName('file');
-      let locale = getParameterByName('locale') || 'en';
-      if (locale === 'en') locale = 'en_US';
+      const locale = getParameterByName('locale') || 'en';
 
       let jsonEditor;
       let isViewer = true;
