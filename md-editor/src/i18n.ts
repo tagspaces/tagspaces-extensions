@@ -45,7 +45,6 @@ export const resources = {
   el: { translation: el },
   es: { translation: es },
   es_CL: { translation: es_CL },
-  fa: { translation: fa },
   fr: { translation: fr },
   fr_CA: { translation: fr_CA },
   he: { translation: he },
