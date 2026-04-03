@@ -1,0 +1,26 @@
+{
+  "name": "@tagspaces/marp-viewer",
+  "version": "1.0.235",
+  "description": "A TagSpaces extension for viewing Marp markdown presentations.",
+  "homepage": "https://www.tagspaces.org",
+  "main": "main.js",
+  "author": {
+    "name": "TagSpaces GmbH",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "tsextension": {
+    "name": "Marp Viewer",
+    "types": [
+      "viewer"
+    ],
+    "color": "#67b8e3",
+    "fileTypes": [
+      {
+        "ext": "marp"
+      }
+    ]
+  }
+}
