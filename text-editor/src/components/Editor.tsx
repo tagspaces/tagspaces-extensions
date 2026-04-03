@@ -174,6 +174,7 @@ export const Editor: React.FC = () => {
       path.endsWith('.mdown') ||
       path.endsWith('.mmdown') ||
       path.endsWith('.mmd') ||
+      path.endsWith('.marp') ||
       path.endsWith('.mdx')
     ) {
       return 'markdown';
