@@ -10,6 +10,25 @@ let currentTheme = 'light';
 // Rendering
 // =====================
 
+function validateCanvasData(data) {
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    return false;
+  }
+  // Nodes must be an array if present
+  if (data.nodes !== undefined && !Array.isArray(data.nodes)) return false;
+  // Edges must be an array if present
+  if (data.edges !== undefined && !Array.isArray(data.edges)) return false;
+  // Validate each node has required fields
+  if (data.nodes) {
+    for (const node of data.nodes) {
+      if (typeof node.id !== 'string') return false;
+      if (typeof node.x !== 'number' || typeof node.y !== 'number') return false;
+      if (typeof node.width !== 'number' || typeof node.height !== 'number') return false;
+    }
+  }
+  return true;
+}
+
 function renderCanvas(content) {
   let canvasData;
   try {
@@ -18,6 +37,13 @@ function renderCanvas(content) {
     console.error('[Canvas Viewer] Failed to parse JSON:', e);
     const container = document.getElementById('canvasContainer');
     container.textContent = 'Error: Invalid JSON Canvas file.';
+    return;
+  }
+
+  if (!validateCanvasData(canvasData)) {
+    console.error('[Canvas Viewer] Invalid canvas data structure.');
+    const container = document.getElementById('canvasContainer');
+    container.textContent = 'Error: Invalid JSON Canvas data structure.';
     return;
   }
 
