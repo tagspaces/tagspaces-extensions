@@ -18,6 +18,7 @@
     "image-viewer/",
     "json-editor/",
     "libs/",
+    "marp-viewer/",
     "md-editor/build/",
     "md-editor/package.json",
     "md-editor/LICENSE.txt",
