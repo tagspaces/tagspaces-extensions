@@ -10,6 +10,13 @@
     "url": "https://www.tagspaces.org"
   },
   "license": "MIT",
+  "scripts": {
+    "build-libs": "echo 'import Marp from \"@marp-team/marp-core\"; window.Marp = Marp;' | npx esbuild --bundle --outfile=libs/marp-core.bundle.js --format=iife --global-name=MarpModule --platform=browser --target=es2020 --minify && cp node_modules/@marp-team/marp-core/lib/browser.js libs/marp-browser.js"
+  },
+  "devDependencies": {
+    "@marp-team/marp-core": "4.3.0",
+    "esbuild": "0.27.4"
+  },
   "dependencies": {},
   "tsextension": {
     "name": "Marp Viewer",
