@@ -1,0 +1,33 @@
+{
+  "name": "@tagspaces/canvas-viewer",
+  "version": "1.0.235",
+  "description": "A TagSpaces extension for viewing JSON Canvas (.canvas) files.",
+  "homepage": "https://www.tagspaces.org",
+  "main": "main.js",
+  "author": {
+    "name": "TagSpaces GmbH",
+    "email": "info@tagspaces.org",
+    "url": "https://www.tagspaces.org"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build-libs": "echo 'import { JSONCanvasViewer, Controls, Minimap, fetchCanvas, parser } from \"json-canvas-viewer\"; window.JSONCanvasViewer = JSONCanvasViewer; window.CanvasControls = Controls; window.CanvasMinimap = Minimap; window.fetchCanvas = fetchCanvas; window.canvasParser = parser;' | npx esbuild --bundle --outfile=libs/json-canvas-viewer.bundle.js --format=iife --global-name=CanvasViewerModule --platform=browser --target=es2020 --minify"
+  },
+  "devDependencies": {
+    "json-canvas-viewer": "4.1.0",
+    "esbuild": "0.27.4"
+  },
+  "dependencies": {},
+  "tsextension": {
+    "name": "Canvas Viewer",
+    "types": [
+      "viewer"
+    ],
+    "color": "#7c3aed",
+    "fileTypes": [
+      {
+        "ext": "canvas"
+      }
+    ]
+  }
+}

@@ -10,6 +10,7 @@
   },
   "files": [
     "archive-viewer/",
+    "canvas-viewer/",
     "common/",
     "document-viewer/",
     "ebook-viewer/",

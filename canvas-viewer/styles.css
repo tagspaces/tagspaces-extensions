@@ -1,0 +1,117 @@
+/* Canvas Viewer Styles
+   The json-canvas-viewer library injects its own styles dynamically.
+   This file handles the TagSpaces integration layout. */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--default-background-color, #f5f5f5);
+}
+
+/* Fix icon alignment in canvas viewer controls */
+.JCV-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.JCV-button svg {
+  vertical-align: middle;
+}
+
+/* Move minimap from bottom-right to bottom-left */
+.JSON-Canvas-Viewer > .JCV-minimap-container {
+  right: auto !important;
+  left: 5px !important;
+  bottom: 20px !important;
+}
+
+/* Place toggle button to the right of the minimap, flip arrow */
+.JSON-Canvas-Viewer > .JCV-minimap-container .JCV-toggle-minimap {
+  order: 1 !important;
+  margin: auto 0 0 10px !important;
+}
+
+.JSON-Canvas-Viewer > .JCV-minimap-container.JCV-collapsed {
+  transform: translate(calc(-100% + 30px)) !important;
+}
+
+/* Rotate zoom slider collapse button */
+.JSON-Canvas-Viewer .JCV-controls .JCV-collapse-button {
+  transform: rotate(180deg) !important;
+}
+
+.JSON-Canvas-Viewer .JCV-controls.JCV-collapsed .JCV-collapse-button {
+  transform: rotate(0deg) !important;
+}
+
+/* Canvas viewer fills the entire viewport */
+#canvasContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Pseudo-fullscreen fallback when real fullscreen is blocked */
+#canvasContainer.pseudo-fullscreen {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999;
+  background-color: var(--default-background-color, #f5f5f5);
+}
+
+/* Slide counter / info bar */
+#canvasInfo {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--text-color, #757575);
+  opacity: 0.5;
+  z-index: 100;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  pointer-events: none;
+}
+
+/* ===================== */
+/* Print                 */
+/* ===================== */
+
+@media print {
+  html,
+  body {
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  #canvasContainer {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+
+  /* Hide all UI controls */
+  #extFabMenu,
+  #canvasInfo,
+  #findToolbarPlaceholder,
+  .JCV-controls,
+  .JCV-minimap,
+  .JCV-toggle-minimap,
+  .JCV-collapse-button {
+    display: none !important;
+  }
+
+  @page {
+    margin: 0;
+  }
+}

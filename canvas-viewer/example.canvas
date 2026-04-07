@@ -1,0 +1,342 @@
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "color": "1",
+      "text": "# Project Overview\nA visual knowledge map showing how different concepts connect."
+    },
+    {
+      "id": "node-2",
+      "type": "text",
+      "x": 400,
+      "y": -100,
+      "width": 250,
+      "height": 100,
+      "color": "2",
+      "text": "## Frontend\n- React\n- TypeScript\n- Vite"
+    },
+    {
+      "id": "node-3",
+      "type": "text",
+      "x": 400,
+      "y": 80,
+      "width": 250,
+      "height": 100,
+      "color": "3",
+      "text": "## Backend\n- Node.js\n- Express\n- PostgreSQL"
+    },
+    {
+      "id": "node-4",
+      "type": "text",
+      "x": 400,
+      "y": 260,
+      "width": 250,
+      "height": 100,
+      "color": "4",
+      "text": "## DevOps\n- Docker\n- GitHub Actions\n- AWS"
+    },
+    {
+      "id": "node-5",
+      "type": "text",
+      "x": 800,
+      "y": -200,
+      "width": 220,
+      "height": 80,
+      "color": "2",
+      "text": "### Components\nReusable UI building blocks"
+    },
+    {
+      "id": "node-6",
+      "type": "text",
+      "x": 800,
+      "y": -60,
+      "width": 220,
+      "height": 80,
+      "color": "2",
+      "text": "### State Management\nRedux Toolkit + RTK Query"
+    },
+    {
+      "id": "node-7",
+      "type": "text",
+      "x": 800,
+      "y": 60,
+      "width": 220,
+      "height": 80,
+      "color": "3",
+      "text": "### REST API\n`/api/v1/*` endpoints"
+    },
+    {
+      "id": "node-8",
+      "type": "text",
+      "x": 800,
+      "y": 180,
+      "width": 220,
+      "height": 80,
+      "color": "3",
+      "text": "### Database\nMigrations with Prisma ORM"
+    },
+    {
+      "id": "node-9",
+      "type": "text",
+      "x": 800,
+      "y": 300,
+      "width": 220,
+      "height": 80,
+      "color": "4",
+      "text": "### CI/CD Pipeline\nBuild → Test → Deploy"
+    },
+    {
+      "id": "node-10",
+      "type": "text",
+      "x": 800,
+      "y": 420,
+      "width": 220,
+      "height": 80,
+      "color": "4",
+      "text": "### Monitoring\nGrafana + Prometheus"
+    },
+    {
+      "id": "node-11",
+      "type": "text",
+      "x": -400,
+      "y": -80,
+      "width": 280,
+      "height": 100,
+      "color": "5",
+      "text": "## Requirements\n- Performance < 200ms\n- 99.9% uptime\n- GDPR compliant"
+    },
+    {
+      "id": "node-12",
+      "type": "text",
+      "x": -400,
+      "y": 100,
+      "width": 280,
+      "height": 100,
+      "color": "6",
+      "text": "## Timeline\n- **Q1**: MVP launch\n- **Q2**: Scale & optimize\n- **Q3**: Public release"
+    },
+    {
+      "id": "node-13",
+      "type": "text",
+      "x": 1120,
+      "y": -150,
+      "width": 200,
+      "height": 70,
+      "text": "Button, Modal, Table, Form, Card"
+    },
+    {
+      "id": "node-14",
+      "type": "text",
+      "x": 1120,
+      "y": -40,
+      "width": 200,
+      "height": 70,
+      "text": "Auth, Users, Products, Orders"
+    },
+    {
+      "id": "node-15",
+      "type": "text",
+      "x": 1120,
+      "y": 70,
+      "width": 200,
+      "height": 70,
+      "text": "Rate limiting, JWT tokens, CORS"
+    },
+    {
+      "id": "node-16",
+      "type": "text",
+      "x": -400,
+      "y": 280,
+      "width": 280,
+      "height": 80,
+      "color": "1",
+      "text": "## Team\n3 frontend, 2 backend, 1 DevOps, 1 PM"
+    },
+    {
+      "id": "node-17",
+      "type": "link",
+      "x": 1120,
+      "y": 200,
+      "width": 200,
+      "height": 60,
+      "url": "https://docs.github.com/en/actions"
+    },
+    {
+      "id": "node-18",
+      "type": "text",
+      "x": 0,
+      "y": -250,
+      "width": 300,
+      "height": 80,
+      "color": "0",
+      "text": "## Architecture\nMicroservices with API Gateway pattern"
+    },
+    {
+      "id": "node-19",
+      "type": "text",
+      "x": 0,
+      "y": 200,
+      "width": 300,
+      "height": 80,
+      "text": "## Testing\nUnit (Jest) + E2E (Playwright) + Integration"
+    },
+    {
+      "id": "node-20",
+      "type": "text",
+      "x": 400,
+      "y": 440,
+      "width": 250,
+      "height": 80,
+      "color": "5",
+      "text": "## Security\nOWASP Top 10 audit completed ✓"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "fromNode": "node-1",
+      "fromSide": "right",
+      "toNode": "node-2",
+      "toSide": "left",
+      "label": "UI"
+    },
+    {
+      "id": "edge-2",
+      "fromNode": "node-1",
+      "fromSide": "right",
+      "toNode": "node-3",
+      "toSide": "left",
+      "label": "API"
+    },
+    {
+      "id": "edge-3",
+      "fromNode": "node-1",
+      "fromSide": "right",
+      "toNode": "node-4",
+      "toSide": "left",
+      "label": "Infra"
+    },
+    {
+      "id": "edge-4",
+      "fromNode": "node-2",
+      "fromSide": "right",
+      "toNode": "node-5",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-5",
+      "fromNode": "node-2",
+      "fromSide": "right",
+      "toNode": "node-6",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-6",
+      "fromNode": "node-3",
+      "fromSide": "right",
+      "toNode": "node-7",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-7",
+      "fromNode": "node-3",
+      "fromSide": "right",
+      "toNode": "node-8",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-8",
+      "fromNode": "node-4",
+      "fromSide": "right",
+      "toNode": "node-9",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-9",
+      "fromNode": "node-4",
+      "fromSide": "right",
+      "toNode": "node-10",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-10",
+      "fromNode": "node-5",
+      "fromSide": "right",
+      "toNode": "node-13",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-11",
+      "fromNode": "node-6",
+      "fromSide": "right",
+      "toNode": "node-14",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-12",
+      "fromNode": "node-7",
+      "fromSide": "right",
+      "toNode": "node-15",
+      "toSide": "left"
+    },
+    {
+      "id": "edge-13",
+      "fromNode": "node-9",
+      "fromSide": "right",
+      "toNode": "node-17",
+      "toSide": "left",
+      "label": "docs"
+    },
+    {
+      "id": "edge-14",
+      "fromNode": "node-11",
+      "fromSide": "right",
+      "toNode": "node-1",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-15",
+      "fromNode": "node-12",
+      "fromSide": "right",
+      "toNode": "node-1",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-16",
+      "fromNode": "node-16",
+      "fromSide": "right",
+      "toNode": "node-1",
+      "toSide": "left",
+      "color": "1"
+    },
+    {
+      "id": "edge-17",
+      "fromNode": "node-18",
+      "fromSide": "bottom",
+      "toNode": "node-1",
+      "toSide": "top"
+    },
+    {
+      "id": "edge-18",
+      "fromNode": "node-1",
+      "fromSide": "bottom",
+      "toNode": "node-19",
+      "toSide": "top"
+    },
+    {
+      "id": "edge-19",
+      "fromNode": "node-4",
+      "fromSide": "bottom",
+      "toNode": "node-20",
+      "toSide": "top",
+      "color": "5"
+    }
+  ]
+}
