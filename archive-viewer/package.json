@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/archive-viewer",
-  "version": "1.0.237",
+  "version": "1.0.238",
   "description": "A TagSpaces extension allowing you to preview the content of ZIP files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
