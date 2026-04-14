@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/marp-viewer",
-  "version": "1.0.238",
+  "version": "1.0.239",
   "description": "A TagSpaces extension for viewing Marp markdown presentations.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
