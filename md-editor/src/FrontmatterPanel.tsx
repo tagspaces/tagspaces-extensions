@@ -57,7 +57,7 @@ const FrontmatterPanel: React.FC<Props> = ({
             resize: 'vertical',
             minHeight: '72px',
             background: 'transparent',
-            color: 'inherit',
+            color: isDark ? '#e0e0e0' : '#1a1a1a',
           }}
         />
       </Box>
