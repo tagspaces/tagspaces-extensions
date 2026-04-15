@@ -312,12 +312,14 @@
       marp: 'sample.marp.md',
       mmdown: 'sample.mmd',
       jsonl: 'sample.json',
-      cpp: 'sample.js', c: 'sample.js', h: 'sample.js',
-      java: 'sample.js', cs: 'sample.js', go: 'sample.js', dart: 'sample.js',
-      rb: 'sample.py', pl: 'sample.py', php: 'sample.py', ml: 'sample.py',
+      c: 'sample.cpp', h: 'sample.cpp',
+      cs: 'sample.java', go: 'sample.java', dart: 'sample.java',
+      ml: 'sample.rb',
       mdown: 'sample.md',
       frontmatter: 'sample.yaml', fm: 'sample.yaml', cff: 'sample.yaml',
       tiff: 'sample.tif',
+      mht: 'sample.mhtml',
+      reveal: 'sample.slides.html',
     };
 
     // Remote test files base URL (for binary formats)
@@ -360,7 +362,8 @@
 
     // Binary test files available locally (not inlined in TEST_FILE_CONTENTS)
     const LOCAL_BINARY_FILES = new Set([
-      'tif', 'tiff', 'tga', 'psd', 'cr2', 'dng', 'nef', 'pdf',
+      'tif', 'tiff', 'tga', 'psd', 'cr2', 'dng', 'nef', 'heic', 'avif', 'pdf', 'msg',
+      'xlsx', 'xls', 'ods',
     ]);
 
     function getTestFileUrl(ext, variant) {

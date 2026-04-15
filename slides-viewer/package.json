@@ -12,10 +12,14 @@
   "license": "MIT",
   "dependencies": {},
   "tsextension": {
-    "name": "Slides Viewer (beta)",
+    "name": "Slides Viewer (revealjs)",
     "types": [
       "viewer"
     ],
-    "fileTypes": []
+    "fileTypes": [
+      {
+        "ext": "reveal"
+      }
+    ]
   }
 }

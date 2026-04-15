@@ -1,0 +1,55 @@
+<html>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h1>TagSpaces Overview</h1>
+        <p>An open source file manager with tagging</p>
+      </section>
+      <section>
+        <h2>Features</h2>
+        <ul>
+          <li>File tagging with colored tags</li>
+          <li>Multiple file format viewers</li>
+          <li>Cross-platform support</li>
+          <li>Privacy-first approach</li>
+        </ul>
+      </section>
+      <section>
+        <section>
+          <h2>Extensions</h2>
+          <p>The extension system provides:</p>
+          <ol>
+            <li>Image viewing</li>
+            <li>Document rendering</li>
+            <li>Code editing</li>
+            <li>Media playback</li>
+          </ol>
+        </section>
+        <section>
+          <h2>Extension Architecture</h2>
+          <pre><code>Host (TagSpaces)
+  └── iframe (Extension)
+        ├── postMessage → loadContent
+        ├── setContent(data)
+        └── postMessage → saveFile</code></pre>
+        </section>
+      </section>
+      <section data-markdown>
+        <textarea data-template>
+## Markdown Slide
+
+This slide uses the **RevealMarkdown** plugin.
+
+- Supports *italic* and **bold**
+- And `inline code`
+        </textarea>
+      </section>
+      <section>
+        <h2>Questions?</h2>
+        <p>Visit <a href="https://www.tagspaces.org">tagspaces.org</a> for more information.</p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
