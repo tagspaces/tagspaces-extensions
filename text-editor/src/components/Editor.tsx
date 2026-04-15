@@ -169,6 +169,16 @@ export const Editor: React.FC = () => {
       path.endsWith('.cpp')
     ) {
       return 'cpp';
+    } else if (path.endsWith('.rb')) {
+      return 'ruby';
+    } else if (path.endsWith('.php')) {
+      return 'php';
+    } else if (path.endsWith('.pl')) {
+      return 'perl';
+    } else if (path.endsWith('.sql')) {
+      return 'sql';
+    } else if (path.endsWith('.ml')) {
+      return 'fsharp';
     } else if (
       path.endsWith('.md') ||
       path.endsWith('.mdown') ||
