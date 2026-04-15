@@ -195,6 +195,7 @@ function readTestFiles() {
     '.pdf', '.docx', '.odt', '.epub', '.zip',
     '.mp3', '.mp4', '.ogg', '.wav', '.webm', '.flac', '.mkv', '.mov',
     '.msg', '.xlsx', '.xls', '.ods',
+    '.dcm',
   ]);
 
   const files = fs.readdirSync(TEST_FILES_DIR);

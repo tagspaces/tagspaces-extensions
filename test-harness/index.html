@@ -320,6 +320,7 @@
       tiff: 'sample.tif',
       mht: 'sample.mhtml',
       reveal: 'sample.slides.html',
+      dicom: 'sample.dcm', dic: 'sample.dcm', ima: 'sample.dcm', acr: 'sample.dcm',
     };
 
     // Remote test files base URL (for binary formats)
@@ -364,12 +365,14 @@
     const LOCAL_BINARY_FILES = new Set([
       'tif', 'tiff', 'tga', 'psd', 'cr2', 'dng', 'nef', 'heic', 'avif', 'pdf', 'msg',
       'xlsx', 'xls', 'ods',
+      'dcm',
     ]);
 
     function getTestFileUrl(ext, variant) {
       const key = variant || TEST_FILE_ALIASES[ext] || `sample.${ext}`;
       const hasInline = typeof TEST_FILE_CONTENTS !== 'undefined' && TEST_FILE_CONTENTS[key];
-      const hasLocalBinary = LOCAL_BINARY_FILES.has(ext);
+      const resolvedExt = key.split('.').pop();
+      const hasLocalBinary = LOCAL_BINARY_FILES.has(ext) || LOCAL_BINARY_FILES.has(resolvedExt);
 
       if (hasInline || hasLocalBinary) {
         // Use absolute path from server root. This is reliable regardless of how
