@@ -158,8 +158,12 @@ function scanExtensionDir(dirInfo) {
       const relBase = path.relative(SCRIPT_DIR, dirPath);
       const relEntryPoint = path.join(relBase, entryPoint);
 
-      // Extract file types
+      // Extract file types with per-type colors
       const fileTypes = (tsext.fileTypes || []).map(ft => ft.ext);
+      const fileTypeColors = {};
+      for (const ft of (tsext.fileTypes || [])) {
+        if (ft.color) fileTypeColors[ft.ext] = ft.color;
+      }
 
       extensions.push({
         id: entry.name,
@@ -168,6 +172,7 @@ function scanExtensionDir(dirInfo) {
         types: tsext.types || [],
         color: tsext.color || '',
         fileTypes,
+        ...(Object.keys(fileTypeColors).length > 0 ? { fileTypeColors } : {}),
         ...(source !== 'community' ? { source } : {}),
       });
 

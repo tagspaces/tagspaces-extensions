@@ -123,7 +123,7 @@
     }
     .ext-file:hover { color: var(--primary); }
     .ext-file.active { color: var(--primary); font-weight: 600; }
-    .ext-file::before { content: '.'; font-weight: 700; }
+    .ext-file .ext-color { display: inline-block; margin-right: 4px; vertical-align: middle; }
 
     /* Main area */
     .main {
@@ -429,7 +429,7 @@
         const header = document.createElement('div');
         header.className = 'ext-header';
         header.innerHTML = `
-          <span class="ext-color" style="background:${ext.color || '#808080'}"></span>
+          <span class="ext-color" style="background:${ext.color || (ext.fileTypeColors && ext.fileTypeColors[ext.fileTypes[0]]) || '#808080'}"></span>
           <span>${escapeHtml(ext.name)}</span>
           <span class="ext-types">${ext.types.join('/')}</span>
           ${ext.source === 'pro' ? '<span class="ext-badge">PRO</span>' : ''}
@@ -440,11 +440,12 @@
         const files = document.createElement('div');
         files.className = 'ext-files';
         for (const ft of ext.fileTypes) {
+          const ftColor = (ext.fileTypeColors && ext.fileTypeColors[ft]) || ext.color || '#808080';
           const item = document.createElement('div');
           item.className = 'ext-file';
           item.dataset.extensionId = ext.id;
           item.dataset.filetype = ft;
-          item.textContent = ft;
+          item.innerHTML = `<span class="ext-color" style="background:${ftColor}"></span>${ft}`;
           item.addEventListener('click', (e) => {
             e.stopPropagation();
             loadExtension(ext.id, ft);
