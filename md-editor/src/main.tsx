@@ -19,6 +19,12 @@ const file = getParameterByName('file');
 const primaryColor = getParameterByName('primecolor').replace('%23', '#');
 const textColor = getParameterByName('textcolor').replace('%23', '#');
 
+// Ensure window.theme is set before MUIThemeProvider mounts so it picks up the correct mode
+if (theme) {
+  // @ts-ignore
+  window.theme = theme;
+}
+
 root.render(
   <StrictMode>
     <MUIThemeProvider primaryColor={primaryColor} primaryTextColor={textColor}>

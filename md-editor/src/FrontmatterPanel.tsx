@@ -32,7 +32,7 @@ const FrontmatterPanel: React.FC<Props> = ({
       >
         <Typography
           variant="overline"
-          sx={{ px: 2, pt: 1, display: 'block', opacity: 0.55, lineHeight: 2 }}
+          sx={{ px: 2, pt: 1, display: 'block', opacity: 0.55, lineHeight: 2, color: 'text.secondary' }}
         >
           {t('frontmatter')}
         </Typography>
@@ -124,7 +124,7 @@ const FrontmatterPanel: React.FC<Props> = ({
     >
       <Typography
         variant="overline"
-        sx={{ color: 'text.primary', opacity: 0.55, display: 'block', mb: 0.75 }}
+        sx={{ color: 'text.secondary', opacity: 0.55, display: 'block', mb: 0.75 }}
       >
         {t('frontmatter')}
       </Typography>
