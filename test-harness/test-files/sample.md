@@ -1,5 +1,19 @@
 # Sample Markdown Document
 
+## Images
+
+### Inline Data URL (blue square)
+
+![Blue square](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAEUlEQVR4nGNQnPYZK2IYWhIAaK9qgeCqq88AAAAASUVORK5CYII=)
+
+### Remote Image (from test repo)
+
+![Remote GIF](https://raw.githubusercontent.com/tagspaces/testdata/master/file-structure/supported-filestypes/sample.gif)
+
+### Relative Path Image (AVIF)
+
+![Local AVIF](sample.avif)
+
 ## Introduction
 
 This is a **bold** statement and this is *italic*. Here is some `inline code` and a [link to TagSpaces](https://www.tagspaces.org).
@@ -47,12 +61,10 @@ console.log(result);
 
 ---
 
-## Image Reference
-
-![TagSpaces Logo](https://www.tagspaces.org/content/media/tagspaces-logo.svg)
-
 ## Task List
 
 - [x] Create sample markdown
-- [ ] Test rendering
+- [x] Add inline image
+- [x] Add remote image
+- [x] Add relative path image
 - [ ] Verify all features

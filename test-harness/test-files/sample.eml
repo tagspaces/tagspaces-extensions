@@ -1,0 +1,38 @@
+From: alice@tagspaces.org
+To: bob@tagspaces.org
+Subject: TagSpaces Extension Test
+Date: Tue, 15 Apr 2025 10:30:00 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_001"
+
+------=_Part_001
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<h2>TagSpaces Extension Test Email</h2>
+<p>Hello Bob,</p>
+<p>This is a sample <strong>EML file</strong> for testing the <em>MHTML Viewer</em> extension in TagSpaces.</p>
+<p>This email includes:</p>
+<ul>
+  <li>HTML formatted body</li>
+  <li>A text file attachment</li>
+</ul>
+<p>Best regards,<br>Alice</p>
+</body>
+</html>
+
+------=_Part_001
+Content-Type: text/plain; charset=UTF-8; name="notes.txt"
+Content-Disposition: attachment; filename="notes.txt"
+Content-Transfer-Encoding: 7bit
+
+TagSpaces Notes
+===============
+- Open source file organizer
+- Tag-based file management
+- Cross-platform support
+- Privacy-first approach
+
+------=_Part_001--

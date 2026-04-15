@@ -1,0 +1,37 @@
+From: <Saved by TagSpaces>
+Snapshot-Content-Location: https://www.tagspaces.org/
+Subject: TagSpaces - Sample MHTML
+Date: Tue, 15 Apr 2025 10:00:00 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="----=_MHTML_Boundary"
+
+------=_MHTML_Boundary
+Content-Type: text/html; charset=UTF-8
+Content-Location: https://www.tagspaces.org/
+Content-Transfer-Encoding: 7bit
+
+<html>
+<head><title>TagSpaces - Sample MHTML Page</title></head>
+<body>
+<h1>TagSpaces</h1>
+<p><img src="https://www.tagspaces.org/logo.png" alt="TagSpaces Logo" width="64" height="64"></p>
+<p>This is a sample <strong>MHTML archive</strong> for testing the MHTML Viewer extension.</p>
+<p>MHTML (MIME HTML) is a web page archive format that bundles the HTML and its resources into a single file.</p>
+<h2>Features</h2>
+<ul>
+  <li>HTML content preserved</li>
+  <li>Images embedded as MIME parts</li>
+  <li>Single file storage</li>
+</ul>
+</body>
+</html>
+
+------=_MHTML_Boundary
+Content-Type: image/png
+Content-Location: https://www.tagspaces.org/logo.png
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAHklEQVR4nGOQvTifJMQwyDX8xwFG
+NdBXwyBMGsQgAJVk6RApEGpJAAAAAElFTkSuQmCC
+
+------=_MHTML_Boundary--
