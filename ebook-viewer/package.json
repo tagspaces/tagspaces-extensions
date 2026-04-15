@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/ebook-viewer",
-  "version": "1.0.240",
+  "version": "1.0.241",
   "description": "A TagSpaces extension allowing to open files in ebook.",
   "homepage": "https://www.tagspaces.org",
   "author": {
@@ -16,7 +16,10 @@
       "viewer"
     ],
     "fileTypes": [
-      { "ext": "epub", "color": "#A67B5B" }
+      {
+        "ext": "epub",
+        "color": "#A67B5B"
+      }
     ]
   }
 }

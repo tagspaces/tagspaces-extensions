@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/text-editor",
-  "version": "1.0.240",
+  "version": "1.0.241",
   "description": "A TagSpaces extension allowing editing of text based documents.",
   "homepage": "https://www.tagspaces.org",
   "files": [
@@ -61,31 +61,106 @@
     ],
     "color": "",
     "fileTypes": [
-      { "ext": "c", "color": "#555555" },
-      { "ext": "cpp", "color": "#f34b7d" },
-      { "ext": "cs", "color": "#178600" },
-      { "ext": "css", "color": "#563d7c" },
-      { "ext": "scss", "color": "#563d7c" },
-      { "ext": "h", "color": "#555555" },
-      { "ext": "java", "color": "#b07219" },
-      { "ext": "js", "color": "#f1e05a" },
-      { "ext": "jsonl", "color": "#C4A83C" },
-      { "ext": "jsx", "color": "#f1e05a" },
-      { "ext": "ts", "color": "#3178c6" },
-      { "ext": "tsx", "color": "#3178c6" },
-      { "ext": "jsm", "color": "#f1e05a" },
-      { "ext": "less", "color": "#563d7c" },
-      { "ext": "ml", "color": "#3be133" },
-      { "ext": "php", "color": "#4F5D95" },
-      { "ext": "pl", "color": "#0298c3" },
-      { "ext": "py", "color": "#3572A5" },
-      { "ext": "rb", "color": "#701516" },
-      { "ext": "sh", "color": "#89e051" },
-      { "ext": "sql", "color": "#e38c00" },
-      { "ext": "txt", "color": "#A9A9A9" },
-      { "ext": "xml", "color": "#7B9AAF" },
-      { "ext": "go", "color": "#00ADD8" },
-      { "ext": "dart", "color": "#00B4AB" },
+      {
+        "ext": "c",
+        "color": "#555555"
+      },
+      {
+        "ext": "cpp",
+        "color": "#f34b7d"
+      },
+      {
+        "ext": "cs",
+        "color": "#178600"
+      },
+      {
+        "ext": "css",
+        "color": "#563d7c"
+      },
+      {
+        "ext": "scss",
+        "color": "#563d7c"
+      },
+      {
+        "ext": "h",
+        "color": "#555555"
+      },
+      {
+        "ext": "java",
+        "color": "#b07219"
+      },
+      {
+        "ext": "js",
+        "color": "#f1e05a"
+      },
+      {
+        "ext": "jsonl",
+        "color": "#C4A83C"
+      },
+      {
+        "ext": "jsx",
+        "color": "#f1e05a"
+      },
+      {
+        "ext": "ts",
+        "color": "#3178c6"
+      },
+      {
+        "ext": "tsx",
+        "color": "#3178c6"
+      },
+      {
+        "ext": "jsm",
+        "color": "#f1e05a"
+      },
+      {
+        "ext": "less",
+        "color": "#563d7c"
+      },
+      {
+        "ext": "ml",
+        "color": "#3be133"
+      },
+      {
+        "ext": "php",
+        "color": "#4F5D95"
+      },
+      {
+        "ext": "pl",
+        "color": "#0298c3"
+      },
+      {
+        "ext": "py",
+        "color": "#3572A5"
+      },
+      {
+        "ext": "rb",
+        "color": "#701516"
+      },
+      {
+        "ext": "sh",
+        "color": "#89e051"
+      },
+      {
+        "ext": "sql",
+        "color": "#e38c00"
+      },
+      {
+        "ext": "txt",
+        "color": "#A9A9A9"
+      },
+      {
+        "ext": "xml",
+        "color": "#7B9AAF"
+      },
+      {
+        "ext": "go",
+        "color": "#00ADD8"
+      },
+      {
+        "ext": "dart",
+        "color": "#00B4AB"
+      },
       {
         "ext": "yaml",
         "color": "#f89728"
@@ -122,7 +197,10 @@
         "ext": "mdx",
         "color": "#beefed"
       },
-      { "ext": "xhtml", "color": "#e34c26" }
+      {
+        "ext": "xhtml",
+        "color": "#e34c26"
+      }
     ]
   }
 }
