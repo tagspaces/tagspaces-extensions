@@ -21,6 +21,9 @@ libs/**/*.slim.min.js
 libs/**/*.slim.min.map
 node_modules
 tagspacespro
+@tagspaces
+extensions-pro
+test-harness/registry.js
 .idea
 *.iml
 .DS_Store

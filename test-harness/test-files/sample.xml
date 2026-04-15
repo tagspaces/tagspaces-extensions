@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="http://example.com/catalog"
+         xmlns:meta="http://example.com/metadata">
+  <meta:info>
+    <meta:title>TagSpaces Extension Catalog</meta:title>
+    <meta:version>1.0</meta:version>
+    <meta:updated>2024-01-15</meta:updated>
+  </meta:info>
+
+  <extensions>
+    <extension id="image-viewer" type="viewer">
+      <name>Image Viewer</name>
+      <description>View various image formats including JPEG, PNG, GIF, SVG, and WebP</description>
+      <color>#9fd5ba</color>
+      <fileTypes>
+        <fileType ext="jpg" mime="image/jpeg"/>
+        <fileType ext="png" mime="image/png"/>
+        <fileType ext="gif" mime="image/gif"/>
+        <fileType ext="svg" mime="image/svg+xml"/>
+        <fileType ext="webp" mime="image/webp"/>
+      </fileTypes>
+    </extension>
+
+    <extension id="pdf-viewer" type="viewer">
+      <name>PDF Viewer</name>
+      <description>View PDF documents with search and navigation</description>
+      <color>#f5897f</color>
+      <fileTypes>
+        <fileType ext="pdf" mime="application/pdf"/>
+      </fileTypes>
+    </extension>
+
+    <extension id="md-editor" type="editor">
+      <name>Markdown Editor</name>
+      <description>Edit markdown files with live preview</description>
+      <color>#beefed</color>
+      <fileTypes>
+        <fileType ext="md" mime="text/markdown"/>
+        <fileType ext="mdx" mime="text/mdx"/>
+      </fileTypes>
+    </extension>
+  </extensions>
+</catalog>

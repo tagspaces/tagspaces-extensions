@@ -1,0 +1,36 @@
+{
+  "name": "TagSpaces Test Data",
+  "version": "1.0.0",
+  "description": "Sample JSON file for testing the JSON Editor extension",
+  "settings": {
+    "theme": "dark",
+    "language": "en",
+    "autoSave": true,
+    "maxRecentFiles": 10,
+    "extensions": {
+      "imageViewer": { "enabled": true, "zoomLevel": 1.0 },
+      "pdfViewer": { "enabled": true, "sidebarOpen": false },
+      "markdownEditor": { "enabled": true, "spellCheck": true }
+    }
+  },
+  "tags": [
+    { "title": "important", "color": "#ff0000", "textColor": "#ffffff" },
+    { "title": "todo", "color": "#ffc107", "textColor": "#000000" },
+    { "title": "done", "color": "#4caf50", "textColor": "#ffffff" },
+    { "title": "archived", "color": "#9e9e9e", "textColor": "#ffffff" }
+  ],
+  "locations": [
+    { "name": "Documents", "path": "/home/user/Documents", "isDefault": true },
+    { "name": "Photos", "path": "/home/user/Photos", "isDefault": false },
+    { "name": "Projects", "path": "/home/user/Projects", "isDefault": false }
+  ],
+  "statistics": {
+    "totalFiles": 1542,
+    "taggedFiles": 876,
+    "totalTags": 45,
+    "storageUsed": 2147483648
+  },
+  "nullValue": null,
+  "isActive": true,
+  "piValue": 3.14159265359
+}

@@ -16,6 +16,9 @@
     "build:pdfjs": "node scripts/buildPdfjs.js",
     "clean:pdfjs": "npx rimraf --no-glob \"generic/\" \"scripts/pdf.js/\""
   },
+  "dependencies": {
+    "pdfjs-dist": "5.6.205"
+  },
   "tsextension": {
     "name": "PDF Viewer",
     "types": [

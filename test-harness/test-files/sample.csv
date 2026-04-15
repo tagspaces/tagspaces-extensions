@@ -1,0 +1,11 @@
+id,name,email,department,salary,start_date,active,rating,city,country
+1,Alice Johnson,alice@example.com,Engineering,95000,2020-03-15,true,4.8,Berlin,Germany
+2,Bob Smith,bob@example.com,Marketing,72000,2019-07-22,true,4.2,Munich,Germany
+3,Carol White,carol@example.com,Engineering,105000,2018-01-10,true,4.9,Vienna,Austria
+4,David Brown,david@example.com,Sales,68000,2021-05-03,false,3.7,Zurich,Switzerland
+5,Eva Martinez,eva@example.com,Engineering,98000,2020-11-18,true,4.6,Berlin,Germany
+6,Frank Lee,frank@example.com,HR,65000,2022-02-28,true,4.1,Munich,Germany
+7,Grace Kim,grace@example.com,Marketing,78000,2019-09-14,true,4.5,Vienna,Austria
+8,Henry Wilson,henry@example.com,Engineering,110000,2017-06-01,true,4.7,Berlin,Germany
+9,Iris Chen,iris@example.com,Sales,71000,2021-08-20,true,3.9,Zurich,Switzerland
+10,Jack Taylor,jack@example.com,Engineering,92000,2020-04-12,false,4.3,Munich,Germany

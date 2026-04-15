@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "node1",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 250,
+      "height": 120,
+      "text": "# TagSpaces\nOpen source file organizer with tagging support"
+    },
+    {
+      "id": "node2",
+      "type": "text",
+      "x": 350,
+      "y": -100,
+      "width": 200,
+      "height": 80,
+      "text": "## Extensions\nViewers and editors for various file formats"
+    },
+    {
+      "id": "node3",
+      "type": "text",
+      "x": 350,
+      "y": 50,
+      "width": 200,
+      "height": 80,
+      "text": "## Tagging\nColor-coded tags stored in filenames or sidecars"
+    },
+    {
+      "id": "node4",
+      "type": "text",
+      "x": 350,
+      "y": 200,
+      "width": 200,
+      "height": 80,
+      "text": "## Cross-Platform\nWindows, macOS, Linux, Android, Web"
+    },
+    {
+      "id": "node5",
+      "type": "text",
+      "x": 650,
+      "y": -100,
+      "width": 200,
+      "height": 80,
+      "text": "Image Viewer, PDF Viewer, MD Editor, Text Editor"
+    }
+  ],
+  "edges": [
+    { "id": "edge1", "fromNode": "node1", "toNode": "node2" },
+    { "id": "edge2", "fromNode": "node1", "toNode": "node3" },
+    { "id": "edge3", "fromNode": "node1", "toNode": "node4" },
+    { "id": "edge4", "fromNode": "node2", "toNode": "node5" }
+  ]
+}

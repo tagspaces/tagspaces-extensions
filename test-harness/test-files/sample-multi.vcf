@@ -1,0 +1,39 @@
+BEGIN:VCARD
+VERSION:4.0
+FN:Alice Schmidt
+N:Schmidt;Alice;;;
+ORG:TagSpaces GmbH
+TITLE:Product Manager
+TEL;TYPE=work;VALUE=uri:tel:+49-30-11111111
+EMAIL;TYPE=work:alice@tagspaces.org
+ADR;TYPE=work:;;Hauptstrasse 1;Munich;;80331;Germany
+URL:https://www.tagspaces.org
+PHOTO;MEDIATYPE=image/png:data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAHklEQVR4nGOQvTifJMQwyDX8xwFGNdBXwyBMGsQgAJVk6RApEGpJAAAAAElFTkSuQmCC
+NOTE:First contact in multi-vCard test file.
+END:VCARD
+BEGIN:VCARD
+VERSION:4.0
+FN:Bob Weber
+N:Weber;Bob;;;
+ORG:TagSpaces GmbH
+TITLE:UX Designer
+TEL;TYPE=work;VALUE=uri:tel:+49-30-22222222
+TEL;TYPE=cell;VALUE=uri:tel:+49-171-3334455
+EMAIL;TYPE=work:bob@tagspaces.org
+EMAIL;TYPE=home:bob.weber@example.com
+ADR;TYPE=work:;;Lindenstrasse 15;Vienna;;1010;Austria
+URL:https://github.com/tagspaces
+NOTE:Second contact in multi-vCard test file.
+END:VCARD
+BEGIN:VCARD
+VERSION:4.0
+FN:Clara Meier
+N:Meier;Clara;;;
+ORG:TagSpaces GmbH
+TITLE:QA Engineer
+TEL;TYPE=work;VALUE=uri:tel:+49-30-33333333
+EMAIL;TYPE=work:clara@tagspaces.org
+ADR;TYPE=work:;;Bahnhofstrasse 8;Zurich;;8001;Switzerland
+URL:https://docs.tagspaces.org
+NOTE:Third contact in multi-vCard test file.
+END:VCARD

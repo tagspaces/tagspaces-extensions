@@ -1,0 +1,43 @@
+TagSpaces - Your Privacy-Aware File Organizer
+==============================================
+
+TagSpaces is a free, no vendor lock-in, open source application for
+organizing, annotating and managing local files with the help of tags.
+It features note taking and a built-in WYSIWYG markdown editor.
+
+Key Features
+------------
+
+File Tagging: Add colored tags to any file or folder without changing
+the file content. Tags can be stored in the filename or in a sidecar
+file, giving you full control over your data.
+
+File Browsing: Browse your local files with a beautiful interface
+that supports grid, list, and gallery views. Preview files directly
+without opening external applications.
+
+Note Taking: Create and edit notes in Markdown or HTML format.
+The built-in editors support rich text formatting, tables, images,
+and code blocks.
+
+Cross-Platform: Available for Windows, macOS, Linux, Android, and
+as a web application. Your files stay on your device - no cloud
+required.
+
+Supported File Formats
+----------------------
+
+Documents: PDF, DOCX, ODT, EPUB, RTF, TXT, MD
+Images: JPG, PNG, GIF, SVG, WebP, TIFF, PSD, BMP
+Audio/Video: MP3, MP4, OGG, WebM, WAV, FLAC
+Code: JS, TS, PY, CSS, HTML, JSON, YAML, XML
+Archives: ZIP
+Spreadsheets: XLSX, CSV, ODS
+
+This is a plain text file used for testing the TagSpaces text viewer
+and text editor extensions. It contains multiple paragraphs, lists,
+and sections to verify proper rendering and scrolling behavior.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+ad minim veniam, quis nostrud exercitation ullamco laboris.

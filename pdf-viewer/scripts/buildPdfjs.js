@@ -9,7 +9,8 @@ const {
 } = require('fs');
 const { join } = require('path');
 
-const pdfJSVersionTag = 'v5.4.530';
+const { dependencies } = require('../package.json');
+const pdfJSVersionTag = 'v' + dependencies['pdfjs-dist'];
 
 /**
  * Recursively copies files and directories from src to dest.

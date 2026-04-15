@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TagSpaces Extension Test Harness</title>
+  <script src="registry.js"></script>
+  <style>
+    :root {
+      --sidebar-width: 280px;
+      --header-height: 48px;
+      --log-height: 200px;
+      --bg: #ffffff;
+      --bg-secondary: #f5f5f5;
+      --text: #333333;
+      --text-muted: #888888;
+      --border: #e0e0e0;
+      --primary: #1dd19f;
+      --primary-hover: #17b588;
+      --active-bg: #e8f9f3;
+      --log-bg: #1e1e1e;
+      --log-text: #d4d4d4;
+    }
+    [data-theme="dark"] {
+      --bg: #1e1e1e;
+      --bg-secondary: #2d2d2d;
+      --text: #e0e0e0;
+      --text-muted: #999999;
+      --border: #444444;
+      --active-bg: #1a3a2e;
+      --log-bg: #111111;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      grid-template-rows: var(--header-height) 1fr;
+    }
+
+    /* Header */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .header h1 { font-size: 15px; font-weight: 600; white-space: nowrap; }
+    .header label { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .header select, .header button {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .header button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Sidebar */
+    .sidebar {
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: var(--bg-secondary);
+      padding: 8px 0;
+      font-size: 13px;
+    }
+    .sidebar::-webkit-scrollbar { width: 6px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .ext-group { margin-bottom: 2px; }
+    .ext-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      user-select: none;
+    }
+    .ext-header:hover { background: var(--active-bg); }
+    .ext-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .ext-badge {
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: #1dd19f;
+      color: white;
+      font-weight: 700;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .ext-types {
+      font-weight: 400;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+    .ext-files { display: none; padding-left: 28px; }
+    .ext-group.open .ext-files { display: block; }
+    .ext-file {
+      padding: 3px 12px 3px 0;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ext-file:hover { color: var(--primary); }
+    .ext-file.active { color: var(--primary); font-weight: 600; }
+    .ext-file::before { content: '.'; font-weight: 700; }
+
+    /* Main area */
+    .main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .iframe-container {
+      flex: 1;
+      position: relative;
+      background: var(--bg);
+    }
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .iframe-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Log panel */
+    .log-panel {
+      height: var(--log-height);
+      background: var(--log-bg);
+      color: var(--log-text);
+      font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+      font-size: 11px;
+      border-top: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .log-panel::-webkit-scrollbar { width: 6px; }
+    .log-panel::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 8px;
+      background: #2d2d2d;
+      border-bottom: 1px solid #444;
+      color: #999;
+      font-size: 11px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .log-header button {
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 0 4px;
+    }
+    .log-header button:hover { color: #fff; }
+    .log-entry {
+      padding: 1px 8px;
+      border-bottom: 1px solid #2a2a2a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .log-entry .time { color: #666; }
+    .log-entry.rx .dir { color: #4fc3f7; }
+    .log-entry.tx .dir { color: #81c784; }
+    .log-entry.info .dir { color: #ffb74d; }
+    .log-entry.error .dir { color: #e57373; }
+
+    /* Resize handle */
+    .resize-handle {
+      height: 4px;
+      background: var(--border);
+      cursor: ns-resize;
+      flex-shrink: 0;
+    }
+    .resize-handle:hover { background: var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Extension Test Harness</h1>
+    <span id="activeInfo" style="color:var(--text-muted);font-size:12px;margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
+    <label>Theme:
+      <select id="themeSelect">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <label>Edit:
+      <select id="editSelect">
+        <option value="false">Off</option>
+        <option value="true">On</option>
+      </select>
+    </label>
+    <label>Locale:
+      <select id="localeSelect">
+        <option value="bg">Bulgarian</option>
+        <option value="ca">Catalan</option>
+        <option value="cs">Czech</option>
+        <option value="da_DK">Danish</option>
+        <option value="de_DE">Deutsch</option>
+        <option value="el">Greek</option>
+        <option value="en" selected>English</option>
+        <option value="es">Espa&ntilde;ol</option>
+        <option value="es_CL">Espa&ntilde;ol (Chile)</option>
+        <option value="fr">Fran&ccedil;ais</option>
+        <option value="fr_CA">Fran&ccedil;ais (Canada)</option>
+        <option value="he">Hebrew</option>
+        <option value="hu">Hungarian</option>
+        <option value="hy">Armenian</option>
+        <option value="id_ID">Indonesian</option>
+        <option value="it">Italian</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="nb">Norwegian</option>
+        <option value="nl_NL">Dutch</option>
+        <option value="pl">Polish</option>
+        <option value="pt_BR">Portugu&ecirc;s (Brasil)</option>
+        <option value="pt_PT">Portugu&ecirc;s (Portugal)</option>
+        <option value="ru">Russian</option>
+        <option value="sk_SK">Slovak</option>
+        <option value="sv">Swedish</option>
+        <option value="tr">Turkish</option>
+        <option value="uk">Ukrainian</option>
+        <option value="vi">Vietnamese</option>
+        <option value="zh-Hant">Chinese (Traditional)</option>
+        <option value="zh_CN">Chinese (Simplified)</option>
+        <option value="zh_HK">Chinese (Hong Kong)</option>
+        <option value="zh_TW">Chinese (Taiwan)</option>
+      </select>
+    </label>
+    <button id="reloadBtn" title="Reload current extension">Reload</button>
+  </div>
+
+  <div class="sidebar" id="sidebar"></div>
+
+  <div class="main">
+    <div class="iframe-container" id="iframeContainer">
+      <div class="iframe-placeholder" id="placeholder">
+        Select an extension from the sidebar to begin testing
+      </div>
+    </div>
+    <div class="resize-handle" id="resizeHandle"></div>
+    <div class="log-header" id="logHeader">
+      <span>Message Log (<span id="logCount">0</span>)</span>
+      <button id="clearLogBtn" title="Clear log">Clear</button>
+    </div>
+    <div class="log-panel" id="logPanel"></div>
+  </div>
+
+  <script>
+    // ---- State ----
+    const state = {
+      theme: 'light',
+      editMode: false,
+      readOnly: true,
+      locale: 'en',
+      activeExtension: null,
+      activeFileType: null,
+      activeVariant: null,
+      eventID: 'harness-' + Date.now(),
+    };
+
+    const messageLog = [];
+
+    // ---- Theme colors for extensions ----
+    const THEME_COLORS = {
+      light: { prime: '%231dd19f', text: '%23000000de', bgnd: '%23ffffff' },
+      dark:  { prime: '%231dd19f', text: '%23ffffffde', bgnd: '%231e1e1e' },
+    };
+
+    // ---- Test file aliases (ext -> key in TEST_FILE_CONTENTS) ----
+    const TEST_FILE_ALIASES = {
+      htm: 'sample.html', xhtml: 'sample.html',
+      yml: 'sample.yaml',
+      jsx: 'sample.js', jsm: 'sample.js',
+      tsx: 'sample.ts',
+      scss: 'sample.css', less: 'sample.css',
+      mdx: 'sample.md',
+      marp: 'sample.marp.md',
+      mmdown: 'sample.mmd',
+      jsonl: 'sample.json',
+      cpp: 'sample.js', c: 'sample.js', h: 'sample.js',
+      java: 'sample.js', cs: 'sample.js', go: 'sample.js', dart: 'sample.js',
+      rb: 'sample.py', pl: 'sample.py', php: 'sample.py', ml: 'sample.py',
+      mdown: 'sample.md',
+      frontmatter: 'sample.yaml', fm: 'sample.yaml', cff: 'sample.yaml',
+      tiff: 'sample.tif',
+    };
+
+    // Remote test files base URL (for binary formats)
+    const REMOTE_BASE = 'https://raw.githubusercontent.com/tagspaces/testdata/master/file-structure/supported-filestypes/';
+
+    // ---- Delivery overrides for special extensions ----
+    const DELIVERY_OVERRIDES = {
+      'md-editor': {
+        method: 'postMessage',
+        action: 'fileContent',
+      },
+      'text-editor': {
+        setContentArgs: (content, dir) => [content, dir, state.editMode, state.theme],
+      },
+      'json-editor': {
+        setContentArgs: (content, dir) => [content, dir, !state.editMode],
+      },
+      'tiptap-editor': {
+        setContentArgs: (content, dir) => [content, dir, !state.editMode],
+      },
+      'url-viewer': {
+        setContentArgs: (content, dir) => [content, dir, !state.editMode],
+      },
+    };
+
+    // ---- Utility functions ----
+    function getParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function getTestFileContent(ext, variant) {
+      const key = variant || TEST_FILE_ALIASES[ext] || `sample.${ext}`;
+      if (typeof TEST_FILE_CONTENTS !== 'undefined' && TEST_FILE_CONTENTS[key]) {
+        return { type: 'inline', content: TEST_FILE_CONTENTS[key] };
+      }
+      // Fallback to remote
+      return { type: 'remote', url: REMOTE_BASE + `sample.${ext}` };
+    }
+
+    // Binary test files available locally (not inlined in TEST_FILE_CONTENTS)
+    const LOCAL_BINARY_FILES = new Set([
+      'tif', 'tiff', 'tga', 'psd', 'cr2', 'dng', 'nef', 'pdf',
+    ]);
+
+    function getTestFileUrl(ext, variant) {
+      const key = variant || TEST_FILE_ALIASES[ext] || `sample.${ext}`;
+      const hasInline = typeof TEST_FILE_CONTENTS !== 'undefined' && TEST_FILE_CONTENTS[key];
+      const hasLocalBinary = LOCAL_BINARY_FILES.has(ext);
+
+      if (hasInline || hasLocalBinary) {
+        // Use absolute path from server root. This is reliable regardless of how
+        // deeply the extension nests iframes (e.g. pdf-viewer -> generic/web/viewer.html).
+        return `/test-harness/test-files/${key}`;
+      }
+      return REMOTE_BASE + `sample.${ext}`;
+    }
+
+    // ---- Logging ----
+    function logMessage(type, data) {
+      const time = new Date().toLocaleTimeString('en', { hour12: false, fractionalSecondDigits: 3 });
+      let text;
+      if (typeof data === 'string') {
+        text = data;
+      } else if (data && data.command) {
+        const preview = JSON.stringify(data).slice(0, 300);
+        text = `${data.command} ${preview}`;
+      } else {
+        text = JSON.stringify(data).slice(0, 300);
+      }
+
+      const entry = { type, time, text, data };
+      messageLog.push(entry);
+
+      const panel = document.getElementById('logPanel');
+      const div = document.createElement('div');
+      div.className = `log-entry ${type}`;
+      div.innerHTML = `<span class="time">${time}</span> <span class="dir">[${type.toUpperCase()}]</span> ${escapeHtml(text)}`;
+      panel.appendChild(div);
+      panel.scrollTop = panel.scrollHeight;
+
+      document.getElementById('logCount').textContent = messageLog.length;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ---- Sidebar rendering ----
+    function renderSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      if (typeof EXTENSIONS_REGISTRY === 'undefined') {
+        sidebar.innerHTML = '<div style="padding:16px;color:var(--text-muted)">registry.js not found. Run: <code>node generate-registry.js</code></div>';
+        return;
+      }
+
+      sidebar.innerHTML = '';
+      for (const ext of EXTENSIONS_REGISTRY) {
+        const group = document.createElement('div');
+        group.className = 'ext-group';
+        group.dataset.extensionId = ext.id;
+
+        const header = document.createElement('div');
+        header.className = 'ext-header';
+        header.innerHTML = `
+          <span class="ext-color" style="background:${ext.color || '#808080'}"></span>
+          <span>${escapeHtml(ext.name)}</span>
+          <span class="ext-types">${ext.types.join('/')}</span>
+          ${ext.source === 'pro' ? '<span class="ext-badge">PRO</span>' : ''}
+        `;
+        header.addEventListener('click', () => group.classList.toggle('open'));
+        group.appendChild(header);
+
+        const files = document.createElement('div');
+        files.className = 'ext-files';
+        for (const ft of ext.fileTypes) {
+          const item = document.createElement('div');
+          item.className = 'ext-file';
+          item.dataset.extensionId = ext.id;
+          item.dataset.filetype = ft;
+          item.textContent = ft;
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            loadExtension(ext.id, ft);
+          });
+          files.appendChild(item);
+
+          // Add variant test files (e.g., sample-multi.vcf)
+          if (typeof TEST_FILE_CONTENTS !== 'undefined') {
+            const variantPrefix = `sample-`;
+            const variantSuffix = `.${ft}`;
+            for (const key of Object.keys(TEST_FILE_CONTENTS)) {
+              if (key.startsWith(variantPrefix) && key.endsWith(variantSuffix) && key !== `sample.${ft}`) {
+                const variantName = key.slice(variantPrefix.length, key.length - variantSuffix.length);
+                const variantItem = document.createElement('div');
+                variantItem.className = 'ext-file';
+                variantItem.dataset.extensionId = ext.id;
+                variantItem.dataset.filetype = ft;
+                variantItem.dataset.variant = key;
+                variantItem.textContent = `${ft} (${variantName})`;
+                variantItem.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  loadExtension(ext.id, ft, key);
+                });
+                files.appendChild(variantItem);
+              }
+            }
+          }
+        }
+        group.appendChild(files);
+        sidebar.appendChild(group);
+      }
+    }
+
+    // ---- Extension loading ----
+    function loadExtension(extId, fileType, variant) {
+      const ext = EXTENSIONS_REGISTRY.find(e => e.id === extId);
+      if (!ext) {
+        logMessage('error', `Extension not found: ${extId}`);
+        return;
+      }
+
+      state.activeExtension = ext;
+      state.activeFileType = fileType;
+      state.activeVariant = variant || null;
+      state.eventID = 'harness-' + Date.now();
+
+      // Update sidebar active state
+      document.querySelectorAll('.ext-file.active').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.ext-group.open').forEach(el => el.classList.remove('open'));
+      const selector = variant
+        ? `.ext-file[data-extension-id="${extId}"][data-variant="${variant}"]`
+        : `.ext-file[data-extension-id="${extId}"][data-filetype="${fileType}"]:not([data-variant])`;
+      const fileEl = document.querySelector(selector);
+      if (fileEl) {
+        fileEl.classList.add('active');
+        fileEl.closest('.ext-group').classList.add('open');
+      }
+
+      // Build iframe URL
+      const testFileUrl = getTestFileUrl(fileType, state.activeVariant);
+      const colors = THEME_COLORS[state.theme];
+      const params = new URLSearchParams({
+        file: testFileUrl,
+        locale: state.locale,
+        theme: state.theme,
+        primecolor: colors.prime,
+        textcolor: colors.text,
+        bgndcolor: colors.bgnd,
+        eventID: state.eventID,
+        edit: String(state.editMode),
+        readonly: String(state.readOnly),
+      });
+
+      const iframeUrl = `${ext.entryPoint}?${params.toString()}`;
+
+      // Replace iframe
+      const container = document.getElementById('iframeContainer');
+      container.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.id = 'extensionIframe';
+      iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads';
+      iframe.allow = 'fullscreen';
+      iframe.src = iframeUrl;
+      container.appendChild(iframe);
+
+      const variantLabel = state.activeVariant ? ` (${state.activeVariant})` : '';
+      document.getElementById('activeInfo').textContent = `${ext.name}  —  .${fileType}${variantLabel}`;
+      logMessage('info', `Loading ${ext.name} with .${fileType} — ${iframeUrl}`);
+
+      // Dispatch event for e2e
+      document.dispatchEvent(new CustomEvent('harness:extension-loaded', {
+        detail: { id: extId, fileType, url: iframeUrl }
+      }));
+    }
+
+    // ---- Host simulation: postMessage listener ----
+    window.addEventListener('message', (event) => {
+      let data;
+      try {
+        data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      } catch {
+        return; // Ignore non-JSON messages
+      }
+
+      if (!data || !data.command) return;
+
+      logMessage('rx', data);
+
+      const ext = state.activeExtension;
+      if (!ext) return;
+
+      switch (data.command) {
+        case 'loadDefaultTextContent':
+        case 'parentLoadTextContent':
+          deliverContent('text');
+          break;
+        case 'loadDefaultBinaryContent':
+          deliverContent('binary');
+          break;
+        case 'contentChangedInEditor':
+          logMessage('info', 'Content changed in editor');
+          break;
+        case 'savingFile':
+          logMessage('info', `Save requested, content length: ${data.content ? data.content.length : 0}`);
+          break;
+        case 'editDocument':
+          logMessage('info', 'Extension requests edit mode');
+          break;
+        case 'openLinkExternally':
+          logMessage('info', `Open link: ${data.link}`);
+          break;
+        case 'thumbnailGenerated':
+          logMessage('info', 'Thumbnail generated');
+          break;
+        default:
+          logMessage('info', `Unknown command: ${data.command}`);
+      }
+
+      document.dispatchEvent(new CustomEvent('harness:message-received', { detail: data }));
+    });
+
+    async function deliverContent(mode) {
+      const ext = state.activeExtension;
+      const ft = state.activeFileType;
+      if (!ext || !ft) return;
+
+      const iframe = document.getElementById('extensionIframe');
+      if (!iframe || !iframe.contentWindow) return;
+
+      const override = DELIVERY_OVERRIDES[ext.id];
+
+      if (mode === 'text') {
+        const testFile = getTestFileContent(ft, state.activeVariant);
+        let content;
+
+        if (testFile.type === 'inline') {
+          content = testFile.content;
+        } else {
+          try {
+            const resp = await fetch(testFile.url);
+            content = await resp.text();
+          } catch (err) {
+            logMessage('error', `Failed to fetch ${testFile.url}: ${err.message}`);
+            return;
+          }
+        }
+
+        const fileDir = getTestFileUrl(ft, state.activeVariant);
+        const dirPath = fileDir.substring(0, fileDir.lastIndexOf('/') + 1);
+
+        if (override && override.method === 'postMessage') {
+          iframe.contentWindow.postMessage(
+            { action: override.action, content },
+            '*'
+          );
+          logMessage('tx', `postMessage({action: '${override.action}'}) length=${content.length}`);
+        } else {
+          try {
+            const args = override && override.setContentArgs
+              ? override.setContentArgs(content, dirPath)
+              : [content, dirPath];
+            iframe.contentWindow.setContent(...args);
+            logMessage('tx', `setContent(${args.length} args) length=${content.length}`);
+          } catch (err) {
+            logMessage('error', `setContent failed: ${err.message}`);
+          }
+        }
+
+        document.dispatchEvent(new CustomEvent('harness:content-delivered', {
+          detail: { mode: 'text', length: content.length }
+        }));
+
+      } else if (mode === 'binary') {
+        const url = REMOTE_BASE + `sample.${ft}`;
+        try {
+          logMessage('info', `Fetching binary: ${url}`);
+          const resp = await fetch(url);
+          const buffer = await resp.arrayBuffer();
+          iframe.contentWindow.setContent(buffer);
+          logMessage('tx', `setContent(binary) size=${buffer.byteLength}`);
+
+          document.dispatchEvent(new CustomEvent('harness:content-delivered', {
+            detail: { mode: 'binary', length: buffer.byteLength }
+          }));
+        } catch (err) {
+          logMessage('error', `Binary fetch failed: ${err.message}`);
+        }
+      }
+    }
+
+    // ---- Controls ----
+    document.getElementById('themeSelect').addEventListener('change', (e) => {
+      state.theme = e.target.value;
+      document.documentElement.dataset.theme = state.theme;
+      if (state.activeExtension) loadExtension(state.activeExtension.id, state.activeFileType);
+    });
+
+    document.getElementById('editSelect').addEventListener('change', (e) => {
+      state.editMode = e.target.value === 'true';
+      state.readOnly = !state.editMode;
+      if (state.activeExtension) loadExtension(state.activeExtension.id, state.activeFileType);
+    });
+
+    document.getElementById('localeSelect').addEventListener('change', (e) => {
+      state.locale = e.target.value;
+      if (state.activeExtension) loadExtension(state.activeExtension.id, state.activeFileType);
+    });
+
+    document.getElementById('reloadBtn').addEventListener('click', () => {
+      if (state.activeExtension) loadExtension(state.activeExtension.id, state.activeFileType);
+    });
+
+    document.getElementById('clearLogBtn').addEventListener('click', () => {
+      messageLog.length = 0;
+      document.getElementById('logPanel').innerHTML = '';
+      document.getElementById('logCount').textContent = '0';
+    });
+
+    // ---- Resize handle for log panel ----
+    const resizeHandle = document.getElementById('resizeHandle');
+    let resizing = false;
+    resizeHandle.addEventListener('mousedown', (e) => {
+      resizing = true;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!resizing) return;
+      const mainRect = document.querySelector('.main').getBoundingClientRect();
+      const logHeaderHeight = 24;
+      const newLogHeight = Math.max(50, Math.min(600, mainRect.bottom - e.clientY - logHeaderHeight));
+      document.documentElement.style.setProperty('--log-height', newLogHeight + 'px');
+    });
+    document.addEventListener('mouseup', () => { resizing = false; });
+
+    // ---- E2E Test API ----
+    window.testHarness = {
+      loadExtension,
+      getState: () => ({ ...state }),
+      getMessageLog: () => [...messageLog],
+      getRegistry: () => typeof EXTENSIONS_REGISTRY !== 'undefined' ? EXTENSIONS_REGISTRY : [],
+      getIframe: () => document.getElementById('extensionIframe'),
+      waitForMessage(command, timeout = 5000) {
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error(`Timeout waiting for ${command}`)), timeout);
+          const handler = (e) => {
+            if (e.detail && e.detail.command === command) {
+              clearTimeout(timer);
+              document.removeEventListener('harness:message-received', handler);
+              resolve(e.detail);
+            }
+          };
+          document.addEventListener('harness:message-received', handler);
+        });
+      },
+    };
+
+    // ---- Init ----
+    function init() {
+      // Apply URL params
+      const paramTheme = getParam('theme');
+      const paramExt = getParam('ext');
+      const paramFileType = getParam('filetype');
+      const paramEdit = getParam('edit');
+      const paramLocale = getParam('locale');
+
+      if (paramTheme) {
+        state.theme = paramTheme;
+        document.getElementById('themeSelect').value = paramTheme;
+        document.documentElement.dataset.theme = paramTheme;
+      }
+      if (paramEdit === 'true') {
+        state.editMode = true;
+        state.readOnly = false;
+        document.getElementById('editSelect').value = 'true';
+      }
+      if (paramLocale) {
+        state.locale = paramLocale;
+        document.getElementById('localeSelect').value = paramLocale;
+      }
+
+      renderSidebar();
+
+      // Auto-load extension from URL params
+      if (paramExt && paramFileType) {
+        loadExtension(paramExt, paramFileType);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

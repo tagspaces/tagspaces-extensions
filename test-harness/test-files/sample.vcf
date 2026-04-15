@@ -1,0 +1,15 @@
+BEGIN:VCARD
+VERSION:4.0
+FN:Max Mustermann
+N:Mustermann;Max;;;
+ORG:TagSpaces GmbH
+TITLE:Software Developer
+TEL;TYPE=work;VALUE=uri:tel:+49-30-12345678
+TEL;TYPE=cell;VALUE=uri:tel:+49-170-9876543
+EMAIL;TYPE=work:max@tagspaces.org
+EMAIL;TYPE=home:max.mustermann@example.com
+ADR;TYPE=work:;;Musterstrasse 42;Berlin;;10115;Germany
+URL:https://www.tagspaces.org
+PHOTO;MEDIATYPE=image/png:data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAHklEQVR4nGOQvTifJMQwyDX8xwFGNdBXwyBMGsQgAJVk6RApEGpJAAAAAElFTkSuQmCC
+NOTE:Sample vCard for testing the TagSpaces Contact Editor extension.
+END:VCARD

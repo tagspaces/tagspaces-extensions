@@ -1,0 +1,60 @@
+# Sample YAML configuration file
+# For testing the Text Editor extension
+
+application:
+  name: TagSpaces
+  version: 5.7.0
+  description: "Free, open source file manager and organizer"
+
+server:
+  host: localhost
+  port: 8080
+  cors:
+    enabled: true
+    origins:
+      - http://localhost:3000
+      - https://app.tagspaces.org
+
+database:
+  driver: sqlite
+  path: ./data/tagspaces.db
+  options:
+    journal_mode: wal
+    synchronous: normal
+    cache_size: -64000
+
+extensions:
+  - name: Image Viewer
+    id: image-viewer
+    enabled: true
+    formats: [jpg, png, gif, svg, webp]
+
+  - name: PDF Viewer
+    id: pdf-viewer
+    enabled: true
+    formats: [pdf]
+
+  - name: Markdown Editor
+    id: md-editor
+    enabled: true
+    formats: [md, mdx]
+    settings:
+      spellCheck: true
+      autoSave: true
+      theme: default
+
+logging:
+  level: info
+  outputs:
+    - type: console
+      format: pretty
+    - type: file
+      path: ./logs/app.log
+      rotate: daily
+      maxFiles: 7
+
+features:
+  darkMode: true
+  fileWatcher: true
+  thumbnails: true
+  geoTagging: false
