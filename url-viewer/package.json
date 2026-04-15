@@ -19,18 +19,10 @@
     ],
     "color": "",
     "fileTypes": [
-      {
-        "ext": "desktop"
-      },
-      {
-        "ext": "url"
-      },
-      {
-        "ext": "website"
-      },
-      {
-        "ext": "webloc"
-      }
+      { "ext": "desktop", "color": "#8095A8" },
+      { "ext": "url", "color": "#8095A8" },
+      { "ext": "website", "color": "#8095A8" },
+      { "ext": "webloc", "color": "#8095A8" }
     ]
   }
 }

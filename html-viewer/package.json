@@ -17,18 +17,9 @@
       "viewer"
     ],
     "fileTypes": [
-      {
-        "ext": "htm",
-        "color": ""
-      },
-      {
-        "ext": "html",
-        "color": ""
-      },
-      {
-        "ext": "xhtml",
-        "color": ""
-      }
+      { "ext": "htm", "color": "#e34c26" },
+      { "ext": "html", "color": "#e34c26" },
+      { "ext": "xhtml", "color": "#e34c26" }
     ]
   }
 }

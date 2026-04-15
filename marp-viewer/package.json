@@ -23,11 +23,9 @@
     "types": [
       "viewer"
     ],
-    "color": "#67b8e3",
+    "color": "#3DB4AD",
     "fileTypes": [
-      {
-        "ext": "marp"
-      }
+      { "ext": "marp", "color": "#3DB4AD" }
     ]
   }
 }

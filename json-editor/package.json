@@ -18,9 +18,7 @@
     ],
     "color": "",
     "fileTypes": [
-      {
-        "ext": "json"
-      }
+      { "ext": "json", "color": "#C4A83C" }
     ]
   }
 }

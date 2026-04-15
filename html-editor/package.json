@@ -16,14 +16,8 @@
       "editor"
     ],
     "fileTypes": [
-      {
-        "ext": "htm",
-        "color": ""
-      },
-      {
-        "ext": "html",
-        "color": ""
-      }
+      { "ext": "htm", "color": "#e34c26" },
+      { "ext": "html", "color": "#e34c26" }
     ]
   }
 }

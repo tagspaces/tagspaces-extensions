@@ -16,10 +16,9 @@
     "types": [
       "viewer"
     ],
+    "color": "#3DB4AD",
     "fileTypes": [
-      {
-        "ext": "reveal"
-      }
+      { "ext": "reveal", "color": "#3DB4AD" }
     ]
   }
 }
