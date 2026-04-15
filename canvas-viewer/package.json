@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/canvas-viewer",
-  "version": "1.0.239",
+  "version": "1.0.240",
   "description": "A TagSpaces extension for viewing JSON Canvas (.canvas) files.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
