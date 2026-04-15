@@ -194,6 +194,10 @@ export function createCrepeEditor(
             !originalURL.startsWith('blob') &&
             !originalURL.startsWith('http')
           ) {
+            const isWeb = document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/');
+            if (isWeb) {
+              return currentFolder + '/' + originalURL;
+            }
             return (
               AppConfig.mediaProtocol + `:///${currentFolder}/${originalURL}`
             );
