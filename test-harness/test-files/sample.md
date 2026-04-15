@@ -1,3 +1,11 @@
+---
+title: Sample Markdown Document
+author: TagSpaces Team
+date: 2025-04-15
+tags: [test, sample, markdown]
+description: A sample markdown file for testing the TagSpaces MD Editor extension
+---
+
 # Sample Markdown Document
 
 ## Images
