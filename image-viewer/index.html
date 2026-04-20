@@ -165,27 +165,6 @@
             tga.open(path, () => resolve(tga.getDataURL('image/png')));
           });
         },
-        async heic(path) {
-          await loadScript('libs/libheif-wasm/libheif-bundle.js');
-          const decoder = new (libheif().HeifDecoder)();
-          const buffer = await requestBuffer(path);
-          const data = decoder.decode(buffer);
-          const handle = data[0];
-          const canvas = document.createElement('canvas');
-          canvas.width = handle.get_width();
-          canvas.height = handle.get_height();
-          const ctx = canvas.getContext('2d');
-          const imgData = ctx.createImageData(canvas.width, canvas.height);
-
-          await new Promise((res, rej) => {
-            handle.display(imgData, (displayData) => {
-              if (!displayData) return rej();
-              ctx.putImageData(imgData, 0, 0);
-              res();
-            });
-          });
-          return canvas.toDataURL('image/jpeg', 0.9);
-        },
       };
 
       // --- Content Handlers ---
@@ -241,8 +220,6 @@
               imageContent.src = await FormatHandlers.psd(filePath);
             } else if (ext === '.tga') {
               imageContent.src = await FormatHandlers.tga(filePath);
-            } else if (ext === '.heic') {
-              imageContent.src = await FormatHandlers.heic(filePath);
             } else {
               imageContent.src = filePath;
             }

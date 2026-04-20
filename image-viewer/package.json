@@ -14,7 +14,6 @@
     "copy-index": "npx shx cp index.html ../../release/app/node_modules/@tagspaces/extensions/image-viewer"
   },
   "dependencies": {
-    "heic2any": "0.0.4",
     "psd": "3.4.0",
     "utif.ts": "3.1.1",
     "exif-js": "2.3.0"
@@ -49,9 +48,6 @@
       },
       {
         "ext": "jfif"
-      },
-      {
-        "ext": "heic"
       },
       {
         "ext": "png"
