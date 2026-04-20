@@ -19,15 +19,15 @@
     "fileTypes": [
       {
         "ext": "htm",
-        "color": "#e34c26"
+        "color": "#FDBD52"
       },
       {
         "ext": "html",
-        "color": "#e34c26"
+        "color": "#FDBD52"
       },
       {
         "ext": "xhtml",
-        "color": "#e34c26"
+        "color": "#FDBD52"
       }
     ]
   }
