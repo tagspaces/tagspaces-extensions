@@ -92,14 +92,7 @@
     "rtf.js": "3.0.9",
     "summernote": "~0.8.20",
     "tga-js": "1.1.1",
-    "viewerjs": "1.11.6"
-  },
-  "license": "MIT",
-  "engines": {
-    "yarn": "please-use-npm",
-    "npm": ">= 6.14.15"
-  },
-  "dependencies": {
+    "viewerjs": "1.11.6",
     "@kenjiuno/msgreader": "^1.28.0",
     "@tiptap/core": "^3.19.0",
     "@tiptap/extension-link": "^3.19.0",
@@ -111,5 +104,11 @@
     "postal-mime": "^2.7.3",
     "shelljs": "0.10.0",
     "shx": "0.4.0"
-  }
+  },
+  "license": "MIT",
+  "engines": {
+    "yarn": "please-use-npm",
+    "npm": ">= 6.14.15"
+  },
+  "dependencies": {}
 }
