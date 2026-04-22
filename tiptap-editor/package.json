@@ -1,6 +1,6 @@
 {
   "name": "@tagspaces/tiptap-editor",
-  "version": "1.0.244",
+  "version": "1.0.245",
   "description": "A TagSpaces extension allowing editing of HTML documents.",
   "homepage": "https://www.tagspaces.org",
   "main": "main.js",
