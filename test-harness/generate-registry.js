@@ -36,8 +36,17 @@ const DEFAULT_DIRS = [
 
 // Directories to skip when scanning
 const SKIP_DIRS = new Set([
-  'node_modules', 'common', 'libs', 'deprecated', 'test-harness',
-  '.git', '.ts', 'dist', '.github', 'extensions-pro', '@tagspaces',
+  'node_modules',
+  'common',
+  'libs',
+  'deprecated',
+  'test-harness',
+  '.git',
+  '.ts',
+  'dist',
+  '.github',
+  'extensions-pro',
+  '@tagspaces',
 ]);
 
 function parseArgs() {
@@ -92,7 +101,9 @@ function createSymlinkIfNeeded(linkPath, targetPath, label) {
       fs.unlinkSync(linkPath);
     } catch {
       // Exists but not a symlink — don't touch it
-      console.warn(`  ${linkPath} exists but is not a symlink, skipping ${label}`);
+      console.warn(
+        `  ${linkPath} exists but is not a symlink, skipping ${label}`,
+      );
       return;
     }
   }
@@ -159,9 +170,9 @@ function scanExtensionDir(dirInfo) {
       const relEntryPoint = path.join(relBase, entryPoint);
 
       // Extract file types with per-type colors
-      const fileTypes = (tsext.fileTypes || []).map(ft => ft.ext);
+      const fileTypes = (tsext.fileTypes || []).map((ft) => ft.ext);
       const fileTypeColors = {};
-      for (const ft of (tsext.fileTypes || [])) {
+      for (const ft of tsext.fileTypes || []) {
         if (ft.color) fileTypeColors[ft.ext] = ft.color;
       }
 
@@ -176,7 +187,9 @@ function scanExtensionDir(dirInfo) {
         ...(source !== 'community' ? { source } : {}),
       });
 
-      console.log(`  Found: ${entry.name} (${tsext.name}) [${fileTypes.join(', ')}]`);
+      console.log(
+        `  Found: ${entry.name} (${tsext.name}) [${fileTypes.join(', ')}]`,
+      );
     } catch (err) {
       console.error(`  Error reading ${pkgPath}: ${err.message}`);
     }
@@ -195,11 +208,35 @@ function readTestFiles() {
 
   // Binary extensions that should not be inlined as text
   const BINARY_EXTS = new Set([
-    '.tif', '.tiff', '.tga', '.psd', '.cr2', '.dng', '.nef', '.heic',
-    '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico', '.webp', '.avif',
-    '.pdf', '.docx', '.odt', '.epub', '.zip',
-    '.mp3', '.mp4', '.ogg', '.wav', '.webm', '.flac', '.mkv', '.mov',
-    '.msg', '.xlsx', '.xls', '.ods',
+    '.tif',
+    '.tiff',
+    '.tga',
+    '.psd',
+    '.cr2',
+    '.dng',
+    '.nef',
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.gif',
+    '.bmp',
+    '.ico',
+    '.webp',
+    '.avif',
+    '.pdf',
+    '.docx',
+    '.odt',
+    '.epub',
+    '.zip',
+    '.mp3',
+    '.ogg',
+    '.wav',
+    '.webm',
+    '.flac',
+    '.msg',
+    '.xlsx',
+    '.xls',
+    '.ods',
     '.dcm',
   ]);
 
@@ -264,7 +301,9 @@ function main() {
   const output = generateRegistryJS(allExtensions, testFiles);
   fs.writeFileSync(OUTPUT_FILE, output, 'utf8');
 
-  console.log(`\nDone! Found ${allExtensions.length} extensions, ${Object.keys(testFiles).length} test files.`);
+  console.log(
+    `\nDone! Found ${allExtensions.length} extensions, ${Object.keys(testFiles).length} test files.`,
+  );
 }
 
 main();

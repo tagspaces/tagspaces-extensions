@@ -29,7 +29,7 @@ Supported File Formats
 
 Documents: PDF, DOCX, ODT, EPUB, RTF, TXT, MD
 Images: JPG, PNG, GIF, SVG, WebP, TIFF, PSD, BMP
-Audio/Video: MP3, MP4, OGG, WebM, WAV, FLAC
+Audio/Video: MP3, OGG, WebM, WAV, FLAC
 Code: JS, TS, PY, CSS, HTML, JSON, YAML, XML
 Archives: ZIP
 Spreadsheets: XLSX, CSV, ODS
