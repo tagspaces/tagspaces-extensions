@@ -18,7 +18,7 @@ function initEditor() {
     ['para', ['ul', 'ol', 'paragraph']],
     ['height', ['height']],
     ['table', ['table']],
-    ['insert', ['link', 'picture', 'hr']], // 'video',
+    ['insert', ['link', 'tslink', 'picture', 'hr']], // 'video',
     ['view', ['codeview']], // 'fullscreen',
     ['help', ['help']],
   ];
@@ -33,7 +33,7 @@ function initEditor() {
       // ['font2', ['superscript', 'subscript', 'strikethrough', 'clear']],
       ['fontsize', ['fontsize']],
       // ['height', ['height']],
-      ['insert', ['picture', 'link', 'hr']],
+      ['insert', ['picture', 'link', 'tslink', 'hr']],
       ['table', ['table']],
       // ['view', ['codeview']]
     ];

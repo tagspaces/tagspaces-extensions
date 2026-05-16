@@ -127,6 +127,110 @@
       };
 
       this.destroy = function() {};
+    },
+
+    /**
+     * Inserts a TagSpaces link by asking the host to open the FilePicker
+     * dialog via the `requestFilePicker` postMessage protocol. The host
+     * replies with either `{ link, linkType, label, ... }` or
+     * `{ cancelled: true }`. On success we insert `<a href="link">label</a>`
+     * at the cursor (or wrap the current selection).
+     *
+     * @param {Object} context - context object has status of editor.
+     */
+    tslink: function(context) {
+      const ui = $.summernote.ui;
+
+      context.memo('button.tslink', function() {
+        const button = ui.button({
+          contents: `
+          <svg width="20" height="20" viewBox="0 0 24 24" style="fill: #000">
+            <path d="M8 11h8v2H8zm12.1 1H22c0-2.76-2.24-5-5-5h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M19 12h-2v3h-3v2h3v3h2v-3h3v-2h-3z"/>
+          </svg>
+          `,
+          tooltip: 'Insert TagSpaces link',
+          click: function() {
+            // Save the current selection so we can restore it after the
+            // host dialog steals focus.
+            const savedRange = context.invoke('editor.createRange');
+            // Best-effort: capture selected text as a default link label.
+            let selectedText = '';
+            try {
+              selectedText = savedRange ? savedRange.toString() : '';
+            } catch (e) {
+              selectedText = '';
+            }
+
+            const eventID =
+              typeof getParameterByName === 'function'
+                ? getParameterByName('eventID')
+                : '';
+
+            function handleReply(e) {
+              const data = e.data;
+              if (!data || typeof data !== 'object') return;
+              // Filter to our request: it's a reply if it carries our eventID
+              // AND has either `link` or `cancelled`. Other host replies
+              // (e.g. `{ action: 'fileContent' }`) don't carry an eventID.
+              const isReply =
+                data.eventID === eventID &&
+                (typeof data.link === 'string' || data.cancelled === true);
+              if (!isReply) return;
+              window.removeEventListener('message', handleReply);
+              if (data.cancelled) return;
+
+              // Restore selection so insert lands where the user was typing.
+              if (savedRange) context.invoke('editor.restoreRange', savedRange);
+
+              const label =
+                (typeof data.label === 'string' && data.label.trim()) ||
+                selectedText ||
+                data.name ||
+                data.link;
+              const anchor = document.createElement('a');
+              anchor.setAttribute('href', data.link);
+              anchor.textContent = label;
+              context.invoke('editor.insertNode', anchor);
+            }
+
+            window.addEventListener('message', handleReply);
+
+            // Prefill the dialog's "Link text" field with the currently
+            // selected editor text. The user can still edit it before
+            // confirming; the final value comes back as `data.label`.
+            const trimmedSelection = (selectedText || '').trim();
+            const requestOptions = {
+              mode: 'any',
+              showLabelField: true,
+            };
+            if (trimmedSelection) {
+              requestOptions.initialLabel = trimmedSelection;
+            }
+
+            if (typeof sendMessageToHost === 'function') {
+              sendMessageToHost({
+                command: 'requestFilePicker',
+                options: requestOptions,
+              });
+            } else {
+              window.parent.postMessage(
+                JSON.stringify({
+                  command: 'requestFilePicker',
+                  eventID: eventID,
+                  options: requestOptions,
+                }),
+                '*',
+              );
+            }
+          }
+        });
+
+        return button.render();
+      });
+
+      this.events = {};
+      this.initialize = function() {};
+      this.destroy = function() {};
     }
   });
 });
