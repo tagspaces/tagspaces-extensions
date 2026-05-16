@@ -1,6 +1,6 @@
 import React, { useImperativeHandle } from 'react';
 import { replaceAll } from '@milkdown/utils';
-import { EditorStatus } from '@milkdown/core';
+import { EditorStatus, editorViewCtx } from '@milkdown/core';
 import type { Editor } from '@milkdown/kit/core';
 import { getMarkdown, insert } from '@milkdown/kit/utils';
 import { Crepe } from '@milkdown/crepe';
@@ -12,6 +12,7 @@ export interface MilkdownRef {
   setEditMode: (isEditMode: boolean) => void;
   openSearchDialog: () => void;
   getMarkdown: () => string;
+  getSelectedText: () => string;
   getFrontmatter: () => string | null;
   updateFrontmatter: (frontmatter: string | null) => void;
   destroy: () => void;
@@ -58,6 +59,21 @@ export function useCrepeHandler(
       if (loading || !editor || editor.status !== EditorStatus.Created)
         return '';
       return editor.action(getMarkdown());
+    },
+    getSelectedText: (): string => {
+      const editor = get();
+      if (loading || !editor || editor.status !== EditorStatus.Created)
+        return '';
+      try {
+        return editor.action((ctx) => {
+          const view = ctx.get(editorViewCtx);
+          const { from, to } = view.state.selection;
+          if (from === to) return '';
+          return view.state.doc.textBetween(from, to, ' ').trim();
+        });
+      } catch {
+        return '';
+      }
     },
     getFrontmatter: (): string | null => {
       return frontmatterRef.current;

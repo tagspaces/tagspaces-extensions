@@ -9,6 +9,7 @@ import TreeIcon from '@mui/icons-material/AccountTree';
 import CodeIcon from '@mui/icons-material/Code';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LinkIcon from '@mui/icons-material/Link';
 import {
   Button,
   Dialog,
@@ -34,6 +35,8 @@ const Menu: React.FC<{
   hasFrontmatter: boolean;
   showFrontmatter: boolean;
   toggleFrontmatter: () => void;
+  canInsertTagSpacesLink?: boolean;
+  insertTagSpacesLink?: () => void;
 }> = ({
   toggleViewSource,
   readText,
@@ -48,6 +51,8 @@ const Menu: React.FC<{
   hasFrontmatter,
   showFrontmatter,
   toggleFrontmatter,
+  canInsertTagSpacesLink,
+  insertTagSpacesLink,
 }) => {
   const { t } = useTranslation();
   const isSpeaking = React.useRef<boolean>(false);
@@ -131,6 +136,18 @@ const Menu: React.FC<{
               setFilterVisible(true);
             },
           },
+          ...(canInsertTagSpacesLink && insertTagSpacesLink
+            ? [
+                {
+                  id: 'insertTagSpacesLinkID',
+                  icon: <LinkIcon />,
+                  name: t('insertEntryLink'),
+                  action: () => {
+                    insertTagSpacesLink();
+                  },
+                },
+              ]
+            : []),
           {
             id: 'viewAsMindMapID',
             icon: <TreeIcon />,

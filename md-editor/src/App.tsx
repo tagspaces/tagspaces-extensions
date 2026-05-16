@@ -169,7 +169,10 @@ function App(props: Props) {
       frontmatterRef.current = fm;
       setFrontmatter(fm);
       if (fm !== null) {
-        setShowFrontmatter(true);
+        // Restore the user's last persisted preference. Default to true so
+        // first-time users still see the panel when frontmatter exists.
+        const persisted = getSettings('showFrontmatter');
+        setShowFrontmatter(persisted === undefined ? true : !!persisted);
       }
     },
     [],
@@ -205,6 +208,63 @@ function App(props: Props) {
       }
     }
   });
+
+  const insertTagSpacesLink = React.useCallback(() => {
+    const ref = milkdownRef.current;
+    if (!ref || !isEditMode || readOnly) return;
+
+    // Close the FAB menu so the dialog has full attention.
+    (
+      document.querySelector('.MuiBackdrop-root') as HTMLElement | null
+    )?.click();
+
+    // Capture selection BEFORE the dialog opens. ProseMirror keeps the
+    // selection state even after DOM focus moves to the dialog, but reading
+    // it here is unambiguous.
+    const selectedText = ref.getSelectedText();
+    const eventID = new URLSearchParams(location.search).get('eventID') || '';
+
+    function handleReply(e: MessageEvent) {
+      const data: any = e.data;
+      if (!data || typeof data !== 'object') return;
+      const isReply =
+        data.eventID === eventID &&
+        (typeof data.link === 'string' || data.cancelled === true);
+      if (!isReply) return;
+      window.removeEventListener('message', handleReply);
+      if (data.cancelled) return;
+
+      const label: string =
+        (typeof data.label === 'string' && data.label.trim()) ||
+        selectedText ||
+        data.name ||
+        data.link;
+      // Escape `[` `]` `\\` in the label so CommonMark parses the link cleanly.
+      const escapedLabel = label
+        .replace(/\\/g, '\\\\')
+        .replace(/\[/g, '\\[')
+        .replace(/\]/g, '\\]');
+      const current = milkdownRef.current;
+      if (!current) return;
+      current.insert(`[${escapedLabel}](${data.link})`);
+      // The menu steals focus, so the editor's own markdownUpdated listener
+      // (which gates on view.hasFocus()) won't propagate the change. Push
+      // the new content and a contentChangedInEditor signal directly so the
+      // save indicator activates and the host's save handler picks up the
+      // inserted link.
+      const next = current.getMarkdown();
+      // @ts-ignore
+      window.mdContent = combineFrontmatter(frontmatterRef.current, next);
+      // @ts-ignore
+      window.editMode = true;
+      sendMessageToHost({ command: 'contentChangedInEditor' });
+    }
+    window.addEventListener('message', handleReply);
+
+    const options: any = { mode: 'any', showLabelField: true };
+    if (selectedText) options.initialLabel = selectedText;
+    sendMessageToHost({ command: 'requestFilePicker', options });
+  }, [isEditMode, readOnly]);
 
   const toggleViewSource = () => {
     if (mode === 'CodeMirror') {
@@ -258,12 +318,40 @@ function App(props: Props) {
   }
 
   function saveSettings() {
-    const speech = {
+    // Merge speech fields into the existing entry so we don't clobber other
+    // persisted settings (e.g. showFrontmatter).
+    let existing: Record<string, any> = {};
+    try {
+      const raw = localStorage.getItem('mdEditorSettings');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') existing = parsed;
+      }
+    } catch {
+      // corrupted entry — start fresh
+    }
+    const next = {
+      ...existing,
       speechRate: rate.current,
       speechLanguage: language.current,
       speechVoice: voice.current,
     };
-    localStorage.setItem('mdEditorSettings', JSON.stringify(speech));
+    localStorage.setItem('mdEditorSettings', JSON.stringify(next));
+  }
+
+  function saveSetting(key: string, value: any) {
+    let existing: Record<string, any> = {};
+    try {
+      const raw = localStorage.getItem('mdEditorSettings');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') existing = parsed;
+      }
+    } catch {
+      // corrupted entry — start fresh
+    }
+    existing[key] = value;
+    localStorage.setItem('mdEditorSettings', JSON.stringify(existing));
   }
 
   function getSettings(key: string) {
@@ -367,7 +455,15 @@ function App(props: Props) {
         haveSpeakSupport={voices.current !== null}
         hasFrontmatter={frontmatter !== null}
         showFrontmatter={showFrontmatter}
-        toggleFrontmatter={() => setShowFrontmatter((prev) => !prev)}
+        toggleFrontmatter={() =>
+          setShowFrontmatter((prev) => {
+            const next = !prev;
+            saveSetting('showFrontmatter', next);
+            return next;
+          })
+        }
+        canInsertTagSpacesLink={isEditMode && !readOnly}
+        insertTagSpacesLink={insertTagSpacesLink}
       />
       <SettingsDialog
         open={isSettingsDialogOpened}
