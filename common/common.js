@@ -368,51 +368,53 @@ function handleLinks(domElement, fileDirectory) {
   const allLinks = domElement.querySelectorAll('a');
 
   allLinks.forEach((link) => {
-    let currentSrc = link.getAttribute('href');
+    const originalHref = link.getAttribute('href');
 
     // Safety Check: Skip if no href or if it's an internal anchor
-    if (!currentSrc || currentSrc.startsWith('#')) {
+    if (!originalHref || originalHref.startsWith('#')) {
       return;
     }
 
-    // Path Resolution
-    // If it is NOT a known protocol (it is a relative path) AND we have a directory
-    if (!hasURLProtocol(currentSrc) && fileDirectory) {
-      // Check if 'isWeb' is defined globally, otherwise default to false (file://)
-      const isWebEnv = typeof isWeb !== 'undefined' && isWeb;
-      const prefix = isWebEnv ? '' : 'file://';
-
-      // Ensure we don't end up with "path//file" by stripping slashes
-      const cleanDir = fileDirectory.replace(/\/$/, ''); // remove trailing slash
-      const cleanSrc = currentSrc.replace(/^\//, ''); // remove leading slash
-
-      currentSrc = `${prefix}${cleanDir}/${cleanSrc}`;
+    // Defuse hrefs with dangerous schemes so they cannot execute even if the
+    // click handler is bypassed (e.g. middle-click, drag, opening in a new tab).
+    if (isDangerousURL(originalHref)) {
+      link.setAttribute('href', '#');
+      link.removeAttribute('target');
+      link.title = 'Blocked link: ' + originalHref;
+      link.addEventListener('click', (e) => e.preventDefault());
+      return;
     }
 
-    // Set the hover title
-    link.title = currentSrc;
+    // Resolve a display form for the hover title only (NOT for the message we
+    // send to the host — the host needs the original href to classify it).
+    let displayHref = originalHref;
+    if (!hasURLProtocol(originalHref) && fileDirectory) {
+      const isWebEnv = typeof isWeb !== 'undefined' && isWeb;
+      const prefix = isWebEnv ? '' : 'file://';
+      const cleanDir = fileDirectory.replace(/\/$/, '');
+      const cleanSrc = originalHref.replace(/^\//, '');
+      displayHref = `${prefix}${cleanDir}/${cleanSrc}`;
+    }
+    link.title = displayHref;
 
-    // 4. Add External Icon (Safe Method)
-    // We check if it is external AND if we haven't already marked it (to avoid duplicates)
+    // Add the external-icon marker based on the original href, so http(s)
+    // links are visually distinguished from in-app navigation.
     if (
-      isExternalLink(currentSrc) &&
+      isExternalLink(originalHref) &&
       !link.classList.contains('external-link-marked')
     ) {
-      // Create a text node instead of setting innerText
-      // This preserves child elements like <img /> inside the <a> tag
       const icon = document.createTextNode(' ⧉');
       link.appendChild(icon);
-
-      // Mark it so we don't add the icon again if this function runs twice
       link.classList.add('external-link-marked');
     }
 
-    // Click Handler
+    // Click Handler — send the ORIGINAL href so the host can classify
+    // relative vs. external vs. ts:// and route accordingly.
     link.addEventListener('click', (e) => {
       e.preventDefault();
       sendMessageToHost({
         command: 'openLinkExternally',
-        link: currentSrc,
+        link: originalHref,
       });
     });
   });
@@ -440,6 +442,25 @@ function hasURLProtocol(url) {
     lowerUrl.startsWith('ts://?ts') ||
     lowerUrl.startsWith('ts:?ts')
   );
+}
+
+// Reject schemes that can execute code or that the host should never be asked
+// to open on behalf of an extension iframe. data: is allowed only for inline
+// images (data:image/...), never for HTML/script payloads.
+function isDangerousURL(url) {
+  if (!url) return false;
+  const lower = url.trim().toLowerCase();
+  if (
+    lower.startsWith('javascript:') ||
+    lower.startsWith('vbscript:') ||
+    lower.startsWith('blob:')
+  ) {
+    return true;
+  }
+  if (lower.startsWith('data:')) {
+    return !lower.startsWith('data:image/');
+  }
+  return false;
 }
 
 function initReadabilityMode(filePath) {
