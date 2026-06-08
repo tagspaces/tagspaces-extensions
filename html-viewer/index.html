@@ -220,10 +220,11 @@
         const doc = parser.parseFromString(cleanHtml, 'text/html');
         const body = doc.body || doc.documentElement;
 
-        // Extract Metadata using getAttribute
-        const sourceURL = body.getAttribute('data-sourceurl') || '';
-        const screenshot = body.getAttribute('data-screenshot') || '';
-        const scrappedOn =
+        // Extract Metadata — assign to the file-scope vars so handlers
+        // bound before setContent runs (e.g. #openSourceURL) see them.
+        sourceURL = body.getAttribute('data-sourceurl') || '';
+        screenshot = body.getAttribute('data-screenshot') || '';
+        scrappedon =
           body.getAttribute('data-scrappedon') ||
           body.getAttribute('data-createdon') ||
           '';
@@ -267,7 +268,7 @@
         });
 
         // Handle Dates
-        const creationDate = scrappedOn ? new Date(scrappedOn) : null;
+        const creationDate = scrappedon ? new Date(scrappedon) : null;
         const creationDateContainer = document.getElementById(
           'documentCreationDate',
         );
