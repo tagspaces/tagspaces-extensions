@@ -156,12 +156,21 @@
               }
             });
 
-          document.getElementById('copyURL').addEventListener('click', (e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(
-              document.getElementById('html-data-sourceurl').value,
-            );
-          });
+          document
+            .getElementById('copyURL')
+            .addEventListener('click', async (e) => {
+              e.stopPropagation();
+              const input = document.getElementById('html-data-sourceurl');
+              const value = input ? input.value : '';
+              const ok = await copyToClipboard(value, input);
+              sendMessageToHost({
+                command: 'showAlertDialog',
+                title: ok ? 'Success' : 'Error',
+                message: ok
+                  ? 'URL copied to clipboard'
+                  : 'Failed to copy URL to clipboard',
+              });
+            });
 
           const webscrapingDetailsModal = new bootstrap.Modal(
             '#webscrapingDetailsModal',

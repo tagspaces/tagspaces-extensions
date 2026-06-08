@@ -910,6 +910,45 @@ function insertAboutDialog(helpURL, pro) {
   });
 }
 
+// Robust clipboard copy that works in sandboxed iframes. The modern
+// navigator.clipboard.writeText rejects when the host iframe wasn't granted
+// `clipboard-write` permission; fall back to selecting the input + execCommand,
+// which is honored on user-gesture clicks even without the permission policy.
+async function copyToClipboard(text, inputEl) {
+  if (!text) return false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (_) {
+    /* fall through to execCommand */
+  }
+  try {
+    let el = inputEl;
+    let temp = false;
+    if (!el) {
+      el = document.createElement('textarea');
+      el.value = text;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      temp = true;
+    }
+    const wasReadOnly = el.hasAttribute('readonly');
+    if (wasReadOnly) el.removeAttribute('readonly');
+    el.focus();
+    el.select();
+    const ok = document.execCommand('copy');
+    if (wasReadOnly) el.setAttribute('readonly', '');
+    if (temp) el.remove();
+    else window.getSelection()?.removeAllRanges();
+    return ok;
+  } catch (_) {
+    return false;
+  }
+}
+
 function htmlEncode(str) {
   const div = document.createElement('div');
   div.appendChild(document.createTextNode(String(str ?? '')));

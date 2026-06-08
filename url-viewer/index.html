@@ -45,17 +45,21 @@
       document.addEventListener('readystatechange', () => {
         if (document.readyState === 'complete') {
           sendMessageToHost({ command: 'loadDefaultTextContent' });
-          document.getElementById('copyURL').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const promise = navigator.clipboard.writeText(
-              document.getElementById('urlInput').value,
-            );
-            sendMessageToHost({
-              command: 'showAlertDialog',
-              title: 'Success',
-              message: 'URL copied to clipboard',
+          document
+            .getElementById('copyURL')
+            .addEventListener('click', async (e) => {
+              e.stopPropagation();
+              const input = document.getElementById('urlInput');
+              const value = input ? input.value : '';
+              const ok = await copyToClipboard(value, input);
+              sendMessageToHost({
+                command: 'showAlertDialog',
+                title: ok ? 'Success' : 'Error',
+                message: ok
+                  ? 'URL copied to clipboard'
+                  : 'Failed to copy URL to clipboard',
+              });
             });
-          });
 
           document
             .getElementById('exportScreenshot')
