@@ -23,6 +23,32 @@ This is the source of truth for file type associations, extension type, and disp
 - Most extensions: `index.html` at the extension root
 - Vite-built extensions (md-editor, text-editor, media-player): `build/index.html` (indicated by `buildFolder` in tsextension or presence of `build/index.html`)
 
+## Iframe restrictions
+
+The TagSpaces host loads every extension into a constrained iframe. Keep these limits in mind when adding behavior — relying on something outside them will fail silently in production.
+
+Current host iframe (in the TagSpaces app, not in this repo):
+
+```html
+<iframe
+  sandbox="allow-same-origin allow-scripts allow-modals allow-downloads"
+  allow="clipboard-write 'src'; fullscreen 'src'; camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'"
+  referrerPolicy="no-referrer"
+  src="...">
+</iframe>
+```
+
+What this means for extension code:
+
+- **No top-level navigation, no popups, no forms breaking out.** `window.open`, `window.top.location = ...`, and `<form target="_top">` won't work — route via `sendMessageToHost({ command: 'openLinkExternally', link })`.
+- **Permissions Policy gates the modern Clipboard API.** `navigator.clipboard.writeText` / `write` may reject with `NotAllowedError` ("Permissions policy violation") depending on host setup. Always use the shared helpers — `copyToClipboard(text, inputEl)` falls back to `document.execCommand('copy')` on the input (not policy-gated); `copyBlobToClipboard(blob)` has no fallback, so handle a `false` return with a user-visible error.
+- **Camera, microphone, geolocation, payment are denied** — don't design features that need them.
+- **Per-extension CSPs typically have `connect-src 'self'` (sometimes plus `https:` / `blob:`) but not `data:`.** Calling `fetch(dataURL)` or `XHR` against a `data:` URL is blocked. Convert via the shared `base64ToBlob(dataURL, mime)` helper instead of going through the network layer.
+- **`referrerPolicy="no-referrer"`** — outbound requests won't send a Referer.
+- **`allow-downloads` is granted** — `saveAs(blob, name)` and `<a download>` work for user-initiated saves.
+
+If a feature genuinely needs a capability the iframe doesn't grant, the right path is usually to forward the operation to the host via `postMessage` (host has top-level privileges) rather than to relax the sandbox.
+
 ## Host-extension communication
 
 Extensions receive configuration via URL query parameters: `file`, `locale`, `theme`, `primecolor`, `textcolor`, `bgndcolor`, `eventID`, `edit`, `readonly`.
