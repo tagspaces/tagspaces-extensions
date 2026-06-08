@@ -949,6 +949,29 @@ async function copyToClipboard(text, inputEl) {
   }
 }
 
+// Copy a Blob (typically an image) to the clipboard with proper error
+// handling. There's no reliable cross-iframe fallback for binary clipboard
+// writes, so this returns false when the host iframe wasn't granted the
+// `clipboard-write` permission rather than failing silently.
+async function copyBlobToClipboard(blob) {
+  if (!blob) return false;
+  try {
+    if (
+      navigator.clipboard &&
+      navigator.clipboard.write &&
+      typeof ClipboardItem !== 'undefined'
+    ) {
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+      return true;
+    }
+  } catch (_) {
+    /* swallow */
+  }
+  return false;
+}
+
 function htmlEncode(str) {
   const div = document.createElement('div');
   div.appendChild(document.createTextNode(String(str ?? '')));

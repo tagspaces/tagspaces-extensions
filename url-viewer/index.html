@@ -65,14 +65,14 @@
             .getElementById('exportScreenshot')
             .addEventListener('click', (e) => {
               if (comment?.startsWith('data:image')) {
-                fetch(comment)
-                  .then((res) => res.blob())
-                  .then((blob) => {
-                    saveAs(
-                      blob,
-                      extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
-                    );
-                  });
+                // Decode locally — CSP connect-src blocks fetch() on data: URIs.
+                const mime =
+                  comment.match(/^data:([^;,]+)/)?.[1] || 'image/jpeg';
+                const blob = base64ToBlob(comment, mime);
+                saveAs(
+                  blob,
+                  extractFileName(filePath, isWin ? '\\' : '/') + '.jpg',
+                );
               }
             });
 

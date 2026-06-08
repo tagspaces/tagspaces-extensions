@@ -421,20 +421,18 @@
           imageViewerContainer.style.WebkitFilter = val;
         };
 
-        // Exports (Using XHR inside toDataURL helper logic)
         const triggerDownload = (format) => {
           toDataURL(
             imageContent.src,
-            (url) => {
-              const xhr = new XMLHttpRequest();
-              xhr.open('GET', url);
-              xhr.responseType = 'blob';
-              xhr.onload = () =>
-                saveAs(
-                  xhr.response,
-                  `${extractFileName(filePath, isWin ? '\\' : '/')}.${format}`,
-                );
-              xhr.send();
+            (dataURL) => {
+              // Decode locally — CSP connect-src blocks XHR/fetch on data: URIs.
+              const mime =
+                dataURL.match(/^data:([^;,]+)/)?.[1] || `image/${format}`;
+              const blob = base64ToBlob(dataURL, mime);
+              saveAs(
+                blob,
+                `${extractFileName(filePath, isWin ? '\\' : '/')}.${format}`,
+              );
             },
             format,
           );
@@ -443,13 +441,18 @@
         document.getElementById('copyToClipboard').onclick = (e) => {
           toDataURL(
             imageContent.src,
-            (dataURL) => {
-              fetch(dataURL)
-                .then((res) => res.blob())
-                .then((blob) => {
-                  const data = [new ClipboardItem({ [blob.type]: blob })];
-                  navigator.clipboard.write(data);
-                });
+            async (dataURL) => {
+              // Don't fetch(dataURL) — CSP connect-src blocks data: URIs.
+              const mime = dataURL.match(/^data:([^;,]+)/)?.[1] || 'image/png';
+              const blob = base64ToBlob(dataURL, mime);
+              const ok = await copyBlobToClipboard(blob);
+              sendMessageToHost({
+                command: 'showAlertDialog',
+                title: ok ? 'Success' : 'Error',
+                message: ok
+                  ? 'Image copied to clipboard'
+                  : 'Failed to copy image to clipboard',
+              });
             },
             'png',
           );
@@ -459,6 +462,8 @@
           triggerDownload('jpg');
         document.getElementById('exportPNGImage').onclick = () =>
           triggerDownload('png');
+        document.getElementById('exportWEBPImage').onclick = () =>
+          triggerDownload('webp');
 
         // Fab Menu Height
         const fixMenu = () => {
