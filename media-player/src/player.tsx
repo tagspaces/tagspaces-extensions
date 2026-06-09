@@ -94,7 +94,12 @@ export function Player() {
     if (searchParam && searchParam.has('file')) {
       const file = searchParam.get('file');
       if (file) {
-        if (!/^https?:\/\//.test(file)) {
+        // Pass through any absolute URL the main app has already resolved
+        // (https://, capacitor://, tsfile://, file:// …). Only raw paths
+        // get the mediaProtocol prefix — needed for Electron's tsfile://
+        // custom-protocol handler. On Capacitor iOS/Android the main app
+        // sends capacitor:// / https:// URLs and we must not re-prefix.
+        if (!/^[a-z][a-z0-9+\-.]*:\/\//i.test(file)) {
           //local path
           return (
             mediaProtocol +
