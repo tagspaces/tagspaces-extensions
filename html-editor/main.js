@@ -1,10 +1,37 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* globals $ isCordova sendMessageToHost initI18N getParameterByName */
+/* globals $ DOMPurify isCordova sendMessageToHost initI18N getParameterByName */
 
 let htmlEditor;
 let currentFilePath;
+
+// Sanitize untrusted HTML before it is inserted into the live DOM (on load) or
+// written back to disk (on save). A regex `<script>` strip is NOT enough — it
+// leaves inline event handlers (e.g. `<img onerror=...>`), which execute under
+// the extension CSP's `script-src 'unsafe-inline'`. DOMPurify removes scripts,
+// event handlers and javascript: URLs while keeping the data-* web-clip metadata
+// and media tags. Fragment mode (no WHOLE_DOCUMENT) so the result can be
+// appended directly. base64 `data:image` sources are preserved by DOMPurify's
+// default data-URI handling for img/video/source.
+function sanitizeEditorHtml(htmlFragment) {
+  if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+    return DOMPurify.sanitize(htmlFragment, {
+      ADD_ATTR: [
+        'data-sourceurl',
+        'data-screenshot',
+        'data-scrappedon',
+        'data-createdon',
+        'data-createdwith',
+      ],
+      ADD_TAGS: ['video', 'audio', 'source'],
+    });
+  }
+  // Fallback if DOMPurify failed to load: strip scripts AND inline handlers.
+  return htmlFragment
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+}
 
 function initEditor() {
   let toolbar = [
@@ -165,11 +192,8 @@ function getContent() {
 
   // Clean content
 
-  // removing all scripts from the document
-  let cleanedContent = content.replace(
-    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    '',
-  );
+  // Sanitize before persisting so injected handlers never reach disk.
+  let cleanedContent = sanitizeEditorHtml(content);
 
   // saving all images as png in base64 format
   let match;
@@ -292,10 +316,8 @@ function setContent(content, filePath) {
       console.log('Error parsing the meta from the HTML document. ' + e);
     }
   }
-  cleanedContent = bodyContent.replace(
-    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    '',
-  );
+  // Sanitize untrusted file content before it ever touches the live DOM.
+  cleanedContent = sanitizeEditorHtml(bodyContent);
 
   // saving all images as png in base64 format
   let match;
