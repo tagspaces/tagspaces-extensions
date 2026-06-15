@@ -72,9 +72,9 @@
       #imageThumb {
         display: flex;
         position: absolute;
-        width: calc(100% - 18px);
-        height: calc(100% - 18px);
-        margin: 9px;
+        width: 100%;
+        height: 100%;
+        margin: 0;
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
@@ -241,7 +241,7 @@
             toolbar: false,
             title: false,
             transition: false,
-            initialCoverage: 0.98,
+            initialCoverage: 1,
             fullscreen: true,
             inline: 'inline',
             ready: () => viewer.full(),
