@@ -86,6 +86,8 @@
         height: 6px;
         position: absolute;
         top: -1px;
+        left: 0;
+        z-index: 3500;
       }
     </style>
     <script>
@@ -199,7 +201,10 @@
         // The main app may have already converted to capacitor://, tsfile://,
         // https://, etc. (e.g. Capacitor.convertFileSrc on iOS/Android).
         // Double-prefixing those breaks WKWebView/WebView loading.
-        if (!(isCordova || isWeb) && !/^[a-z][a-z0-9+\-.]*:\/\//i.test(filePath)) {
+        if (
+          !(isCordova || isWeb) &&
+          !/^[a-z][a-z0-9+\-.]*:\/\//i.test(filePath)
+        ) {
           filePath = 'file://' + filePath;
         }
 
