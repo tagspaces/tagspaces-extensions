@@ -33,19 +33,15 @@ export const Editor: React.FC = () => {
   // @ts-ignore
   const filePath = window.filePath;
 
-  useEventListener('contentLoaded', () => {
-    console.log('contentLoaded: event triggered');
-
-    if (!editor) return;
-    initEditor();
-    // attach change listener
+  function attachChangeListener(
+    targetEditor: monaco.editor.IStandaloneCodeEditor
+  ) {
     changeListener.current?.dispose();
-    changeListener.current = editor.onDidChangeModelContent(() => {
-      const model = editor.getModel();
+    changeListener.current = targetEditor.onDidChangeModelContent(() => {
+      const model = targetEditor.getModel();
       if (!model) return;
       const updated = model.getValue();
       if (updated !== getContent()) {
-        console.log('content changed:'); //, updated, '###', getContent());
         // @ts-ignore
         window.fileContent = updated;
         // @ts-ignore
@@ -53,6 +49,13 @@ export const Editor: React.FC = () => {
         sendMessageToHost({ command: 'contentChangedInEditor' });
       }
     });
+  }
+
+  useEventListener('contentLoaded', () => {
+    console.log('contentLoaded: event triggered');
+
+    if (!editor) return;
+    initEditor();
   });
 
   useEventListener('themeChanged', () => {
@@ -264,6 +267,11 @@ export const Editor: React.FC = () => {
         });
         // Preserve original line endings
         //model.setEOL(monaco.editor.EndOfLineSequence.LF);
+
+        // Attach the change listener as soon as the editor exists, so it does
+        // not depend on the one-shot 'contentLoaded' event winning the race
+        // against editor creation (which it loses on slower devices, e.g. iOS).
+        attachChangeListener(monacoEditor);
 
         return monacoEditor;
       });
