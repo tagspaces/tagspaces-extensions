@@ -2,7 +2,7 @@
  * Document
  *************************************************************************************************/
 
- * {
+* {
   box-sizing: border-box;
 }
 
@@ -37,13 +37,4 @@ main {
   width: 100%;
   border: none;
   font-family: sans-serif;
-}
-
-.vds-controls-group {
-  padding-right: 70px !important;
-}
-
-.vds-poster {
-  width: 100%;
-  height: auto;
 }

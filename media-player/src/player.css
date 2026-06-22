@@ -21,8 +21,46 @@
   display: none;
 }
 
+.vds-poster {
+  width: 100%;
+  height: auto;
+}
+
+/* Vertically center the audio controls bar within the full-height viewer.
+   The two --audio-*-size vars control the button sizes — bump them to make
+   the audio controls bigger (defaults are 36px / 32px). */
+.player[data-view-type='audio'] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  --audio-button-size: 44px;
+  --audio-play-button-size: 40px;
+}
+
+/* Center the audio control buttons within the bar. */
+.player[data-view-type='audio'] .vds-controls-group {
+  justify-content: center;
+}
+
+/* Keep the audio seek bar visible even when paused so the controls
+   don't collapse/disappear automatically (Vidstack hides the time
+   slider while paused by default). */
+.player[data-view-type='audio'] .vds-audio-layout .vds-time-slider {
+  opacity: 1;
+  max-width: 100%;
+  transform: scaleX(1);
+  visibility: visible;
+}
+
 .player[data-view-type='video'] {
   aspect-ratio: 16 /9;
+}
+
+/* Reserve room on the right of the video controls bar (e.g. for the
+   host's floating menu button). Audio controls stay centered, so this
+   padding must NOT apply to them. */
+.player[data-view-type='video'] .vds-controls-group {
+  padding-right: 70px !important;
 }
 
 .src-buttons {
