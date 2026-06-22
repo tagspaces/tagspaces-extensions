@@ -123,7 +123,11 @@ export function Player() {
 
   function isAudioType(): boolean {
     if (enableVideoOutput.current && filePath) {
-      return /\.(mp3|wav|wave|ogg|flac|acc|m4a|opus)$/i.test(filePath);
+      // Match against the path only — the resolved filePath can be an absolute
+      // URL carrying a query string (signed/cloud URLs) or a #fragment, which
+      // would otherwise push the extension off the end and defeat the $ anchor.
+      const pathOnly = filePath.split(/[?#]/)[0];
+      return /\.(mp3|wav|wave|ogg|flac|aac|acc|m4a|opus)$/i.test(pathOnly);
     }
     return true;
   }
@@ -133,8 +137,9 @@ export function Player() {
   // video dimensions — e.g. Theora/.ogv reports its size a tick after
   // loadedmetadata, and some runtimes (Chromium) can't decode Theora at all.
   function isKnownVideoExt(): boolean {
+    const pathOnly = filePath.split(/[?#]/)[0];
     return /\.(mp4|m4v|mov|avi|wmv|flv|mpg|mpeg|ogv|3gp|3g2|mkv|ts|mts|m2ts|vob)$/i.test(
-      filePath,
+      pathOnly,
     );
   }
 
