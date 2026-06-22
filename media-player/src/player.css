@@ -74,6 +74,13 @@
   padding-right: 70px !important;
 }
 
+/* Lift the video controls off the very bottom edge so they don't clash with
+   the iOS home-indicator / bottom swipe-up gesture area. Adds the device
+   safe-area inset (0 on non-iOS) plus a small constant — tweak the 16px. */
+.player[data-view-type='video'] .vds-controls {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+}
+
 .src-buttons {
   display: flex;
   align-items: center;
