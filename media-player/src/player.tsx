@@ -1,6 +1,6 @@
 import './player.css';
 
-import { useReducer, useRef, type SyntheticEvent } from 'react';
+import { useReducer, useRef, useState, type SyntheticEvent } from 'react';
 
 import {
   extractFileName,
@@ -117,11 +117,42 @@ export function Player() {
     return '';
   }
 
+  // Set to true once we detect (after metadata loads) that the file has no
+  // video track, regardless of its container/extension.
+  const [audioOnlyDetected, setAudioOnlyDetected] = useState(false);
+
   function isAudioType(): boolean {
     if (enableVideoOutput.current && filePath) {
       return /\.(mp3|wav|wave|ogg|flac|acc|m4a|opus)$/i.test(filePath);
     }
     return true;
+  }
+
+  // Extensions that denote a video container by convention. We never downgrade
+  // these to audio even if the runtime momentarily (or permanently) reports no
+  // video dimensions — e.g. Theora/.ogv reports its size a tick after
+  // loadedmetadata, and some runtimes (Chromium) can't decode Theora at all.
+  function isKnownVideoExt(): boolean {
+    return /\.(mp4|m4v|mov|avi|wmv|flv|mpg|mpeg|ogv|3gp|3g2|mkv|ts|mts|m2ts|vob)$/i.test(
+      filePath,
+    );
+  }
+
+  // Ambiguous containers (.webm and unknown extensions) can hold an audio-only
+  // stream, which the filename can't reveal. Once metadata is loaded, an
+  // audio-only stream reports 0x0 intrinsic video dimensions — use that to
+  // switch to audio mode. Guarded so declared video formats are never affected.
+  function onLoadedMetadata() {
+    if (isKnownVideoExt()) {
+      return;
+    }
+    const videoEl = playerRef.current?.el?.querySelector('video') as
+      | HTMLVideoElement
+      | null
+      | undefined;
+    if (videoEl && videoEl.videoWidth === 0 && videoEl.videoHeight === 0) {
+      setAudioOnlyDetected(true);
+    }
   }
   function saveExtSettings() {
     const extSettings = {
@@ -176,7 +207,8 @@ export function Player() {
     }
   }
   const videoSlots = isWeb ? {} : { googleCastButton: null };
-  const viewType = isAudioType() ? 'audio' : 'video';
+  const isAudio = isAudioType() || audioOnlyDetected;
+  const viewType = isAudio ? 'audio' : 'video';
 
   const textTracks = [
     // Subtitles
@@ -219,7 +251,7 @@ export function Player() {
           viewType={viewType}
           autoPlay={autoPlay.current}
           loop={loop.current === 'loopOne'}
-          hideControlsOnMouseLeave={isAudioType() ? false : true}
+          hideControlsOnMouseLeave={!isAudio}
           className="player"
           title={fileName}
           src={filePath}
@@ -227,6 +259,7 @@ export function Player() {
           playsInline
           volume={volume.current}
           onVolumeChange={onVolumeChange}
+          onLoadedMetadata={onLoadedMetadata}
           onEnded={onEnded}
           ref={playerRef}
         >
