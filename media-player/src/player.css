@@ -52,6 +52,17 @@
   visibility: visible;
 }
 
+/* Vidstack swaps the title and the time-slider: while paused it shows the
+   (marquee) title in the same row the slider occupies. Since we force the
+   slider to stay visible while paused, suppress the title so it can't scroll
+   over the track. */
+.player[data-view-type='audio'] .vds-audio-layout .vds-title {
+  opacity: 0;
+  margin: 0;
+  max-width: 0;
+  transition: none;
+}
+
 .player[data-view-type='video'] {
   aspect-ratio: 16 /9;
 }
