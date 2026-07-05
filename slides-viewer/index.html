@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' capacitor:; img-src 'self' data: https: capacitor:; media-src 'self' https: capacitor:;"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' capacitor:; img-src 'self' data: https: capacitor:; media-src 'self' https: capacitor:;"
     />
     <meta
       name="viewport"
@@ -46,89 +46,7 @@
     <script src="../libs/dompurify/dist/purify.min.js"></script>
     <script src="../libs/i18next/i18next.min.js"></script>
     <script src="../common/common.js"></script>
-    <script>
-      const filePath = getParameterByName('file');
-      const locale = getParameterByName('locale') || 'en';
-
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'complete') {
-          insertAboutDialog(
-            'https://docs.tagspaces.org/extensions/slides-viewer',
-          );
-          insertLoadingAnimation();
-
-          initI18N(locale, 'ns.extension.json');
-
-          sendMessageToHost({ command: 'loadDefaultTextContent' });
-
-          documentContent = document.getElementById('documentContent');
-
-          // Handling settings
-          let extSettings = loadExtSettings('slidesViewerSettings');
-
-          function saveSettings() {
-            saveExtSettings('slidesViewerSettings', { styleIndex, zoomLevel });
-          }
-
-          let zoomLevel = 100;
-          if (extSettings && extSettings.zoomLevel) {
-            if (extSettings.zoomLevel >= 30 && extSettings.zoomLevel <= 500) {
-              zoomLevel = extSettings.zoomLevel;
-            }
-            documentContent.style.zoom = zoomLevel + '%';
-          }
-
-          let styleIndex = 0;
-
-          saveSettings();
-        }
-      });
-
-      function setContent(content, fileDirectory) {
-        const bodyRegex = /\<body[^>]*\>([^]*)\<\/body/m; // jshint ignore:line
-        let bodyContent;
-
-        try {
-          bodyContent = content.match(bodyRegex)[1];
-        } catch (e) {
-          console.log('Error parsing the body of the HTML document. ' + e);
-          bodyContent = content;
-        }
-
-        // removing all scripts from the document
-        const cleanedBodyContent = bodyContent.replace(
-          /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-          '',
-        );
-
-        document.body.innerHTML = DOMPurify.sanitize(cleanedBodyContent);
-        document.body.querySelectorAll('style').forEach((styleEl) => {
-          styleEl.textContent = sanitizeCss(styleEl.textContent);
-        });
-
-        Reveal.initialize({
-          controls: true,
-          progress: true,
-          center: true,
-          hash: true,
-          plugins: [
-            // RevealZoom,
-            RevealNotes,
-            // RevealSearch,
-            RevealMarkdown,
-            RevealHighlight,
-          ],
-        });
-
-        hideLoadingAnimation();
-
-        document.getElementById('readabilityOffLabel').style.display = 'none';
-
-        handleLinks(document.documentElement, fileDirectory);
-
-        fixingEmbeddingOfLocalImages(document.body, fileDirectory);
-      }
-    </script>
+    <script src="slides-viewer.js"></script>
   </head>
   <body>
     <div id="findToolbarPlaceholder"></div>
