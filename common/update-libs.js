@@ -123,3 +123,11 @@ sh.rm('-rf', 'image-viewer/libs/tga.js/');
 sh.mkdir('image-viewer/libs/tga.js');
 sh.cp('node_modules/tga-js/LICENSE.md', 'image-viewer/libs/tga.js');
 sh.cp('node_modules/tga-js/dist/umd/tga.js', 'image-viewer/libs/tga.js');
+
+sh.rm('-rf', 'document-viewer/libs/mammoth/');
+sh.mkdir('-p', 'document-viewer/libs/mammoth');
+sh.cp('node_modules/mammoth/LICENSE', 'document-viewer/libs/mammoth');
+sh.cp(
+  'node_modules/mammoth/mammoth.browser.min.js',
+  'document-viewer/libs/mammoth',
+);
