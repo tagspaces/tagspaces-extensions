@@ -40,10 +40,19 @@ export function Player() {
   let defaultLoop = 'loopAll';
   let defaultVolume = 1;
   if (items) {
+    // Keep the hardcoded defaults for any key missing from the stored settings
+    // — an older or partial settings object would otherwise set these to
+    // undefined, silently disabling autoplay / video output.
     const extSettings = JSON.parse(items);
-    defaultAutoPlay = extSettings.autoPlay;
-    defaultVideoOutput = extSettings.enableVideoOutput;
-    defaultLoop = extSettings.loop;
+    if (extSettings.autoPlay !== undefined) {
+      defaultAutoPlay = extSettings.autoPlay;
+    }
+    if (extSettings.enableVideoOutput !== undefined) {
+      defaultVideoOutput = extSettings.enableVideoOutput;
+    }
+    if (extSettings.loop !== undefined) {
+      defaultLoop = extSettings.loop;
+    }
     if (extSettings.volume !== undefined) {
       defaultVolume = extSettings.volume;
     }
