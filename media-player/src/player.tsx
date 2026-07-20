@@ -1,6 +1,12 @@
 import './player.css';
 
-import { useReducer, useRef, useState, type SyntheticEvent } from 'react';
+import {
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+  type SyntheticEvent,
+} from 'react';
 
 import {
   extractFileName,
@@ -29,7 +35,7 @@ import {
 } from '@vidstack/react/player/layouts/default';
 import MainMenu from './MainMenu';
 import { sendMessageToHost } from './utils';
-import { Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 import useEventListener from './useEventListener';
 import { useVidstackScreenshot } from './vidstackScreenshot';
 
@@ -76,6 +82,17 @@ export function Player() {
   }
   const filePath = getFilePath();
   const fileName = decodeURIComponent(extractFileName(filePath));
+
+  // The player uses load="custom" so that loading is never gated on the
+  // document being visible. Vidstack's default load="visible" waits for an
+  // IntersectionObserver, which never fires while the app window is hidden or
+  // occluded — so the next file of a playlist would never start loading (and
+  // therefore never end, stalling the whole queue). The "eager" and "idle"
+  // strategies are no better here: they rely on requestAnimationFrame /
+  // requestIdleCallback, which are paused or deferred in a hidden document.
+  useEffect(() => {
+    playerRef.current?.startLoading();
+  }, [filePath]);
 
   useEventListener('togglePlayPause', (triggerEvent: Event) => {
     if (playerRef.current) {
@@ -129,6 +146,27 @@ export function Player() {
   // Set to true once we detect (after metadata loads) that the file has no
   // video track, regardless of its container/extension.
   const [audioOnlyDetected, setAudioOnlyDetected] = useState(false);
+
+  // Message shown when an autoplay attempt was refused. Vidstack swallows the
+  // failure internally, so without this the player just silently does nothing
+  // and looks broken.
+  const [autoPlayBlocked, setAutoPlayBlocked] = useState<string | null>(null);
+
+  function onAutoPlayFail() {
+    // Two distinct causes, worth telling apart for the user:
+    // - The OS "reduce motion" accessibility preference — Vidstack refuses to
+    //   autoplay at all while it is on. We deliberately honour that setting.
+    // - The browser's autoplay policy, which blocks unmuted playback until the
+    //   user has interacted with the page.
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    setAutoPlayBlocked(
+      reducedMotion
+        ? 'Autoplay is turned off because "Reduce motion" is enabled in your system accessibility settings. Press play to start.'
+        : 'Autoplay was blocked. Press play to start.',
+    );
+  }
 
   function isAudioType(): boolean {
     if (enableVideoOutput.current && filePath) {
@@ -263,6 +301,7 @@ export function Player() {
       {!encrypted && filePath && (
         <MediaPlayer
           viewType={viewType}
+          load="custom"
           autoPlay={autoPlay.current}
           loop={loop.current === 'loopOne'}
           hideControlsOnMouseLeave={!isAudio}
@@ -274,6 +313,7 @@ export function Player() {
           volume={volume.current}
           onVolumeChange={onVolumeChange}
           onLoadedMetadata={onLoadedMetadata}
+          onAutoPlayFail={onAutoPlayFail}
           onEnded={onEnded}
           ref={playerRef}
         >
@@ -315,6 +355,20 @@ export function Player() {
         setThumbnail={setThumbnail}
         loading={loading}
       />
+      <Snackbar
+        open={autoPlayBlocked !== null}
+        autoHideDuration={6000}
+        onClose={() => setAutoPlayBlocked(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          severity="info"
+          variant="filled"
+          onClose={() => setAutoPlayBlocked(null)}
+        >
+          {autoPlayBlocked}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
