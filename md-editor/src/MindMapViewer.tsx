@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { Transformer } from 'markmap-lib';
 import { Markmap, deriveOptions } from 'markmap-view';
 import type { IMarkmapOptions } from 'markmap-view';
+import { useTheme } from '@mui/material/styles';
 
 const transformer = new Transformer();
 
@@ -18,6 +19,10 @@ const mmOptions: Partial<IMarkmapOptions> = deriveOptions({
 export default function MindMapViewer(props: Props) {
   const { getContent } = props;
   const mdContent = getContent();
+  const theme = useTheme();
+  // markmap's embedded CSS switches node text, code and circle colors to
+  // their dark variants only under an ancestor with the `markmap-dark` class
+  const isDark = theme.palette.mode === 'dark';
   // const [value, setValue] = useState('');
   // Ref for SVG element
   const refSvg: any = useRef();
@@ -44,8 +49,11 @@ export default function MindMapViewer(props: Props) {
   // };
 
   return (
-    <React.Fragment>
+    <div
+      className={isDark ? 'markmap-dark' : undefined}
+      style={{ height: '100%', width: '100%' }}
+    >
       <svg style={{ height: '100%', width: '100%' }} ref={refSvg} />
-    </React.Fragment>
+    </div>
   );
 }
