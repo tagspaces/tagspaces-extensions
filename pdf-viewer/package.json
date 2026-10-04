@@ -17,7 +17,7 @@
     "clean:pdfjs": "npx rimraf --no-glob \"generic/\" \"scripts/pdf.js/\""
   },
   "dependencies": {
-    "pdfjs-dist": "6.1.200"
+    "pdfjs-dist": "6.3.289"
   },
   "tsextension": {
     "name": "PDF Viewer",
