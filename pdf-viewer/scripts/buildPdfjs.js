@@ -7,10 +7,30 @@ const {
   copyFileSync,
   writeFileSync,
 } = require('fs');
-const { join } = require('path');
+const { basename, join } = require('path');
 
 const { dependencies } = require('../package.json');
 const pdfJSVersionTag = 'v' + dependencies['pdfjs-dist'];
+
+/**
+ * PDF JavaScript support: the sandbox bundle (build/pdf.sandbox*.mjs) and the
+ * QuickJS engine it runs (web/wasm/quickjs-eval.{js,wasm} + its licenses).
+ * Scripting is disabled by patches/disable_scripting.patch; not shipping the
+ * code at all means a flipped preference has nothing to load (and saves
+ * ~800 KB). The other web/wasm files (jbig2, openjpeg, qcms) are image/colour
+ * decoders and must stay.
+ *
+ * @param {string} src - The source path.
+ * @returns {boolean}
+ */
+function isScriptingFile(src) {
+  const name = basename(src);
+  return (
+    name.startsWith('pdf.sandbox') ||
+    name.startsWith('quickjs-eval') ||
+    name.endsWith('_QUICKJS')
+  );
+}
 
 /**
  * Recursively copies files and directories from src to dest.
@@ -29,7 +49,11 @@ function copyRecursiveSync(src, dest) {
     readdirSync(src).forEach((childItemName) => {
       copyRecursiveSync(join(src, childItemName), join(dest, childItemName));
     });
-  } else if (!src.endsWith('.map') && !src.endsWith('.pdf')) {
+  } else if (
+    !src.endsWith('.map') &&
+    !src.endsWith('.pdf') &&
+    !isScriptingFile(src)
+  ) {
     // For files, simply copy them.
     copyFileSync(src, dest);
   }
