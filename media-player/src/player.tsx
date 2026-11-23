@@ -258,6 +258,23 @@ export function Player() {
       sendMessageToHost({ command: 'playbackEnded', filepath: filePath });
     }
   }
+  // Vidstack picks its provider from the file extension (mp4, ogg/ogv, webm,
+  // mov, m4v) or an explicit MIME type from a short allowlist, and then also
+  // asks canPlayType(). Matroska passes neither: `.mkv` is not in the
+  // extension list and Chromium answers '' for 'video/x-matroska', so the
+  // source is dropped with "Failed to load resource" before the <video>
+  // element ever gets it. Chromium can demux Matroska though (WebM is a subset
+  // of it) and sniffs the container from the bytes, not from the declared
+  // type — so declare the WebM type to get the file past Vidstack's checks.
+  // Whether it then plays depends on the codecs inside the container.
+  function getMediaSrc(): string | { src: string; type: 'video/webm' } {
+    const pathOnly = filePath.split(/[?#]/)[0];
+    if (/\.mkv$/i.test(pathOnly)) {
+      return { src: filePath, type: 'video/webm' };
+    }
+    return filePath;
+  }
+
   const videoSlots = isWeb ? {} : { googleCastButton: null };
   const isAudio = isAudioType() || audioOnlyDetected;
   const viewType = isAudio ? 'audio' : 'video';
@@ -307,7 +324,7 @@ export function Player() {
           hideControlsOnMouseLeave={!isAudio}
           className="player"
           title={fileName}
-          src={filePath}
+          src={getMediaSrc()}
           crossOrigin
           playsInline
           volume={volume.current}
